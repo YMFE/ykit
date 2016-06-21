@@ -1,0 +1,24 @@
+{
+  "name": "ykit",
+  "version": "0.1.0",
+  "description": "高可用高扩展前端开发工具",
+  "main": "src/ykit.js",
+  "bin": {
+    "ykit": "bin/ykit"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "globby": "^5.0.0",
+    "left-pad": "^1.1.0",
+    "optimist": "^0.6.1",
+    "right-pad": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.corp.qunar.com:mfe/ykit.git"
+  }
+}
