@@ -3,24 +3,52 @@ require('shelljs/global')
 var assert = require('chai').assert;
 
 describe('pack command', function() {
-	describe('cmd', function() {
+	this.timeout(8000);
+
+	afterEach(function() {
+		cd('../../')
+	})
+
+	describe('commonjs', function() {
 		it('command code should return 0', function() {
-			this.timeout(5000);
+			cd('./examples/pack-commonjs')
 
-			cd('./examples/pack-cmd/')
-
-			var result = exec('node ../../bin/ykit pack', {silent:true});
+			var result = exec('node ../../bin/ykit pack', {
+				silent: true
+			});
 			assert.equal(result.code, 0);
 		});
 	});
 
 	describe('amd', function() {
 		it('command code should return 0', function() {
-			this.timeout(5000);
+			cd('./examples/pack-amd')
 
-			cd('./examples/pack-amd/')
+			var result = exec('node ../../bin/ykit pack', {
+				silent: true
+			});
+			assert.equal(result.code, 0);
+		});
+	});
 
-			var result = exec('node ../../bin/ykit pack', {silent:true});
+	describe('es6', function() {
+		it('command code should return 0', function() {
+			cd('./examples/pack-es6')
+
+			var result = exec('node ../../bin/ykit pack', {
+				silent: true
+			});
+			assert.equal(result.code, 0);
+		});
+	});
+
+	describe('min', function() {
+		it('command code should return 0', function() {
+			cd('./examples/pack-min')
+
+			var result = exec('node ../../bin/ykit pack -m', {
+				silent: true
+			});
 			assert.equal(result.code, 0);
 		});
 	});

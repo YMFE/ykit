@@ -1,5 +1,5 @@
 define('module2', [], function() {
     return function(){
-        document.write("<h2>module 2</h2>")
+        document.write("<h3>module 2</h3>")
     }
 })

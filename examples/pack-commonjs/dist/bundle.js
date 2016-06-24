@@ -44,31 +44,34 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var m1Log = __webpack_require__(1)
-	var m2Log = __webpack_require__(2)
+	'use strict';
 
-	document.write("<h1>require following modules:</h1>")
-	m1Log()
-	m2Log()
+	var m1Log = __webpack_require__(1);
+	var m2Log = __webpack_require__(2);
 
+	document.write("<h2>require following modules:</h2>");
+	m1Log();
+	m2Log();
 
 /***/ },
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports = function () {
-	    document.write("<h2>module 1</h2>")
-	}
+	"use strict";
 
+	module.exports = function () {
+	    document.write("<h3>module 1</h3>");
+	};
 
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = function () {
-	    document.write("<h2>module 2</h2>")
-	}
+	"use strict";
 
+	module.exports = function () {
+	    document.write("<h3>module 2</h3>");
+	};
 
 /***/ }
 /******/ ]);

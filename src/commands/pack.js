@@ -3,11 +3,12 @@ var webpack = require('webpack')
 exports.usage = "资源编译、打包";
 
 exports.setOptions = (optimist) => {
-	// TODO
+    optimist.alias('m', 'min');
+    optimist.describe('m', '压缩/混淆项目文件');
 };
 
 exports.run = function(options) {
-    var cmdExecutedPath = process.cwd()
+	var cmdExecutedPath = process.cwd()
 
 	webpack({
 		context: cmdExecutedPath,
@@ -15,13 +16,30 @@ exports.run = function(options) {
 		output: {
 			path: "./dist",
 			filename: "bundle.js"
-		}
+		},
+		module: {
+			loaders: [{
+				test: /\.js$/,
+				exclude: /(node_modules|bower_components)/,
+				loader: 'babel',
+				query: {
+					presets: ['es2015']
+				}
+			}]
+		},
+        plugins: [
+            options.m ? new webpack.optimize.UglifyJsPlugin({
+                compress: {
+                    warnings: false
+                }
+            }) : null
+        ],
 	}, function(err, stats) {
-        if(err){
-            info(err);
-            return
-        }
+		if (err) {
+			info(err);
+			return
+		}
 
-        info('pack succeed');
+		info('pack succeed');
 	})
 };
