@@ -7,7 +7,7 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = function(options) {
-    var cmdExecutedPath = process.cwd()
+	var cmdExecutedPath = process.cwd()
 
 	webpack({
 		context: cmdExecutedPath,
@@ -15,13 +15,23 @@ exports.run = function(options) {
 		output: {
 			path: "./dist",
 			filename: "bundle.js"
+		},
+		module: {
+			loaders: [{
+				test: /\.js$/,
+				exclude: /(node_modules|bower_components)/,
+				loader: 'babel', // 'babel-loader' is also a legal name to reference
+				query: {
+					presets: ['es2015']
+				}
+			}]
 		}
 	}, function(err, stats) {
-        if(err){
-            info(err);
-            return
-        }
+		if (err) {
+			info(err);
+			return
+		}
 
-        info('pack succeed');
+		info('pack succeed');
 	})
 };

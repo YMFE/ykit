@@ -46,12 +46,19 @@
 
 	'use strict';
 
-	var m1Log = __webpack_require__(1);
-	var m2Log = __webpack_require__(2);
+	var _module = __webpack_require__(1);
+
+	var _module2 = _interopRequireDefault(_module);
+
+	var _module3 = __webpack_require__(2);
+
+	var _module4 = _interopRequireDefault(_module3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	document.write("<h2>require following modules:</h2>");
-	m1Log();
-	m2Log();
+	(0, _module2.default)();
+	(0, _module4.default)();
 
 /***/ },
 /* 1 */
