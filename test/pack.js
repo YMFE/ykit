@@ -2,12 +2,23 @@ require('shelljs/global')
 
 var assert = require('chai').assert;
 
-describe('command', function() {
-	describe('pack', function() {
-		it('pack command should return 0', function() {
+describe('pack command', function() {
+	describe('cmd', function() {
+		it('command code should return 0', function() {
 			this.timeout(5000);
 
-			cd('./examples/pack/')
+			cd('./examples/pack-cmd/')
+
+			var result = exec('node ../../bin/ykit pack', {silent:true});
+			assert.equal(result.code, 0);
+		});
+	});
+
+	describe('amd', function() {
+		it('command code should return 0', function() {
+			this.timeout(5000);
+
+			cd('./examples/pack-amd/')
 
 			var result = exec('node ../../bin/ykit pack', {silent:true});
 			assert.equal(result.code, 0);
