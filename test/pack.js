@@ -3,11 +3,11 @@ require('shelljs/global')
 var assert = require('chai').assert;
 
 describe('pack command', function() {
-	describe('cmd', function() {
+	describe('commonjs', function() {
 		it('command code should return 0', function() {
 			this.timeout(5000);
 
-			cd('./examples/pack-cmd/')
+			cd('./examples/pack-commonjs/')
 
 			var result = exec('node ../../bin/ykit pack', {silent:true});
 			assert.equal(result.code, 0);
