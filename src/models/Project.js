@@ -9,7 +9,7 @@ class Project {
         this.cwd = cwd;
         this.config = new Config(cwd)
     }
-    readConfig() {
+    readConfig(options = {}) {
             this.configFile = globby.sync('ykit.*.js')[0];
             if (!this.configFile) {
                 error('没有找到 ykit 配置文件！');
@@ -23,14 +23,14 @@ class Project {
                     let module = require(modulePath);
                     if (module.config) {
                         extended = true;
-                        module.config(this.config);
+                        module.config(this.config, options);
                     }
                 } else {
                     try {
                         let module = require('ykit-config-' + this.extendConfig);
                         if (module.config) {
                             extended = true;
-                            module.config(this.config);
+                            module.config(this.config, options);
                         }
                     } catch (e) {}
                 }
@@ -47,7 +47,7 @@ class Project {
                 return false;
             }
 
-            configMethod(this.config);
+            configMethod(this.config, options);
 
             return this;
         }
