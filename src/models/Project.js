@@ -4,6 +4,8 @@ let webpack = require('webpack');
 
 let Config = require('./Config.js');
 
+let CssEntryLoaderPlugin = require('../plugins/CssEntryLoader')
+
 class Project {
     constructor(cwd) {
         this.cwd = cwd;
@@ -80,6 +82,8 @@ class Project {
         return !!this.configFile;
     }
     pack(callback) {
+        this.config.addPlugins(new CssEntryLoaderPlugin())
+
         if (this.options.min) {
             this.config.addPlugins(new webpack.optimize.UglifyJsPlugin({
                 compress: {
@@ -87,7 +91,6 @@ class Project {
                 }
             }));
         }
-        console.log(this.config.getConfig());
         webpack(this.config.getConfig(), callback);
 
         return this;

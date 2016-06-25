@@ -7,10 +7,10 @@ function CssEntryLoaderPlugin(options) {
 }
 
 CssEntryLoaderPlugin.prototype.apply = function(compiler) {
-	const entry = compiler.options.entry,
+	const entry = 'index.js',  // FIXME 应该为compiler.options.entry，是一个入口对象，需要解析和分析扩展名
 		cmdPath = process.cwd(),
 		entryFilePath = path.join(cmdPath, entry),
-		cssRequiringStatement = 'require("./css/index.css")'
+		cssRequiringStatement = 'require("./css/index.css")' // FIXME 应该为require( + css入口文件 + )
 
 	compiler.plugin("compile", function(params) {
 		if (typeof entry === 'string') {
