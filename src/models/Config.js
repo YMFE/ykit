@@ -33,6 +33,7 @@ class Config {
         };
         this._entry = this._config.entry;
         this._alias = this._config.resolve.alias;
+        this._cssExtNames = ['.css'];
     }
     getPlugins() {
         return this._config.plugins;
@@ -100,6 +101,10 @@ class Config {
     }
     removeAlias(name) {
         delete this._alias;
+    }
+    addCssExtName(ext) {
+        this._cssExtNames.push(ext);
+        return this;
     }
     getConfig() {
         return this._config;

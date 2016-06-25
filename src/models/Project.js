@@ -86,11 +86,12 @@ class Project {
             fps = [];
 
         for (let key in entry) {
-            if (sysPath.extname(entry[key]) == '.css') {
-                let name = sysPath.basename(entry[key], '.css'),
-                    np = entry[key] = entry[key].replace('.css', '.css.js'),
+            let extName = sysPath.extname(entry[key]);
+            if (this.config._cssExtNames.indexOf(extName) > -1) {
+                let name = sysPath.basename(entry[key], extName),
+                    np = entry[key] = entry[key] + '.js',
                     fp = sysPath.join(config.context, np);
-                fs.writeFileSync(fp, 'require("./' + name + '.css");', 'utf-8');
+                fs.writeFileSync(fp, 'require("./' + name + extName + '");', 'utf-8');
                 fps.push(fp);
             }
         }
@@ -112,7 +113,7 @@ class Project {
         }
 
 
-
+        console.log(config.module.loaders);
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path

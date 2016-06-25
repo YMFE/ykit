@@ -18,6 +18,6 @@ exports.run = (options) => {
     project.readConfig({
         min: min
     }).pack((err, stats) => {
-        // console.log(err, stats);
+        console.log(err);
     });
 };
