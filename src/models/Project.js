@@ -30,7 +30,7 @@ class Project {
                 let module = require(modulePath);
                 if (module.config) {
                     extended = true;
-                    module.config(this.config, options);
+                    module.config(this.config, options, this.cwd);
                     this.extraCommands = this.extraCommands.concat(module.commands || []);
                     if (module.middlewares) {
                         this.middlewares = module.middlewares;
@@ -41,7 +41,7 @@ class Project {
                     let module = require('ykit-config-' + this.extendConfig);
                     if (module.config) {
                         extended = true;
-                        module.config(this.config, options);
+                        module.config(this.config, options, this.cwd);
                         this.extraCommands = this.extraCommands.concat(module.commands || []);
                         if (module.middlewares) {
                             this.middlewares = module.middlewares;
@@ -62,7 +62,7 @@ class Project {
             return this;
         }
 
-        configMethod.config(this.config, options);
+        configMethod.config(this.config, options, this.cwd);
         this.extraCommands = this.extraCommands.concat(configMethod.commands || []);
         if (configMethod.middlewares) {
             this.middlewares = configMethod.middlewares;
