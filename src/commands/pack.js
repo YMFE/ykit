@@ -8,7 +8,18 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = function(options) {
-	var cmdExecutedPath = process.cwd()
+	var cmdExecutedPath = process.cwd(),
+        plugins = []
+
+    if(options.m){
+        plugins.push(
+            new webpack.optimize.UglifyJsPlugin({
+                compress: {
+                    warnings: false
+                }
+            })
+        )
+    }
 
 	webpack({
 		context: cmdExecutedPath,
@@ -27,13 +38,7 @@ exports.run = function(options) {
 				}
 			}]
 		},
-        plugins: [
-            options.m ? new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
-            }) : null
-        ],
+        plugins: plugins,
 	}, function(err, stats) {
 		if (err) {
 			info(err);
