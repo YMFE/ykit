@@ -9,6 +9,7 @@ global.leftPad = require('left-pad');
 global.rightPad = require('right-pad');
 global.globby = require('globby');
 global.optimist = require('optimist');
+global._ = require('underscore');
 
 global.USER_HOME = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
 global.NPM_ROOT = childProcess.execSync('npm root -g', {encoding: 'utf-8'}).split('\n')[0];
