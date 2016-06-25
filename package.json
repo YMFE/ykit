@@ -21,6 +21,9 @@
     "replacestream": "^4.0.0",
     "right-pad": "^1.0.0",
     "style-loader": "^0.13.1",
+    "serve-index": "^1.8.0",
+    "serve-static": "^1.11.1",
+    "underscore": "^1.8.3",
     "webpack": "^1.13.1",
     "underscore": "^1.8.3",
     "webpack-dev-middleware": "^1.6.1"

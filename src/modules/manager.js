@@ -1,5 +1,7 @@
 'use strict';
 
+let Project = require('../models/Project.js');
+
 let loadModule = exports.loadModule = (path) => {
     var pkg = require(sysPath.join(path, 'package.json'));
     return pkg.main ? require(sysPath.join(path, pkg.main)) : null;
@@ -42,4 +44,13 @@ let getCommands = exports.getCommands = () => {
         })
         .concat(getModule('command'))
         .filter((command) => !!command.module);
+};
+
+let projectCache = {};
+
+let getProject = exports.getProject = (cwd) => {
+    if (!projectCache[cwd]) {
+        projectCache[cwd] = new Project(cwd);
+    }
+    return projectCache[cwd];
 };
