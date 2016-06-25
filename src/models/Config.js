@@ -108,8 +108,8 @@ class Config {
     removeAlias(name) {
         delete this._alias;
     }
-    addCssExtName(ext) {
-        this._cssExtNames.push(ext);
+    addCssExtNames(ext) {
+        this._cssExtNames = this._cssExtNames.concat(ext);
         return this;
     }
     getConfig() {
