@@ -106,7 +106,7 @@ class Project {
         }
 
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
-        console.log(config.module.loaders);
+        
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path
