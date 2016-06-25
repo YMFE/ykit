@@ -59,12 +59,14 @@ class Project {
 
         let configMethod = require(sysPath.join(this.cwd, this.configFile));
 
-        if (!_.isFunction(configMethod.config)) {
+        if (_.isArray(configMethod)) {
+            this.config.setExports(configMethod);
+        } else if (_.isFunction(configMethod.config)) {
+            configMethod.config(this.config, options, this.cwd);
+        } else {
             error(this.configFile + ' 没有 exports 正确的方法！');
             return this;
         }
-
-        configMethod.config(this.config, options, this.cwd);
         this.extraCommands = this.extraCommands.concat(configMethod.commands || []);
         if (configMethod.middlewares) {
             this.middlewares = configMethod.middlewares;

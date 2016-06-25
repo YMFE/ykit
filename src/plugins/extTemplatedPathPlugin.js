@@ -8,9 +8,9 @@ module.exports = {
                 if (data.chunk) {
                     let rawRequest = data.chunk.origins[0].module.rawRequest;
                     extName = sysPath.extname(rawRequest);
-                    // if (compiler.options.cssExtNames.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
-                    //     extName = '.cache';
-                    // }
+                    if (compiler.options.cssExtNames.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
+                        extName = '.cache';
+                    }
                 }
                 return path.replace(/\[ext\]/g, extName);
             });
