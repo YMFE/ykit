@@ -1,5 +1,3 @@
-require('./css/index.css')
-
 var m1Log = require('./js/module1')
 var m2Log = require('./js/module2')
 

@@ -46,28 +46,16 @@
 
 	'use strict';
 
-	__webpack_require__(1);
-
-	var m1Log = __webpack_require__(7);
-	var m2Log = __webpack_require__(8);
+	var m1Log = __webpack_require__(1);
+	var m2Log = __webpack_require__(2);
 
 	document.write("<h2>require following modules:</h2>");
 	m1Log();
 	m2Log();
+	__webpack_require__(3);
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -77,7 +65,7 @@
 	};
 
 /***/ },
-/* 8 */
+/* 2 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -85,6 +73,12 @@
 	module.exports = function () {
 	    document.write("<h3>module 2</h3>");
 	};
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 /******/ ]);

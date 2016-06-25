@@ -1,5 +1,6 @@
 var webpack = require('webpack')
 var ExtractTextPlugin = require("extract-text-webpack-plugin")
+var CssEntryLoaderPlugin = require('../plugins/cssEntryLoader')
 
 exports.usage = "资源编译、打包";
 
@@ -15,6 +16,9 @@ exports.run = function(options) {
 	var cmdExecutedPath = process.cwd()
 
     var plugins = []
+    plugins.push(
+        new CssEntryLoaderPlugin()
+    )
     plugins.push(
         new ExtractTextPlugin("styles.css")
     )

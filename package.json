@@ -17,6 +17,7 @@
     "globby": "^5.0.0",
     "left-pad": "^1.1.0",
     "optimist": "^0.6.1",
+    "replacestream": "^4.0.0",
     "right-pad": "^1.0.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1",
