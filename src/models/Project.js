@@ -9,10 +9,13 @@ class Project {
         this.cwd = cwd;
         this.config = new Config(cwd);
         this.extraCommands = [];
+        this.middlewares = [];
     }
     readConfig(options) {
         options = options || {};
-        this.configFile = globby.sync('ykit.*.js')[0];
+        this.configFile = globby.sync('ykit.*.js', {
+            cwd: this.cwd
+        })[0];
         if (!this.configFile) {
             if (!options.noCheck) {
                 error('没有找到 ykit 配置文件！');
@@ -29,6 +32,9 @@ class Project {
                     extended = true;
                     module.config(this.config, options);
                     this.extraCommands = this.extraCommands.concat(module.commands || []);
+                    if (module.middlewares) {
+                        this.middlewares = module.middlewares;
+                    }
                 }
             } else {
                 try {
@@ -37,6 +43,9 @@ class Project {
                         extended = true;
                         module.config(this.config, options);
                         this.extraCommands = this.extraCommands.concat(module.commands || []);
+                        if (module.middlewares) {
+                            this.middlewares = module.middlewares;
+                        }
                     }
                 } catch (e) {}
             }
@@ -55,8 +64,20 @@ class Project {
 
         configMethod.config(this.config, options);
         this.extraCommands = this.extraCommands.concat(configMethod.commands || []);
+        if (configMethod.middlewares) {
+            this.middlewares = configMethod.middlewares;
+        }
+
+        if (this.config._config.output.path[0] != '/') {
+            this.config.setOutput({
+                path: sysPath.join(this.cwd, this.config._config.output.path)
+            });
+        }
 
         return this;
+    }
+    check() {
+        return !!this.configFile;
     }
     pack(options, callback) {
         if (options.min) {
