@@ -1,0 +1,6 @@
+@import './module1.css';
+@import './module2.css';
+
+body{
+    color: blue;
+}

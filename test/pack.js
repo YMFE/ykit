@@ -52,4 +52,15 @@ describe('pack command', function() {
 			assert.equal(result.code, 0);
 		});
 	});
+
+	describe('css', function() {
+		it('command code should return 0', function() {
+			cd('./examples/pack-css')
+
+			var result = exec('node ../../bin/ykit pack -h', {
+				silent: true
+			});
+			assert.equal(result.code, 0);
+		});
+	});
 });
