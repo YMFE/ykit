@@ -87,6 +87,7 @@ class Project {
                 }
             }));
         }
+        console.log(this.config.getConfig());
         webpack(this.config.getConfig(), callback);
 
         return this;
