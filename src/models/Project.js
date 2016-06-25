@@ -12,7 +12,7 @@ class Project {
         this.middlewares = [];
     }
     readConfig(options) {
-        options = options || {};
+        this.options = options = options || {};
         this.configFile = globby.sync('ykit.*.js', {
             cwd: this.cwd
         })[0];
@@ -79,8 +79,8 @@ class Project {
     check() {
         return !!this.configFile;
     }
-    pack(options, callback) {
-        if (options.min) {
+    pack(callback) {
+        if (this.options.min) {
             this.config.addPlugins(new webpack.optimize.UglifyJsPlugin({
                 compress: {
                     warnings: false

@@ -14,9 +14,9 @@ exports.run = (options) => {
         min = options.m || options.min,
         project = new Project(cwd);
 
-    project.readConfig().pack({
+    project.readConfig({
         min: min
-    }, (err, stats) => {
+    }).pack((err, stats) => {
         // console.log(err, stats);
     });
 };

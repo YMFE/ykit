@@ -61,7 +61,7 @@ class Config {
         return this;
     }
     setOutput(output) {
-        _.extend(true, this._config.output, output);
+        _.extend(this._config.output, output);
         return this;
     }
     addRoots(paths) {
