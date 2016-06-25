@@ -2,7 +2,7 @@
 
 require('./global');
 
-let manager = require('./modules/common/manager.js');
+let manager = require('./modules/manager.js');
 
 let helpTitle = () => {
     info();
