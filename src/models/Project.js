@@ -70,6 +70,9 @@ class Project {
 
         return this;
     }
+    getCompiler() {
+        return webpack(this.config.getConfig());
+    }
 }
 
 module.exports = Project;

@@ -28,11 +28,12 @@ let cli = module.exports = {
     run: (cmdName) => {
         let cmd = manager.getCommands().concat(new Project(process.cwd()).readConfig({
             noCheck: true
-        }).extraCommands).filter((name) => name == cmdName)[0];
+        }).extraCommands).filter((item) => item.name == cmdName)[0];
         if (!cmd) {
             error('请确认是否存在 ' + cmdName + ' 命令');
             return;
         }
+        cmd = cmd.module;
         let options = initOptions(cmd);
         if (options.h || options.help) {
             helpTitle();
@@ -47,7 +48,7 @@ let cli = module.exports = {
     },
     help: () => {
         helpTitle();
-        
+
         manager.getCommands().concat(new Project(process.cwd()).readConfig({
             noCheck: true
         }).extraCommands).forEach((command) => {

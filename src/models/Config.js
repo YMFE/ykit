@@ -15,7 +15,7 @@ class Config {
             plugins: [],
             resolve: {
                 root: [],
-                extensions: ['', '.js'],
+                extensions: ['', '.js', '.css'],
                 alias: {}
             }
         };
