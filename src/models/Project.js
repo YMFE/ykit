@@ -119,7 +119,6 @@ class Project {
             childProcess.execSync('rm -rf ' + config.output.path);
         } catch(e){}
 
-        console.log(config);
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path

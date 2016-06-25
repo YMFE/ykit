@@ -16,6 +16,8 @@
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "globby": "^5.0.0",
+    "html-loader": "^0.4.3",
+    "json-loader": "^0.5.4",
     "left-pad": "^1.1.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",

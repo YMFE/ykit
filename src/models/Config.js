@@ -15,6 +15,12 @@ class Config {
             },
             module: {
                 loaders: [{
+                    test: /\.json$/,
+                    loader: sysPath.join(modulePath, 'json-loader', 'index.js')
+                }, {
+                    test: /\.(html|string)$/,
+                    loader: sysPath.join(modulePath, 'html-loader', 'index.js')
+                }, {
                     test: /\.css$/,
                     loader: ExtractTextPlugin.extract(
                         sysPath.join(modulePath, 'style-loader', 'index.js'),
@@ -27,7 +33,7 @@ class Config {
             ],
             resolve: {
                 root: [],
-                extensions: ['', '.js', '.css'],
+                extensions: ['', '.js', '.css', '.json'],
                 alias: {}
             }
         };
