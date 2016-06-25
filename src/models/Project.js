@@ -112,8 +112,6 @@ class Project {
             }));
         }
 
-
-        console.log(config.module.loaders);
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path
