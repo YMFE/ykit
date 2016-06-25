@@ -12,20 +12,19 @@
   "license": "MIT",
   "dependencies": {
     "colors": "^1.1.2",
+    "connect": "^3.4.1",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
-    "connect": "^3.4.1",
     "globby": "^5.0.0",
     "left-pad": "^1.1.0",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",
     "right-pad": "^1.0.0",
-    "style-loader": "^0.13.1",
     "serve-index": "^1.8.0",
     "serve-static": "^1.11.1",
+    "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
     "webpack": "^1.13.1",
-    "underscore": "^1.8.3",
     "webpack-dev-middleware": "^1.6.1"
   },
   "repository": {

@@ -1,5 +1,9 @@
 'use strict';
 
+let ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+let modulePath = sysPath.join(__dirname, '../../node_modules/');
+
 class Config {
     constructor(cwd) {
         this._config = {
@@ -7,12 +11,20 @@ class Config {
             entry: {},
             output: {
                 path: "./prd",
-    			filename: "[name]"
+                filename: "[name][ext]"
             },
             module: {
-                loaders: []
+                loaders: [{
+                    test: /\.css$/,
+                    loader: ExtractTextPlugin.extract(
+                        sysPath.join(modulePath, 'style-loader', 'index.js'),
+                        sysPath.join(modulePath, 'css-loader', 'index.js')
+                    )
+                }]
             },
-            plugins: [],
+            plugins: [
+                require('../plugins/extTemplatedPathPlugin.js')
+            ],
             resolve: {
                 root: [],
                 extensions: ['', '.js', '.css'],
@@ -46,11 +58,11 @@ class Config {
     }
     setExports(files) {
         [].concat(files).forEach((file) => {
-            var name = file;
-            if (file.indexOf('./') == 0) {
-                name = file.substring(2);
-            } else if (file[0] == '/') {
-                name = file.substring(1);
+            var name = file.replace(/\.\w+$/g, '');
+            if (name.indexOf('./') == 0) {
+                name = name.substring(2);
+            } else if (name[0] == '/') {
+                name = name.substring(1);
             }
             this._entry[name] = file;
         });

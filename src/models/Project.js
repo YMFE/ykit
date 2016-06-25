@@ -2,9 +2,8 @@
 
 let webpack = require('webpack');
 
-let Config = require('./Config.js');
-
-let CssEntryLoaderPlugin = require('../plugins/CssEntryLoader')
+let Config = require('./Config.js'),
+    ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 class Project {
     constructor(cwd) {
@@ -82,16 +81,41 @@ class Project {
         return !!this.configFile;
     }
     pack(callback) {
-        this.config.addPlugins(new CssEntryLoaderPlugin())
+
+        let config = this.config.getConfig(),
+            entry = config.entry,
+            fps = [];
 
         if (this.options.min) {
-            this.config.addPlugins(new webpack.optimize.UglifyJsPlugin({
+            config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                 compress: {
                     warnings: false
                 }
             }));
         }
-        webpack(this.config.getConfig(), callback);
+
+
+        for (let key in entry) {
+            if (sysPath.extname(entry[key]) == '.css') {
+                let name = sysPath.basename(entry[key], '.css'),
+                    np = entry[key] = entry[key].replace('.css', '.css.js'),
+                    fp = sysPath.join(config.context, np);
+                fs.writeFileSync(fp, 'require("./' + name + '.css");', 'utf-8');
+                fps.push(fp);
+            }
+        }
+
+        config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
+        console.log(config.module.loaders);
+        webpack(config, function() {
+            globby.sync('**/*.cache', {
+                cwd: config.output.path
+            })
+            .map((p) => sysPath.join(config.output.path, p))
+            .concat(fps)
+            .forEach((fp) => fs.unlinkSync(fp));
+            callback();
+        });
 
         return this;
     }
