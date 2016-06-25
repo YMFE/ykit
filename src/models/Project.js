@@ -80,20 +80,10 @@ class Project {
     check() {
         return !!this.configFile;
     }
-    pack(callback) {
-
+    fixCss() {
         let config = this.config.getConfig(),
             entry = config.entry,
             fps = [];
-
-        if (this.options.min) {
-            config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
-            }));
-        }
-
 
         for (let key in entry) {
             if (sysPath.extname(entry[key]) == '.css') {
@@ -106,7 +96,23 @@ class Project {
         }
 
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
-        
+
+        return fps;
+    }
+    pack(callback) {
+        let config = this.config.getConfig(),
+            fps = this.fixCss();
+
+        if (this.options.min) {
+            config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+                compress: {
+                    warnings: false
+                }
+            }));
+        }
+
+
+
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path
@@ -120,6 +126,7 @@ class Project {
         return this;
     }
     getCompiler() {
+        this.fixCss();
         return webpack(this.config.getConfig());
     }
 }

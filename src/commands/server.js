@@ -57,9 +57,14 @@ exports.run = (options) => {
                     server: true
                 });
                 if (project.check()) {
-                    middleware = middlewareCache[projectName] = webpackDevMiddleware(project.getCompiler(), {
+                    let compiler = project.getCompiler();
+                    middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
                         hot: hot
                     });
+                    // console.log('------');
+                    // setInterval(function() {
+                    //     console.log(compiler.outputFileSystem.readdirSync('cache'));
+                    // }, 1000);
                 } else {
                     next();
                     return;
