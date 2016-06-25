@@ -17,6 +17,8 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "globby": "^5.0.0",
     "left-pad": "^1.1.0",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",
     "right-pad": "^1.0.0",
@@ -30,14 +32,5 @@
   "repository": {
     "type": "git",
     "url": "git@gitlab.corp.qunar.com:mfe/ykit.git"
-  },
-  "devDependencies": {
-    "babel-core": "^6.10.4",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
-    "chai": "^3.5.0",
-    "mocha": "^2.5.3",
-    "pm2": "^1.1.3",
-    "shelljs": "^0.7.0"
   }
 }

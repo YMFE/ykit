@@ -14,6 +14,7 @@ class Project {
     }
     readConfig(options) {
         this.options = options = options || {};
+        options.ExtractTextPlugin = ExtractTextPlugin;
         this.configFile = globby.sync('ykit.*.js', {
             cwd: this.cwd
         })[0];
@@ -98,6 +99,8 @@ class Project {
 
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
 
+        config.cssExtNames = this.config._cssExtNames;
+
         return fps;
     }
     pack(callback) {
@@ -112,6 +115,11 @@ class Project {
             }));
         }
 
+        try {
+            childProcess.execSync('rm -rf ' + config.output.path);
+        } catch(e){}
+
+        console.log(config);
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path
