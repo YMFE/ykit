@@ -30,14 +30,6 @@ let getModule = exports.getModule = (type, name) => {
     return null;
 };
 
-let getCommand = exports.getCommand = (name) => {
-    if (fs.existsSync(sysPath.join(YKIT_COMMANDS_PATH, name + '.js'))) {
-        return require(sysPath.join(YKIT_COMMANDS_PATH, name + '.js'));
-    } else {
-        return getModule('command', name);
-    }
-};
-
 let getCommands = exports.getCommands = () => {
     return globby.sync(['*.js'], {
             cwd: YKIT_COMMANDS_PATH
@@ -50,37 +42,4 @@ let getCommands = exports.getCommands = () => {
         })
         .concat(getModule('command'))
         .filter((command) => !!command.module);
-};
-
-let getCompiler = exports.getCompiler = (name) => {
-    if (fs.existsSync(sysPath.join(YKIT_COMPILERS_PATH, name + '.js'))) {
-        return require(sysPath.join(YKIT_COMPILERS_PATH, name + '.js'));
-    } else {
-        return getModule('compiler', name);
-    }
-};
-
-let getCompilers = exports.getCompilers = () => {
-    return globby.sync(['*.js'], {
-            cwd: YKIT_COMPILERS_PATH
-        })
-        .map((name) => {
-            return {
-                name: sysPath.basename(name, '.js'),
-                module: require(sysPath.join(YKIT_COMPILERS_PATH, name))
-            };
-        })
-        .concat(getModule('compiler'))
-        .filter((command) => !!command.module);
-};
-
-let getConfig = exports.getConfig = () => {
-    let prefix = '-config-';
-    return YKIT_PROJECT_MODULES.filter((name) => name.indexOf(prefix) > -1)
-        .map((name) => {
-            return {
-                name: name.split(prefix)[1],
-                module: loadModule(name)
-            };
-        });
 };

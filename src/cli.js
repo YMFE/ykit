@@ -2,7 +2,8 @@
 
 require('./global');
 
-let manager = require('./modules/manager.js');
+let manager = require('./modules/manager.js'),
+    Project = require('./models/Project.js');
 
 let helpTitle = () => {
     info();
@@ -25,7 +26,9 @@ let initOptions = (cmd) => {
 
 let cli = module.exports = {
     run: (cmdName) => {
-        let cmd = manager.getCommand(cmdName);
+        let cmd = manager.getCommands().concat(new Project(process.cwd()).readConfig({
+            noCheck: true
+        }).extraCommands).filter((name) => name == cmdName)[0];
         if (!cmd) {
             error('请确认是否存在 ' + cmdName + ' 命令');
             return;
@@ -44,7 +47,10 @@ let cli = module.exports = {
     },
     help: () => {
         helpTitle();
-        manager.getCommands().forEach((command) => {
+        
+        manager.getCommands().concat(new Project(process.cwd()).readConfig({
+            noCheck: true
+        }).extraCommands).forEach((command) => {
             info(' ' + (rightPad(command.name, 15)) + ' # ' + (command.module.usage || ''))
         });
         info();
