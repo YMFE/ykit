@@ -9,6 +9,7 @@ global.leftPad = require('left-pad');
 global.rightPad = require('right-pad');
 global.globby = require('globby');
 global.optimist = require('optimist');
+global.JSON5 = require('json5');
 global._ = require('underscore');
 
 global.USER_HOME = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];

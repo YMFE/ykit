@@ -90,7 +90,7 @@ class Project {
 
         for (let key in entry) {
             let extName = sysPath.extname(entry[key]);
-            if (this.config._cssExtNames.indexOf(extName) > -1) {
+            if (config.cssExtNames.indexOf(extName) > -1) {
                 let name = sysPath.basename(entry[key], extName),
                     np = entry[key] = entry[key] + '.js',
                     fp = sysPath.join(config.context, np);
@@ -100,8 +100,6 @@ class Project {
         }
 
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
-
-        config.cssExtNames = this.config._cssExtNames;
 
         return fps;
     }
@@ -120,7 +118,7 @@ class Project {
         try {
             childProcess.execSync('rm -rf ' + config.output.path);
         } catch(e){}
-
+        
         webpack(config, function() {
             globby.sync('**/*.cache', {
                 cwd: config.output.path

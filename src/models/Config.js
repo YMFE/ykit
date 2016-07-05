@@ -2,11 +2,10 @@
 
 let ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-let modulePath = sysPath.join(__dirname, '../../node_modules/');
-
 class Config {
     constructor(cwd) {
         this._config = {
+            cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
             output: {
@@ -16,30 +15,34 @@ class Config {
             module: {
                 loaders: [{
                     test: /\.json$/,
-                    loader: sysPath.join(modulePath, 'json-loader', 'index.js')
+                    loader: require.resolve('json-loader')
                 }, {
-                    test: /\.(html|string)$/,
-                    loader: sysPath.join(modulePath, 'html-loader', 'index.js')
+                    test: /\.(html|string|tpl)$/,
+                    loader: require.resolve('html-loader')
                 }, {
                     test: /\.css$/,
                     loader: ExtractTextPlugin.extract(
-                        sysPath.join(modulePath, 'style-loader', 'index.js'),
-                        sysPath.join(modulePath, 'css-loader', 'index.js')
+                        require.resolve('style-loader'),
+                        require.resolve('css-loader')
                     )
                 }]
             },
             plugins: [
-                require('../plugins/extTemplatedPathPlugin.js')
+                require('../plugins/extTemplatedPathPlugin.js'),
+                require('../plugins/requireModulePlugin.js')
             ],
             resolve: {
                 root: [],
-                extensions: ['', '.js', '.css', '.json'],
+                extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
-            }
+            },
+            cssExtNames: ['.css'],
+            requireRules: [
+                'node_modules|package.json:main|index.js'
+            ]
         };
         this._entry = this._config.entry;
         this._alias = this._config.resolve.alias;
-        this._cssExtNames = ['.css'];
     }
     getPlugins() {
         return this._config.plugins;
@@ -109,7 +112,7 @@ class Config {
         delete this._alias;
     }
     addCssExtNames(ext) {
-        this._cssExtNames = this._cssExtNames.concat(ext);
+        this._config.cssExtNames = this._config.cssExtNames.concat(ext);
         return this;
     }
     getConfig() {
