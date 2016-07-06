@@ -13,14 +13,17 @@ module.exports = {
                     while (basePath.length >= cwd.length) {
                         let modulePath = sysPath.join(basePath, moduleRoot, moduleName);
                         if (fs.existsSync(modulePath)) {
-                            let configPath = sysPath.join(modulePath, config[0]),
+                            let entry = '';
+                            if (fs.statSync(modulePath).isDirectory()) {
+                                let configPath = sysPath.join(modulePath, config[0]);
                                 entry = defaultFile;
-                            if (fs.existsSync(configPath)) {
-                                try {
-                                    entry = JSON5.parse(fs.readFileSync(configPath, 'UTF-8'))[config[1] || 'main'] || entry;
-                                } catch(e) {}
+                                if (fs.existsSync(configPath)) {
+                                    try {
+                                        entry = JSON5.parse(fs.readFileSync(configPath, 'UTF-8'))[config[1] || 'main'] || entry;
+                                    } catch(e) {}
+                                }
+                                entry.replace('[ext]', param.ext || '.js');
                             }
-                            entry.replace('[ext]', param.ext || '.js');
                             callback(null, {
                                 path: sysPath.join(modulePath, entry),
 								query: query,
