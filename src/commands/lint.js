@@ -82,8 +82,6 @@ exports.run = (options) => {
 			choices: Object.keys(choices)
 		}
 		inquirer.prompt([question]).then(function(answers) {
-			console.log(answers.configType)
-
 			const configContent = JSON.stringify(choices[answers.configType], null, '	')
 
 			fs.writeFile('.eslintrc.json', configContent, function (err) {
