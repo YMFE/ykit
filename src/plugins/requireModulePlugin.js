@@ -9,6 +9,7 @@ module.exports = {
                     config = options[1].split(':'),
                     defaultFile = options[2];
                 return (basePath, moduleName, query, callback) => {
+                    let param = loaderUtils.parseQuery(query);
                     while (basePath.length >= cwd.length) {
                         let modulePath = sysPath.join(basePath, moduleRoot, moduleName);
                         if (fs.existsSync(modulePath)) {
@@ -19,6 +20,7 @@ module.exports = {
                                     entry = JSON5.parse(fs.readFileSync(configPath, 'UTF-8'))[config[1] || 'main'] || entry;
                                 } catch(e) {}
                             }
+                            entry.replace('[ext]', param.ext || '.js');
                             callback(null, {
                                 path: sysPath.join(modulePath, entry),
 								query: query,
@@ -35,7 +37,7 @@ module.exports = {
 
 
         compiler.resolvers.normal.plugin("module", function(request, finalCallback) {
-            if (!requireRules.some((fn) => fn(request.path, request.request, require.query, finalCallback))) {
+            if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
                 finalCallback();
             }
         });

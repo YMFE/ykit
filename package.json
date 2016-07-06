@@ -22,6 +22,7 @@
     "left-pad": "^1.1.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "loader-utils": "^0.2.15",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",
     "right-pad": "^1.0.0",
