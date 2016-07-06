@@ -1,0 +1,18 @@
+{
+	"env": {
+		"browser": true,
+		"commonjs": true,
+		"node": false
+	},
+	"extends": "eslint:recommended",
+	"globals": {
+		"$": true,
+		"$$": true,
+		"avalon": true,
+		"Hogan": true,
+		"jQuery": true,
+		"Promise": true,
+		"Q": true
+	},
+	"rules": {}
+}
