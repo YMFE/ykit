@@ -41,7 +41,8 @@ class Config {
             },
             requireRules: [
                 'node_modules|package.json:main|index.js'
-            ]
+            ],
+            devtool: 'cheap-module-source-map'
         };
     }
     setExports(files) {
