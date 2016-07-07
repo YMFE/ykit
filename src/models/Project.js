@@ -19,7 +19,7 @@ class Project {
         this.configFile = globby.sync('ykit.*.js', {
             cwd: this.cwd
         })[0] || '';
-        this.extendConfig = this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
+        this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = [];
     }
     check() {
