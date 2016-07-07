@@ -34,7 +34,6 @@ exports.run = (options) => {
     if (middlewares) {
         middlewares.split('|').forEach((proName) => {
             let pro = Manager.getProject(sysPath.join(cwd, proName)).readConfig({
-                noCheck: true,
                 server: true
             });
             if (pro.check() && Array.isArray(pro.middlewares)) {
@@ -61,10 +60,6 @@ exports.run = (options) => {
                     middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
                         hot: hot
                     });
-                    // console.log('------');
-                    // setInterval(function() {
-                    //     console.log(compiler.outputFileSystem.readdirSync('cache'));
-                    // }, 1000);
                 } else {
                     next();
                     return;
