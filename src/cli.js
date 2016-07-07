@@ -2,7 +2,7 @@
 
 require('./global');
 
-let manager = require('./modules/manager.js'),
+let Manager = require('./modules/manager.js'),
     Project = require('./models/Project.js');
 
 let helpTitle = () => {
@@ -26,7 +26,7 @@ let initOptions = (cmd) => {
 
 let cli = module.exports = {
     run: (cmdName) => {
-        let cmd = manager.getCommands()
+        let cmd = Manager.getCommands()
             .concat(new Project(process.cwd()).readConfig().commands || [])
             .filter((item) => item.name == cmdName)[0];
         if (!cmd) {
@@ -48,11 +48,13 @@ let cli = module.exports = {
     },
     help: () => {
         helpTitle();
-        manager.getCommands()
-        .concat(new Project(process.cwd()).readConfig().commands || [])
-        .forEach((command) => {
-            info(' ' + (rightPad(command.name, 15)) + ' # ' + (command.module.usage || ''))
-        });
+        Manager.getCommands()
+            .concat(new Project(process.cwd()).readConfig().commands || [])
+            .forEach((command) => {
+                info(' ' + (rightPad(command.name, 15)) + ' # ' + (command.module.usage || ''))
+            });
+        info();
+        info('可用的全局配置有:', (Manager.readRC().configs || []).map((item) => item.name.substring(12)).join(', '));
         info();
         info(' 如果需要帮助, 请使用 ykit {命令名} --help ');
     }
