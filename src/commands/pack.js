@@ -17,12 +17,47 @@ exports.run = (options) => {
         lint = options.l || options.lin,
         project = new Project(cwd);
 
-
     project.readConfig({
         min: min
     }).pack({
         lint: lint
     }, (err, stats) => {
-        success('Complete');
+        if(err){
+            error(err.red)
+        }
+
+        const statsInfo = stats.toJson({errorDetails: false})
+
+        if(statsInfo.errors.length > 0){
+            statsInfo.errors.map((err) => {
+                error(err.red)
+                info()
+            })
+        }
+
+        // TODO 测试warning情况
+        if(statsInfo.warnings.length > 0){
+            statsInfo.warnings.map((warning) => {
+                warn(err.yellow)
+                info()
+            })
+        }
+
+        statsInfo.assets.map((asset) => {
+            const size = asset.size > 1024
+                            ? (asset.size / 1024).toFixed(2) + ' kB'
+                            : asset.size + ' bytes';
+
+            // .cache文件不显示
+            if(!endWith(asset.name, ".cache")){
+                log('packed asset: '.gray + asset.name + ' - ' + size )
+            }
+        })
+
+        success('complete in ' + statsInfo.time + 'ms\n')
+
+        function endWith(string, suffix) {
+            return string.indexOf(suffix, string.length - suffix.length) !== -1;
+        }
     });
 };
