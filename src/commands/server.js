@@ -69,7 +69,7 @@ exports.run = (options) => {
 
         	format = format.replace(/%date/g, "\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m");
         	format = format.replace(/%method/g, "\x1b[35m" + (req.method.toUpperCase()) + "\x1b[0m");
-        	format = format.replace(/%url/g, "\x1b[90m" + options.cwd + decodeURI(req.originalUrl) + "\x1b[0m");
+        	format = format.replace(/%url/g, "\x1b[90m" + decodeURI(req.originalUrl) + "\x1b[0m");
         	format = format.replace(/%status/g, "" + status + res.statusCode + "\x1b[0m");
             format = format.replace(/%route/g, "\x1b[90m" + (req.route ? req.route.path + ' ' : '\x1b[31m') + "\x1b[0m");
         	format = format.replace(/%contentLength/g, "\x1b[90m" + contentLength + '\x1b[31m' + "\x1b[0m");
