@@ -160,7 +160,7 @@ class Project {
             return;
         }
 
-        if (this.options.min) {
+        if (opt.min) {
             config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                 compress: {
                     warnings: false
