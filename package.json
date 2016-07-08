@@ -31,6 +31,7 @@
     "loader-utils": "^0.2.15",
     "moment": "^2.14.1",
     "optimist": "^0.6.1",
+    "progress-bar-webpack-plugin": "^1.8.0",
     "right-pad": "^1.0.0",
     "serve-index": "^1.8.0",
     "serve-static": "^1.11.1",

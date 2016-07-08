@@ -17,7 +17,7 @@ exports.run = (options) => {
 	var cwd = options.cwd,
         min = options.m || options.min || false,
         lint = options.l || options.lint || false,
-        sourcemap = options.s || options.sourcemap || true,
+        sourcemap = options.s || options.sourcemap,
         project = new Project(cwd);
 
     project.readConfig({
@@ -59,7 +59,7 @@ exports.run = (options) => {
             }
         })
 
-        success('complete in ' + statsInfo.time + 'ms\n')
+        info()
 
         function endWith(string, suffix) {
             return string.indexOf(suffix, string.length - suffix.length) !== -1;

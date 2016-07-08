@@ -7,7 +7,8 @@ let webpack = require('webpack'),
 
 let Config = require('./Config.js'),
     Manager = require('../modules/manager.js'),
-    ExtractTextPlugin = require("extract-text-webpack-plugin");
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
+    ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 class Project {
     constructor(cwd) {
@@ -175,6 +176,8 @@ class Project {
         try {
             childProcess.execSync('rm -rf ' + config.output.path);
         } catch (e) {}
+
+        config.plugins.push(new ProgressBarPlugin())
 
         webpack(config, function(err, stats) {
             globby.sync('**/*.cache', {
