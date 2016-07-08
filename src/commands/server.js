@@ -5,6 +5,8 @@ let connect = require('connect'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
+    livereload = require('livereload'),
+    connectLivereload = require('connect-livereload'),
     webpackDevMiddleware = require("webpack-dev-middleware");
 
 let Manager = require('../modules/manager.js');
@@ -12,14 +14,14 @@ let Manager = require('../modules/manager.js');
 exports.usage = "开发服务";
 
 exports.setOptions = (optimist) => {
-    optimist.alias('h', 'hot');
-    optimist.describe('h', '热加载');
     optimist.alias('s', 'https');
     optimist.describe('s', '使用https协议');
     optimist.alias('p', 'port');
     optimist.describe('p', '端口');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
+    optimist.alias('l', 'livereload');
+    optimist.describe('l', '实时自动刷新');
 };
 
 exports.run = (options) => {
@@ -28,6 +30,7 @@ exports.run = (options) => {
         hot = options.h || options.hot,
         middlewares = options.m || options.middlewares,
         https = options.s || options.https,
+        enableLivereload = options.l || options.livereload,
         port = options.p || options.port || 80;
 
     let middlewareCache = {};
@@ -109,10 +112,7 @@ exports.run = (options) => {
                 });
                 if (project.check()) {
                     let compiler = project.getCompiler();
-                    middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
-                        noInfo: true
-                        // hot: hot TODO
-                    });
+                    middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {noInfo: true});
                 } else {
                     next();
                     return;
@@ -125,6 +125,11 @@ exports.run = (options) => {
         }
     });
 
+    if(enableLivereload){
+        livereload.createServer().watch(cwd);
+        app.use(connectLivereload({port: 35729}));
+    }
+
     app.use(serveStatic(cwd, {
         redirect: false,
         index: false
@@ -132,6 +137,7 @@ exports.run = (options) => {
 
     app.use(serveIndex(cwd));
 
-    http.createServer(app).listen(port);
-    info('Listening on port ' + port)
+    http.createServer(app).listen(port, () => {
+        info('Listening on port ' + port);
+    });
 };

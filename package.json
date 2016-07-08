@@ -13,6 +13,7 @@
   "dependencies": {
     "colors": "^1.1.2",
     "connect": "^3.4.1",
+    "connect-livereload": "^0.5.4",
     "css-loader": "^0.23.1",
     "eslint": "^3.0.0",
     "extend": "^3.0.0",
@@ -26,6 +27,7 @@
     "left-pad": "^1.1.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "livereload": "^0.4.1",
     "loader-utils": "^0.2.15",
     "moment": "^2.14.1",
     "optimist": "^0.6.1",
