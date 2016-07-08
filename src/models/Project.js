@@ -168,6 +168,10 @@ class Project {
             }));
         }
 
+        if(opt.sourcemap){
+            config.devtool = opt.sourcemap
+        }
+
         try {
             childProcess.execSync('rm -rf ' + config.output.path);
         } catch (e) {}
