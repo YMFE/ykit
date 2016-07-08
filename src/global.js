@@ -29,4 +29,7 @@ global.error = function() {
 global.warn = function() {
     info((' ∆ ' + Array.prototype.join.call(arguments, ' ')).yellow);
 }
+global.log = function() {
+    info(('[YKit] ').gray + Array.prototype.join.call(arguments, ' '));
+}
 global.packageJSON = require('../package.json');
