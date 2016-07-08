@@ -47,7 +47,7 @@ exports.run = (options) => {
     app.use(function() {
         const dateFormat = 'YY.MM.DD HH:mm:ss';
         const parse = function(req, res, format) {
-            var status = (function() {
+            const status = (function() {
         		switch (true) {
         			case 500 <= res.statusCode:
         				return '\x1b[31m';
@@ -78,9 +78,9 @@ exports.run = (options) => {
         };
 
         return function(req, res, next) {
-        	var end;
+            const end = res.end;
         	req._startTime = new Date;
-        	end = res.end;
+
         	res.end = function(chunk, encoding) {
         		res.end = end;
         		res.end(chunk, encoding);
