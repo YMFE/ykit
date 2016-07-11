@@ -140,7 +140,6 @@ class Project {
                 fps.push(fp);
             }
         }
-        
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
 
         return fps;
@@ -224,8 +223,8 @@ class Project {
     }
     getCompiler() {
         let config = this.config.getConfig();
-        this.fixCss();
         config.output = config.output.dev;
+        this.fixCss();
         return webpack(config);
     }
 }
