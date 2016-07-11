@@ -4,6 +4,7 @@ require('colors');
 
 global.fs = require('fs');
 global.sysPath = require('path');
+global.async = require('async');
 global.childProcess = require('child_process');
 global.leftPad = require('left-pad');
 global.rightPad = require('right-pad');
@@ -12,6 +13,8 @@ global.optimist = require('optimist');
 global.JSON5 = require('json5');
 global.loaderUtils = require('loader-utils');
 global.extend = require('extend');
+global.yaml = require("js-yaml");
+global.requireUncached = require("require-uncached");
 
 global.USER_HOME = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
 global.YKIT_HOME = sysPath.join(USER_HOME, '.ykit');

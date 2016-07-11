@@ -12,15 +12,16 @@ exports.run = (options) => {
         min = options.m || options.min,
         project = new Project(cwd);
 
-    warn('Lint JS Files:')
-    if (project.lint()) {
-        success('All JS Complete!');
-        info();
-    }
-    warn('Lint CSS Files:')
-    if (project.lintCss()) {
-        info();
-        success('All CSS Complete!');
-        info();
-    }
+    async.series([
+        (callback) => project.lint(callback),
+        (callback) => project.lintCss(callback)
+    ], (err, results) => {
+        if (!err) {
+            if (results[0] && results[1]) {
+                success('All Files Complete!');
+            }
+        } else {
+            error(err.stack);
+        }
+    });
 }

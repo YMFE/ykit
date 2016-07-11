@@ -1,0 +1,12 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "node": false
+    },
+    "extends": "eslint:recommended",
+    "globals": [
+        "$", "$$", "jQuery", "Promise"
+    ],
+    "rules": {}
+}
