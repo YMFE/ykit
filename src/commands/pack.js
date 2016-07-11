@@ -20,9 +20,7 @@ exports.run = (options) => {
         sourcemap = options.s || options.sourcemap,
         project = new Project(cwd);
 
-    project.readConfig({
-        min: min
-    }).pack({
+    project.pack({
         lint: lint,
         min: min,
         sourcemap: sourcemap

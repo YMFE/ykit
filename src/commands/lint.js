@@ -12,7 +12,6 @@ exports.run = (options) => {
         min = options.m || options.min,
         project = new Project(cwd);
 
-    project.readConfig()
     warn('Lint JS Files:')
     if (project.lint()) {
         success('All JS Complete!');

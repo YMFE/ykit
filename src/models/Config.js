@@ -9,8 +9,14 @@ class Config {
             context: sysPath.join(cwd, 'src'),
             entry: {},
             output: {
-                path: "./prd",
-                filename: "[name][ext]"
+                dev: {
+                    path: "./dev",
+                    filename: "[name][ext]"
+                },
+                prd: {
+                    path: "./prd",
+                    filename: "[name].min[ext]"
+                }
             },
             module: {
                 loaders: [{

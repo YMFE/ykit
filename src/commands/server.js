@@ -37,9 +37,7 @@ exports.run = (options) => {
 
     if (middlewares) {
         middlewares.split('|').forEach((proName) => {
-            let pro = Manager.getProject(sysPath.join(cwd, proName)).readConfig({
-                server: true
-            });
+            let pro = Manager.getProject(sysPath.join(cwd, proName));
             if (pro.check() && Array.isArray(pro.middlewares)) {
                 pro.middlewares.forEach((mw) => app.use(mw));
             }
@@ -107,9 +105,7 @@ exports.run = (options) => {
                 middleware = middlewareCache[projectName];
 
             if (!middleware) {
-                let project = Manager.getProject(projectCwd).readConfig({
-                    server: true
-                });
+                let project = Manager.getProject(projectCwd);
                 if (project.check()) {
                     let compiler = project.getCompiler();
                     middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {noInfo: true});

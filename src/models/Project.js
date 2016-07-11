@@ -25,6 +25,7 @@ class Project {
         })[0] || '';
         this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = [];
+        this.readConfig();
     }
     check() {
         return !!this.configFile;
@@ -113,10 +114,12 @@ class Project {
                 }
             }
 
-            if (!sysPath.isAbsolute(this.config.getConfig().output.path[0])) {
-                this.config.setOutput({
-                    path: sysPath.join(this.cwd, this.config.getConfig().output.path)
-                });
+            let output = this.config.getConfig().output;
+            for (let key in output) {
+                var op = output[key];
+                if (!sysPath.isAbsolute(op.path)) {
+                    op.path = sysPath.join(this.cwd, op.path);
+                }
             }
         }
         return this;
@@ -137,7 +140,7 @@ class Project {
                 fps.push(fp);
             }
         }
-
+        
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
 
         return fps;
@@ -184,15 +187,18 @@ class Project {
             }
         }
 
-        let fps = this.fixCss();
-
         if (opt.min) {
             config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                 compress: {
                     warnings: false
                 }
             }));
+            config.output = config.output.prd;
+        } else {
+            config.output = config.output.dev;
         }
+
+        let fps = this.fixCss();
 
         if (opt.sourcemap) {
             config.devtool = opt.sourcemap
@@ -217,8 +223,10 @@ class Project {
         return this;
     }
     getCompiler() {
+        let config = this.config.getConfig();
         this.fixCss();
-        return webpack(this.config.getConfig());
+        config.output = config.output.dev;
+        return webpack(config);
     }
 }
 
