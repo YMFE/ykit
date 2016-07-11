@@ -15,6 +15,8 @@
     "connect": "^3.4.1",
     "connect-livereload": "^0.5.4",
     "css-loader": "^0.23.1",
+    "csslint": "^0.10.0",
+    "csslint-stylish": "0.0.4",
     "eslint": "^3.0.0",
     "extend": "^3.0.0",
     "extract-text-webpack-plugin": "^1.0.1",

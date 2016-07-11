@@ -14,7 +14,7 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = (options) => {
-	var cwd = options.cwd,
+    var cwd = options.cwd,
         min = options.m || options.min || false,
         lint = options.l || options.lint || false,
         sourcemap = options.s || options.sourcemap,
@@ -27,42 +27,43 @@ exports.run = (options) => {
         min: min,
         sourcemap: sourcemap
     }, (err, stats) => {
-        if(err){
-            error(err.red)
+        if (err) {
+            if (err !== true) {
+                error(err.red);
+            }
+            return;
         }
 
-        const statsInfo = stats.toJson({errorDetails: false})
+        const statsInfo = stats.toJson({
+            errorDetails: false
+        });
 
-        if(statsInfo.errors.length > 0){
+        if (statsInfo.errors.length > 0) {
             statsInfo.errors.map((err) => {
-                error(err.red)
-                info()
+                error(err.red);
+                info();
             })
         }
 
         // TODO 测试warning情况
-        if(statsInfo.warnings.length > 0){
+        if (statsInfo.warnings.length > 0) {
             statsInfo.warnings.map((warning) => {
-                warn(err.yellow)
-                info()
+                warn(err.yellow);
+                info();
             })
         }
 
         statsInfo.assets.map((asset) => {
-            const size = asset.size > 1024
-                            ? (asset.size / 1024).toFixed(2) + ' kB'
-                            : asset.size + ' bytes';
+            const size = asset.size > 1024 ?
+                (asset.size / 1024).toFixed(2) + ' kB' :
+                asset.size + ' bytes';
 
             // .cache文件不显示
-            if(!endWith(asset.name, ".cache")){
-                log('packed asset: '.gray + asset.name + ' - ' + size )
+            if (!/\.cache$/.test(asset.name)) {
+                log('packed asset: '.gray + asset.name + ' - ' + size);
             }
         })
 
-        info()
-
-        function endWith(string, suffix) {
-            return string.indexOf(suffix, string.length - suffix.length) !== -1;
-        }
+        info();
     });
 };

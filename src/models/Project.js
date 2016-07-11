@@ -3,7 +3,10 @@
 let webpack = require('webpack'),
     ignore = require('ignore'),
     CLIEngine = require('eslint').CLIEngine,
-    eslintConfigFile = require("eslint/lib/config/config-file.js");
+    lintConfigFile = require("eslint/lib/config/config-file.js"),
+    CSSLint = require('csslint').CSSLint;
+
+CSSLint.addFormatter(require('csslint-stylish'));
 
 let Config = require('./Config.js'),
     Manager = require('../modules/manager.js'),
@@ -16,7 +19,7 @@ class Project {
         this.config = new Config(cwd);
         this.commands = [];
         this.middlewares = [];
-        this.eslintConfig = {};
+        this.lintConfig = {};
         this.configFile = globby.sync('ykit.*.js', {
             cwd: this.cwd
         })[0] || '';
@@ -36,7 +39,7 @@ class Project {
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
-                    eslintConfig: this.eslintConfig
+                    lintConfig: this.lintConfig
                 },
                 globalConfigs = Manager.readRC().configs || [];
 
@@ -46,11 +49,11 @@ class Project {
             if (this.extendConfig != 'config') {
                 let moduleName = 'ykit-config-' + this.extendConfig,
                     modulePath = sysPath.join(this.cwd, 'node_modules', moduleName),
-                    eslintConfPath = eslintConfigFile.getFilenameForDirectory(modulePath),
+                    lintConfPath = lintConfigFile.getFilenameForDirectory(modulePath),
                     ignoreFile = sysPath.join(modulePath, '.lintignore');
 
-                if (eslintConfPath && eslintConfPath.indexOf('package.json') == -1) {
-                    extend(true, userConfig.eslintConfig, eslintConfigFile.load(eslintConfPath));
+                if (lintConfPath && lintConfPath.indexOf('package.json') == -1) {
+                    extend(true, userConfig.lintConfig, lintConfigFile.load(lintConfPath));
                 }
 
                 if (fs.existsSync(ignoreFile)) {
@@ -66,11 +69,11 @@ class Project {
                     let item = globalConfigs.filter((item) => item.name == moduleName)[0];
                     if (item) {
                         let module = require(item.path),
-                            eslintConfPath = eslintConfigFile.getFilenameForDirectory(item.path),
+                            lintConfPath = lintConfigFile.getFilenameForDirectory(item.path),
                             ignoreFile = sysPath.join(modulePath, '.lintignore');
 
-                        if (eslintConfPath && eslintConfPath.indexOf('package.json') == -1) {
-                            extend(true, userConfig.eslintConfig, eslintConfigFile.load(eslintConfPath));
+                        if (lintConfPath && lintConfPath.indexOf('package.json') == -1) {
+                            extend(true, userConfig.lintConfig, lintConfigFile.load(lintConfPath));
                         }
 
                         if (fs.existsSync(ignoreFile)) {
@@ -87,11 +90,11 @@ class Project {
             }
 
             let configMethod = require(sysPath.join(this.cwd, this.configFile)),
-                eslintFile = eslintConfigFile.getFilenameForDirectory(this.cwd),
+                lintConfPath = lintConfigFile.getFilenameForDirectory(this.cwd),
                 ignoreFile = sysPath.join(this.cwd, '.lintignore');
 
-            if (eslintFile && eslintFile.indexOf('package.json') == -1) {
-                extend(true, userConfig.eslintConfig, eslintConfigFile.load(eslintFile));
+            if (lintConfPath && lintConfPath.indexOf('package.json') == -1) {
+                extend(true, userConfig.lintConfig, lintConfigFile.load(lintConfPath));
             }
 
             if (fs.existsSync(ignoreFile)) {
@@ -141,7 +144,7 @@ class Project {
     }
     lint() {
         let prd = this.config.getConfig().output.path,
-            cli = new CLIEngine(this.eslintConfig),
+            cli = new CLIEngine(this.lintConfig),
             report = cli.executeOnFiles(globby.sync('src/**/*.js', {
                     cwd: this.cwd,
                     ignore: [prd]
@@ -152,14 +155,36 @@ class Project {
         info(formatter(report.results));
         return !report.results.length;
     }
+    lintCss() {
+        return globby.sync('src/**/*.css', {
+                cwd: this.cwd,
+                ignore: [this.config.getConfig().output.path]
+            })
+            .filter(
+                ignore().add(this.ignores.join('\n')).createFilter()
+            )
+            .reduce((previousValue, filename) => {
+                let code = fs.readFileSync(sysPath.join(this.cwd, filename), 'UTF-8'),
+                    report = CSSLint.verify(code);
+                if (report.messages.length) {
+                    info(CSSLint.format(report, filename, 'stylish', {}));
+                }
+                return previousValue + report.messages.length;
+            }, 0) == 0;
+    }
     pack(opt, callback) {
-        let config = this.config.getConfig(),
-            fps = this.fixCss();
+        let config = this.config.getConfig();
 
-        if (opt.lint && !this.lint()) {
-            callback(true);
-            return;
+        if (opt.lint) {
+            let jsLint = this.lint(),
+                cssLint = this.lintCss();
+            if (!jsLint || !cssLint) {
+                callback(true);
+                return;
+            }
         }
+
+        let fps = this.fixCss();
 
         if (opt.min) {
             config.plugins.push(new webpack.optimize.UglifyJsPlugin({
@@ -169,7 +194,7 @@ class Project {
             }));
         }
 
-        if(opt.sourcemap){
+        if (opt.sourcemap) {
             config.devtool = opt.sourcemap
         }
 
