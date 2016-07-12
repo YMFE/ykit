@@ -107,7 +107,7 @@ exports.run = (options) => {
             if (!middleware) {
                 let project = Manager.getProject(projectCwd);
                 if (project.check()) {
-                    let compiler = project.getCompiler();
+                    let compiler = project.getServerCompiler();
                     middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {noInfo: true});
                 } else {
                     next();

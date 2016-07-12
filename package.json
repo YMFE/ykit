@@ -31,6 +31,7 @@
     "less-loader": "^2.2.3",
     "livereload": "^0.4.1",
     "loader-utils": "^0.2.15",
+    "mkdirp": "^0.5.1",
     "moment": "^2.14.1",
     "optimist": "^0.6.1",
     "progress-bar-webpack-plugin": "^1.8.0",

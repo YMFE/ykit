@@ -1,6 +1,6 @@
 'use strict';
 
-let Project = require('../models/Project.js');
+let Manager = require('../modules/manager.js');
 
 exports.usage = "资源编译、打包";
 
@@ -14,11 +14,11 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = (options) => {
-    var cwd = options.cwd,
+    let cwd = options.cwd,
         min = options.m || options.min || false,
         lint = options.l || options.lint || false,
         sourcemap = options.s || options.sourcemap,
-        project = new Project(cwd);
+        project = Manager.getProject(cwd);
 
     project.pack({
         lint: lint,
@@ -27,7 +27,7 @@ exports.run = (options) => {
     }, (err, stats) => {
         if (err) {
             if (err !== true) {
-                error(err.red);
+                error(err);
             }
             return;
         }
@@ -63,5 +63,7 @@ exports.run = (options) => {
         })
 
         info();
+
+        project.packCallbacks.forEach(cb => cb(options, stats));
     });
 };

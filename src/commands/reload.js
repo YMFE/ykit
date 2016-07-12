@@ -2,8 +2,7 @@
 
 const reg = /^(@qnpm\/)?(ykit\-(\w+)\-[\w\-]+)$/;
 
-let Manager = require('../modules/manager.js'),
-    Project = require('../models/Project.js');
+let Manager = require('../modules/manager.js');
 
 exports.usage = "重载插件";
 

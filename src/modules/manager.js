@@ -12,7 +12,7 @@ let Project = require('../models/Project.js'),
     },
     loadJSONConfigFile = (filePath) => {
         try {
-            return JSON5.parse(readFile(filePath));
+            return JSON5.parse(fs.readFileSync(filePath, 'UTF-8'));
         } catch (e) {
             e.message = "Cannot read config file: " + filePath + "\nError: " + e.message;
             throw e;
@@ -45,7 +45,7 @@ let Project = require('../models/Project.js'),
     loadConfigFile = (filePath) => {
         let config;
 
-        switch (path.extname(filePath)) {
+        switch (sysPath.extname(filePath)) {
             case ".js":
                 config = loadJSConfigFile(filePath);
                 if (file.configName) {
@@ -54,7 +54,7 @@ let Project = require('../models/Project.js'),
                 break;
 
             case ".json":
-                if (path.basename(filePath) === "package.json") {
+                if (sysPath.basename(filePath) === "package.json") {
                     config = loadPackageJSONConfigFile(filePath);
                     if (config === null) {
                         return null;

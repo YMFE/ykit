@@ -19,6 +19,7 @@ class Config {
                 }
             },
             module: {
+                preLoaders: [],
                 loaders: [{
                     test: /\.json$/,
                     loader: require.resolve('json-loader')

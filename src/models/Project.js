@@ -14,8 +14,9 @@ class Project {
     constructor(cwd) {
         this.cwd = cwd;
         this.config = new Config(cwd);
-        this.commands = [];
+        this.commands = Manager.getCommands();
         this.middlewares = [];
+        this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
         this.stylelintConfig = require('../config/stylelint.json');
         this.configFile = globby.sync('ykit.*.js', {
@@ -23,6 +24,8 @@ class Project {
         })[0] || '';
         this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = [];
+        this.cachePath = sysPath.join(cwd, '.cache');
+        mkdirp.sync(this.cachePath);
         this.readConfig();
     }
     check() {
@@ -31,6 +34,8 @@ class Project {
     readConfig(options) {
         if (this.check()) {
             let userConfig = {
+                    cwd: this.cwd,
+                    _manager: Manager,
                     setConfig: function(conf) {
                         extnd(true, this.config.getConfig(), conf);
                     },
@@ -38,6 +43,7 @@ class Project {
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
+                    packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
                     stylelintConfig: this.stylelintConfig
                 },
@@ -114,18 +120,19 @@ class Project {
             let extName = sysPath.extname(entry[key]);
             if (cssExtNames.indexOf(extName) > -1) {
                 let name = sysPath.basename(entry[key], extName),
-                    np = entry[key] = entry[key] + '.js',
-                    fp = sysPath.join(config.context, np);
-                fs.writeFileSync(fp, 'require("./' + name + extName + '");', 'utf-8');
+                    ofp = sysPath.join(config.context, entry[key]),
+                    np = entry[key] = sysPath.join('../.cache', entry[key] + '.js'),
+                    fp = sysPath.join(config.cwd, '.cache', np);
+                mkdirp.sync(sysPath.dirname(fp));
+                fs.writeFileSync(fp, 'require("' + sysPath.relative(sysPath.dirname(fp), ofp) +  '");', 'utf-8');
                 fps.push(fp);
             }
         }
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
-
-        return fps;
     }
     lint(callback) {
         warn('Lint JS Files ......');
+        this.eslintConfig.useEslintrc = false;
         let cli = new CLIEngine(this.eslintConfig),
             report = cli.executeOnFiles(
                 globby.sync('src/**/*.js', {
@@ -137,11 +144,11 @@ class Project {
             ),
             formatter = cli.getFormatter();
         info(formatter(report.results));
-        callback(null, !report.results.length);
+        callback(null, !report.errorCount);
     }
     lintCss(callback) {
         warn('Lint CSS Files ......');
-        stylelint.lint({
+        let config = {
             config: this.stylelintConfig,
             files: globby.sync(['src/**/*.css', 'src/**/*.sass', 'src/**/*.scss'], {
                     cwd: this.cwd
@@ -151,15 +158,19 @@ class Project {
                 ),
             syntax: 'scss',
             formatter: 'verbose'
-        }).then(function(data) {
-            if (data.errored) {
-                console.log(data.output);
-            }
-            callback(null, !data.errored);
-        }).catch(() => {
-            callback(true);
-        })
-
+        };
+        if (config.files.length) {
+            stylelint.lint(config).then(function(data) {
+                if (data.errored) {
+                    console.log(data.output);
+                }
+                callback(null, !data.errored);
+            }).catch(() => {
+                callback(true);
+            })
+        } else {
+            callback(null, true);
+        }
     }
     pack(opt, callback) {
         let config = this.config.getConfig();
@@ -177,7 +188,7 @@ class Project {
                 config.output = config.output.dev;
             }
 
-            let fps = this.fixCss();
+            this.fixCss();
 
             if (opt.sourcemap) {
                 config.devtool = opt.sourcemap
@@ -194,7 +205,6 @@ class Project {
                         cwd: config.output.path
                     })
                     .map((p) => sysPath.join(config.output.path, p))
-                    .concat(fps)
                     .forEach((fp) => fs.unlinkSync(fp));
                 callback(err, stats);
             });
@@ -219,9 +229,12 @@ class Project {
 
         return this;
     }
-    getCompiler() {
+    getServerCompiler() {
         let config = this.config.getConfig();
-        config.output = config.output.dev;
+        config.output = {
+            path: '/cache',
+            filename: '[name][ext]'
+        };
         this.fixCss();
         return webpack(config);
     }

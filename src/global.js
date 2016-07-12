@@ -15,6 +15,7 @@ global.loaderUtils = require('loader-utils');
 global.extend = require('extend');
 global.yaml = require("js-yaml");
 global.requireUncached = require("require-uncached");
+global.mkdirp = require('mkdirp');
 
 global.USER_HOME = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
 global.YKIT_HOME = sysPath.join(USER_HOME, '.ykit');
