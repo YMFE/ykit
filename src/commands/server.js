@@ -136,4 +136,9 @@ exports.run = (options) => {
     http.createServer(app).listen(port, () => {
         warn('Listening on port ' + port);
     });
+
+    // 权限降级
+    if (process.env['SUDO_UID']) {
+        process.setuid(parseInt(process.env['SUDO_UID']));
+    }
 };
