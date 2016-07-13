@@ -33,7 +33,7 @@ exports.run = (options) => {
         }
 
         const statsInfo = stats.toJson({
-            errorDetails: false
+            errorDetails: true
         });
 
         if (statsInfo.errors.length > 0) {
