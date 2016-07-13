@@ -108,7 +108,23 @@ exports.run = (options) => {
                 let project = Manager.getProject(projectCwd);
                 if (project.check()) {
                     let compiler = project.getServerCompiler();
-                    middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {noInfo: true});
+                    middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {quiet: true});
+
+                    // 输出server运行中 error/warning 信息
+                    compiler.watch({}, function(err, stats) {
+                        const statsInfo = stats.toJson({errorDetails: true}),
+                            logMethods = {
+                                errors: error,
+                                warnings: warn
+                            };
+
+                        Object.keys(logMethods).map((typeId) => {
+                            statsInfo[typeId].map((logInfo) => {
+                                logMethods[typeId](logInfo);
+                            });
+                        });
+                    });
+
                 } else {
                     next();
                     return;
