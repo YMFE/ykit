@@ -36,9 +36,9 @@ class Project {
             let userConfig = {
                     cwd: this.cwd,
                     _manager: Manager,
-                    setConfig: function(conf) {
-                        extnd(true, this.config.getConfig(), conf);
-                    },
+                    setConfig: ((conf) => {
+                        extend(true, this.config.getConfig(), conf);
+                    }),
                     setExports: this.config.setExports.bind(this.config),
                     config: this.config.getConfig(),
                     commands: this.commands,
@@ -214,7 +214,7 @@ class Project {
                     let statsInfo = stats.toJson({
                         errorDetails: false
                     });
-                    
+
                     if (statsInfo.errors.length > 0) {
                         statsInfo.errors.map((err) => {
                             error(err.red);
