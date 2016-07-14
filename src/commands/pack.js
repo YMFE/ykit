@@ -13,12 +13,12 @@ exports.setOptions = (optimist) => {
     optimist.describe('s', '使用sourcemap');
 };
 
-exports.run = (options) => {
+exports.run = function (options) {
     let cwd = options.cwd,
         min = options.m || options.min || false,
         lint = options.l || options.lint || false,
         sourcemap = options.s || options.sourcemap,
-        project = Manager.getProject(cwd);
+        project = this.project;
 
     project.pack({
         lint: lint,

@@ -25,7 +25,8 @@ let initOptions = (cmd) => {
 
 let cli = module.exports = {
     run: (cmdName) => {
-        let cmd = Manager.getProject(process.cwd()).commands
+        let project = Manager.getProject(process.cwd()),
+            cmd = project.commands
             .filter((item) => item.name == cmdName)[0];
         if (!cmd) {
             error('请确认是否存在 ' + cmdName + ' 命令');
@@ -41,7 +42,7 @@ let cli = module.exports = {
             optimist.showHelp();
             info(' 如果需要帮助, 请使用 ykit {命令名} --help ');
         } else {
-            cmd.run(options);
+            cmd.run.call({project}, options);
         }
     },
     help: () => {

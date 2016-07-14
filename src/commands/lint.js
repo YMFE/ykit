@@ -6,11 +6,11 @@ exports.usage = "代码质量检测";
 
 exports.setOptions = (optimist) => {};
 
-exports.run = (options) => {
+exports.run = function (options)  {
 
     let cwd = options.cwd,
         min = options.m || options.min,
-        project = Manager.getProject(cwd);
+        project = this.project;
 
     async.series([
         (callback) => project.lint(callback),
