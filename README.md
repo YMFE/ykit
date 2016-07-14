@@ -20,7 +20,7 @@ let ykit = require("ykit");
 
 gulp.task('pack', () => {
     return gulp.src('./')
-        .pipe(ydoc({
+        .pipe(ykit({
             // 配置
         }));
 });
