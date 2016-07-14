@@ -44,7 +44,8 @@ class Config {
                 alias: {}
             },
             entryExtNames: {
-                css: ['.css']
+                css: ['.css'],
+                js: []
             },
             requireRules: [
                 'node_modules|package.json:main|index.js'
