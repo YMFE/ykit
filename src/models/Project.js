@@ -77,6 +77,8 @@ class Project {
                         if (module && module.config) {
                             module.config.call(userConfig, options, this.cwd);
                         }
+                    } else if ((Manager.reloadRC().configs || []).some((item) => item.name == moduleName)) {
+                        return this.readConfig(options);
                     } else {
                         warn('没有找到 ykit-config-' + this.extendConfig + ' 配置模块！');
                     }
@@ -124,7 +126,7 @@ class Project {
                     np = entry[key] = sysPath.join('../.cache', entry[key] + '.js'),
                     fp = sysPath.join(config.cwd, '.cache', np);
                 mkdirp.sync(sysPath.dirname(fp));
-                fs.writeFileSync(fp, 'require("' + sysPath.relative(sysPath.dirname(fp), ofp) +  '");', 'utf-8');
+                fs.writeFileSync(fp, 'require("' + sysPath.relative(sysPath.dirname(fp), ofp) + '");', 'utf-8');
                 fps.push(fp);
             }
         }
@@ -200,12 +202,43 @@ class Project {
 
             config.plugins.push(new ProgressBarPlugin())
 
-            webpack(config, function(err, stats) {
+            webpack(config, (err, stats) => {
                 globby.sync('**/*.cache', {
                         cwd: config.output.path
                     })
                     .map((p) => sysPath.join(config.output.path, p))
                     .forEach((fp) => fs.unlinkSync(fp));
+
+                if (!err) {
+
+                    let statsInfo = stats.toJson({
+                        errorDetails: false
+                    });
+                    
+                    if (statsInfo.errors.length > 0) {
+                        statsInfo.errors.map((err) => {
+                            error(err.red);
+                            info();
+                        })
+                    }
+                    if (statsInfo.warnings.length > 0) {
+                        statsInfo.warnings.map((warning) => {
+                            warn(err.yellow);
+                            info();
+                        })
+                    }
+                    statsInfo.assets.map((asset) => {
+                        const size = asset.size > 1024 ?
+                            (asset.size / 1024).toFixed(2) + ' kB' :
+                            asset.size + ' bytes';
+                        if (!/\.cache$/.test(asset.name)) {
+                            log('packed asset: '.gray + asset.name + ' - ' + size);
+                        }
+                    })
+                    info();
+                    this.packCallbacks.forEach(cb => cb(opt, stats));
+                }
+
                 callback(err, stats);
             });
         }

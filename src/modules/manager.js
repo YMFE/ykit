@@ -2,6 +2,7 @@
 
 let Project = require('../models/Project.js'),
     eslintConfigFile = require("eslint/lib/config/config-file.js"),
+    ykitModuleReg = /^(@[^\/]+\/)?(ykit\-(\w+)\-[\w\-]+)$/,
     loadYAMLConfigFile = (filePath) => {
         try {
             return yaml.safeLoad(fs.readFileSync(filePath, 'UTF-8')) || {};
@@ -119,8 +120,34 @@ let readRC = exports.readRC = () => {
     return {}
 };
 
-exports.writeRC = (rc) => {
+let writeRC = exports.writeRC = (rc) => {
     fs.writeFileSync(YKIT_RC, JSON.stringify(rc, {}, 4), 'UTF-8')
+};
+
+let reloadRC = exports.reloadRC = () => {
+    let root = childProcess.execSync('npm root -g', {
+            encoding: 'utf-8'
+        }).split('\n')[0],
+        modules = globby.sync(['@*' + sysPath.sep + 'ykit-*', 'ykit-*'], {
+            cwd: root
+        }).map((name) => {
+            let mt = name.match(ykitModuleReg);
+            if (mt && mt.length == 4) {
+                return {
+                    name: mt[2],
+                    type: mt[3],
+                    path: root + sysPath.sep + name
+                };
+            }
+        }).filter((item) => !!item),
+        rc = readRC();
+
+    rc.commands = modules.filter((item) => item.type == 'command');
+    rc.configs = modules.filter((item) => item.type == 'config');
+
+    writeRC(rc);
+
+    return rc;
 };
 
 // lint config
