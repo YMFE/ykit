@@ -59,7 +59,7 @@ exports.config = function() {
 ### 启动静态服务
 
 ```bash
-(sudo) ykit server
+$ (sudo) ykit server
 ```
 
 请求`prd/`下资源时会自动进行编译打包。
@@ -67,7 +67,7 @@ exports.config = function() {
 ### 开发环境打包
 
 ```bash
-ykit pack
+$ ykit pack
 ```
 
 打包后的资源会放入`dev/`目录。
@@ -75,7 +75,7 @@ ykit pack
 ### 生产环境打包
 
 ```bash
-ykit pack -m
+$ ykit pack -m
 ```
 
 打包压缩后的资源会放入`prd/`目录。资源会生成版本号，并放入`ver/`目录。
@@ -83,7 +83,7 @@ ykit pack -m
 ### 代码同步开发机
 
 ```bash
-ykit sync
+$ ykit sync
 ```
 
 默认会将`dev/`目录下资源上传到开发机。
@@ -91,7 +91,7 @@ ykit sync
 ### 代码质量检测
 
 ```bash
-ykit lint
+$ ykit lint
 ```
 
 **更多命令会在特定环境下添加，如安装了ykit-hy-config后，会有yo, kami等构建工具命令。**
