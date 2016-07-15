@@ -111,7 +111,7 @@ ykit.pack({
 });
 ```
 
-## 与Gulp结合使用
+### 与Gulp结合使用
 
 ```javascript
 let ykit = require("ykit");
@@ -124,7 +124,7 @@ gulp.task('pack', () => {
 });
 ```
 
-## 与Grunt结合使用
+### 与Grunt结合使用
 
 ```javascript
 grunt.initConfig({
