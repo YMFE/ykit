@@ -93,11 +93,14 @@ $ ykit sync
 ```bash
 $ ykit lint
 ```
+分别使用eslint/stylelint进行javascript/css代码检测，检测规则依赖于当前配置环境。
 
+<br /> 
 **更多命令会在特定环境下添加，如安装了ykit-hy-config后，会有yo, kami等构建工具命令。**
 
+## API
 
-## Node.js API
+### Node.js API
 
 ```javascript
 let ykit = require("ykit");
