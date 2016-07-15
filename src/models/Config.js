@@ -8,6 +8,7 @@ class Config {
             cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
+            entryGroup: {},
             output: {
                 dev: {
                     path: "./dev",
@@ -64,6 +65,12 @@ class Config {
             this._config.entry[name] = file;
         });
         return this;
+    }
+    setGroupExports(group, exportsArr) {
+        let exportGroup = this._config.entryGroup;
+        exportGroup[group] = exportGroup[group] ? exportGroup[group].concat(exportsArr) : exportsArr;
+
+        this.setExports(exportsArr);
     }
     setOutput(output) {
         extend(this._config.output, output);

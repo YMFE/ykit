@@ -40,6 +40,7 @@ class Project {
                         extend(true, this.config.getConfig(), conf);
                     }),
                     setExports: this.config.setExports.bind(this.config),
+                    setGroupExports: this.config.setGroupExports.bind(this.config),
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
