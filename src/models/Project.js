@@ -124,8 +124,9 @@ class Project {
             if (cssExtNames.indexOf(extName) > -1) {
                 let name = sysPath.basename(entry[key], extName),
                     ofp = sysPath.join(config.context, entry[key]),
-                    np = entry[key] = sysPath.resolve(this.cwd, '.cache', entry[key] + '.js'),
+                    np = entry[key] = sysPath.relative(this.cwd, sysPath.join('.cache', entry[key] + '.js')),
                     fp = sysPath.join(config.cwd, '.cache', np);
+
                 mkdirp.sync(sysPath.dirname(fp));
                 fs.writeFileSync(fp, 'require("' + sysPath.relative(sysPath.dirname(fp), ofp) + '");', 'utf-8');
                 fps.push(fp);
