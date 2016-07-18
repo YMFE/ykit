@@ -16,10 +16,8 @@ webpack配置项很多，并且有些容易让人困惑。相比于用webpack复
 ## 安装
 
 ```bash
-$ (sudo) npm install ykit -g
+$ (sudo) npm install @qnpm/ykit -g
 ```
-
-
 
 ## 使用
 
