@@ -19,14 +19,17 @@ webpack配置项很多，并且有些容易让人困惑。相比于用webpack复
 $ (sudo) npm install ykit -g
 ```
 
-**通常我们还要安装ykit在Qunar环境下配置以满足我们联调发布等需求。**进入你的项目，然后运行：
 
-```bash
-$ npm install ykit-config-qunar --save
-```
 
 ## 使用
-在项目内添加适用于当前环境的config。比如在qunar环境下，则创建一个ykit.qunar.js，如：
+
+###初始化一个项目
+
+```bash
+$ mkdir AwesomeProject && cd AwesomeProject && ykit init
+```
+
+选择一个初始化config，接着会创建一个对应的配置文件。选择了qunar配置，则在根目录下会生成ykit.qunar.js，作为该项目的配置文件：
 
 ```javascript
 exports.config = function() {
@@ -35,7 +38,7 @@ exports.config = function() {
         './scripts/index.js',
         './styles/index.scss',
     ]);
-    
+
     // 自定义命令
     this.commands.push({
         name: 'project_cmd',
@@ -44,7 +47,7 @@ exports.config = function() {
             run: function () {}
         }
     });
-    
+
     // 同步开发机配置
     this.setConfig({
         syncConfig : {
