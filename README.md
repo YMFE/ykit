@@ -16,10 +16,8 @@ webpack配置项很多，并且有些容易让人困惑。相比于用webpack复
 ## 安装
 
 ```bash
-$ (sudo) npm install ykit -g
+$ (sudo) npm install @qnpm/ykit -g
 ```
-
-
 
 ## 使用
 
@@ -29,7 +27,7 @@ $ (sudo) npm install ykit -g
 $ mkdir AwesomeProject && cd AwesomeProject && ykit init
 ```
 
-选择一个初始化config，接着会创建一个对应的配置文件。选择了qunar配置，则在根目录下会生成ykit.qunar.js，作为该项目的配置文件：
+init时需选择一个初始化config，接着会创建一个对应的配置文件。如选择了qunar配置，则在根目录下会生成ykit.qunar.js，作为该项目的配置文件：
 
 ```javascript
 exports.config = function() {
