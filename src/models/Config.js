@@ -6,7 +6,7 @@ class Config {
     constructor(cwd) {
         this._config = {
             cwd: cwd,
-            context: sysPath.join(cwd, 'src'),
+            context: sysPath.join(cwd, '/'),
             entry: {},
             entryGroup: {},
             output: {
