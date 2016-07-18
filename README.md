@@ -23,7 +23,7 @@ $ (sudo) npm install ykit -g
 
 ## 使用
 
-###初始化一个项目
+### 初始化一个项目
 
 ```bash
 $ mkdir AwesomeProject && cd AwesomeProject && ykit init
