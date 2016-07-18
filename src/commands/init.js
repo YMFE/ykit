@@ -53,23 +53,25 @@ exports.run = function (options)  {
 
         // 添加qunar.xxx.js
         if(answers.type) {
-            const packageName = 'ykit-config-' + answers.type,
-                configFileName = 'ykit.' + answers.type + '.js'
-
             log('installing ' + packageName + '...');
+
+            const packageName = 'ykit-config-' + answers.type,
+                configFileName = 'ykit.' + answers.type + '.js',
+                installCmd = 'npm i --save git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + answers.type + '.git';
+
             if(!fileExists('./' + configFileName)) {
                 fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
                     .pipe(replaceStream('#_name', answers.name))
                     .pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
             }
 
-            exec('npm i --save ' + 'ykit-config-' + answers.type, {silent:false}, (code, stdout, stderr) => {
+            exec(installCmd, {silent:false}, (code, stdout, stderr) => {
                 if(stderr) {
                     log(stderr);
                 }
 
                 if(code === 0){
-                    log('初始化成功')
+                    log('初始化成功');
                 }
             })
         }

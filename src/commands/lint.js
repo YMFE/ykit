@@ -17,7 +17,6 @@ exports.run = function (options)  {
         (callback) => project.lintCss(callback)
     ], (err, results) => {
         if (!err) {
-            console.log(results);
             if (results[0] && results[1]) {
                 success('All Files Complete!');
             }
