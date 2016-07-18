@@ -35,6 +35,7 @@
     "moment": "^2.14.1",
     "optimist": "^0.6.1",
     "progress-bar-webpack-plugin": "^1.8.0",
+    "replacestream": "^4.0.0",
     "require-uncached": "^1.0.2",
     "right-pad": "^1.0.0",
     "serve-index": "^1.8.0",

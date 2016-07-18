@@ -1,5 +1,7 @@
 exports.config = function() {
-    this.setExports([]);
+    this.setExports([
+        
+    ]);
 
     this.commands.push({
         name: 'project_cmd',
@@ -13,7 +15,7 @@ exports.config = function() {
         syncConfig : {
             "user": "",
             "host" : "192.168.237.71",
-            "path": "/home/q/www/qunarzz.com/yourProjectPath"
+            "path": "/home/q/www/qunarzz.com/#_name"
         }
     })
 };

@@ -1,7 +1,9 @@
 'use strict'
 
 require('shelljs/global');
-let Manager = require('../modules/manager.js');
+const replaceStream = require('replacestream');
+const inquirer = require('inquirer');
+const Manager = require('../modules/manager.js');
 
 exports.usage = "项目初始化";
 
@@ -10,29 +12,68 @@ exports.setOptions = (optimist) => {};
 exports.run = function (options)  {
 
     let cwd = options.cwd,
-        initType = options._[1]
-    const availableConfigs = ['qunar', 'hy']
+        projectName = options._[1],
+        defaultName = ''
 
-    if(initType && availableConfigs.indexOf(initType) > -1){
-        const packageName = 'ykit-config-' + initType.trim(),
-            configFileName = 'ykit.' + initType.trim() + '.js'
+    if(fileExists('./package.json')){
+        defaultName = JSON.parse(fs.readFileSync('./package.json')).name
+    } else {
+        defaultName = sysPath.basename(cwd)
+    }
 
-        log('installing ' + packageName + '...');
-        if(!fileExists('./' + configFileName)){
-            const configTmplPath = sysPath.resolve(__dirname, '../config/ykit.common.js')
-            fs.createReadStream(configTmplPath).pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
+    const questions = [{
+        type: 'input',
+        name: 'name',
+        message: 'project name(' + defaultName + '):'
+    }, {
+        type: 'list',
+        name: 'type',
+        message: 'config type:',
+        choices: [
+            'qunar',
+            'hy',
+        ]
+    }]
+
+
+    inquirer.prompt(questions).then((answers) => {
+
+        const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/')
+
+        answers.name = answers.name || defaultName
+
+        console.log('answers.name', answers.name);
+
+        // 如果没有package.json，先添加package.json
+        if(answers.name){
+            fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
+                .pipe(replaceStream('#_name', answers.name))
+                .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
         }
 
-        exec('npm i --save ' + 'ykit-config-' + initType, {silent:false}, (code, stdout, stderr) => {
-            if(stderr) {
-                log(stderr);
+        // 添加qunar.xxx.js
+        if(answers.type) {
+            const packageName = 'ykit-config-' + answers.type,
+                configFileName = 'ykit.' + answers.type + '.js'
+
+            log('installing ' + packageName + '...');
+            if(!fileExists('./' + configFileName)) {
+                fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
+                    .pipe(replaceStream('#_name', answers.name))
+                    .pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
             }
 
-            if(code === 0){
-                log('初始化成功')
-            }
-        })
-    }
+            exec('npm i --save ' + 'ykit-config-' + answers.type, {silent:false}, (code, stdout, stderr) => {
+                if(stderr) {
+                    log(stderr);
+                }
+
+                if(code === 0){
+                    log('初始化成功')
+                }
+            })
+        }
+    });
 }
 
 function fileExists(filePath) {
