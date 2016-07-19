@@ -1,6 +1,6 @@
 'use strict'
 
-require('shelljs/global');
+const exec = require('child_process').exec;
 const replaceStream = require('replacestream');
 const inquirer = require('inquirer');
 const Manager = require('../modules/manager.js');
