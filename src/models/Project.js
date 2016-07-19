@@ -38,7 +38,7 @@ class Project {
                     _manager: Manager,
                     setConfig: ((setFun) => {
                         let currentConfig = this.config.getConfig(),
-                            nextConfig = setFun(currentConfig);
+                            nextConfig = (setFun && setFun(currentConfig)) || {};
 
                         if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
                             nextConfig.context = sysPath.resolve(this.cwd, nextConfig.context)
