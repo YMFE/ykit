@@ -4,7 +4,7 @@
         "commonjs": true,
         "node": false
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended"],
     "globals": [
         "$", "$$", "jQuery", "Promise"
     ],

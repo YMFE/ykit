@@ -144,9 +144,11 @@ class Project {
     lint(callback) {
         warn('Lint JS Files ......');
         this.eslintConfig.useEslintrc = false;
-        let cli = new CLIEngine(this.eslintConfig),
+
+        const jsPath = sysPath.join(this.config._config.context, '/**/*.js'),
+            cli = new CLIEngine(this.eslintConfig),
             report = cli.executeOnFiles(
-                globby.sync('src/**/*.js', {
+                globby.sync(jsPath, {
                     cwd: this.cwd
                 })
                 .filter(
@@ -159,9 +161,15 @@ class Project {
     }
     lintCss(callback) {
         warn('Lint CSS Files ......');
+
+        const cssExtNames = this.config._config.entryExtNames.css,
+            cssLintPath = cssExtNames.map((cssExt) => {
+                return sysPath.join(this.config._config.context, '/**/*' + cssExt)
+            });
+
         let config = {
             config: this.stylelintConfig,
-            files: globby.sync(['src/**/*.css', 'src/**/*.sass', 'src/**/*.scss'], {
+            files: globby.sync(cssLintPath, {
                     cwd: this.cwd
                 })
                 .filter(
@@ -170,6 +178,7 @@ class Project {
             syntax: 'scss',
             formatter: 'verbose'
         };
+
         if (config.files.length) {
             stylelint.lint(config).then(function(data) {
                 if (data.errored) {
