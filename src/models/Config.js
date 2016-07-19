@@ -46,7 +46,7 @@ class Config {
             },
             entryExtNames: {
                 css: ['.css'],
-                js: []
+                js: ['.js']
             },
             requireRules: [
                 'node_modules|package.json:main|index.js'

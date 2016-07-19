@@ -145,10 +145,14 @@ class Project {
         warn('Lint JS Files ......');
         this.eslintConfig.useEslintrc = false;
 
-        const jsPath = sysPath.join(this.config._config.context, '/**/*.js'),
-            cli = new CLIEngine(this.eslintConfig),
+        const jsExtNames = this.config._config.entryExtNames.js,
+            jsLintPath = jsExtNames.map((jsExt) => {
+                return sysPath.join(this.config._config.context, '/**/*' + jsExt)
+            });
+
+        const cli = new CLIEngine(this.eslintConfig),
             report = cli.executeOnFiles(
-                globby.sync(jsPath, {
+                globby.sync(jsLintPath, {
                     cwd: this.cwd
                 })
                 .filter(
