@@ -37,8 +37,14 @@ class Project {
                     cwd: this.cwd,
                     _manager: Manager,
                     setConfig: ((setFun) => {
-                        let currentConfig = this.config.getConfig();
-                        extend(true, currentConfig, setFun(currentConfig));
+                        let currentConfig = this.config.getConfig(),
+                            nextConfig = setFun(currentConfig);
+
+                        if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
+                            nextConfig.context = sysPath.resolve(this.cwd, nextConfig.context)
+                        }
+
+                        extend(true, currentConfig, nextConfig);
                     }),
                     setExports: this.config.setExports.bind(this.config),
                     setGroupExports: this.config.setGroupExports.bind(this.config),
