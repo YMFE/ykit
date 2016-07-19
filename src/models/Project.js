@@ -36,8 +36,9 @@ class Project {
             let userConfig = {
                     cwd: this.cwd,
                     _manager: Manager,
-                    setConfig: ((conf) => {
-                        extend(true, this.config.getConfig(), conf);
+                    setConfig: ((setFun) => {
+                        let currentConfig = this.config.getConfig();
+                        extend(true, currentConfig, setFun(currentConfig));
                     }),
                     setExports: this.config.setExports.bind(this.config),
                     setGroupExports: this.config.setGroupExports.bind(this.config),

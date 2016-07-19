@@ -1,6 +1,6 @@
 exports.config = function() {
     this.setExports([
-        
+
     ]);
 
     this.commands.push({
@@ -11,11 +11,12 @@ exports.config = function() {
         }
     });
 
-    this.setConfig({
-        syncConfig : {
+    this.setConfig((config) => {
+        config.syncConfig = {
             "user": "",
             "host" : "192.168.237.71",
             "path": "/home/q/www/qunarzz.com/#_name"
         }
+        return config
     })
 };
