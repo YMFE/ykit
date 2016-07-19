@@ -10,6 +10,7 @@ exports.usage = "项目初始化";
 exports.setOptions = (optimist) => {};
 
 exports.run = function (options)  {
+    Manager.reloadRC()
 
     let cwd = options.cwd,
         projectName = options._[1],
@@ -42,8 +43,6 @@ exports.run = function (options)  {
 
         answers.name = answers.name || defaultName
 
-        console.log('answers.name', answers.name);
-
         // 如果没有package.json，先添加package.json
         if(answers.name){
             fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
@@ -53,11 +52,11 @@ exports.run = function (options)  {
 
         // 添加qunar.xxx.js
         if(answers.type) {
-            log('installing ' + packageName + '...');
-
             const packageName = 'ykit-config-' + answers.type,
                 configFileName = 'ykit.' + answers.type + '.js',
                 installCmd = 'npm i --save git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + answers.type + '.git';
+
+            log('installing ' + packageName + '...');
 
             if(!fileExists('./' + configFileName)) {
                 fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
