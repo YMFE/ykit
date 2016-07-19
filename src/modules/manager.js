@@ -114,6 +114,8 @@ exports.getCommands = () => {
 let readRC = exports.readRC = () => {
     try {
         return JSON5.parse(fs.readFileSync(YKIT_RC, 'UTF-8'));
+    } catch (e) {
+        // warn('读取 .ykitrc 失败！');
     }
     return {}
 };

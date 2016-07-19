@@ -149,9 +149,18 @@ exports.run = (options) => {
 
     app.use(serveIndex(cwd));
 
-    http.createServer(app).listen(port, () => {
+    const httpServer = http.createServer(app)
+    httpServer.on('error', (e) => {
+        if(e.code === 'EACCES'){
+            warn('权限不足, 请使用sudo执行')
+        } else if(e.code === 'EADDRINUSE'){
+            warn('端口 ' + port + ' 已经被占用, 请关闭占用该端口的程序或者使用其它端口.')
+        }
+        process.exit(1)
+    })
+    httpServer.listen(port, () => {
         warn('Listening on port ' + port);
-    });
+    })
 
     // 权限降级
     if (process.env['SUDO_UID']) {
