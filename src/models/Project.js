@@ -126,13 +126,15 @@ class Project {
             cssExtNames = config.entryExtNames.css,
             fps = [];
 
+        const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.'
+
         for (let key in entry) {
             let extName = sysPath.extname(entry[key]);
             if (cssExtNames.indexOf(extName) > -1) {
                 let name = sysPath.basename(entry[key], extName),
                     ofp = sysPath.join(config.context, entry[key]),
-                    np = entry[key] = sysPath.join('../.cache', entry[key] + '.js'),
-                    fp = sysPath.join(config.cwd, '.cache', np);
+                    np = entry[key] = './' + sysPath.join(contextPathRelativeToCwd, '/.cache', entry[key] + '.js'),
+                    fp = sysPath.join(config.context, np);
 
                 mkdirp.sync(sysPath.dirname(fp));
                 fs.writeFileSync(fp, 'require("' + sysPath.relative(sysPath.dirname(fp), ofp) + '");', 'utf-8');
