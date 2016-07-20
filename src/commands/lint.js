@@ -18,7 +18,7 @@ exports.run = function (options)  {
     ], (err, results) => {
         if (!err) {
             if (results[0] && results[1]) {
-                success('All Files Complete!');
+                success('All files complete without error.');
             }
         } else if (err === true) {
             error('Lint Error！');

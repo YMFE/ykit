@@ -142,7 +142,7 @@ class Project {
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
     }
     lint(callback) {
-        warn('Lint JS Files ......');
+        warn('Linting JS Files ...');
         this.eslintConfig.useEslintrc = false;
 
         const jsExtNames = this.config._config.entryExtNames.js,
@@ -161,11 +161,15 @@ class Project {
                 )
             ),
             formatter = cli.getFormatter();
-        info(formatter(report.results));
+
+        if(report.errorCount > 0){
+            info(formatter(report.results));
+        }
+
         callback(null, !report.errorCount);
     }
     lintCss(callback) {
-        warn('Lint CSS Files ......');
+        warn('Linting CSS Files ...');
 
         const cssExtNames = this.config._config.entryExtNames.css,
             cssLintPath = cssExtNames.map((cssExt) => {
