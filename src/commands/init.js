@@ -1,6 +1,6 @@
 'use strict'
 
-const exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
 const replaceStream = require('replacestream');
 const inquirer = require('inquirer');
 const Manager = require('../modules/manager.js');
@@ -36,43 +36,54 @@ exports.run = function (options)  {
         ]
     }]
 
-
     inquirer.prompt(questions).then((answers) => {
+        answers.name = answers.name || defaultName;
 
-        const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/')
-
-        answers.name = answers.name || defaultName
+        const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/');
+        const configFileName = 'ykit.' + answers.type + '.js';
+        let writePackageJsonStream;
 
         // 如果没有package.json，先添加package.json
         if(answers.name){
-            fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
+            writePackageJsonStream = createPakcageJson();
+        }
+
+        if(!writePackageJsonStream) {
+            createConfigFile();
+            installDependencies();
+        } else {
+            writePackageJsonStream.on('finish', () => {
+                log('Successfully created package.json file in ' + cwd);
+
+                createConfigFile();
+                installDependencies();
+            });
+        }
+
+        function createPakcageJson() {
+            return fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
                 .pipe(replaceStream('#_name', answers.name))
                 .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
         }
 
-        // 添加qunar.xxx.js
-        if(answers.type) {
-            const packageName = 'ykit-config-' + answers.type,
-                configFileName = 'ykit.' + answers.type + '.js',
-                installCmd = 'npm i --save git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + answers.type + '.git';
-
-            log('installing ' + packageName + '...');
-
+        function createConfigFile() {
             if(!fileExists('./' + configFileName)) {
-                fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
+                const stream = fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
                     .pipe(replaceStream('#_name', answers.name))
                     .pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
+
+                stream.on('finish', () => {
+                    log('Successfully created ' + configFileName + ' file in ' + cwd);
+                });
             }
+        }
 
-            exec(installCmd, {silent:false}, (code, stdout, stderr) => {
-                if(stderr) {
-                    log(stderr);
-                }
+        function installDependencies() {
+            const  packageName = 'ykit-config-' + answers.type,
+                installConfigPackageCmd = 'npm i --save git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + answers.type + '.git';
 
-                if(code === 0){
-                    log('初始化成功');
-                }
-            })
+            log('Installing ' + packageName + '...');
+            execSync(installConfigPackageCmd);
         }
     });
 }
