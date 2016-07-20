@@ -150,7 +150,8 @@ class Project {
                 return sysPath.join(this.config._config.context, '/**/*' + jsExt)
             });
 
-        const cli = new CLIEngine(this.eslintConfig),
+        const cliengine = this.eslintConfig.linter || CLIEngine, // 优先使用项目配置的linter
+            cli = new cliengine(this.eslintConfig),
             report = cli.executeOnFiles(
                 globby.sync(jsLintPath, {
                     cwd: this.cwd
