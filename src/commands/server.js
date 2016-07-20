@@ -112,7 +112,7 @@ exports.run = (options) => {
 
                     // 输出server运行中 error/warning 信息
                     compiler.watch({}, function(err, stats) {
-                        const statsInfo = stats.toJson({errorDetails: true}),
+                        const statsInfo = stats.toJson({errorDetails: false}),
                             logMethods = {
                                 errors: error,
                                 warnings: warn

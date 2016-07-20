@@ -239,7 +239,6 @@ class Project {
                     .forEach((fp) => fs.unlinkSync(fp));
 
                 if (!err) {
-
                     let statsInfo = stats.toJson({
                         errorDetails: false
                     });
