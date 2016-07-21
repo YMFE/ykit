@@ -8,5 +8,6 @@
     "globals": [
         "$", "$$", "jQuery", "Promise"
     ],
-    "rules": {}
+    "rules": {},
+    "ignorePattern": ["/node_modules/*", "/bower_components/*", "/dev/*", "/prd/*"]
 }

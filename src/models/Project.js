@@ -1,7 +1,6 @@
 'use strict';
 
 let webpack = require('webpack'),
-    ignore = require('ignore'),
     CLIEngine = require('eslint').CLIEngine,
     stylelint = require('stylelint');
 
@@ -23,7 +22,7 @@ class Project {
             cwd: this.cwd
         })[0] || '';
         this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
-        this.ignores = [];
+        this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*"];
         this.cachePath = sysPath.join(cwd, '.cache');
         mkdirp.sync(this.cachePath);
         this.readConfig();
@@ -143,49 +142,29 @@ class Project {
         }
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
     }
-    lint(callback) {
+
+    lint(dir, callback) {
         warn('Linting JS Files ...');
         this.eslintConfig.useEslintrc = false;
 
-        const jsExtNames = this.config._config.entryExtNames.js,
-            jsLintPath = jsExtNames.map((jsExt) => {
-                return sysPath.join(this.config._config.context, '/**/*' + jsExt)
-            });
-
         const cliengine = this.eslintConfig.linter || CLIEngine, // 优先使用项目配置的linter
             cli = new cliengine(this.eslintConfig),
-            report = cli.executeOnFiles(
-                globby.sync(jsLintPath, {
-                    cwd: this.cwd
-                })
-                .filter(
-                    ignore().add(this.ignores.join('\n')).createFilter()
-                )
-            ),
+            report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
             formatter = cli.getFormatter();
 
-        if(report.errorCount > 0){
+        if(report.errorCount > 0) {
             info(formatter(report.results));
         }
 
         callback(null, !report.errorCount);
     }
-    lintCss(callback) {
-        warn('Linting CSS Files ...');
 
-        const cssExtNames = this.config._config.entryExtNames.css,
-            cssLintPath = cssExtNames.map((cssExt) => {
-                return sysPath.join(this.config._config.context, '/**/*' + cssExt)
-            });
+    lintCss(dir, callback) {
+        warn('Linting CSS Files ...');
 
         let config = {
             config: this.stylelintConfig,
-            files: globby.sync(cssLintPath, {
-                    cwd: this.cwd
-                })
-                .filter(
-                    ignore().add(this.ignores.join('\n')).createFilter()
-                ),
+            files: this._getLintFiles(dir, 'css'),
             syntax: 'scss',
             formatter: 'verbose'
         };
@@ -203,6 +182,7 @@ class Project {
             callback(null, true);
         }
     }
+
     pack(opt, callback) {
         let config = this.config.getConfig();
 
@@ -290,6 +270,7 @@ class Project {
 
         return this;
     }
+
     getServerCompiler() {
         let config = this.config.getConfig();
         config.output = {
@@ -298,6 +279,32 @@ class Project {
         };
         this.fixCss();
         return webpack(config);
+    }
+
+    _getLintFiles(dir, fileType) {
+        let context = this.config._config.context,
+            extNames = this.config._config.entryExtNames[fileType],
+            lintPath = extNames.map((ext) => {
+                return sysPath.join('./**/*' + ext)
+            });
+
+        if(dir) {
+            dir = sysPath.resolve(this.cwd, dir)
+            try {
+                fs.statSync(dir).isDirectory() ? context = dir : lintPath = sysPath.relative(context, dir)
+            } catch (e) {
+                error(e);
+                process.exit(1);
+            }
+        }
+
+        return globby.sync(lintPath, {
+            cwd: context,
+            root: context,
+            ignore: this.ignores
+        }).map((lintPathItem) => {
+            return sysPath.resolve(context, lintPathItem)
+        })
     }
 }
 
