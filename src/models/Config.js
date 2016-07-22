@@ -56,7 +56,9 @@ class Config {
     }
     setExports(files) {
         [].concat(files).forEach((file) => {
-            var name = file.replace(/\.\w+$/g, '');
+            const entryFile = Array.isArray(file) ? file[file.length - 1] : file
+
+            var name = entryFile.replace(/\.\w+$/g, '');
             if (name.indexOf('./') == 0) {
                 name = name.substring(2);
             } else if (name[0] == '/') {

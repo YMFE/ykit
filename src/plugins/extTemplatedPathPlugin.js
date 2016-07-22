@@ -8,7 +8,11 @@ module.exports = {
             compilation.mainTemplate.plugin("asset-path", function(path, data) {
                 let extName = '[ext]';
                 if (data.chunk) {
-                    let rawRequest = data.chunk.origins[0].module.rawRequest;
+                    let module = data.chunk.origins[0].module,
+                        rawRequest = module.rawRequest
+                                        ? module.rawRequest
+                                        : module.dependencies[module.dependencies.length - 1].userRequest;
+
                     extName = sysPath.extname(rawRequest);
 
                     if (entryExtNames.css.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
@@ -22,6 +26,7 @@ module.exports = {
                         }
                     })
                 }
+
                 return path.replace(/\[ext\]/g, extName);
             });
         });

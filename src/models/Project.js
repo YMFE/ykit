@@ -121,23 +121,46 @@ class Project {
     }
     fixCss() {
         let config = this.config.getConfig(),
-            entry = config.entry,
+            entries = config.entry,
             cssExtNames = config.entryExtNames.css,
             fps = [];
 
         const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.'
 
-        for (let key in entry) {
-            let extName = sysPath.extname(entry[key]);
-            if (cssExtNames.indexOf(extName) > -1) {
-                let name = sysPath.basename(entry[key], extName),
-                    ofp = sysPath.join(config.context, entry[key]),
-                    np = entry[key] = './' + sysPath.join(contextPathRelativeToCwd, '/.cache', entry[key] + '.js'),
-                    fp = sysPath.join(config.context, np);
+        for (let key in entries) {
+            const entryItem = entries[key],
+                entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
+                extName = sysPath.extname(entry);
 
-                mkdirp.sync(sysPath.dirname(fp));
-                fs.writeFileSync(fp, 'require("' + sysPath.relative(sysPath.dirname(fp), ofp) + '");', 'utf-8');
-                fps.push(fp);
+            if (cssExtNames.indexOf(extName) > -1) {
+                let requireFilePath = entries[key] = './' + sysPath.join(contextPathRelativeToCwd, '/.cache', entry + '.js'),
+                    cacheFilePath = sysPath.join(config.context, requireFilePath);
+
+                mkdirp.sync(sysPath.dirname(cacheFilePath));
+
+                // 将原有entry的css路径写到js中
+                if(Array.isArray(entryItem)) {
+                    // clear
+                    fs.writeFileSync(cacheFilePath, '', 'utf-8');
+                    
+                    entryItem.forEach((cssPath, i) => {
+                        const originCssPath = sysPath.join(config.context, cssPath)
+                        fs.appendFileSync(
+                            cacheFilePath,
+                            'require("' + sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath) + '");',
+                            'utf-8'
+                        );
+                    })
+                } else {
+                    const originCssPath = sysPath.join(config.context, entry)
+                    fs.writeFileSync(
+                        cacheFilePath,
+                        'require("' + sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath) + '");',
+                        'utf-8'
+                    );
+                }
+
+                fps.push(cacheFilePath);
             }
         }
         config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
