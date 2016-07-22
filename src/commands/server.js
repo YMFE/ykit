@@ -45,9 +45,22 @@ exports.run = (options) => {
     }
 
     // logger
-    app.use(() => {
-        const dateFormat = 'YY.MM.DD HH:mm:ss';
-        const parse = function(req, res, format) {
+    app.use((req, res, next) => {
+        const end = res.end;
+    	req._startTime = new Date;
+
+    	res.end = (chunk, encoding) => {
+    		res.end = end;
+    		res.end(chunk, encoding);
+            const format = '%date %status %method %url (%route%contentLength%time)'
+    		const message = parse(req, res, format);
+    		return process.nextTick(() => {
+    			return info(message);
+    		});
+    	};
+
+        function parse(req, res, format) {
+            const dateFormat = 'YY.MM.DD HH:mm:ss';
             const status = (function() {
         		switch (true) {
         			case 500 <= res.statusCode:
@@ -78,22 +91,8 @@ exports.run = (options) => {
         	return format;
         };
 
-        return (req, res, next) => {
-            const end = res.end;
-        	req._startTime = new Date;
-
-        	res.end = (chunk, encoding) => {
-        		res.end = end;
-        		res.end(chunk, encoding);
-                const format = '%date %status %method %url (%route%contentLength%time)'
-        		const message = parse(req, res, format);
-        		return process.nextTick(() => {
-        			return info(message);
-        		});
-        	};
-        	return next();
-        };
-    }());
+    	return next();
+    });
 
     app.use((req, res, next) => {
         let url = req.url,

@@ -1,0 +1,13 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "node": false
+    },
+    "extends": ["eslint:recommended"],
+    "globals": [
+        "$", "$$", "jQuery", "Promise"
+    ],
+    "rules": {},
+    "ignorePattern": ["/node_modules/*", "/bower_components/*", "/dev/*", "/prd/*"]
+}
