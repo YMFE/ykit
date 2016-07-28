@@ -7,6 +7,7 @@ let connect = require('connect'),
     moment = require('moment'),
     livereload = require('livereload'),
     connectLivereload = require('connect-livereload'),
+    child_process = require('child_process'),
     webpackDevMiddleware = require("webpack-dev-middleware");
 
 let Manager = require('../modules/manager.js');
@@ -14,20 +15,23 @@ let Manager = require('../modules/manager.js');
 exports.usage = "开发服务";
 
 exports.setOptions = (optimist) => {
-    optimist.alias('s', 'https');
-    optimist.describe('s', '使用https协议');
     optimist.alias('p', 'port');
     optimist.describe('p', '端口');
+    optimist.alias('x', 'proxy');
+    optimist.describe('x', '启用proxy代理服务');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
     optimist.alias('l', 'livereload');
-    optimist.describe('l', '实时自动刷新');
+    optimist.describe('l', '自动刷新');
+    // optimist.alias('s', 'https');
+    // optimist.describe('s', '使用https协议');
 };
 
 exports.run = (options) => {
     let app = connect(),
         cwd = options.cwd,
         hot = options.h || options.hot,
+        proxy = options.x || options.proxy,
         middlewares = options.m || options.middlewares,
         https = options.s || options.https,
         enableLivereload = options.l || options.livereload,
@@ -161,8 +165,15 @@ exports.run = (options) => {
         warn('Listening on port ' + port);
     })
 
+    // 代理
+    if(proxy){
+        const proxyPath = sysPath.join(require.resolve('@qnpm/jerryproxy-ykit'), '../bin/jerry.js')
+        child_process.fork(proxyPath);
+    }
+
     // 权限降级
     if (process.env['SUDO_UID']) {
         process.setuid(parseInt(process.env['SUDO_UID']));
     }
+
 };
