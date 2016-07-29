@@ -142,20 +142,22 @@ class Project {
                 if(Array.isArray(entryItem)) {
                     // clear
                     fs.writeFileSync(cacheFilePath, '', 'utf-8');
-                    
+
                     entryItem.forEach((cssPath, i) => {
                         const originCssPath = sysPath.join(config.context, cssPath)
+                        const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath))
                         fs.appendFileSync(
                             cacheFilePath,
-                            'require("' + sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath) + '");',
+                            'require("' + requiredPath + '");',
                             'utf-8'
                         );
                     })
                 } else {
                     const originCssPath = sysPath.join(config.context, entry)
+                    const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath))
                     fs.writeFileSync(
                         cacheFilePath,
-                        'require("' + sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath) + '");',
+                        'require("' + requiredPath + '");',
                         'utf-8'
                     );
                 }
@@ -328,6 +330,17 @@ class Project {
         }).map((lintPathItem) => {
             return sysPath.resolve(context, lintPathItem)
         })
+    }
+
+    _normalizePath(str, stripTrailing) {
+    	if (typeof str !== 'string') {
+    		throw new TypeError('expected a string');
+    	}
+    	str = str.replace(/[\\\/]+/g, '/');
+    	if (stripTrailing !== false) {
+    		str = str.replace(/\/$/, '');
+    	}
+    	return str;
     }
 }
 
