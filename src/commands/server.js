@@ -40,8 +40,13 @@ exports.run = (options) => {
 
     let isGoingToStartServer = true
 
-    // 检测预装插件
+    // 检测前置条件
     if(proxy){
+        if(!(process.getuid && process.getuid() === 0)){
+            warn('权限不足, 请使用sudo执行')
+            process.exit(1)
+        }
+
         try {
             require.resolve("@qnpm/jerryproxy-ykit")
         } catch(e) {
