@@ -11,7 +11,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@qnpm/jerryproxy-ykit": "^1.0.7",
     "async": "^1.5.2",
     "colors": "^1.1.2",
     "connect": "^3.4.1",
