@@ -1,7 +1,6 @@
 'use strict';
 
 let Project = require('../models/Project.js'),
-    eslintConfigFile = require("eslint/lib/config/config-file.js"),
     ykitModuleReg = /^(@[^\/]+\/)?(ykit\-(\w+)\-[\w\-]+)$/,
     loadYAMLConfigFile = (filePath) => {
         try {
@@ -153,8 +152,14 @@ let reloadRC = exports.reloadRC = () => {
 // lint config
 
 exports.loadEslintConfig = (path) => {
-    let eslintConfPath = eslintConfigFile.getFilenameForDirectory(path);
-    return eslintConfPath ? eslintConfigFile.load(eslintConfPath) : {};
+    try {
+        const eslintConfigFile = require("eslint/lib/config/config-file.js")
+
+        let eslintConfPath = eslintConfigFile.getFilenameForDirectory(path);
+        return eslintConfPath ? eslintConfigFile.load(eslintConfPath) : {};
+    } catch(e) {
+        return {};
+    }
 };
 
 exports.loadStylelintConfig = (path) => {

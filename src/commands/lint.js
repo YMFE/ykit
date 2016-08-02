@@ -1,6 +1,7 @@
 'use strict'
 
-let Manager = require('../modules/manager.js');
+const inquirer = require('inquirer');
+const child_process = require('child_process');
 
 exports.usage = "代码质量检测";
 
@@ -14,18 +15,52 @@ exports.run = function (options)  {
         project = this.project,
         dir = options.d || options.dir;
 
-    async.series([
-        (callback) => project.lint(dir, callback),
-        (callback) => project.lintCss(dir, callback)
-    ], (err, results) => {
-        if (!err) {
-            if (results[0] && results[1]) {
-                success('All files complete without error.');
+    let isGoingToContinue = true
+
+    try {
+        require.resolve("eslint")
+    } catch(e) {
+        isGoingToContinue = false
+
+        var questions = [{
+            type: 'confirm',
+            name: 'isGoingtoInstall',
+            message: 'lint plugin not installed yet, wounld you like to install it now?'
+        }];
+
+        inquirer.prompt(questions).then((answers) => {
+            if(answers.isGoingtoInstall) {
+                if(!(process.getuid && process.getuid() === 0)){
+                    warn('安装权限不足, 请使用sudo执行 ykit lint')
+                    process.exit(1)
+                }
+
+                const installCmd = 'npm i eslint@2.13.1 stylelint@6.9.0 --registry https://registry.npm.taobao.org';
+                try {
+                    log('intalling eslint & stylelint ...')
+                    log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
+                } catch (e) {
+                    error(e);
+                }
             }
-        } else if (err === true) {
-            error('Lint Error！');
-        } else {
-            error(err);
-        }
-    });
+        })
+    }
+
+    if(isGoingToContinue) {
+        async.series([
+            (callback) => project.lint(dir, callback),
+            (callback) => project.lintCss(dir, callback)
+        ], (err, results) => {
+            if (!err) {
+                if (results[0] && results[1]) {
+                    success('All files complete without error.');
+                }
+            } else if (err === true) {
+                error('Lint Error！');
+            } else {
+                error(err);
+            }
+        });
+    }
+
 }

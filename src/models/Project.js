@@ -1,8 +1,6 @@
 'use strict';
 
-let webpack = require('webpack'),
-    CLIEngine = require('eslint').CLIEngine,
-    stylelint = require('stylelint');
+let webpack = require('webpack');
 
 let Config = require('./Config.js'),
     Manager = require('../modules/manager.js'),
@@ -169,6 +167,8 @@ class Project {
     }
 
     lint(dir, callback) {
+        const CLIEngine = require('eslint').CLIEngine;
+
         warn('Linting JS Files ...');
         this.eslintConfig.useEslintrc = false;
 
@@ -185,6 +185,8 @@ class Project {
     }
 
     lintCss(dir, callback) {
+        const stylelint = require('stylelint');
+
         warn('Linting CSS Files ...');
 
         let config = {

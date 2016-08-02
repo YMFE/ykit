@@ -5,8 +5,6 @@ let connect = require('connect'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
-    livereload = require('livereload'),
-    connectLivereload = require('connect-livereload'),
     child_process = require('child_process'),
     inquirer = require('inquirer'),
     webpackDevMiddleware = require("webpack-dev-middleware");
@@ -41,12 +39,7 @@ exports.run = (options) => {
     let isGoingToStartServer = true
 
     // 检测前置条件
-    if(proxy){
-        if(!(process.getuid && process.getuid() === 0)){
-            warn('权限不足, 请使用sudo执行')
-            process.exit(1)
-        }
-
+    if(proxy) {
         try {
             require.resolve("@qnpm/jerryproxy-ykit")
         } catch(e) {
@@ -58,14 +51,49 @@ exports.run = (options) => {
 
             inquirer.prompt(questions).then((answers) => {
                 if(answers.isInstallingProxy) {
+                    if(!(process.getuid && process.getuid() === 0)){
+                        warn('安装权限不足, 请使用sudo执行 ykit server -x')
+                        process.exit(1)
+                    }
+
                     const installCmd = 'npm i @qnpm/jerryproxy-ykit --registry http://registry.npm.corp.qunar.com/';
                     try {
                         log('intalling @qnpm/jerryproxy-ykit ...')
-                        child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../')});
+                        log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
                     } catch (e) {
                         error(e);
                     }
-                    log('@qnpm/jerryproxy-ykit successfully installed');
+                }
+            })
+
+            isGoingToStartServer = false
+        }
+    }
+
+    if(enableLivereload) {
+        try {
+            require.resolve("livereload")
+        } catch(e) {
+            var questions = [{
+            	type: 'confirm',
+            	name: 'isGoingtoInstall',
+            	message: 'Livereload plugin not installed yet, wounld you like to install it now?'
+            }];
+
+            inquirer.prompt(questions).then((answers) => {
+                if(answers.isGoingtoInstall) {
+                    if(!(process.getuid && process.getuid() === 0)){
+                        warn('安装权限不足, 请使用sudo执行 ykit server -l')
+                        process.exit(1)
+                    }
+
+                    const installCmd = 'npm i connect-livereload@0.5.4 livereload@0.4.1 --registry https://registry.npm.taobao.org';
+                    try {
+                        log('intalling connect-livereload & livereload ...')
+                        log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
+                    } catch (e) {
+                        error(e);
+                    }
                 }
             })
 
@@ -178,6 +206,9 @@ exports.run = (options) => {
         });
 
         if(enableLivereload){
+            const livereload = require('livereload');
+            const connectLivereload = require('connect-livereload');
+
             livereload.createServer().watch(cwd);
             app.use(connectLivereload({port: 35729}));
         }
