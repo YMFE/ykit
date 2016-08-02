@@ -4,19 +4,15 @@
 
 Ykit是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit基于打包工具[webpack][1]，支持CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS等模块类型的打包。
 
-webpack配置项很多，并且有些容易让人困惑。相比于用webpack复杂的配置，Ykit更简单，以下是一些对比：
-
-| Webpack 问题 | Ykit 解决方案 |  
-| ------------ | ------------- |
-| 有些配置项只在开发环境生效，有些只在生产环境生效，根据环境不同至少要维护两个webpack.config | 通过命令行参数实现功能，隐藏底层配置细节，不再需要维护多个配置文件
-| 入口只能为Javascript，如果想要引CSS只能把引用写在Javascript里 | 封装了入口配置，支持CSS/SCSS/LESS/...作为入口 |
-| 每添加一个loader/plugin都要查文档如何使用 | 通过定制不同场景，已经内置好loader/plugin，不需要手动添加和配置 |
-| 需要满足当前Qunar开发/发布机制，如上传开发机，生成版本号等 | 安装ykit-config-qunar，则这些功能都已内置 |
-
 ## 安装
 
 ```bash
-$ (sudo) npm install @qnpm/ykit -g
+$ (sudo) npm install ykit -g
+```
+
+或者使用内网仓库，速度更快：
+```bash
+$ (sudo) npm install ykit -g --registry http://registry.npm.corp.qunar.com/
 ```
 
 ## 使用
@@ -136,5 +132,15 @@ grunt.initConfig({
 
 grunt.loadNpmTasks('ykit');
 ```
+
+## 和webpack相比有和不同？
+webpack配置项很多，并且有些容易让人困惑。相比于用webpack复杂的配置，Ykit更简单，以下是一些对比：
+
+| Webpack 问题 | Ykit 解决方案 |  
+| ------------ | ------------- |
+| 有些配置项只在开发环境生效，有些只在生产环境生效，根据环境不同至少要维护两个webpack.config | 通过命令行参数实现功能，隐藏底层配置细节，不再需要维护多个配置文件
+| 入口只能为Javascript，如果想要引CSS只能把引用写在Javascript里 | 封装了入口配置，支持CSS/SCSS/LESS/...作为入口 |
+| 每添加一个loader/plugin都要查文档如何使用 | 通过定制不同场景，已经内置好loader/plugin，不需要手动添加和配置 |
+| 需要满足当前Qunar开发/发布机制，如上传开发机，生成版本号等 | 安装ykit-config-qunar，则这些功能都已内置 |
 
   [1]: https://github.com/webpack/webpack
