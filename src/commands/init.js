@@ -33,6 +33,8 @@ exports.run = function (options)  {
         choices: [
             'qunar',
             'hy',
+            'xta',
+            'none',
         ]
     }]
 
@@ -40,7 +42,6 @@ exports.run = function (options)  {
         answers.name = answers.name || defaultName;
 
         const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/');
-        const configFileName = 'ykit.' + answers.type + '.js';
         let writePackageJsonStream;
 
         // 如果没有package.json，先添加package.json
@@ -49,14 +50,14 @@ exports.run = function (options)  {
         }
 
         if(!writePackageJsonStream) {
-            createConfigFile();
+            createConfigFile(answers.type);
             installDependencies();
         } else {
             writePackageJsonStream.on('finish', () => {
                 log('Successfully created package.json file in ' + cwd);
 
-                createConfigFile();
-                installDependencies();
+                createConfigFile(answers.type);
+                installDependencies(answers.type);
             });
         }
 
@@ -66,7 +67,9 @@ exports.run = function (options)  {
                 .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
         }
 
-        function createConfigFile() {
+        function createConfigFile(configType) {
+            const configFileName = configType !== 'none' ? 'ykit.' + configType + '.js' : 'ykit.js';
+
             if(!fileExists('./' + configFileName)) {
                 const stream = fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
                     .pipe(replaceStream('#_name', answers.name))
@@ -78,9 +81,13 @@ exports.run = function (options)  {
             }
         }
 
-        function installDependencies() {
-            const  packageName = 'ykit-config-' + answers.type,
-                installConfigPackageCmd = 'npm i --save git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + answers.type + '.git';
+        function installDependencies(configType) {
+            if(configType === 'none') {
+                return
+            }
+
+            const  packageName = 'ykit-config-' + configType,
+                installConfigPackageCmd = 'npm i --save git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + configType + '.git';
 
             log('Installing ' + packageName + '...');
             execSync(installConfigPackageCmd);
