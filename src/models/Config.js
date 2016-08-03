@@ -78,6 +78,31 @@ class Config {
         extend(this._config.output, output);
         return this;
     }
+    setSync(syncConfig) {
+        if(syncConfig){
+            if(typeof syncConfig === 'object') {
+                this._config.sync = syncConfig;
+            } else if (typeof syncConfig === 'function') {
+                this._config.sync = syncConfig();
+            }
+        }
+    }
+    setCompile(compileConfig) {
+        if(compileConfig){
+            let nextConfig = {}
+
+            if(typeof compileConfig === 'object') {
+                nextConfig = compileConfig
+            } else if (typeof compileConfig === 'function') {
+                nextConfig = compileConfig(Object.assign({}, this._config)) || {};
+            }
+            if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
+                nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
+            }
+
+            extend(true, this._config, nextConfig);
+        }
+    }
     getConfig() {
         return this._config;
     }

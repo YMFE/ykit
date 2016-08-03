@@ -28,23 +28,22 @@ class Project {
     check() {
         return !!this.configFile;
     }
+    setCommands(nextCommands) {
+        if(Array.isArray(nextCommands)) {
+            this.commands = this.commands.concat(nextCommands)
+        }
+    }
     readConfig(options) {
         if (this.check()) {
             let userConfig = {
                     cwd: this.cwd,
                     _manager: Manager,
-                    setConfig: ((setFun) => {
-                        let currentConfig = this.config.getConfig(),
-                            nextConfig = (setFun && setFun(currentConfig)) || {};
-
-                        if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
-                            nextConfig.context = sysPath.resolve(this.cwd, nextConfig.context)
-                        }
-
-                        extend(true, currentConfig, nextConfig);
-                    }),
+                    setConfig: this.config.setCompile.bind(this.config), // 兼容旧api
+                    setCompile: this.config.setCompile.bind(this.config),
                     setExports: this.config.setExports.bind(this.config),
                     setGroupExports: this.config.setGroupExports.bind(this.config),
+                    setSync: this.config.setSync.bind(this.config),
+                    setCommands: this.setCommands.bind(this),
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
@@ -67,6 +66,7 @@ class Project {
 
                 if (fs.existsSync(modulePath)) {
                     let module = require(modulePath);
+
                     if (module && module.config) {
                         module.config.call(userConfig, options, this.cwd);
                     }
