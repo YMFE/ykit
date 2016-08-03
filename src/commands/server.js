@@ -41,7 +41,7 @@ exports.run = (options) => {
     // 检测前置条件
     if(proxy) {
         try {
-            require.resolve("@qnpm/jerryproxy-ykit")
+            require.resolve("jerryproxy-ykit")
         } catch(e) {
             var questions = [{
             	type: 'confirm',
@@ -56,9 +56,9 @@ exports.run = (options) => {
                         process.exit(1)
                     }
 
-                    const installCmd = 'npm i @qnpm/jerryproxy-ykit --registry http://registry.npm.corp.qunar.com/';
+                    const installCmd = 'npm i jerryproxy-ykit --registry https://registry.npm.taobao.org';
                     try {
-                        log('intalling @qnpm/jerryproxy-ykit ...')
+                        log('intalling jerryproxy-ykit ...')
                         log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
                     } catch (e) {
                         error(e);
@@ -235,7 +235,7 @@ exports.run = (options) => {
 
         // 代理
         if(proxy) {
-            const proxyPath = sysPath.join(require.resolve('@qnpm/jerryproxy-ykit'), '../bin/jerry.js')
+            const proxyPath = sysPath.join(require.resolve('jerryproxy-ykit'), '../bin/jerry.js')
             child_process.fork(proxyPath);
         }
 
