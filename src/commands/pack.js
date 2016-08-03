@@ -13,12 +13,15 @@ exports.setOptions = (optimist) => {
     optimist.describe('s', '使用sourcemap');
     optimist.alias('g', 'group');
     optimist.describe('g', 'exports 分组');
+    optimist.alias('c', 'clean');
+    optimist.describe('c', '打包前清空输出目录');
 };
 
 exports.run = function (options) {
     let cwd = options.cwd,
         min = options.m || options.min || false,
         lint = options.l || options.lint || false,
+        clean = options.c || options.clean || false,
         group = options.g || options.group,
         sourcemap = options.s || options.sourcemap,
         project = this.project;
@@ -35,7 +38,8 @@ exports.run = function (options) {
     project.pack({
         lint: lint,
         min: min,
-        sourcemap: sourcemap
+        sourcemap: sourcemap,
+        clean: clean
     }, (err, stats) => {
         if (err) {
             if (err !== true) {

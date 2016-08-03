@@ -232,9 +232,11 @@ class Project {
                 config.devtool = opt.sourcemap
             }
 
-            try {
-                childProcess.execSync('rm -rf ' + config.output.path);
-            } catch (e) {}
+            if(opt.clean) {
+                try {
+                    childProcess.execSync('rm -rf ' + config.output.path);
+                } catch (e) {}
+            }
 
             config.plugins.push(new ProgressBarPlugin())
 
