@@ -8,13 +8,13 @@ exports.config = function() {
     // 编译环境配置
     this.setCompile({
         context: './src'
-    })
+    });
 
     // sync到开发机配置
     this.setSync({
         host : "192.168.237.71",
         path: "/home/q/www/qunarzz.com/#_name"
-    })
+    });
 
     // 自定义命令
     this.setCommands([
@@ -25,5 +25,5 @@ exports.config = function() {
                 run: function () {}
             }
         }
-    ])
+    ]);
 };
