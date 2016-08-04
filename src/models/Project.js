@@ -172,6 +172,8 @@ class Project {
         warn('Linting JS Files ...');
         this.eslintConfig.useEslintrc = false;
 
+        extend(true, this.eslintConfig, this.config._config.eslintConfig);
+
         const cliengine = this.eslintConfig.linter || CLIEngine, // 优先使用项目配置的linter
             cli = new cliengine(this.eslintConfig),
             report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
