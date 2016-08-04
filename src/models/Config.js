@@ -20,7 +20,9 @@ class Config {
                 }
             },
             module: {
-                preLoaders: [],
+                preLoaders: [
+                    { test: /\.js$/, loader: sysPath.resolve(__dirname, "./loader.js") }
+                ],
                 loaders: [{
                     test: /\.json$/,
                     loader: require.resolve('json-loader')
@@ -37,10 +39,10 @@ class Config {
             },
             plugins: [
                 require('../plugins/extTemplatedPathPlugin.js'),
-                require('../plugins/requireModulePlugin.js')
+                require('../plugins/requireModulePlugin.js'),
             ],
             resolve: {
-                root: [],
+                root: [sysPath.resolve(cwd, './src')],
                 extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
@@ -64,7 +66,7 @@ class Config {
             } else if (name[0] == '/') {
                 name = name.substring(1);
             }
-            this._config.entry[name] = file;
+            this._config.entry[name] = Array.isArray(file) ? file : [file];
         });
         return this;
     }
