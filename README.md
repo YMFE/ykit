@@ -4,15 +4,15 @@
 
 Ykit是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit基于打包工具[webpack][1]，支持CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS等模块类型的打包。
 
-## 安装
+## 安装(需要在内网环境下)
 
 ```bash
-$ (sudo) npm install ykit -g
+$ (sudo) qnpm install @qnpm/ykit -g 
 ```
 
-或者使用内网仓库，速度更快：
+没有qnpm可以使用内网仓库：
 ```bash
-$ (sudo) npm install ykit -g --registry http://registry.npm.corp.qunar.com/
+$ (sudo) npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 ```
 
 ## 使用
@@ -34,21 +34,20 @@ exports.config = function() {
     ]);
 
     // 自定义命令
-    this.commands.push({
-        name: 'project_cmd',
-        module: {
-            usage: '项目自定义的命令',
-            run: function () {}
+    this.setCommands([
+        {
+            name: 'test-ykit_cmd',
+            module: {
+                usage: '项目自定义命令',
+                run: function () {}
+            }
         }
-    });
+    ])
 
     // 同步开发机配置
-    this.setConfig({
-        syncConfig : {
-            "user": "yuhao.ju",
-            "host" : "192.168.237.71",
-            "path": "/home/q/www/qunarzz.com/ykit-demo/"
-        }
+    this.setSync({
+        host : "192.168.237.71",
+        path: "/home/q/www/qunarzz.com/test-ykit"
     })
 };
 ```
@@ -60,6 +59,12 @@ $ (sudo) ykit server
 ```
 
 请求`prd/`下资源时会自动进行编译打包。
+
+### 启动静态服务并使用代理
+
+```bash
+$ (sudo) ykit server -x
+```
 
 ### 开发环境打包
 
@@ -93,7 +98,18 @@ $ ykit lint
 分别使用eslint/stylelint进行javascript/css代码检测，检测规则依赖于当前配置环境。
 
 ### 更多
-在特定环境下，会有更多不同类型命令，如安装了ykit-hy-config后，会有yo, kami等构建工具命令。
+在特定环境下，会有更多不同类型命令，如安装了ykit-hy-config后，会有yo, kami等构建工具命令。查看所有命令：
+
+```bash
+$ ykit
+```
+
+查看某个命令的参数:
+
+```bash
+$ ykit xxx -h
+```
+
 
 ## API
 ### Node.js API
