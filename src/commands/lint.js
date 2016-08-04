@@ -35,6 +35,8 @@ exports.run = function (options)  {
                     process.exit(1)
                 }
 
+                console.log(sysPath.resolve(__dirname, '../../'));
+
                 const installCmd = 'npm i eslint@2.13.1 stylelint@6.9.0 --registry https://registry.npm.taobao.org';
                 try {
                     log('intalling eslint & stylelint ...')
@@ -62,5 +64,4 @@ exports.run = function (options)  {
             }
         });
     }
-
 }

@@ -7,6 +7,7 @@ let connect = require('connect'),
     moment = require('moment'),
     child_process = require('child_process'),
     inquirer = require('inquirer'),
+    requireg = require('requireg'),
     webpackDevMiddleware = require("webpack-dev-middleware");
 
 let Manager = require('../modules/manager.js');
@@ -39,35 +40,31 @@ exports.run = (options) => {
     let isGoingToStartServer = true
 
     // 检测前置条件
-    if(proxy) {
-        try {
-            require.resolve("jerryproxy-ykit")
-        } catch(e) {
-            var questions = [{
-            	type: 'confirm',
-            	name: 'isInstallingProxy',
-            	message: 'Prxoy plugin not installed yet, wounld you like to install it now?'
-            }];
+    if(proxy && !requireg.resolve("jerryproxy-ykit")) {
+        isGoingToStartServer = false
 
-            inquirer.prompt(questions).then((answers) => {
-                if(answers.isInstallingProxy) {
-                    if(!(process.getuid && process.getuid() === 0)){
-                        warn('安装权限不足, 请使用sudo执行 ykit server -x')
-                        process.exit(1)
-                    }
+        var questions = [{
+        	type: 'confirm',
+        	name: 'isInstallingProxy',
+        	message: 'Prxoy plugin not installed yet, wounld you like to install it now?'
+        }];
 
-                    const installCmd = 'npm i jerryproxy-ykit --registry https://registry.npm.taobao.org';
-                    try {
-                        log('intalling jerryproxy-ykit ...')
-                        log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
-                    } catch (e) {
-                        error(e);
-                    }
+        inquirer.prompt(questions).then((answers) => {
+            if(answers.isInstallingProxy) {
+                if(!(process.getuid && process.getuid() === 0)){
+                    warn('安装权限不足, 请使用sudo执行 ykit server -x')
+                    process.exit(1)
                 }
-            })
 
-            isGoingToStartServer = false
-        }
+                const installCmd = 'npm i jerryproxy-ykit -g --registry https://registry.npm.taobao.org';
+                try {
+                    log('intalling jerryproxy-ykit ...')
+                    log(child_process.execSync(installCmd, {encoding: 'utf8'}));
+                } catch (e) {
+                    error(e);
+                }
+            }
+        })
     }
 
     if(enableLivereload) {
@@ -235,7 +232,7 @@ exports.run = (options) => {
 
         // 代理
         if(proxy) {
-            const proxyPath = sysPath.join(require.resolve('jerryproxy-ykit'), '../bin/jerry.js')
+            const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js')
             child_process.fork(proxyPath);
         }
 
