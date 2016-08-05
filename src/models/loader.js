@@ -12,7 +12,7 @@ module.exports = function(content) {
     *   存在aaa/index.js: require('aaa/index.js') => require('./aaa/index.js')
     *   不存在jquery/index.js: require('jquery/index.js') => require('jquery/index.js')
     **/
-    content = content.replace(/require\([\'|\"]([^.|\'|\"]+)\.(\w+)[\'|\"]\)/igm, function(match, filepath, postfix) {
+    content = content.replace(/require\([\'|\"]([^.|\'|\"]+)\.(\w+)[\'|\"]\)/gm, function(match, filepath, postfix) {
         if(fileExists(path.resolve(self.context, filepath +"." + postfix))) {
             return "require('.\/" + filepath +"." + postfix + "')"
         } else {
@@ -24,7 +24,7 @@ module.exports = function(content) {
     *   存在aaa.js: require('aaa') => require('./aaa')
     *   不存在bbb.js: require('bbb') => require('bbb')
     **/
-    content = content.replace(/require\([\'|\"]([^.|\'|\"]+)[\'|\"]\)/igm, function(match, filepath) {
+    content = content.replace(/require\([\'|\"]([^.|\'|\"]+)[\'|\"]\)/gm, function(match, filepath) {
         // var files = Finder.in(self.context).findFiles(filepath + '.js');
         if(fileExists(path.resolve(self.context, filepath + ".js"))) {
             return "require('.\/" + filepath + "')"
