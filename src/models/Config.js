@@ -97,8 +97,17 @@ class Config {
             } else if (typeof compileConfig === 'function') {
                 nextConfig = compileConfig(Object.assign({}, this._config)) || {};
             }
+
             if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
+            }
+
+            if(nextConfig.resolve.alias) {
+                let alias = nextConfig.resolve.alias
+                Object.keys(alias).map(function(key, i){
+                    alias[key] = sysPath.relative(nextConfig.context, alias[key])
+                })
+                extend(true, this._config.resolve.alias, alias);
             }
 
             this._config.resolve.root.push(nextConfig.context)
