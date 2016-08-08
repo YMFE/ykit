@@ -20,9 +20,7 @@ class Config {
                 }
             },
             module: {
-                preLoaders: [
-                    { test: /\.js$/, loader: sysPath.resolve(__dirname, "./loader.js") }
-                ],
+                preLoaders: [],
                 loaders: [{
                     test: /\.json$/,
                     loader: require.resolve('json-loader')
@@ -35,16 +33,17 @@ class Config {
                         require.resolve('style-loader'),
                         require.resolve('css-loader')
                     )
-                }]
+                }],
+                postLoaders: []
             },
             plugins: [
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
             ],
             resolve: {
-                root: [sysPath.resolve(cwd, './src')],
+                root: [],
                 extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
-                alias: {}
+                alias: {},
             },
             entryExtNames: {
                 css: ['.css'],
@@ -101,6 +100,8 @@ class Config {
             if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
             }
+
+            this._config.resolve.root.push(nextConfig.context)
 
             extend(true, this._config, nextConfig);
         }
