@@ -1,6 +1,6 @@
 {
   "name": "@qnpm/ykit",
-  "version": "0.0.3dev",
+  "version": "0.0.3rc-1",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
@@ -44,7 +44,8 @@
     "stylelint": "^6.9.0",
     "through2": "^2.0.1",
     "webpack": "^1.13.1",
-    "webpack-dev-middleware": "^1.6.1"
+    "webpack-dev-middleware": "^1.6.1",
+    "jerryproxy-ykit": "^1.0.42"
   },
   "repository": {
     "type": "git",
