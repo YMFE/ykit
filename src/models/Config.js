@@ -102,17 +102,17 @@ class Config {
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
             }
 
-            // if(nextConfig.resolve.alias) {
-            //     let alias = nextConfig.resolve.alias
-            //     Object.keys(alias).map(function(key, i){
-            //         console.log(alias[key]);
-            //         alias[key] = sysPath.relative(nextConfig.context, alias[key])
-            //         console.log(nextConfig.context, alias[key]);
-            //     })
-            //     extend(true, this._config.resolve.alias, alias);
-            // }
+            const context = nextConfig.context || this._config.context
+            const relativeContext = sysPath.relative(this._config.cwd, context)
+            if(nextConfig.resolve.alias) {
+                let alias = nextConfig.resolve.alias
+                Object.keys(alias).map(function(key, i){
+                    alias[key] = sysPath.relative(relativeContext, alias[key])
+                })
+                extend(true, this._config.resolve.alias, alias);
+            }
 
-            this._config.resolve.root.push(nextConfig.context)
+            this._config.resolve.root.push(context)
 
             extend(true, this._config, nextConfig);
         }
