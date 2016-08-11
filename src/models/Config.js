@@ -105,17 +105,20 @@ class Config {
             }
 
             // 处理loaders => loader
-            nextConfig.module.loaders.map((loader, i) => {
-                if(loader.loaders && !loader.loader) {
-                    loader.loader = loader.loaders.join("!")
-                }
-                return loader
-            })
+            if(nextConfig.module && nextConfig.module.loaders){
+                nextConfig.module.loaders.map((loader, i) => {
+                    if(loader.loaders && !loader.loader) {
+                        loader.loader = loader.loaders.join("!")
+                    }
+                    return loader
+                })
+            }
+
 
             // 处理alias
             const context = nextConfig.context || this._config.context
             const relativeContext = sysPath.relative(this._config.cwd, context)
-            if(nextConfig.resolve.alias) {
+            if(nextConfig.resolve && nextConfig.resolve.alias) {
                 let alias = nextConfig.resolve.alias
                 Object.keys(alias).map(function(key, i){
                     alias[key] = sysPath.relative(relativeContext, alias[key])
