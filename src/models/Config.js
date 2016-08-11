@@ -92,16 +92,27 @@ class Config {
         if(compileConfig){
             let nextConfig = {}
 
+            // 获取用户定义的compile配置
             if(typeof compileConfig === 'object') {
                 nextConfig = compileConfig
             } else if (typeof compileConfig === 'function') {
                 nextConfig = compileConfig(Object.assign({}, this._config)) || {};
             }
 
+            // 处理context
             if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
             }
 
+            // 处理loaders => loader
+            nextConfig.module.loaders.map((loader, i) => {
+                if(loader.loaders && !loader.loader) {
+                    loader.loader = loader.loaders.join("!")
+                }
+                return loader
+            })
+
+            // 处理alias
             const context = nextConfig.context || this._config.context
             const relativeContext = sysPath.relative(this._config.cwd, context)
             if(nextConfig.resolve.alias) {
