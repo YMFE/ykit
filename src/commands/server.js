@@ -1,6 +1,7 @@
 'use strict';
 
 let connect = require('connect'),
+    fs = require('fs'),
     http = require('http'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
@@ -169,30 +170,31 @@ exports.run = (options) => {
                     projectCwd = sysPath.join(cwd, projectName),
                     middleware = middlewareCache[projectName];
 
+                let compiler
+
                 if (!middleware) {
-                    let project = Manager.getProject(projectCwd);
+                    let project = Manager.getProject(projectCwd, {cache: false});
+
                     if (project.check()) {
-                        let compiler = project.getServerCompiler();
-                        middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
-                            quiet: true,
-                        });
+                        compiler = project.getServerCompiler();
 
-                        // 输出server运行中 error/warning 信息
                         compiler.watch({}, function(err, stats) {
-                            const statsInfo = stats.toJson({errorDetails: false}),
-                                logMethods = {
-                                    errors: error,
-                                    warnings: warn
-                                };
-
-                            Object.keys(logMethods).map((typeId) => {
-                                statsInfo[typeId].map((logInfo) => {
-                                    logMethods[typeId](logInfo);
-                                });
+                            middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
+                                quiet: true,
                             });
 
+                            // 输出server运行中 error/warning 信息
                             req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
                             middleware(req, res, next);
+                        });
+
+                        // 检测config文件变化
+                        const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
+                        fs.watch(projectConfigFilePath, (eventType, filename) => {
+                            if(eventType === 'change') {
+                                // middleware.invalidate()
+                                middlewareCache[projectName] = null
+                            }
                         });
                     } else {
                         next();
@@ -202,7 +204,6 @@ exports.run = (options) => {
                     req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
                     middleware(req, res, next);
                 }
-
             } else {
                 next();
             }

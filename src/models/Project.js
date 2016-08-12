@@ -89,7 +89,7 @@ class Project {
                 }
             }
 
-            let configMethod = require(sysPath.join(this.cwd, this.configFile));
+            let configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
             extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
             extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(this.cwd));
             this.ignores.push(Manager.loadIgnoreFile(this.cwd));
@@ -344,6 +344,11 @@ class Project {
     		str = str.replace(/\/$/, '');
     	}
     	return str;
+    }
+
+    _requireUncached(module){
+        delete require.cache[require.resolve(module)]
+        return require(module)
     }
 }
 

@@ -81,8 +81,8 @@ let Project = require('../models/Project.js'),
 
 let projectCache = {};
 
-exports.getProject = (cwd) => {
-    if (!projectCache[cwd]) {
+exports.getProject = (cwd, options) => {
+    if (!projectCache[cwd] || !options.cache) {
         projectCache[cwd] = new Project(cwd);
     }
     return projectCache[cwd];
