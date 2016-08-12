@@ -160,7 +160,7 @@ exports.run = (options) => {
         	return next();
         });
 
-        app.use((req, res, next) => {
+        app.use(function(req, res, next) {
             let url = req.url,
                 keys = url.split('/');
 
@@ -173,7 +173,9 @@ exports.run = (options) => {
                     let project = Manager.getProject(projectCwd);
                     if (project.check()) {
                         let compiler = project.getServerCompiler();
-                        middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {quiet: true});
+                        middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
+                            quiet: true,
+                        });
 
                         // 输出server运行中 error/warning 信息
                         compiler.watch({}, function(err, stats) {
@@ -188,15 +190,19 @@ exports.run = (options) => {
                                     logMethods[typeId](logInfo);
                                 });
                             });
-                        });
 
+                            req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
+                            middleware(req, res, next);
+                        });
                     } else {
                         next();
                         return;
                     }
+                } else {
+                    req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
+                    middleware(req, res, next);
                 }
-                req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
-                middleware(req, res, next);
+
             } else {
                 next();
             }

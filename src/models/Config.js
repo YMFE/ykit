@@ -39,6 +39,7 @@ class Config {
             plugins: [
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
+                require('../plugins/ProgressBarPlugin.js'),
             ],
             resolve: {
                 root: [],
