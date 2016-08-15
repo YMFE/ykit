@@ -7,12 +7,7 @@ Ykit是一套可配置和可扩展的前端开发工具集，核心功能包括�
 ## 安装(需要在内网环境下)
 
 ```bash
-$ (sudo) qnpm install @qnpm/ykit -g 
-```
-
-没有qnpm可以使用内网仓库：
-```bash
-$ (sudo) npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
+$ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 ```
 
 ## 使用
