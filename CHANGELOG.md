@@ -1,22 +1,21 @@
-v0.0.3rc2 - 2016.8.11
+v0.0.3 - 2016.8.15
 
-* b904079 Fix: 修复 setConfig 中覆盖 loaders 未生效
-
-v0.0.3rc1 - 2016.8.9
-
+* 423d485 Feat: 检测到config文件变化后可以重新生成compiler
 * 0e086ef Feat: 添加 jerryproxy 作为初始组件
 * c9ff1b9 Feat: 兼容 fekit 形式 alias
 * 8c6302c Feat: 默认添加 context 为 resolve.root
+* f4e9a12 Fix: 修复资源过大时第一次渲染失败
+* b904079 Fix: 修复 setConfig 中覆盖 loaders 未生效
 * 53498bb Fix: 修复没有使用到本地 lint 规则
 
 v0.0.2 - 2016.7.30
 
-* f679c63 Fix: 修复在不同 context 下 .cache 路径问题
+* 4380c73 Feat: 兼容 node 0.12.*
 * 6afd43d Feat: 支持设置 context 相对路径
 * bbb5808 Feat: 支持入口每一项为数组
 * 3189f29 Feat: 添加 JerryProxy
 * a8d90ff Fix: 修复 Windows 路径格式问题
-* 4380c73 Feat 兼容 node 0.12.*
+* f679c63 Fix: 修复在不同 context 下 .cache 路径问题
 
 v0.0.1 - 2016.7.15
 
