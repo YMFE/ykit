@@ -168,20 +168,20 @@ exports.run = (options) => {
                 keys = url.split('/');
 
             if (keys[2] == 'prd') {
-                let projectName = keys[1],
+                let compiler,
+                    projectName = keys[1],
                     projectCwd = sysPath.join(cwd, projectName),
                     middleware = middlewareCache[projectName],
                     compilerPromise = promiseCache[projectName];
 
-                let compiler
-
                 if (!middleware && !creatingCompiler) {
+
+                    let resolve,
+                        reject,
+                        project = Manager.getProject(projectCwd, {cache: false});
+
                     creatingCompiler = true
-
-                    let resolve, reject;
                     compilerPromise = promiseCache[projectName] = new Promise((res, rej) => { resolve = res; reject = rej; });
-
-                    let project = Manager.getProject(projectCwd, {cache: false});
 
                     if (project.check()) {
                         compiler = project.getServerCompiler();
