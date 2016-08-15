@@ -100,7 +100,8 @@ exports.run = (options) => {
     }
 
     if(isGoingToStartServer) {
-        let middlewareCache = {};
+        let middlewareCache = {},
+            promiseCache = {};
 
         if (middlewares) {
             middlewares.split('|').forEach((proName) => {
@@ -161,6 +162,7 @@ exports.run = (options) => {
         	return next();
         });
 
+        let creatingCompiler = false
         app.use(function(req, res, next) {
             let url = req.url,
                 keys = url.split('/');
@@ -168,17 +170,24 @@ exports.run = (options) => {
             if (keys[2] == 'prd') {
                 let projectName = keys[1],
                     projectCwd = sysPath.join(cwd, projectName),
-                    middleware = middlewareCache[projectName];
+                    middleware = middlewareCache[projectName],
+                    compilerPromise = promiseCache[projectName];
 
                 let compiler
 
-                if (!middleware) {
+                if (!middleware && !creatingCompiler) {
+                    creatingCompiler = true
+
+                    let resolve, reject;
+                    compilerPromise = promiseCache[projectName] = new Promise((res, rej) => { resolve = res; reject = rej; });
+
                     let project = Manager.getProject(projectCwd, {cache: false});
 
                     if (project.check()) {
                         compiler = project.getServerCompiler();
 
                         compiler.watch({}, function(err, stats) {
+                            // compiler complete
                             middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
                                 quiet: true,
                             });
@@ -186,13 +195,15 @@ exports.run = (options) => {
                             // 输出server运行中 error/warning 信息
                             req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
                             middleware(req, res, next);
+
+                            creatingCompiler = false
+                            resolve(middleware);
                         });
 
                         // 检测config文件变化
                         const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
                         fs.watch(projectConfigFilePath, (eventType, filename) => {
                             if(eventType === 'change') {
-                                // middleware.invalidate()
                                 middlewareCache[projectName] = null
                             }
                         });
@@ -202,7 +213,11 @@ exports.run = (options) => {
                     }
                 } else {
                     req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
-                    middleware(req, res, next);
+                    if(compilerPromise) {
+                        compilerPromise.then((middleware) => {
+                            middleware(req, res, next)
+                        });
+                    }
                 }
             } else {
                 next();
