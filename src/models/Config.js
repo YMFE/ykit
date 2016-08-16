@@ -89,7 +89,7 @@ class Config {
             }
         }
     }
-    setCompile(compileConfig) {
+    setCompiler(compileConfig) {
         if(compileConfig){
             let nextConfig = {}
 

@@ -6,7 +6,7 @@ exports.config = function() {
     ]);
 
     // 编译环境配置
-    this.setCompile({
+    this.setCompiler({
         context: './src'
     });
 

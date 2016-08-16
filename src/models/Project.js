@@ -37,8 +37,9 @@ class Project {
             let userConfig = {
                     cwd: this.cwd,
                     _manager: Manager,
-                    setConfig: this.config.setCompile.bind(this.config), // 兼容旧api
-                    setCompile: this.config.setCompile.bind(this.config),
+                    setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
+                    setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
+                    setCompiler: this.config.setCompiler.bind(this.config),
                     setExports: this.config.setExports.bind(this.config),
                     setGroupExports: this.config.setGroupExports.bind(this.config),
                     setSync: this.config.setSync.bind(this.config),
