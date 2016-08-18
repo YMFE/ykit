@@ -14,10 +14,11 @@ exports.run = function (options)  {
 
     let cwd = options.cwd,
         projectName = options._[1],
-        defaultName = ''
+        defaultName = '',
+        packageJsonPath = sysPath.join(cwd, './package.json')
 
-    if(fileExists('./package.json')){
-        defaultName = JSON.parse(fs.readFileSync('./package.json')).name
+    if(fileExists(packageJsonPath)){
+        defaultName = JSON.parse(fs.readFileSync(packageJsonPath)).name
     } else {
         defaultName = sysPath.basename(cwd)
     }
@@ -45,13 +46,13 @@ exports.run = function (options)  {
         let writePackageJsonStream;
 
         // 如果没有package.json，先添加package.json
-        if(answers.name){
+        if(!fileExists(packageJsonPath)){
             writePackageJsonStream = createPakcageJson();
         }
 
         if(!writePackageJsonStream) {
             createConfigFile(answers.type);
-            installDependencies();
+            installDependencies(answers.type);
         } else {
             writePackageJsonStream.on('finish', () => {
                 log('Successfully created package.json file in ' + cwd);
