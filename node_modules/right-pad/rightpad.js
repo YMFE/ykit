@@ -16,7 +16,7 @@ exports = module.exports = function rightPad (_string, _length, _char) {
   }
 
   var i = -1;
-  _length = _length - _string.length
+  _length = _length - _string.length;
   if (!_char && _char !== 0) {
     _char = ' ';
   }
@@ -25,4 +25,4 @@ exports = module.exports = function rightPad (_string, _length, _char) {
   }
 
   return _string;
-};
+}
