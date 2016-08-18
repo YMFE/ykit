@@ -4,16 +4,12 @@ const webpack = require("webpack");
 const formatOutput = require('./tools/format-output.js');
 
 function DashboardPlugin(handler) {
-    this.logContent = null;
+
 }
 
 DashboardPlugin.prototype.apply = function(compiler) {
     var self = this;
     var handler = function(dataArr) {
-
-        if(self.logContent) {
-            return
-        }
 
         dataArr.forEach(function(data) {
             switch (data.type) {
@@ -64,12 +60,14 @@ DashboardPlugin.prototype.apply = function(compiler) {
                             }
                         };
                         if (stats.hasErrors()) {
-                            error('Failed');
+                            error('Compile Failed.');
+                        } else {
+                            success('Compile Succeed.')
                         }
                         // self.logText.log(formatOutput(stats));
                         // self.moduleTable.setData(formatModules(stats));
                         // self.assetTable.setData(formatAssets(stats));
-                        self.logContent = formatOutput(stats);
+                        log(formatOutput(stats));
                         // console.log(formatModules(stats));
                         // console.log(formatAssets(stats));
                         break;
@@ -91,10 +89,6 @@ DashboardPlugin.prototype.apply = function(compiler) {
                 //     }
             }
         });
-
-        if(self.logContent) {
-            log(self.logContent)
-        }
     };
 
     compiler.apply(new webpack.ProgressPlugin(function(percent, msg) {
