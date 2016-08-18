@@ -174,11 +174,11 @@ exports.run = (options) => {
                     middleware = middlewareCache[projectName],
                     compilerPromise = promiseCache[projectName];
 
+                req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
                 if (!middleware && !creatingCompiler) {
-
-                    let resolve,
-                        reject,
-                        project = Manager.getProject(projectCwd, {cache: false});
+                    let project = Manager.getProject(projectCwd, {cache: false}),
+                        resolve,
+                        reject;
 
                     creatingCompiler = true
                     compilerPromise = promiseCache[projectName] = new Promise((res, rej) => { resolve = res; reject = rej; });
@@ -193,10 +193,10 @@ exports.run = (options) => {
                             });
 
                             // 输出server运行中 error/warning 信息
-                            req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
                             middleware(req, res, next);
 
                             creatingCompiler = false
+
                             resolve(middleware);
                         });
 
@@ -212,11 +212,12 @@ exports.run = (options) => {
                         return;
                     }
                 } else {
-                    req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
                     if(compilerPromise) {
                         compilerPromise.then((middleware) => {
                             middleware(req, res, next)
                         });
+                    } else {
+                        next()
                     }
                 }
             } else {
