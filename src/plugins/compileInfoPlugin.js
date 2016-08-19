@@ -67,7 +67,7 @@ DashboardPlugin.prototype.apply = function(compiler) {
                         // self.logText.log(formatOutput(stats));
                         // self.moduleTable.setData(formatModules(stats));
                         // self.assetTable.setData(formatAssets(stats));
-                        log(formatOutput(stats));
+                        console.log(formatOutput(stats));
                         // console.log(formatModules(stats));
                         // console.log(formatAssets(stats));
                         break;
