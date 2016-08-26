@@ -1,3 +1,12 @@
+v0.0.4 - 2016.8.26
+
+* 1ca6010 aa9a1e2 7483355 Feat: 优化编译报错 log
+* d1c8e9e Revise: json-loader exclude node_modules
+* 744f7f4 Revise: config api setCompile 改为 setCompiler
+* fa170a3 Revise: 初始化时使用内网环境
+* 7136403 Fix: 修复404请求一直 pending
+* e0462e5 Fix: 修复 init 命令重写 package.json 问题
+
 v0.0.3 - 2016.8.15
 
 * 423d485 Feat: 检测到config文件变化后可以重新生成compiler
