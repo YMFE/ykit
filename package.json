@@ -1,6 +1,6 @@
 {
   "name": "@qnpm/ykit",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
@@ -22,6 +22,7 @@
     "globby": "^5.0.0",
     "html-loader": "^0.4.3",
     "inquirer": "^1.1.1",
+    "jerryproxy-ykit": "^1.0.42",
     "js-yaml": "^3.6.1",
     "json-loader": "^0.5.4",
     "json5": "^0.5.0",
@@ -43,8 +44,7 @@
     "stylelint": "^6.9.0",
     "through2": "^2.0.1",
     "webpack": "^1.13.1",
-    "webpack-dev-middleware": "^1.6.1",
-    "jerryproxy-ykit": "^1.0.42"
+    "webpack-dev-middleware": "^1.6.1"
   },
   "repository": {
     "type": "git",
