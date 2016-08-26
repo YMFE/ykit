@@ -4,7 +4,7 @@
 
 Ykit是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit基于打包工具[webpack][1]，支持CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS等模块类型的打包。
 
-**demo工程**
+## demo工程
 - [ykit-seed-avalon][2]: 使用Avalon1.4.7、OniUI0.5.3，fekit格式输出
 - [ykit-seed-hy][3]: Ykit结合Hy Demo, 包括路由功能、滚动组件、手势功能
 - [ykit-seed-react][4]: React示例，支持ES6、SASS、LESS，fekit格式输出
