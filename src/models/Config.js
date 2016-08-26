@@ -23,6 +23,7 @@ class Config {
                 preLoaders: [],
                 loaders: [{
                     test: /\.json$/,
+                    exclude: /node_modules/,
                     loader: require.resolve('json-loader')
                 }, {
                     test: /\.(html|string|tpl)$/,
