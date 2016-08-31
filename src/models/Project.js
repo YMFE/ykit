@@ -6,6 +6,8 @@ let Config = require('./Config.js'),
     Manager = require('../modules/manager.js'),
     ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+let UtilFs = require('../utils/fs.js');
+
 class Project {
     constructor(cwd) {
         this.cwd = cwd;
@@ -20,6 +22,7 @@ class Project {
         })[0] || '';
         this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*"];
+        this.cachePath = this._isCacheDirExists(cwd) || ''
 
         this.readConfig();
     }
@@ -222,6 +225,7 @@ class Project {
 
     pack(opt, callback) {
         let config = this.config.getConfig();
+        UtilFs.deleteFolderRecursive(this.cachePath)
 
         let process = () => {
 

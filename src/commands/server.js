@@ -12,6 +12,7 @@ let connect = require('connect'),
     webpackDevMiddleware = require("webpack-dev-middleware");
 
 let Manager = require('../modules/manager.js');
+let UtilFs = require('../utils/fs.js');
 
 exports.usage = "开发服务";
 
@@ -205,6 +206,7 @@ exports.run = (options) => {
                         fs.watch(projectConfigFilePath, (eventType, filename) => {
                             if(eventType === 'change') {
                                 middlewareCache[projectName] = null
+                                UtilFs.deleteFolderRecursive(project.cachePath)
                             }
                         });
                     } else {
