@@ -3,6 +3,7 @@
 let connect = require('connect'),
     fs = require('fs'),
     http = require('http'),
+    https = require('https'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
@@ -25,8 +26,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('m', '加载项目中间件');
     optimist.alias('l', 'livereload');
     optimist.describe('l', '自动刷新');
-    // optimist.alias('s', 'https');
-    // optimist.describe('s', '使用https协议');
+    optimist.alias('s', 'https');
+    optimist.describe('s', '使用https协议');
 };
 
 exports.run = (options) => {
@@ -35,7 +36,7 @@ exports.run = (options) => {
         hot = options.h || options.hot,
         proxy = options.x || options.proxy,
         middlewares = options.m || options.middlewares,
-        https = options.s || options.https,
+        isHttps = options.s || options.https,
         enableLivereload = options.l || options.livereload,
         port = options.p || options.port || 80;
 
@@ -242,8 +243,19 @@ exports.run = (options) => {
 
         app.use(serveIndex(cwd));
 
-        const httpServer = http.createServer(app)
-        httpServer.on('error', (e) => {
+        let server
+
+        if(!isHttps) {
+            server = http.createServer(app)
+        } else {
+            const httpsOpts = {
+                key : fs.readFileSync(sysPath.join(__dirname, '../config/https/server.key')),
+                cert : fs.readFileSync(sysPath.join(__dirname, '../config/https/server.crt'))
+            }
+            server = https.createServer(httpsOpts, app)
+        }
+
+        server.on('error', (e) => {
             if(e.code === 'EACCES'){
                 warn('权限不足, 请使用sudo执行')
             } else if(e.code === 'EADDRINUSE'){
@@ -251,7 +263,7 @@ exports.run = (options) => {
             }
             process.exit(1)
         })
-        httpServer.listen(port, () => {
+        server.listen(port, () => {
             warn('Listening on port ' + port);
         })
 
