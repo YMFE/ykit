@@ -20,8 +20,7 @@ class Project {
         })[0] || '';
         this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*"];
-        this.cachePath = sysPath.join(cwd, '.cache');
-        mkdirp.sync(this.cachePath);
+
         this.readConfig();
     }
     check() {
@@ -35,23 +34,23 @@ class Project {
     readConfig(options) {
         if (this.check()) {
             let userConfig = {
-                    cwd: this.cwd,
-                    _manager: Manager,
-                    setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
-                    setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
-                    setCompiler: this.config.setCompiler.bind(this.config),
-                    setExports: this.config.setExports.bind(this.config),
-                    setGroupExports: this.config.setGroupExports.bind(this.config),
-                    setSync: this.config.setSync.bind(this.config),
-                    setCommands: this.setCommands.bind(this),
-                    config: this.config.getConfig(),
-                    commands: this.commands,
-                    middlewares: this.middlewares,
-                    packCallbacks: this.packCallbacks,
-                    eslintConfig: this.eslintConfig,
-                    stylelintConfig: this.stylelintConfig
-                },
-                globalConfigs = Manager.readRC().configs || [];
+                cwd: this.cwd,
+                _manager: Manager,
+                setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
+                setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
+                setCompiler: this.config.setCompiler.bind(this.config),
+                setExports: this.config.setExports.bind(this.config),
+                setGroupExports: this.config.setGroupExports.bind(this.config),
+                setSync: this.config.setSync.bind(this.config),
+                setCommands: this.setCommands.bind(this),
+                config: this.config.getConfig(),
+                commands: this.commands,
+                middlewares: this.middlewares,
+                packCallbacks: this.packCallbacks,
+                eslintConfig: this.eslintConfig,
+                stylelintConfig: this.stylelintConfig
+            },
+            globalConfigs = Manager.readRC().configs || [];
 
             this.options = options = options || {};
             options.ExtractTextPlugin = ExtractTextPlugin;
@@ -130,8 +129,17 @@ class Project {
                 entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
                 extName = sysPath.extname(entry);
 
+            // 放在cache目录下
+            const cachePath = this._isCacheDirExists(this.cwd)
+            if(!cachePath) {
+                const newCachePath = sysPath.join(this.cwd, '.ykit_cache')
+
+                this.cachePath = newCachePath
+                mkdirp.sync(newCachePath)
+            }
+
             if (cssExtNames.indexOf(extName) > -1) {
-                let requireFilePath = entries[key] = './' + sysPath.join(contextPathRelativeToCwd, '/.cache', entry + '.js'),
+                let requireFilePath = entries[key] = './' + sysPath.join(contextPathRelativeToCwd, '/.ykit_cache', entry + '.js'),
                     cacheFilePath = sysPath.join(config.context, requireFilePath);
 
                 mkdirp.sync(sysPath.dirname(cacheFilePath));
@@ -350,6 +358,26 @@ class Project {
     _requireUncached(module){
         delete require.cache[require.resolve(module)]
         return require(module)
+    }
+
+    _isCacheDirExists(cwd) {
+        let isCacheExists, isYkitCacheExists;
+
+        try {
+            fs.statSync(sysPath.join(cwd, '.ykit_cache'))
+            return sysPath.join(cwd, '.ykit_cache')
+        } catch (e) {
+            isYkitCacheExists = false
+        }
+
+        try {
+            fs.statSync(sysPath.join(cwd, '.cache'))
+            return sysPath.join(cwd, '.cache')
+        } catch (e) {
+            isCacheExists == false
+        }
+
+        return false
     }
 }
 
