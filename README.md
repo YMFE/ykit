@@ -151,6 +151,9 @@ grunt.initConfig({
 grunt.loadNpmTasks('ykit');
 ```
 
+## 为Ykit贡献代码
+请参考 [文档][5]
+
 ## 和webpack相比有和不同？
 webpack配置项很多，并且有些容易让人困惑。相比于用webpack复杂的配置，Ykit更简单，以下是一些对比：
 
@@ -160,8 +163,11 @@ webpack配置项很多，并且有些容易让人困惑。相比于用webpack复
 | 入口只能为Javascript，如果想要引CSS只能把引用写在Javascript里 | 封装了入口配置，支持CSS/SCSS/LESS/...作为入口 |
 | 每添加一个loader/plugin都要查文档如何使用 | 通过定制不同场景，已经内置好loader/plugin，不需要手动添加和配置 |
 | 需要满足当前Qunar开发/发布机制，如上传开发机，生成版本号等 | 安装ykit-config-qunar，则这些功能都已内置 |
+| 起本地服务时会编译所有入口资源，第一次加载过慢 | 默认按请求编译，每次编译的结果仍会缓存 |
+| 每次打包必须全部资源一起打包，项目庞大时可能崩溃 | 可设置export分组，按组打包，不必每次打包全部 |
 
   [1]: https://github.com/webpack/webpack
   [2]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-avalon
   [3]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-hy
   [4]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-react
+  [5]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/ykit-dev
