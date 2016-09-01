@@ -187,7 +187,8 @@ exports.run = (options) => {
                     urlNoVer = urlNoVer[0] === '/' ? urlNoVer.slice(1) : urlNoVer
 
                     // 从编译cache中取，map文件不必生成重复middleware
-                    let middleware = middlewareCache[urlNoVer.replace('.map', '')];
+                    const cacheId = sysPath.join(projectName, urlNoVer.replace('.map', ''))
+                    let middleware = middlewareCache[cacheId]
 
                     if (!middleware) {
                         let project = Manager.getProject(projectCwd, {cache: false});
@@ -222,11 +223,11 @@ exports.run = (options) => {
 
                             compiler.watch({}, function(err, stats) {
                                 // compiler complete
-                                middleware = middlewareCache[urlNoVer] = webpackDevMiddleware(compiler, {quiet: true,});
+                                middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true,});
                                 middleware(req, res, next);
                             });
                             // 检测config文件变化
-                            watchConfig(project, middleware, middlewareCache, urlNoVer)
+                            watchConfig(project, middleware, middlewareCache, cacheId)
                         } else {
                             next()
                         }
