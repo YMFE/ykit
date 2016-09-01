@@ -312,13 +312,18 @@ class Project {
         return this;
     }
 
-    getServerCompiler() {
+    getServerCompiler(handler) {
         let config = this.config.getConfig();
         config.output = {
             path: '/cache',
             filename: '[name][ext]'
         };
         this.fixCss();
+
+        if(handler && typeof handler === 'function') {
+            config = handler(config)
+        }
+
         return webpack(config);
     }
 

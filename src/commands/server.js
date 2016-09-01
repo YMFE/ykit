@@ -26,6 +26,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('m', '加载项目中间件');
     optimist.alias('l', 'livereload');
     optimist.describe('l', '自动刷新');
+    optimist.alias('a', 'all');
+    optimist.describe('a', '整体编译');
     optimist.alias('s', 'https');
     optimist.describe('s', '使用https协议');
 };
@@ -37,6 +39,7 @@ exports.run = (options) => {
         proxy = options.x || options.proxy,
         middlewares = options.m || options.middlewares,
         isHttps = options.s || options.https,
+        isCompilingAll = options.a || options.all,
         enableLivereload = options.l || options.livereload,
         port = options.p || options.port || 80;
 
@@ -164,67 +167,115 @@ exports.run = (options) => {
         	return next();
         });
 
+        // compiler
         let creatingCompiler = false
         app.use(function(req, res, next) {
             let url = req.url,
-                keys = url.split('/');
+                keys = url.split('/'),
+                compiler = null,
+                projectName = keys[1],
+                projectCwd = sysPath.join(cwd, projectName);
 
-            if (keys[2] == 'prd') {
-                let compiler,
-                    projectName = keys[1],
-                    projectCwd = sysPath.join(cwd, projectName),
-                    middleware = middlewareCache[projectName],
-                    compilerPromise = promiseCache[projectName];
-
+            // 处理prd资源
+            if(keys[2] === 'prd') {
                 req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
-                if (!middleware && !creatingCompiler) {
-                    let project = Manager.getProject(projectCwd, {cache: false}),
-                        resolve,
-                        reject;
 
-                    creatingCompiler = true
-                    compilerPromise = promiseCache[projectName] = new Promise((res, rej) => { resolve = res; reject = rej; });
+                // 只编译所请求的资源
+                if(!isCompilingAll) {
+                    // 去掉版本号和打头的"/"
+                    let urlNoVer = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '')
+                    urlNoVer = urlNoVer[0] === '/' ? urlNoVer.slice(1) : urlNoVer
 
-                    if (project.check()) {
-                        compiler = project.getServerCompiler();
+                    // 从编译cache中取，map文件不必生成重复middleware
+                    let middleware = middlewareCache[urlNoVer.replace('.map', '')];
 
-                        compiler.watch({}, function(err, stats) {
-                            // compiler complete
-                            middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {
-                                quiet: true,
+                    if (!middleware) {
+                        let project = Manager.getProject(projectCwd, {cache: false});
+
+                        if (project.check()) {
+                            compiler = project.getServerCompiler(function(config) {
+                                let nextConfig = Object.assign({}, config)
+                                Object.keys(config.entry).map((entryKey) => {
+                                    const entryItem = config.entry[entryKey]
+
+                                    let isRequestingEntry = false,
+                                        entryPath = ''
+
+                                    if(Array.isArray(entryItem)) {
+                                        entryPath = entryItem[entryItem.length - 1]
+                                    } else {
+                                        entryPath = entryItem
+                                    }
+
+                                    const cssReg = new RegExp(config.entryExtNames.css.join('|'))
+                                    entryPath = entryPath.replace(cssReg, '.css') // 将入口的.scss/.less后缀替换为.css
+                                    isRequestingEntry = entryPath.indexOf(urlNoVer) > -1
+
+                                    if(isRequestingEntry) {
+                                        nextConfig.entry = {
+                                            [entryKey]: entryItem
+                                        }
+                                    }
+                                })
+                                return nextConfig
                             });
 
-                            // 输出server运行中 error/warning 信息
-                            middleware(req, res, next);
-
-                            creatingCompiler = false
-
-                            resolve(middleware);
-                        });
-
-                        // 检测config文件变化
-                        const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
-                        fs.watch(projectConfigFilePath, (eventType, filename) => {
-                            if(eventType === 'change') {
-                                middlewareCache[projectName] = null
-                                UtilFs.deleteFolderRecursive(project.cachePath)
-                            }
-                        });
+                            compiler.watch({}, function(err, stats) {
+                                // compiler complete
+                                middleware = middlewareCache[urlNoVer] = webpackDevMiddleware(compiler, {quiet: true,});
+                                middleware(req, res, next);
+                            });
+                            // 检测config文件变化
+                            watchConfig(project, middleware, middlewareCache, urlNoVer)
+                        } else {
+                            next()
+                        }
                     } else {
-                        next();
-                        return;
+                        middleware(req, res, next)
                     }
-                } else {
-                    if(compilerPromise) {
-                        compilerPromise.then((middleware) => {
-                            middleware(req, res, next)
-                        });
+                } else { // 一次编译全部资源
+                    let middleware = middlewareCache[projectName],
+                        compilerPromise = promiseCache[projectName];
+
+                    if (!middleware && !creatingCompiler) {
+                        let project = Manager.getProject(projectCwd, {cache: false}),
+                            resolve,
+                            reject;
+
+                        creatingCompiler = true
+                        compilerPromise = promiseCache[projectName] = new Promise((res, rej) => { resolve = res; reject = rej; });
+
+                        if (project.check()) {
+                            compiler = project.getServerCompiler(function(config) {
+                                return config
+                            });
+
+                            compiler.watch({}, function(err, stats) {
+                                // compiler complete
+                                middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {quiet: true});
+
+                                // 输出server运行中 error/warning 信息
+                                creatingCompiler = false
+                                middleware(req, res, next);
+                                resolve(middleware);
+                            });
+                            // 检测config文件变化
+                            watchConfig(project, middleware, middlewareCache, projectName)
+                        } else {
+                            next()
+                        }
                     } else {
-                        next()
+                        if(compilerPromise) {
+                            compilerPromise.then((middleware) => {
+                                middleware(req, res, next)
+                            });
+                        } else {
+                            next()
+                        }
                     }
                 }
-            } else {
-                next();
+            } else { // 非prd资源不做处理
+                next()
             }
         });
 
@@ -278,5 +329,15 @@ exports.run = (options) => {
             process.setuid(parseInt(process.env['SUDO_UID']));
         }
 
+        // 监测配置文件变化
+        function watchConfig(project, middleware, caches, cacheName) {
+            const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
+            fs.watch(projectConfigFilePath, (eventType, filename) => {
+                if(eventType === 'change') {
+                    caches[cacheName] = null
+                    UtilFs.deleteFolderRecursive(project.cachePath)
+                }
+            });
+        }
     }
 };
