@@ -1,6 +1,7 @@
 "use strict";
 
 const webpack = require("webpack");
+const moment = require("moment");
 const formatOutput = require('./tools/format-output.js');
 
 function DashboardPlugin(handler) {
@@ -59,11 +60,16 @@ DashboardPlugin.prototype.apply = function(compiler) {
                                 return data.value.data;
                             }
                         };
+
+                        const dateFormat = 'YY.MM.DD HH:mm:ss';
                         if (stats.hasErrors()) {
+                            process.stdout.write("\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m")
                             error('Compile Failed.');
                         } else {
+                            process.stdout.write("\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m")
                             success('Compile Succeed.')
                         }
+
                         // self.logText.log(formatOutput(stats));
                         // self.moduleTable.setData(formatModules(stats));
                         // self.assetTable.setData(formatAssets(stats));
