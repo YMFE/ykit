@@ -25,6 +25,14 @@ let initOptions = (cmd) => {
 
 let cli = module.exports = {
     run: (cmdName) => {
+        if(cmdName === '-v' || cmdName === '--version') {
+            log(packageJSON.version)
+            return
+        } else if(cmdName === '-h' || cmdName === '--help') {
+            cli.help()
+            return
+        }
+
         let project = Manager.getProject(process.cwd()),
             cmd = project.commands
             .filter((item) => item.name == cmdName)[0];
