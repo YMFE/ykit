@@ -99,7 +99,7 @@ class Config {
             if(typeof compileConfig === 'object') {
                 nextConfig = compileConfig
             } else if (typeof compileConfig === 'function') {
-                nextConfig = compileConfig(Object.assign({}, this._config)) || {};
+                nextConfig = compileConfig(extend(true, {}, this._config)) || {};
             }
 
             // 处理context
