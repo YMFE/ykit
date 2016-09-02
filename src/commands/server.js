@@ -195,7 +195,7 @@ exports.run = (options) => {
 
                         if (project.check()) {
                             compiler = project.getServerCompiler(function(config) {
-                                let nextConfig = extend(true, {}, config)
+                                let nextConfig = extend({}, config)
                                 Object.keys(config.entry).map((entryKey) => {
                                     const entryItem = config.entry[entryKey]
 
