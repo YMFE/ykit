@@ -245,6 +245,10 @@ class Project {
 
         let process = () => {
 
+            if (opt.sourcemap) {
+                config.devtool = opt.sourcemap
+            }
+
             if (opt.min) {
                 config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                     compress: {
@@ -252,15 +256,12 @@ class Project {
                     }
                 }));
                 config.output = config.output.prd;
+                config.devtool = ''
             } else {
                 config.output = config.output.dev;
             }
 
             this.fixCss();
-
-            if (opt.sourcemap) {
-                config.devtool = opt.sourcemap
-            }
 
             if(opt.clean) {
                 try {
