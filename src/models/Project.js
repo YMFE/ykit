@@ -66,15 +66,15 @@ class Project {
                 const localSearchPath = sysPath.join(this.cwd, 'node_modules/', moduleName)
                 const localSearchPathQnpm = sysPath.join(this.cwd, 'node_modules/', '@qnpm/' + moduleName)
 
-                if(requireg.resolve(moduleName)) {
-                    modulePath = requireg.resolve(moduleName)
-                } else if(requireg.resolve(localSearchPath)) {
+                if(requireg.resolve(localSearchPath)) {
                     modulePath = localSearchPath
-                } else if(requireg.resolve('@qnpm/' + moduleName)) {
-                    modulePath = requireg.resolve('@qnpm/' + moduleName)
-                    moduleName = '@qnpm/' + moduleName
+                } else if(requireg.resolve(moduleName)) {
+                    modulePath = requireg.resolve(moduleName)
                 } else if(requireg.resolve(localSearchPathQnpm)) {
                     modulePath = localSearchPathQnpm
+                    moduleName = '@qnpm/' + moduleName
+                } else if(requireg.resolve('@qnpm/' + moduleName)) {
+                    modulePath = requireg.resolve('@qnpm/' + moduleName)
                     moduleName = '@qnpm/' + moduleName
                 }
 
