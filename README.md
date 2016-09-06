@@ -33,9 +33,9 @@ $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 
 clone下来即可用ykit运行，具体看demo中README.md。
 
-### others
+### Others
 
-Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提issue，或直接qtalk找yuhao.ju。也欢迎为YKit[贡献代码][10]。
+Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提issue，或直接qtalk找yuhao.ju，也欢迎为YKit[贡献代码][10]。
 
 [1]: https://github.com/webpack/webpack
 [2]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/project-init
