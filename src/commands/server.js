@@ -333,11 +333,9 @@ exports.run = (options) => {
         // 监测配置文件变化
         function watchConfig(project, middleware, caches, cacheName) {
             const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
-            fs.watch(projectConfigFilePath, (eventType, filename) => {
-                if(eventType === 'change') {
-                    caches[cacheName] = null
-                    UtilFs.deleteFolderRecursive(project.cachePath)
-                }
+            fs.watchFile(projectConfigFilePath, {interval: 2000}, () => {
+                caches[cacheName] = null
+                UtilFs.deleteFolderRecursive(project.cachePath)
             });
         }
     }
