@@ -335,7 +335,7 @@ exports.run = (options) => {
             const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
             fs.watchFile(projectConfigFilePath, {interval: 2000}, () => {
                 caches[cacheName] = null
-                UtilFs.deleteFolderRecursive(project.cachePath)
+                UtilFs.deleteFolderRecursive(project.cachePath, true)
             });
         }
     }

@@ -1,6 +1,6 @@
 const fs = require('fs');
 module.exports = {
-    deleteFolderRecursive: function(path) {
+    deleteFolderRecursive: function(path, remainRootDir) {
         const self = this
         if (fs.existsSync(path)) {
             fs.readdirSync(path).forEach(function(file, index) {
@@ -11,7 +11,10 @@ module.exports = {
                     fs.unlinkSync(curPath);
                 }
             });
-            fs.rmdirSync(path);
+
+            if(!remainRootDir) {
+                fs.rmdirSync(path);
+            }
         }
     }
 }
