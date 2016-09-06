@@ -25,7 +25,7 @@ class Project {
                             && this.configFile.match(/ykit\.([\w\.]+)\.js/)
                             && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1]
                             && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
-        this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*"];
+        this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*", ".ykit_cache/**/*"];
         this.cachePath = this._isCacheDirExists(cwd) || ''
 
         this.readConfig();
@@ -37,6 +37,12 @@ class Project {
         if(Array.isArray(nextCommands)) {
             this.commands = this.commands.concat(nextCommands)
         }
+    }
+    setEslintConfig(projectEslintConfig) {
+        extend(true, this.eslintConfig, projectEslintConfig);
+    }
+    setStylelintConfig(projectStylelintConfig) {
+        extend(true, this.stylelintConfig, projectStylelintConfig);
     }
     readConfig(options) {
         if (this.check()) {
@@ -50,6 +56,8 @@ class Project {
                 setGroupExports: this.config.setGroupExports.bind(this.config),
                 setSync: this.config.setSync.bind(this.config),
                 setCommands: this.setCommands.bind(this),
+                setEslintConfig: this.setEslintConfig.bind(this),
+                setStylelintConfig: this.setStylelintConfig.bind(this),
                 config: this.config.getConfig(),
                 commands: this.commands,
                 middlewares: this.middlewares,
@@ -199,15 +207,25 @@ class Project {
     }
 
     lint(dir, callback) {
-        const CLIEngine = require('eslint').CLIEngine;
-
         warn('Linting JS Files ...');
-        this.eslintConfig.useEslintrc = false;
 
-        extend(true, this.eslintConfig, this.config._config.eslintConfig);
+        let CLIEngine = require('eslint').CLIEngine;
 
-        const cliengine = this.eslintConfig.linter || CLIEngine, // 优先使用项目配置的linter
-            cli = new cliengine(this.eslintConfig),
+        // 如果有本地eslint优先使用本地eslint
+        if(requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint'))){
+            CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine
+        }
+
+        // prepare eslint config file
+        const configFilePath = sysPath.join(__dirname, '../../cache' ,'.eslintrc.json')
+        fs.writeFileSync(
+            configFilePath,
+            JSON.stringify(this.eslintConfig)
+        );
+        this.eslintConfig.useEslintrc = false
+        this.eslintConfig.configFile = configFilePath
+
+        const cli = new CLIEngine(this.eslintConfig),
             report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
             formatter = cli.getFormatter();
 
