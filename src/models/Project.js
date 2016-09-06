@@ -270,7 +270,7 @@ class Project {
 
             if(opt.clean) {
                 try {
-                    childProcess.execSync('rm -rf ' + config.output.path);
+                    UtilFs.deleteFolderRecursive(config.output.path)
                 } catch (e) {}
             }
 
