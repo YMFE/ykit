@@ -30,12 +30,24 @@ exports.run = function (options)  {
     }, {
         type: 'list',
         name: 'type',
-        message: 'config type:',
+        message: 'project type:',
         choices: [
-            'qunar',
-            'hy',
-            'xta',
-            'none',
+            {
+                name: 'qunar - 支持sass/less，实现资源带版本号，fekit_moudles打包，sync命令等',
+                value: 'qunar'
+            },
+            {
+                name: 'fekit - 主要用于fekit项目迁移，兼容fekit配置和模块化语法等',
+                value: 'fekit'
+            },
+            {
+                name: 'hy    - 支持es6，更多功能仍在开发中',
+                value: 'hy'
+            },
+            {
+                name: 'basic - 默认基础配置',
+                value: 'basic'
+            },
         ]
     }]
 
@@ -69,7 +81,7 @@ exports.run = function (options)  {
         }
 
         function createConfigFile(configType) {
-            const configFileName = configType !== 'none' ? 'ykit.' + configType + '.js' : 'ykit.js';
+            const configFileName = configType !== 'basic' ? 'ykit.' + configType + '.js' : 'ykit.js';
 
             if(!fileExists('./' + configFileName)) {
                 const stream = fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js'))
@@ -83,12 +95,12 @@ exports.run = function (options)  {
         }
 
         function installDependencies(configType) {
-            if(configType === 'none') {
+            if(configType === 'basic') {
                 return
             }
 
             const  packageName = 'ykit-config-' + configType,
-                installConfigPackageCmd = 'npm i --save --registry http://registry.npm.corp.qunar.com/ git+ssh://git@gitlab.corp.qunar.com:mfe/ykit-config-' + configType + '.git';
+                installConfigPackageCmd = 'npm i --save-dev --registry http://registry.npm.corp.qunar.com/ @qnpm/ykit-config-' + configType;
 
             log('Installing ' + packageName + '...');
             execSync(installConfigPackageCmd);

@@ -18,10 +18,13 @@ class Project {
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
         this.stylelintConfig = require('../config/stylelint.json');
-        this.configFile = globby.sync('ykit.*.js', {
+        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], {
             cwd: this.cwd
         })[0] || '';
-        this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
+        this.extendConfig = this.configFile
+                            && this.configFile.match(/ykit\.([\w\.]+)\.js/)
+                            && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1]
+                            && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*"];
         this.cachePath = this._isCacheDirExists(cwd) || ''
 
@@ -103,7 +106,9 @@ class Project {
                     } else if ((Manager.reloadRC().configs || []).some((item) => item.name == moduleName)) {
                         return this.readConfig(options);
                     } else {
-                        warn('没有找到 ykit-config-' + this.extendConfig + ' 配置模块！');
+                        if(this.extendConfig) {
+                            warn('没有找到 ykit-config-' + this.extendConfig + ' 配置模块！');
+                        }
                     }
                 }
             }
