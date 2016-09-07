@@ -106,7 +106,8 @@ exports.run = (options) => {
 
     if(isGoingToStartServer) {
         let middlewareCache = {},
-            promiseCache = {};
+            promiseCache = {},
+            watchCacheNames = {};
 
         if (middlewares) {
             middlewares.split('|').forEach((proName) => {
@@ -227,7 +228,7 @@ exports.run = (options) => {
                                 middleware(req, res, next);
                             });
                             // 检测config文件变化
-                            watchConfig(project, middleware, middlewareCache, cacheId)
+                            watchConfig(project, middleware, cacheId)
                         } else {
                             next()
                         }
@@ -261,7 +262,7 @@ exports.run = (options) => {
                                 resolve(middleware);
                             });
                             // 检测config文件变化
-                            watchConfig(project, middleware, middlewareCache, projectName)
+                            watchConfig(project, middleware, projectName)
                         } else {
                             next()
                         }
@@ -331,12 +332,23 @@ exports.run = (options) => {
         }
 
         // 监测配置文件变化
-        function watchConfig(project, middleware, caches, cacheName) {
-            const projectConfigFilePath = sysPath.resolve(project.config._config.cwd, project.configFile)
-            fs.watchFile(projectConfigFilePath, {interval: 2000}, () => {
-                caches[cacheName] = null
-                UtilFs.deleteFolderRecursive(project.cachePath, true)
-            });
+        function watchConfig(project, middleware, cacheName) {
+            const cwdConfigPath = sysPath.resolve(project.config._config.cwd, project.configFile)
+
+            if(watchCacheNames[cwdConfigPath]) {
+                if(watchCacheNames[cwdConfigPath].indexOf(cacheName) === -1) {
+                    watchCacheNames[cwdConfigPath].push(cacheName)
+                }
+            } else {
+                watchCacheNames[cwdConfigPath] = [cacheName]
+
+                fs.watchFile(cwdConfigPath, {interval: 2000}, () => {
+                    watchCacheNames[cwdConfigPath].map((cacheName) => {
+                        middlewareCache[cacheName] = null
+                    })
+                    UtilFs.deleteFolderRecursive(project.cachePath, true)
+                });
+            }
         }
     }
 };
