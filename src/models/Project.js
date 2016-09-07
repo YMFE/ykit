@@ -212,7 +212,7 @@ class Project {
         let CLIEngine = require('eslint').CLIEngine;
 
         // 如果有本地eslint优先使用本地eslint
-        if(requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint'))){
+        if(requireg.resolve(sysPath.join(this.cwd, 'node_modules/', 'eslint'))){
             CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine
         }
 
