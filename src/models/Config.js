@@ -52,10 +52,8 @@ class Config {
                 css: ['.css'],
                 js: ['.js']
             },
-            requireRules: [
-                'node_modules|package.json:main|index.js'
-            ],
-            devtool: 'source-map'
+            requireRules: [],
+            devtool: 'cheap-source-map'
         };
     }
     setExports(files) {
