@@ -37,6 +37,10 @@ clone下来即可用ykit运行，具体看demo中README.md。
 
 Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提issue，或直接qtalk找yuhao.ju，也欢迎为YKit[贡献代码][10]。
 
+### Change log
+
+[Change log][11]
+
 [1]: https://github.com/webpack/webpack
 [2]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/project-init
 [3]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/config
@@ -47,3 +51,4 @@ Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提is
 [8]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-react
 [9]: http://gitlab.corp.qunar.com/mfe/ykit/issues
 [10]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/ykit-dev
+[11]: http://gitlab.corp.qunar.com/mfe/ykit/blob/master/CHANGELOG.md
