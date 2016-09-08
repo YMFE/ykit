@@ -24,6 +24,7 @@ $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 - [配置][3]
 - [CLI 命令][4]
 - [Node.js API][5]
+- [代理工具][12]
 
 ### Examples
 
@@ -52,3 +53,4 @@ Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提is
 [9]: http://gitlab.corp.qunar.com/mfe/ykit/issues
 [10]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/ykit-dev
 [11]: http://gitlab.corp.qunar.com/mfe/ykit/blob/master/CHANGELOG.md
+[12]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/proxy
