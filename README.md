@@ -20,8 +20,8 @@ $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 
 ### Wiki
 
-- [项目初始化][2]
-- [项目迁移][3]
+- [项目初始化 / 项目迁移][2]
+- [配置][3]
 - [CLI 命令][4]
 - [Node.js API][5]
 
@@ -39,7 +39,7 @@ Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提is
 
 [1]: https://github.com/webpack/webpack
 [2]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/project-init
-[3]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/project-transfer
+[3]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/config
 [4]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/cli-command
 [5]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/Node-API
 [6]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-avalon
