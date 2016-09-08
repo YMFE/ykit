@@ -39,7 +39,7 @@ Ykit仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提is
 
 ### Change log
 
-[Change log][11]
+[查看change log][11]
 
 [1]: https://github.com/webpack/webpack
 [2]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/project-init
