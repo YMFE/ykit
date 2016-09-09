@@ -47,7 +47,7 @@ exports.run = (options) => {
         const livereload = require('livereload');
         const connectLivereload = require('connect-livereload');
 
-        livereload.createServer().watch(sysPath.resolve(cwd, 'awesome-doc'));
+        livereload.createServer().watch(sysPath.resolve(cwd));
         app.use(connectLivereload({port: 35729}));
     }
 
