@@ -1,3 +1,20 @@
+v0.0.5 - 2016.9.9
+
+* e3554bc Feat: ykit-config-{type}插件支持查找全局模式
+* 92ecfa3 Feat: 默认改为按请求资源打包，整体打包改为可选参数
+* a6bac57 Feat: server支持https
+* e6563ab Feat: 添加初始化说明，支持无默认类型
+* 2c12dd7 Revise: devtool默认使用source map
+* d02b242 Revise: minify模式不使用source map
+* 05117d9 Revise: 根据lint结果区分返回值
+* 97aca37 Revise: 更改.cache目录为.ykit_cache
+* f5b6d0e Fix: 修复windows下pack移除目录命令不生效
+* 1401222 Fix: 修复一些情况下启动server livereload不生效
+* b81f867 Fix: 修复node_modules中resolve extension不生效
+* 56a4983 Fix: 修复eslint设置extend不生效
+* 9a59d61 ab7c1b0 Fix: 修复watch入口文件造成的内存泄露问题
+* 1880c2f 14330fe Fix: 修复更改入口以后服务 / 打包报错
+
 v0.0.4 - 2016.8.26
 
 * 1ca6010 aa9a1e2 7483355 Feat: 优化编译报错 log
