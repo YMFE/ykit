@@ -36,12 +36,17 @@ exports.run = (options) => {
                     // 确保存在@qnpm目录
                     mkdirp.sync(packagePath)
 
+                    // 下载
                     const tarName = depName + '@' + version + '.tar.gz'
                     const extractPath = sysPath.join(process.cwd(), './node_modules/', tarName)
                     const downloadPath = host + '/' + tarName
-                    const downloadStream = request(downloadPath).pipe(fs.createWriteStream(extractPath))
+                    const downloadStream = request(downloadPath)
+                        .on('response', function(response) {
+                            log(`[${response.statusCode}] downloading ${downloadPath}`)
+                         })
+                        .pipe(fs.createWriteStream(extractPath))
 
-                    log('downloading ' + extractPath)
+                    // 解压
                     downloadStream.on('finish', (e) => {
                         if(e) {
                             return error(e)
