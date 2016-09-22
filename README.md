@@ -32,7 +32,7 @@ $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 - [ykit-seed-hy][7]: Ykit结合Hy Demo, 包括路由功能、滚动组件、手势功能
 - [ykit-seed-react][8]: React示例，支持ES6、SASS、LESS，fekit格式输出
 
-clone下来即可用ykit运行，具体看demo中README.md。
+clone下来后npm install，然后用ykit运行，具体看demo中README.md。
 
 ### Others
 

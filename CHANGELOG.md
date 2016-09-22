@@ -6,7 +6,7 @@ v0.0.5 - 2016.9.9
 * e6563ab Feat: 添加初始化说明，支持无默认类型
 * 2c12dd7 Revise: devtool默认使用source map
 * d02b242 Revise: minify模式不使用source map
-* 05117d9 Revise: 根据lint结果区分返回值
+* 05a17d9 Revise: 根据lint结果区分返回值
 * 97aca37 Revise: 更改.cache目录为.ykit_cache
 * f5b6d0e Fix: 修复windows下pack移除目录命令不生效
 * 1401222 Fix: 修复一些情况下启动server livereload不生效
