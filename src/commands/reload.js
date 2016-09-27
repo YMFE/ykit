@@ -9,12 +9,12 @@ const semver = require('semver')
 exports.usage = "重载插件"
 
 exports.setOptions = (optimist) => {
-    optimist.alias('h', 'host')
-    optimist.describe('h', '拉取插件服务地址')
+    optimist.alias('s', 'service')
+    optimist.describe('s', '拉取插件服务地址')
 };
 
 exports.run = (options) => {
-    const host = 'http://' + (options.h || options.host || '192.168.237.71:9999/download')
+    const servicePath = options.s || options.service || 'http://l-uedmobile0.h.dev.cn0.qunar.com:3000/download'
 
     // 重载全局插件
     Manager.reloadRC();
@@ -39,7 +39,7 @@ exports.run = (options) => {
                     // 下载
                     const tarName = depName + '@' + version + '.tar.gz'
                     const extractPath = sysPath.join(process.cwd(), './node_modules/', tarName)
-                    const downloadPath = host + '/' + tarName
+                    const downloadPath = servicePath + '/' + tarName
                     const downloadStream = request(downloadPath)
                         .on('response', function(response) {
                             log(`[${response.statusCode}] downloading ${downloadPath}`)
