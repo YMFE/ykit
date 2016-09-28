@@ -40,7 +40,7 @@ class Config {
             plugins: [
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
-                require('../plugins/ProgressBarPlugin.js'),
+                require('../plugins/progressBarPlugin.js'),
                 require('../plugins/compileInfoPlugin.js'),
             ],
             resolve: {
