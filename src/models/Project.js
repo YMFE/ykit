@@ -312,7 +312,7 @@ class Project {
                     }
                     if (statsInfo.warnings.length > 0) {
                         statsInfo.warnings.map((warning) => {
-                            warn(err.yellow);
+                            warn(warning.yellow);
                             info();
                         })
                     }
