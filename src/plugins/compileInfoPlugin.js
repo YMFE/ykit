@@ -2,7 +2,7 @@
 
 const webpack = require("webpack");
 const moment = require("moment");
-const formatOutput = require('./tools/format-output.js');
+const formatOutput = require('./tools/formatOutput.js');
 
 function DashboardPlugin(handler) {
 
