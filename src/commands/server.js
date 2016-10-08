@@ -130,11 +130,14 @@ exports.run = (options) => {
             // 只编译所请求的资源
             if(!isCompilingAll) {
                 // 去掉版本号和打头的"/"
-                let urlNoVer = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '')
-                urlNoVer = urlNoVer[0] === '/' ? urlNoVer.slice(1) : urlNoVer
+                let pureSourcePath = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '')
+                pureSourcePath = pureSourcePath[0] === '/' ? pureSourcePath.slice(1) : pureSourcePath
+
+                // 去掉url query
+                pureSourcePath = pureSourcePath.replace(/\?[\w=&]+$/, '')
 
                 // 从编译cache中取，map文件不必生成重复middleware
-                const cacheId = sysPath.join(projectName, urlNoVer.replace('.map', ''))
+                const cacheId = sysPath.join(projectName, pureSourcePath.replace('.map', ''))
                 let middleware = middlewareCache[cacheId]
 
                 if (!middleware) {
@@ -157,7 +160,7 @@ exports.run = (options) => {
 
                                 const cssReg = new RegExp(config.entryExtNames.css.join('|'))
                                 entryPath = entryPath.replace(cssReg, '.css') // 将入口的.scss/.less后缀替换为.css
-                                isRequestingEntry = entryPath.indexOf(urlNoVer) > -1
+                                isRequestingEntry = entryPath.indexOf(pureSourcePath) > -1
 
                                 if(isRequestingEntry) {
                                     nextConfig.entry = {
@@ -170,7 +173,7 @@ exports.run = (options) => {
 
                         compiler.watch({}, function(err, stats) {
                             // compiler complete
-                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true,});
+                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true, clientLogLevel: 'error'});
                             middleware(req, res, next);
                         });
                         // 检测config文件变化
