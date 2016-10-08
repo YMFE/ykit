@@ -146,6 +146,8 @@ exports.run = (options) => {
                     if (project.check()) {
                         compiler = project.getServerCompiler(function(config) {
                             let nextConfig = extend({}, config)
+
+                            // 将webpack entry设置为当前请求的资源
                             Object.keys(config.entry).map((entryKey) => {
                                 const entryItem = config.entry[entryKey]
 
@@ -158,7 +160,7 @@ exports.run = (options) => {
                                     entryPath = entryItem
                                 }
 
-                                const cssReg = new RegExp(config.entryExtNames.css.join('|'))
+                                const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'))
                                 entryPath = entryPath.replace(cssReg, '.css') // 将入口的.scss/.less后缀替换为.css
                                 isRequestingEntry = entryPath.indexOf(pureSourcePath) > -1
 
@@ -168,6 +170,7 @@ exports.run = (options) => {
                                     }
                                 }
                             })
+
                             return nextConfig
                         });
 
