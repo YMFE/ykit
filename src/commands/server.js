@@ -189,15 +189,34 @@ exports.run = (options) => {
                 }
             } else { // 一次编译全部资源
                 let middleware = middlewareCache[projectName],
-                    compilerPromise = promiseCache[projectName];
+                    compilerPromise = promiseCache[projectName],
+                    project = Manager.getProject(projectCwd, {cache: false})
+
+                // 如果entry发生变化，则需要进行重新编译
+                const nextEntry = extend({}, project.config._config.entry)
+                if(compilerPromise && compilerPromise.entry) {
+                    const prevEntry = compilerPromise.entry
+
+                    const isEntryChanged = !Object.keys(nextEntry).every((item) => {
+                        prevEntry[item] = Array.isArray(prevEntry[item]) ? prevEntry[item][prevEntry[item].length - 1] : prevEntry[item]
+                        nextEntry[item] = Array.isArray(nextEntry[item]) ? nextEntry[item][nextEntry[item].length - 1] : nextEntry[item]
+                        return prevEntry[item] && prevEntry[item] === nextEntry[item]
+                    })
+
+                    if(isEntryChanged) {
+                        middleware = null // 重新编译
+                        UtilFs.deleteFolderRecursive(project.cachePath, true)
+                    }
+                }
 
                 if (!middleware && !creatingCompiler) {
-                    let project = Manager.getProject(projectCwd, {cache: false}),
-                        resolve,
-                        reject;
+                    let resolve, reject;
 
                     creatingCompiler = true
                     compilerPromise = promiseCache[projectName] = new Promise((res, rej) => { resolve = res; reject = rej; });
+
+                    // 把当前entry挂在promiseCache上，在以后rebuild时比对entry，决定是否需要重新编译
+                    promiseCache[projectName].entry = extend({}, nextEntry)
 
                     if (project.check()) {
                         compiler = project.getServerCompiler(function(config) {
@@ -213,6 +232,7 @@ exports.run = (options) => {
                             middleware(req, res, next);
                             resolve(middleware);
                         });
+
                         // 检测config文件变化
                         watchConfig(project, middleware, projectName)
                     } else {
