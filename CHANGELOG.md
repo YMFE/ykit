@@ -1,3 +1,8 @@
+v0.1.2 - 2016.10.9
+* ad09ebd Revise: reload命令兼容版本号格式为^0.1.0的ykit-config包
+* 6424cd2 Fix: 修复build机器上找不到process.stderr报错
+* 8761301 Fix: 修复not in gzip format解压报错
+
 v0.1.1 - 2016.10.8
 * 1c550d4 Revise: 全部打包时检测entry与上一次是否发生变化
 * ef45fac Fix: 修复按请求编译css时入口filter未生效
