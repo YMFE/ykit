@@ -41,7 +41,7 @@ exports.run = (options) => {
                         mkdirp.sync(packagePath)
 
                         // 下载
-                        const tarName = depName + '@' + version + '.tar.gz'
+                        const tarName = depName + '@' + version + '.tar'
                         const extractPath = sysPath.join(process.cwd(), './node_modules/', tarName)
                         const downloadPath = servicePath + '/' + tarName
                         const downloadStream = request(downloadPath)
