@@ -33,7 +33,10 @@ exports.run = (options) => {
             const devDependencies = packageJsonContent.devDependencies
             Object.keys(devDependencies).map((depName, i) => {
                 if(ykitModuleReg.test(depName) && !requireg.resolve(depName)) {
-                    const version = devDependencies[depName]
+                    // get dep version
+                    let version = devDependencies[depName].match(/\d+.\d+.\d+/)
+                    version = version && version[0]
+
                     const packagePath = './node_modules/@qnpm'
 
                     if(semver.valid(version)) {
