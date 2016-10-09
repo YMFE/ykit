@@ -8,9 +8,9 @@ function ProgressBarPlugin() {
 
     return new webpack.ProgressPlugin(function(percent, msg) {
         if(stream) {
-            stream.clearLine();
-            stream.cursorTo(0);
-            if(msg) {
+            stream.clearLine && stream.clearLine();
+            stream.cursorTo && stream.cursorTo(0);
+            if(msg && stream.write) {
                 stream.write(colors.grey('[Bundler] ') + colors.green(msg));
             }
         }

@@ -171,6 +171,8 @@ exports.run = (options) => {
                                 }
                             })
 
+                            nextConfig.plugins.push(require('../plugins/progressBarPlugin.js'))
+
                             return nextConfig
                         });
 
@@ -220,6 +222,7 @@ exports.run = (options) => {
 
                     if (project.check()) {
                         compiler = project.getServerCompiler(function(config) {
+                            config.plugins.push(require('../plugins/progressBarPlugin.js'))
                             return config
                         });
 

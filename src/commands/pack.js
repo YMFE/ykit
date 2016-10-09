@@ -15,6 +15,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('g', 'exports 分组');
     optimist.alias('c', 'clean');
     optimist.describe('c', '打包前清空输出目录');
+    optimist.alias('q', 'quiet');
+    optimist.describe('q', '静默模式');
 };
 
 exports.run = function (options) {
@@ -22,6 +24,7 @@ exports.run = function (options) {
         min = options.m || options.min || false,
         lint = options.l || options.lint || false,
         clean = options.c || options.clean || false,
+        quiet = options.q || options.quiet || false,
         group = options.g || options.group,
         sourcemap = options.s || options.sourcemap,
         project = this.project;
@@ -39,7 +42,8 @@ exports.run = function (options) {
         lint: lint,
         min: min,
         sourcemap: sourcemap,
-        clean: clean
+        clean: clean,
+        quiet: quiet,
     }, (err, stats) => {
         if (err) {
             if (err !== true) {
@@ -48,5 +52,6 @@ exports.run = function (options) {
         }
 
         project.packCallbacks.forEach(cb => cb(options, stats));
+        process.exit(0);
     });
 };

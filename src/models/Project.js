@@ -272,6 +272,10 @@ class Project {
                 config.devtool = opt.sourcemap
             }
 
+            if (!opt.quiet) {
+                config.plugins.push(require('../plugins/progressBarPlugin.js'));
+            }
+
             if (opt.min) {
                 config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                     compress: {
