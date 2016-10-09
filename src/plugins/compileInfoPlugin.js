@@ -63,10 +63,10 @@ DashboardPlugin.prototype.apply = function(compiler) {
 
                         const dateFormat = 'YY.MM.DD HH:mm:ss';
                         if (stats.hasErrors()) {
-                            process.stdout.write("\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m")
+                            process.stdout && process.stdout.write("\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m")
                             error('Compile Failed.');
                         } else {
-                            process.stdout.write("\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m")
+                            process.stdout && process.stdout.write("\x1b[90m" + '[' + (moment().format(dateFormat)) + ']' + "\x1b[0m")
                             success('Compile Succeed.')
                         }
 
