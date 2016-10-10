@@ -167,8 +167,12 @@ exports.run = (options) => {
 
                         compiler.watch({}, function(err, stats) {
                             // compiler complete
-                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true, clientLogLevel: 'error'});
-                            middleware(req, res, next);
+                            if(!middlewareCache[projectName]) {
+                                middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true});
+                                middleware(req, res, next);
+                            } else {
+                                next()
+                            }
                         });
                         // 检测config文件变化
                         watchConfig(project, middleware, cacheId)
@@ -216,13 +220,18 @@ exports.run = (options) => {
                         });
 
                         compiler.watch({}, function(err, stats) {
-                            // compiler complete
-                            middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {quiet: true});
 
-                            // 输出server运行中 error/warning 信息
-                            creatingCompiler = false
-                            middleware(req, res, next);
-                            resolve(middleware);
+                            // compiler complete
+                            if(!middlewareCache[projectName]) {
+                                middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, {quiet: true});
+
+                                // 输出server运行中 error/warning 信息
+                                creatingCompiler = false
+                                middleware(req, res, next);
+                                resolve(middleware);
+                            } else {
+                                next()
+                            }
                         });
 
                         // 检测config文件变化
