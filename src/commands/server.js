@@ -167,7 +167,7 @@ exports.run = (options) => {
 
                         compiler.watch({}, function(err, stats) {
                             // compiler complete
-                            if(!middlewareCache[projectName]) {
+                            if(!middlewareCache[cacheId]) {
                                 middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true});
                                 middleware(req, res, next);
                             } else {
