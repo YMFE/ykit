@@ -24,8 +24,6 @@ exports.setOptions = (optimist) => {
     optimist.describe('x', '启用proxy代理服务');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
-    optimist.alias('l', 'livereload');
-    optimist.describe('l', '自动刷新');
     optimist.alias('a', 'all');
     optimist.describe('a', '整体编译');
     optimist.alias('s', 'https');
@@ -40,16 +38,7 @@ exports.run = (options) => {
         middlewares = options.m || options.middlewares,
         isHttps = options.s || options.https,
         isCompilingAll = options.a || options.all,
-        enableLivereload = options.l || options.livereload,
         port = options.p || options.port || 80;
-
-    if(enableLivereload){
-        const livereload = require('livereload');
-        const connectLivereload = require('connect-livereload');
-
-        livereload.createServer().watch(sysPath.resolve(cwd));
-        app.use(connectLivereload({port: 35729}));
-    }
 
     let middlewareCache = {},
         promiseCache = {},
