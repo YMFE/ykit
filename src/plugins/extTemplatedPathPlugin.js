@@ -28,10 +28,8 @@ module.exports = {
                     })
 
                     // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
-                    baseName = sysPath.basename(rawRequest, extName);
-                    baseName = baseName.split('.')[0]
-                    if(baseName) {
-                        path = path.replace(/\[name\]/g, baseName);
+                    if(module.chunks[0] && module.chunks[0].name) {
+                        path = path.replace(/\[name\]/g, module.chunks[0].name.replace(/\.\w+$/g, ''));
                     }
                 }
 
