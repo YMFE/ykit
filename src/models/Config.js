@@ -59,7 +59,7 @@ class Config {
         [].concat(files).forEach((file) => {
             const entryFile = Array.isArray(file) ? file[file.length - 1] : file
 
-            var name = entryFile.replace(/\.\w+$/g, '');
+            var name = entryFile;
             if (name.indexOf('./') == 0) {
                 name = name.substring(2);
             } else if (name[0] == '/') {

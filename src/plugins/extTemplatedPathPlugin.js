@@ -7,6 +7,7 @@ module.exports = {
         compiler.plugin("compilation", function(compilation) {
             compilation.mainTemplate.plugin("asset-path", function(path, data) {
                 let extName = '[ext]';
+                let baseName = '';
                 if (data.chunk) {
                     let module = data.chunk.origins[0].module,
                         rawRequest = module.rawRequest
@@ -25,6 +26,13 @@ module.exports = {
                             extName = '.' + targetExtName
                         }
                     })
+
+                    // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
+                    baseName = sysPath.basename(rawRequest, extName);
+                    baseName = baseName.split('.')[0]
+                    if(baseName) {
+                        path = path.replace(/\[name\]/g, baseName);
+                    }
                 }
 
                 return path.replace(/\[ext\]/g, extName);
