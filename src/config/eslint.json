@@ -4,6 +4,7 @@
     "commonjs": true,
     "node": true
   },
+  "extends": [],
   "globals": [
     "$",
     "$$",
