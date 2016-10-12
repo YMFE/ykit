@@ -217,12 +217,23 @@ class Project {
         }
 
         // prepare eslint config file
-        const configFilePath = sysPath.join(__dirname, '../../cache' ,'.eslintrc.json')
-        fs.writeFileSync(
-            configFilePath,
-            JSON.stringify(this.eslintConfig)
-        );
-        this.eslintConfig.useEslintrc = false
+        // const configFilePath = sysPath.join(__dirname, '../../' ,'.eslintrc.json')
+        const eslintExts = ['.js', '.yaml', '.yml', '.json', '']
+        let configFilePath = ''
+        eslintExts.forEach((eslintExtItem) => {
+            if(this._fileExists(sysPath.join(this.cwd, '.eslintrc' + eslintExtItem))) {
+                configFilePath = sysPath.join(this.cwd, '.eslintrc' + eslintExtItem)
+            }
+        })
+
+        if(!configFilePath) {
+            configFilePath = sysPath.join(this.cwd, '.eslintrc.json')
+            fs.writeFileSync(
+                configFilePath,
+                JSON.stringify(this.eslintConfig, null, '  ')
+            );
+        }
+
         this.eslintConfig.configFile = configFilePath
 
         const cli = new CLIEngine(this.eslintConfig),
@@ -431,6 +442,14 @@ class Project {
         }
 
         return false
+    }
+
+    _fileExists(filePath) {
+    	try {
+    		return fs.statSync(filePath).isFile();
+    	} catch (err) {
+    		return false;
+    	}
     }
 }
 
