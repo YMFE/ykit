@@ -287,10 +287,17 @@ class Project {
             }
 
             if (opt.min) {
+                // variable name mangling
+                let mangle = true
+                if(opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false') {
+                    mangle = false
+                }
+
                 config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                     compress: {
-                        warnings: false
-                    }
+                        warnings: false,
+                    },
+                    mangle: mangle
                 }));
                 config.output = config.output.prd;
                 config.devtool = ''
