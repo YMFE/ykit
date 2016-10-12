@@ -8,12 +8,15 @@ exports.usage = "代码质量检测";
 exports.setOptions = (optimist) => {
     optimist.alias('d', 'dir');
     optimist.describe('d', '检测特定目录/文件');
+    optimist.alias('t', 'type');
+    optimist.describe('t', '检测特定目录/文件');
 };
 
 exports.run = function (options)  {
     let cwd = options.cwd,
         project = this.project,
-        dir = options.d || options.dir;
+        dir = options.d || options.dir,
+        lintType = options.t || options.type;
 
     let isGoingToContinue = true
 
@@ -48,11 +51,24 @@ exports.run = function (options)  {
         })
     }
 
+    // lint type
+    let lintFileTypes = ['js', 'css']
+    if(lintType) {
+        if(lintFileTypes.indexOf(lintType) > -1) {
+            lintFileTypes = [lintType]
+        } else {
+            error('lintType只能为"js"或"css"')
+            process.exit(1)
+        }
+    }
+    const lintFuncs = lintFileTypes.map((lintFileTypeItem) => {
+        return lintFileTypeItem === 'js'
+                                ? (callback) => project.lint(dir, callback)
+                                : (callback) => project.lintCss(dir, callback)
+    })
+
     if(isGoingToContinue) {
-        async.series([
-            (callback) => project.lint(dir, callback),
-            (callback) => project.lintCss(dir, callback)
-        ], (err, results) => {
+        async.series(lintFuncs, (err, results) => {
             if (!err) {
                 if (results[0] && results[1]) {
                     success('All files complete without error.');
