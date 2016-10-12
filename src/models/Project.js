@@ -216,16 +216,17 @@ class Project {
             CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine
         }
 
-        // prepare eslint config file
-        // const configFilePath = sysPath.join(__dirname, '../../' ,'.eslintrc.json')
+        // 优先使用本地配置
         const eslintExts = ['.js', '.yaml', '.yml', '.json', '']
         let configFilePath = ''
         eslintExts.forEach((eslintExtItem) => {
             if(this._fileExists(sysPath.join(this.cwd, '.eslintrc' + eslintExtItem))) {
                 configFilePath = sysPath.join(this.cwd, '.eslintrc' + eslintExtItem)
+                this.eslintConfig = requireg(configFilePath)
             }
         })
 
+        // 本地无lint配置，创建.eslintrc.json
         if(!configFilePath) {
             configFilePath = sysPath.join(this.cwd, '.eslintrc.json')
             fs.writeFileSync(
@@ -233,8 +234,6 @@ class Project {
                 JSON.stringify(this.eslintConfig, null, '  ')
             );
         }
-
-        this.eslintConfig.configFile = configFilePath
 
         const cli = new CLIEngine(this.eslintConfig),
             report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
