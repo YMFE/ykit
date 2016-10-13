@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title> Ykit</title>
+  <link rel="stylesheet" href="source/app.css"/>
+  <link rel="stylesheet" href="source/highlight.min.css"/>
+</head>
+<body>
+    <div class="ydoc">
+
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ymfe.org/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="active">
+                        
+                        <a href="index.html">Ykit</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>前端开发工具集</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content ydoc-container-content-hassidebar">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-简介.html">简介</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-项目初始化 & 项目迁移.html">项目初始化 & 项目迁移</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-配置.html">配置</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-命令行工具.html">命令行工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
+                            
+                            <a href="index-代理工具.html">代理工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-Node.js API.html">Node.js API</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-为Ykit贡献代码.html">为Ykit贡献代码</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <h1 style="font-weight: normal"> 代理工具 </h1>
+
+<h2 style="font-weight: normal"> 启动代理 </h2>
+
+<p>Ykit Proxy使用<a href="https://github.com/Ellery0924/QProxy">Jerry Proxy</a>作为代理插件。它结合了<code>SwitchHost</code>和<code>Charles/Fiddler</code>的功能，包括：</p>
+<ul>
+<li>无DNS缓存的Host分组管理</li>
+<li>请求/响应日志（抓包）</li>
+<li>断点</li>
+<li>URL MAP</li>
+<li>接口Mock服务</li>
+<li>网速控制(Throttling)</li>
+</ul>
+<p>并且支持Qunar通用域名的HTTPS。通过下面命令启动代理：</p>
+<pre><code>$ sudo ykit server -x
+</code></pre><p>会打开代理页面，左侧导航是项目/方案列表，右侧面板是项目/方案的Host规则，点击左侧即可切换host分组，
+<strong>无需重启浏览器或者等待DNS缓存生效。</strong></p>
+<p><strong>Host管理功能支持HTTPS，无需任何配置</strong></p>
+<p><strong>对于Ykit项目，会检测当前目录下的Ykit项目，在项目内新建/读取<code>ykit.host</code>，并且同步更新。</strong></p>
+<p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/392730b24f/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.40.30.png" alt="屏幕快照 2016-09-08 上午11.40.30"></p>
+<h2 style="font-weight: normal"> 切换到代理服务 </h2>
+
+<p>此时代理还未生效，我们还需要把请求打到我们的本地代理上。简单的方式是使用<code>SwitchyOmega</code>等chrome代理插件，或者使用Proxy右上角推荐的代理插件。以下是<code>SwitchyOmega</code>的配置，我们将所有外部请求打到<code>127.0.0.1:999</code>也就是我们的本地代理上。</p>
+<p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/370cfe24b5/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.43.18.png" alt="屏幕快照 2016-09-08 上午11.43.18"></p>
+<h2 style="font-weight: normal"> 自定义 Url Map </h2>
+
+<p>切换到Url Map选项卡，可以设置请求的远程/本地映射，支持正则匹配：</p>
+<p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/c1f92f0479/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.53.39.png" alt="屏幕快照 2016-09-08 上午11.53.39"></p>
+<h2 style="font-weight: normal"> 查看 Log </h2>
+
+<p>切换到请求/响应日志选项卡，可以查看通过代理请求的接口详细信息，在进行移动端调试时十分便捷：</p>
+<p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/68d3467c6c/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.55.40.png" alt="屏幕快照 2016-09-08 上午11.55.40"></p>
+<p>点击详情Tab的&quot;设置断点&quot;可以给中断请求，并可即时修改响应的body。</p>
+<p><strong>注意：需要抓取移动设备的请求时，请记得修改移动设备的代理配置，让IP指向自己的电脑（当然移动设备和电脑需要在一个无线网络下），端口为999</strong></p>
+<p><strong>HTTPS请求的抓取需要安装根证书，并在网络配置面板中设置<code>开启HTTPS代理</code>，请联系jiao.shen</strong></p>
+
+              </div>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+    <script src="source/jquery.min.js"></script>
+    <script src="source/bootstrap.min.js"></script>
+    <script src="source/docs.min.js"></script>
+    <script src="source/highlight.min.js"></script>
+    <script src="source/app.js"></script>
+</body>
+</html>

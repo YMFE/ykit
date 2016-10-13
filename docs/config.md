@@ -1,4 +1,6 @@
-### ykit.{type}.js 文件示例
+<h1 style="font-weight: normal"> 配置 </h1>
+
+<h2 style="font-weight: normal"> ykit.{type}.js 文件示例 </h2>
 
 ```js
 exports.config = function() {
@@ -32,11 +34,11 @@ exports.config = function() {
 };
 ```
 
-### API
+<h2 style="font-weight: normal"> 配置方法 </h2>
 
-在配置函数中，我们可以通过调用this上的api对项目进行配置，这些基本的api在项目初始化时就已经包含在配置文件中。
+在配置函数中，我们可以通过调用方法更改项目配置。
 
-#### setExports
+<h3 style="font-weight: normal"> setExports </h3>
 
 设置资源入口。另外也支持通过`setGroupExports`设置入口分组，如：
 
@@ -48,7 +50,8 @@ this.setGroupExports('common', [
 ]);
 ```
 
-#### setCompiler
+<h3 style="font-weight: normal"> setCompiler </h3>
+
 可通过此方法更改编译配置，各项参数与[Webpack Configuration][1]相同，本质上是更改ykit当前的webapck配置，可在此api中更改编译方式，添加编译插件等等。该方法支持对象和函数两种配置参数。
 
 配置参数为对象：
@@ -95,7 +98,7 @@ this.setCompiler(function(config) {
 });
 ```
 
-#### setEslintConfig
+<h3 style="font-weight: normal"> setEslintConfig </h3>
 
 接受一个对象，配置方法和[eslint配置][2]相同，如：
 
@@ -114,7 +117,7 @@ this.setEslintConfig({
 })
 ```
 
-#### setStylelintConfig
+<h3 style="font-weight: normal"> setStylelintConfig </h3>
 
 接受一个对象，配置方法和[stylelint配置][3]相同，如：
 ```js
@@ -130,14 +133,14 @@ this.setStylelintConfig({
 })
 ```
 
-#### setSync
+<h3 style="font-weight: normal"> setSync </h3>
 
 设置同步开发机的配置，需要设置开发机的ip，以及项目要存储的路径。
 
 **注：Windows下需要预装rsync**。
 
 
-#### setCommands
+<h3 style="font-weight: normal"> setCommands </h3>
 
 设置项目自定义命令，在项目目录下执行`ykit {cmd}`即可运行。
 

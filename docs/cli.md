@@ -1,4 +1,4 @@
-### 基础命令
+<h1 style="font-weight: normal"> 命令行工具 </h1>
 
 Ykit 命令行工具可以通过运行 `ykit -h` 查看所有基础命令。
 
@@ -22,11 +22,11 @@ Options:
   -h, --help         查看帮助
 ```
 
-#### init
+<h3 style="font-weight: normal"> init </h3>
 
 这个命令将会配置初始化向导。用户通过选择项目类型，它就可以帮助用户快速地在当前工作目录下创建 ykit.{type}.js 文件，并安装相应插件。
 
-#### server
+<h3 style="font-weight: normal"> server </h3>
 
 这个命令会在本地起静态服务，并对`/{project}/prd/`路径下的资源进行编译，保持与Fekit一致。
 
@@ -36,7 +36,7 @@ Options:
 
 当加上-a--all参数后，则在第一次加载时将export资源全部编译，适合单页应用等静态资源入口较少的项目。
 
-#### pack
+<h3 style="font-weight: normal"> pack </h3>
 
 对项目进行打包。对于Qunar的项目，打包后会生成相应目录，来放置带版本号的资源。
 
@@ -48,7 +48,7 @@ Options:
 
 - `ykit pack -c`命令，会在打包之前清空打包目标目录(dev/prd)，默认不清空。
 
-#### lint
+<h3 style="font-weight: normal"> lint </h3>
 
 这个命令会对项目进行eslint和stylelint检查，第一次在项目中执行ykit lint后，会生成相应的.eslintrc.json，可后续对它进行更改，如添加lint规则、忽略目录等。
 
@@ -58,10 +58,10 @@ Options:
 
 `ykit lint -t {type}` 对指定文件类型执行lint，{type}可以为`js`或`css`
 
-### 附加命令
+<h2 style="font-weight: normal"> 附加命令 </h2>
 
 在Ykit在项目中运行时，根据项目的插件，可以运行当前项目的附加命令。如在一个Qunar项目中，可以运行`ykit sync`命令等。当前环境的附加命令列表可以使用`ykit -h`查看。
 
-### 项目自定义命令
+<h2 style="font-weight: normal"> 项目自定义命令 </h2>
 
 在Ykit在项目中运行时，可以运行`ykit.{type}.js`中自定义的命令，相当于执行一段Node.js脚本。当前环境自定义命令列表可以使用`ykit -h`查看。
