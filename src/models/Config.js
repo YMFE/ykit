@@ -80,8 +80,8 @@ class Config {
         return this;
     }
     setSync(syncConfig) {
-        if(syncConfig){
-            if(typeof syncConfig === 'object') {
+        if (syncConfig) {
+            if (typeof syncConfig === 'object') {
                 this._config.sync = syncConfig;
             } else if (typeof syncConfig === 'function') {
                 this._config.sync = syncConfig();
@@ -89,25 +89,25 @@ class Config {
         }
     }
     setCompiler(compileConfig) {
-        if(compileConfig){
+        if (compileConfig) {
             let nextConfig = {}
 
             // 获取用户定义的compile配置
-            if(typeof compileConfig === 'object') {
+            if (typeof compileConfig === 'object') {
                 nextConfig = compileConfig
             } else if (typeof compileConfig === 'function') {
                 nextConfig = compileConfig(extend({}, this._config)) || {};
             }
 
             // 处理context
-            if(nextConfig.context && !sysPath.isAbsolute(nextConfig.context)){
+            if (nextConfig.context && !sysPath.isAbsolute(nextConfig.context)) {
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
             }
 
             // 处理loaders => loader
-            if(nextConfig.module && nextConfig.module.loaders){
+            if (nextConfig.module && nextConfig.module.loaders) {
                 nextConfig.module.loaders.map((loader, i) => {
-                    if(loader.loaders && !loader.loader) {
+                    if (loader.loaders && !loader.loader) {
                         loader.loader = loader.loaders.join("!")
                     }
                     return loader
@@ -118,9 +118,9 @@ class Config {
             // 处理alias
             const context = nextConfig.context || this._config.context
             const relativeContext = sysPath.relative(this._config.cwd, context)
-            if(nextConfig.resolve && nextConfig.resolve.alias) {
+            if (nextConfig.resolve && nextConfig.resolve.alias) {
                 let alias = nextConfig.resolve.alias
-                Object.keys(alias).map(function(key, i){
+                Object.keys(alias).map(function(key, i) {
                     alias[key] = sysPath.relative(relativeContext, alias[key])
                 })
                 extend(true, this._config.resolve.alias, alias);

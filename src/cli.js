@@ -1,14 +1,13 @@
 'use strict';
 
 require('./global');
+const version = require('../package.json').version;
+const optimist = require('optimist');
+const rightPad = require('right-pad');
 
 let Manager = require('./modules/manager.js');
 
-let helpTitle = () => {
-    info();
-    info('===================== YKit ' + packageJSON.version + ' ====================');
-    info();
-};
+let helpTitle = `\n===================== YKit ${version} ====================\n`;
 
 let initOptions = (cmd) => {
     if (cmd.setOptions) {
@@ -24,44 +23,42 @@ let initOptions = (cmd) => {
 };
 
 let cli = module.exports = {
-    run: (cmdName) => {
-        if(cmdName === '-v' || cmdName === '--version') {
-            log(packageJSON.version)
-            return
-        } else if(cmdName === '-h' || cmdName === '--help') {
-            cli.help()
-            return
-        }
-
-        let project = Manager.getProject(process.cwd()),
-            cmd = project.commands
-            .filter((item) => item.name == cmdName)[0];
-        if (!cmd) {
-            error('请确认是否存在 ' + cmdName + ' 命令');
+    run: (option) => {
+        if (option === '-v' || option === '--version') {
+            log(version);
+            return;
+        } else if (option === '-h' || option === '--help' || !option) {
+            cli.help();
             return;
         }
-        cmd = cmd.module;
-        let options = initOptions(cmd);
+
+        let project = Manager.getProject(process.cwd());
+        let command = project.commands.filter((command) => command.name == option)[0];
+        if (!command) {
+            error('请确认是否存在 ' + option + ' 命令');
+            return;
+        }
+        let module = command.module;
+        let options = initOptions(module);
         if (options.h || options.help) {
-            helpTitle();
-            info('命令:', cmdName);
-            info('说明:', cmd.usage || '');
+            info(helpTitle);
+            info('命令:', option);
+            info('说明:', module.usage || '');
             info();
             optimist.showHelp();
             info(' 如果需要帮助, 请使用 ykit {命令名} --help ');
         } else {
-            cmd.run.call({project}, options);
+            module.run.call({project}, options);
         }
     },
     help: () => {
-        helpTitle();
-         Manager.getProject(process.cwd()).commands
-            .forEach((command) => {
-                info(' ' + (rightPad(command.name, 15)) + ' # ' + (command.module.usage || ''))
-            });
+        info(helpTitle);
+        Manager.getProject(process.cwd()).commands.forEach((command) => {
+            info(` ${rightPad(command.name, 15)} # ${command.module.usage || ''}`);
+        });
         info();
-        info('可用的全局配置有:', (Manager.readRC().configs || []).map((item) => item.name.substring(12)).join(', '));
+        info(' 可用的全局配置有:', (Manager.readRC().configs || []).map((item) => item.name.substring(12)).join(', '));
         info();
-        info(' 如果需要帮助, 请使用 ykit {命令名} --help ');
+        info(' 如果需要帮助, 请使用 ykit {命令名} --help\n');
     }
 };
