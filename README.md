@@ -18,13 +18,9 @@ Ykit是一套可配置和可扩展的前端开发工具集，核心功能包括�
 $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 ```
 
-### Wiki
+### 文档
 
-- [项目初始化 / 项目迁移][2]
-- [配置][3]
-- [CLI 命令][4]
-- [Node.js API][5]
-- [代理工具][12]
+[Ykit 文档](./docs/)
 
 ### Examples
 

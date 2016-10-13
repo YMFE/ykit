@@ -157,7 +157,7 @@ exports.loadEslintConfig = (path) => {
 
         let eslintConfPath = eslintConfigFile.getFilenameForDirectory(path);
         return eslintConfPath ? eslintConfigFile.load(eslintConfPath) : {};
-    } catch(e) {
+    } catch (e) {
         return {};
     }
 };
