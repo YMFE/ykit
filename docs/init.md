@@ -5,13 +5,16 @@
 初始化项目：
 
 ```bash
-$ mkdir MyYkitProject && cd MyYkitProject && ykit init
+$ mkdir MyYkitProject
+$ cd MyYkitProject
+$ ykit init
 ```
 
 迁移项目：
 
 ```bash
-$ cd MyProject && ykit init
+$ cd MyProject
+$ ykit init
 ```
 
 执行`ykit init`后，会要求选择一个项目的类型，之后会生成一个对应的配置文件`ykit.{type}.js`。如：选择类型为qunar，则会在项目中生成`ykit.qunar.js`。
