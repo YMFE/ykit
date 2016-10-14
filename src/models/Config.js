@@ -56,18 +56,20 @@ class Config {
         };
     }
     setExports(files) {
-        [].concat(files).forEach((file) => {
-            const entryFile = Array.isArray(file) ? file[file.length - 1] : file
+        if(files && Array.isArray(files)) {
+            [].concat(files).forEach((file) => {
+                const entryFile = Array.isArray(file) ? file[file.length - 1] : file
 
-            var name = entryFile;
-            if (name.indexOf('./') == 0) {
-                name = name.substring(2);
-            } else if (name[0] == '/') {
-                name = name.substring(1);
-            }
-            this._config.entry[name] = Array.isArray(file) ? file : [file];
-        });
-        return this;
+                var name = entryFile;
+                if (name.indexOf('./') == 0) {
+                    name = name.substring(2);
+                } else if (name[0] == '/') {
+                    name = name.substring(1);
+                }
+                this._config.entry[name] = Array.isArray(file) ? file : [file];
+            });
+            return this;
+        }
     }
     setGroupExports(group, exportsArr) {
         let exportGroup = this._config.entryGroup;
@@ -113,7 +115,6 @@ class Config {
                     return loader
                 })
             }
-
 
             // 处理alias
             const context = nextConfig.context || this._config.context
