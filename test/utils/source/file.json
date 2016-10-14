@@ -1,0 +1,34 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "node": true
+  },
+  "extends": [],
+  "globals": [
+    "$",
+    "$$",
+    "jQuery",
+    "Promise"
+  ],
+  "rules": {
+      "no-with": "error",
+      "no-array-constructor": "error",
+      "no-debugger": "error",
+      "no-sequences": "error",
+      "no-dupe-args": "error",
+      "no-inner-declarations": "error",
+      "no-unreachable": "error",
+      "no-octal": "error",
+      "no-dupe-keys": "error",
+      "comma-dangle": ["error", "never"],
+      "no-unused-vars": "error"
+  },
+  "ignorePattern": [
+    "/fekit_modules/*",
+    "/node_modules/*",
+    "/bower_components/*",
+    "/dev/*",
+    "/prd/*"
+  ]
+}

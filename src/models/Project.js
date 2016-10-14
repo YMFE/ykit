@@ -3,9 +3,12 @@
 let webpack = require('webpack');
 let requireg = require('requireg');
 
+let path = require('path');
+let fs = require('fs');
+
 let Config = require('./Config.js'),
     Manager = require('../modules/manager.js'),
-    ExtractTextPlugin = require("extract-text-webpack-plugin");
+    ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let UtilFs = require('../utils/fs.js');
 
@@ -221,23 +224,17 @@ class Project {
             CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine
         }
 
-        // 优先使用本地配置
-        const eslintExts = ['.js', '.yaml', '.yml', '.json', '']
-        let configFilePath = ''
-        eslintExts.forEach((eslintExtItem) => {
-            if (this._fileExists(sysPath.join(this.cwd, '.eslintrc' + eslintExtItem))) {
-                configFilePath = sysPath.join(this.cwd, '.eslintrc' + eslintExtItem)
-                this.eslintConfig = requireg(configFilePath)
-            }
-        })
+        let files = ['.js', '.yaml', '.yml', '.json', ''].map(ext => {
+            return path.join(this.cwd, '.eslintrc' + ext);
+        });
+        let config = UtilFs.readFileAny(files);
 
-        // 本地无lint配置，创建.eslintrc.json
-        if (!configFilePath) {
-            configFilePath = sysPath.join(this.cwd, '.eslintrc.json')
-            fs.writeFileSync(
-                configFilePath,
-                JSON.stringify(this.eslintConfig, null, '  ')
-            );
+        // 本地无 lint 配置，创建 .eslintrc.json
+        if(!config){
+            let configPath = path.join(this.cwd, '.eslintrc.json');
+            fs.writeFileSync(configPath, JSON.stringify(this.eslintConfig, null, 4));
+        } else {
+            this.eslintConfig = config;
         }
 
         const cli = new CLIEngine(this.eslintConfig),
