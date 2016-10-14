@@ -137,6 +137,16 @@ class Project {
                     const userConfigObj = configMethod.config.call(userConfig, options, this.cwd);
 
                     if(userConfigObj) {
+                        if(Array.isArray(userConfigObj.export)) {
+                            userConfigObj.export = userConfigObj.export.filter((item) => {
+                                if(typeof item === 'object') {
+                                    this.config.setGroupExports(item.name, item.export)
+                                    return false
+                                } else {
+                                    return true
+                                }
+                            })
+                        }
                         this.config.setExports(userConfigObj.export);
                         this.config.setCompiler(userConfigObj.modifyWebpackConfig);
                         this.config.setSync(userConfigObj.sync);
