@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title> Ykit</title>
+  <link rel="stylesheet" href="source/app.css"/>
+  <link rel="stylesheet" href="source/highlight.min.css"/>
+</head>
+<body>
+    <div class="ydoc">
+
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ymfe.org/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="active">
+                        
+                        <a href="index.html">Ykit</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>前端开发工具集</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content ydoc-container-content-hassidebar">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-简介.html">简介</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-项目初始化 & 项目迁移.html">项目初始化 & 项目迁移</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
+                            
+                            <a href="index-配置.html">配置</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-命令行工具.html">命令行工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-代理工具.html">代理工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-Node.js API.html">Node.js API</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-为Ykit贡献代码.html">为Ykit贡献代码</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <h1 style="font-weight: normal"> 配置 </h1>
+
+<h2 style="font-weight: normal"> ykit.{type}.js 文件示例 </h2>
+
+<pre><code class="lang-js">exports.config = function() {
+    // 项目资源入口
+    this.setExports([
+        &#39;./scripts/index.js&#39;,
+        &#39;./styles/index.css&#39;
+    ]);
+
+    // 编译环境配置
+    this.setCompiler({
+        context: &#39;./src&#39;
+    });
+
+    // sync到开发机配置
+    this.setSync({
+        host : &quot;192.168.237.71&quot;,
+        path: &quot;/home/q/www/qunarzz.com/MyYkitProject&quot;
+    });
+
+    // 自定义命令
+    this.setCommands([
+        {
+            name: &#39;MyYkitProject_cmd&#39;,
+            module: {
+                usage: &#39;项目自定义命令&#39;,
+                run: function () {}
+            }
+        }
+    ]);
+};
+</code></pre>
+<h2 style="font-weight: normal"> 配置方法 </h2>
+
+<p>在配置函数中，我们可以通过调用方法更改项目配置。</p>
+<h3 style="font-weight: normal"> setExports </h3>
+
+<p>设置资源入口。另外也支持通过<code>setGroupExports</code>设置入口分组，如：</p>
+<pre><code class="lang-js">// 项目分组入口
+this.setGroupExports(&#39;common&#39;, [
+    &#39;./scripts/common.js&#39;,
+    &#39;./styles/common.css&#39;
+]);
+</code></pre>
+<h3 style="font-weight: normal"> setCompiler </h3>
+
+<p>可通过此方法更改编译配置，各项参数与<a href="https://webpack.github.io/docs/configuration.html">Webpack Configuration</a>相同，本质上是更改ykit当前的webapck配置，可在此api中更改编译方式，添加编译插件等等。该方法支持对象和函数两种配置参数。</p>
+<p>配置参数为对象：</p>
+<pre><code class="lang-js">this.setCompiler({
+   context: &#39;./src&#39;,
+   devtool: &#39;cheap-source-map&#39;
+});
+</code></pre>
+<p>配置参数为函数（进行更复杂的配置）：</p>
+<pre><code class="lang-js">var webpack = require(&#39;webpack&#39;);
+this.setCompiler(function(config) {
+    // config是当前webpack的配置
+
+    // 添加插件
+    config.plugins.push(new webpack.DefinePlugin({
+        &quot;process.env&quot;: {
+            NODE_ENV: JSON.stringify(&quot;production&quot;)
+        }
+    }));
+
+    // 替换原有loader
+    config.module = {
+        loaders: config.module.loaders.map(function(loader) {
+            if (loader.test.test(&#39;.js&#39;)) {
+                return {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: &#39;babel&#39;,
+                    query: {
+                        presets: [&#39;es2015&#39;, &#39;react&#39;, &#39;stage-0&#39;]
+                    }
+                }
+            }
+            return loader;
+        })
+    };
+
+    return config;
+});
+</code></pre>
+<h3 style="font-weight: normal"> setEslintConfig </h3>
+
+<p>接受一个对象，配置方法和<a href="http://eslint.cn/docs/user-guide/configuring">eslint配置</a>相同，如：</p>
+<pre><code class="lang-js">this.setEslintConfig({
+    &quot;parserOptions&quot;: {
+        &quot;ecmaVersion&quot;: 6,
+        &quot;sourceType&quot;: &quot;module&quot;,
+        &quot;ecmaFeatures&quot;: {
+            &quot;jsx&quot;: true
+        }
+    },
+    &quot;rules&quot;: {
+        &quot;semi&quot;: 2
+    }
+})
+</code></pre>
+<h3 style="font-weight: normal"> setStylelintConfig </h3>
+
+<p>接受一个对象，配置方法和<a href="https://github.com/stylelint/stylelint/blob/master/docs/user-guide/configuration.md">stylelint配置</a>相同，如：</p>
+<pre><code class="lang-js">this.setStylelintConfig({
+  &quot;rules&quot;: {
+      &quot;block-no-empty&quot;: null,
+      &quot;color-no-invalid-hex&quot;: true,
+      &quot;comment-empty-line-before&quot;: [&quot;always&quot;, {
+      &quot;ignore&quot;: [&quot;stylelint-commands&quot;, &quot;between-comments&quot;],
+      }],
+      &quot;unit-whitelist&quot;: [&quot;em&quot;, &quot;rem&quot;, &quot;%&quot;, &quot;s&quot;]
+  }
+})
+</code></pre>
+<h3 style="font-weight: normal"> setSync </h3>
+
+<p>设置同步开发机的配置，需要设置开发机的ip，以及项目要存储的路径。</p>
+<p><strong>注：Windows下需要预装rsync</strong>。</p>
+<h3 style="font-weight: normal"> setCommands </h3>
+
+<p>设置项目自定义命令，在项目目录下执行<code>ykit {cmd}</code>即可运行。</p>
+
+              </div>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+    <script src="source/jquery.min.js"></script>
+    <script src="source/bootstrap.min.js"></script>
+    <script src="source/docs.min.js"></script>
+    <script src="source/highlight.min.js"></script>
+    <script src="source/app.js"></script>
+</body>
+</html>

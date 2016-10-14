@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title> Ykit</title>
+  <link rel="stylesheet" href="source/app.css"/>
+  <link rel="stylesheet" href="source/highlight.min.css"/>
+</head>
+<body>
+    <div class="ydoc">
+
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ymfe.org/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="active">
+                        
+                        <a href="index.html">Ykit</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>前端开发工具集</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content ydoc-container-content-hassidebar">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-简介.html">简介</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-项目初始化 & 项目迁移.html">项目初始化 & 项目迁移</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-配置.html">配置</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
+                            
+                            <a href="index-命令行工具.html">命令行工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-代理工具.html">代理工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-Node.js API.html">Node.js API</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="index-为Ykit贡献代码.html">为Ykit贡献代码</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <h1 style="font-weight: normal"> 命令行工具 </h1>
+
+<p>Ykit 命令行工具可以通过运行 <code>ykit -h</code> 查看所有基础命令。</p>
+<ul>
+<li>init            # 项目初始化</li>
+<li>server          # 开发服务</li>
+<li>pack            # 资源编译、打包</li>
+<li>lint            # 代码质量检测</li>
+</ul>
+<p>通过 <code>ykit {命令名} -h</code> 可以查看该指令的参数，如：</p>
+<pre><code>$ ykit server -h
+
+Options:
+  -p, --port         端口
+  -x, --proxy        启用proxy代理服务
+  -m, --middlewares  加载项目中间件
+  -l, --livereload   自动刷新
+  -a, --all          整体编译
+  -s, --https        使用https协议
+  -h, --help         查看帮助
+</code></pre><h3 style="font-weight: normal"> init </h3>
+
+<p>这个命令将会配置初始化向导。用户通过选择项目类型，它就可以帮助用户快速地在当前工作目录下创建 ykit.{type}.js 文件，并安装相应插件。</p>
+<h3 style="font-weight: normal"> server </h3>
+
+<p>这个命令会在本地起静态服务，并对<code>/{project}/prd/</code>路径下的资源进行编译，保持与Fekit一致。</p>
+<p><strong>注意: 只有<code>ykit.{type}.js</code>中设置了export的资源才会编译。</strong></p>
+<p>编译静态资源有两种方式，默认是按请求编译，适合export资源较多的项目。</p>
+<p>当加上-a--all参数后，则在第一次加载时将export资源全部编译，适合单页应用等静态资源入口较少的项目。</p>
+<h3 style="font-weight: normal"> pack </h3>
+
+<p>对项目进行打包。对于Qunar的项目，打包后会生成相应目录，来放置带版本号的资源。</p>
+<ul>
+<li><p><code>ykit pack</code>命令，相当于之前的<code>fekit pack</code>。首先生成<code>dev</code>目录，并按目录结构生成<code>**/{name}@dev.{ext}</code>，另外会生成<code>**/{name}@dev.{ext}.map</code>用于调试。</p>
+</li>
+<li><p><code>ykit pack -m</code>命令，相当于之前的<code>fekit min</code>。首先生成<code>prd</code>和<code>ver</code>目录，并按目录结构生成<code>**/{name}@{version}.{ext}</code>，即打包压缩后的资源。同时在<code>ver</code>目录生成对应<code>{name}.{ext}.ver</code>和<code>versions.mapping</code>。</p>
+</li>
+<li><p><code>ykit pack -g {groupname}</code>命令，可指定分组打包，不影响其它已存在的打包资源。</p>
+</li>
+<li><p><code>ykit pack -c</code>命令，会在打包之前清空打包目标目录(dev/prd)，默认不清空。</p>
+</li>
+</ul>
+<h3 style="font-weight: normal"> lint </h3>
+
+<p>这个命令会对项目进行eslint和stylelint检查，第一次在项目中执行ykit lint后，会生成相应的.eslintrc.json，可后续对它进行更改，如添加lint规则、忽略目录等。</p>
+<p>进入项目目录，执行<code>ykit lint</code>即可，其它参数：</p>
+<p><code>ykit lint -d {dir}</code> 对指定目录或文件执行lint。</p>
+<p><code>ykit lint -t {type}</code> 对指定文件类型执行lint，{type}可以为<code>js</code>或<code>css</code></p>
+<h2 style="font-weight: normal"> 附加命令 </h2>
+
+<p>在Ykit在项目中运行时，根据项目的插件，可以运行当前项目的附加命令。如在一个Qunar项目中，可以运行<code>ykit sync</code>命令等。当前环境的附加命令列表可以使用<code>ykit -h</code>查看。</p>
+<h2 style="font-weight: normal"> 项目自定义命令 </h2>
+
+<p>在Ykit在项目中运行时，可以运行<code>ykit.{type}.js</code>中自定义的命令，相当于执行一段Node.js脚本。当前环境自定义命令列表可以使用<code>ykit -h</code>查看。</p>
+
+              </div>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+    <script src="source/jquery.min.js"></script>
+    <script src="source/bootstrap.min.js"></script>
+    <script src="source/docs.min.js"></script>
+    <script src="source/highlight.min.js"></script>
+    <script src="source/app.js"></script>
+</body>
+</html>
