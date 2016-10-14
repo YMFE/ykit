@@ -140,7 +140,7 @@ class Project {
                         this.config.setExports(userConfigObj.export);
                         this.config.setCompiler(userConfigObj.modifyWebpackConfig);
                         this.config.setSync(userConfigObj.sync);
-                        this.setCommands(userConfigObj.commands);
+                        this.setCommands(userConfigObj.command);
                     }
                 } else {
                     error(this.configFile + ' 没有 exports 正确的方法！');
