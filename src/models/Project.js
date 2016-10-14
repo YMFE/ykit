@@ -8,9 +8,7 @@ let fs = require('fs');
 
 let Config = require('./Config.js'),
     Manager = require('../modules/manager.js'),
-    ExtractTextPlugin = require("extract-text-webpack-plugin");
-
-let loader = require('../utils/loader');
+    ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let UtilFs = require('../utils/fs.js');
 
@@ -224,7 +222,7 @@ class Project {
         let files = ['.js', '.yaml', '.yml', '.json', ''].map(ext => {
             return path.join(this.cwd, '.eslintrc' + ext);
         });
-        let config = loader.loadFirstExist(files);
+        let config = UtilFs.readFileAny(files);
 
         // 本地无 lint 配置，创建 .eslintrc.json
         if(!config){
