@@ -102,15 +102,6 @@
                         
                         
                         
-                        <!-- <li  class="active"   class="active" > -->
-                        <li  class="active" >
-                            
-                            <a href="index-打包 JOB.html">打包 JOB</a>
-                            
-                        </li>
-                        
-                        
-                        
                         <!-- <li  > -->
                         <li >
                             
@@ -120,10 +111,10 @@
                         
                         
                         
-                        <!-- <li  > -->
-                        <li >
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
                             
-                            <a href="index-为 Ykit 贡献代码.html">为 Ykit 贡献代码</a>
+                            <a href="index-为Ykit贡献代码.html">为Ykit贡献代码</a>
                             
                         </li>
                         
@@ -134,36 +125,36 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 打包 JOB </h1>
+                <h1 style="font-weight: normal"> 为 Ykit 贡献代码 </h1>
 
-<h2 style="font-weight: normal"> 创建 Schema </h2>
+<h2 style="font-weight: normal"> 工程结构 </h2>
 
-<ol>
-<li><p>进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建Schema，注意前端类型选择<code>非fekit编译</code>，其它项目信息正常填写即可。</p>
-</li>
-<li><p>进入Schema公共详细信息填写界面，在build_command字段填写以下打包命令：</p>
-</li>
-</ol>
-<pre><code>npm install --production --registry http://registry.npm.corp.qunar.com/ &amp;&amp; ykit reload &amp;&amp; ykit pack -m -q
-</code></pre><p>其它字段按项目需求填写，如无特殊需求可不填，submit即可。</p>
-<h2 style="font-weight: normal"> 创建 Job </h2>
-
-<p>Ykit对于创建Job并没有特殊的要求，按正常项目需求创建即可，下图是一个demo项目的job参数：</p>
-<p><strong>注意：Job创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加Job的devqa权限</a>才能在Jenkins中Build.</strong></p>
-<h2 style="font-weight: normal"> Build 项目 </h2>
-
-<h3 style="font-weight: normal"> Build 前检查 </h3>
-
-<p>确保pom.xml里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于master。</p>
-<h3 style="font-weight: normal"> 关于 node_modules </h3>
+<p>ykit 核心代码基本都在src目录下:</p>
+<pre><code>├── commands - ykit命令
+├── config - 静态文件如初始化工程模板等
+├── models - ykit核心（如编译打包）
+├── modules - 功能模块
+├── plugins - webpack plugins
+└── utils - 工具
+</code></pre><p><code>src</code>会通过 gulp 编译到<code>lib</code>对应目录下，将 sr c中的 es6 编译为 es5 ，ykit运行是使用 es5 的代码，所以开发过程中要一直开着 gulp。</p>
+<h2 style="font-weight: normal"> 本地开发 </h2>
 
 <ol>
-<li><strong>确保项目中不存在node_modules，或者node_modules是可兼容的。</strong> 由于build机器与本地的系统和node版本原因，有些node_modules包在build机器版本无法正常工作。因此建议使用Ykit的项目不要提交node_modules，而是在build机器上安装（之前创建Schema时已经配置了安装命令）。</li>
-<li>上面的安装命令中只会安装dependencies，如果有编译过程中依赖了devDependencies中的包，则会报错。</li>
+<li>fork &amp; clone git 工程</li>
+<li>qnpm install</li>
+<li>gulp</li>
+<li>node /bin/ykit 进行开发和调试</li>
 </ol>
-<h3 style="font-weight: normal"> 开始 Build </h3>
+<h2 style="font-weight: normal"> Ykit插件 </h2>
 
-<p>在Jenkins刚刚创建的Job页面中，选择Build with Parameters。如果是分支开发方式，需要在tag_name字段填写分支号，其它参数按项目需求填写即可。</p>
+<p>Ykit 对于不同场景的覆盖主要通过插件来实现。插件有两种，一种是功能/技术解决方案插件（如 qunar/hy/fekit），一种是业务插件（如 xta ），目前已有的插件:</p>
+<ul>
+<li><a href="http://gitlab.corp.qunar.com/mfe/ykit-config-qunar">ykit-config-qunar</a>: 支持 sass/less，实现资源带版本号，fekit_moudles 打包，sync 命令等。</li>
+<li><a href="http://gitlab.corp.qunar.com/mfe/ykit-config-fekit">ykit-config-fekit</a>: 主要用于兼容 fekit 模块化语法，如 css 中的 require 等。</li>
+<li><a href="http://gitlab.corp.qunar.com/mfe/ykit-config-hy">ykit-config-hy</a>: 支持 es6，更多功能仍在开发中。</li>
+<li><a href="http://gitlab.corp.qunar.com/mfe/ykit-config-xta">ykit-config-xta</a>: xta 业务团队插件，可在里面引用其它功能插件，和定义团队自己的 lint 规则，自定义插件、服务中间件、命令等。</li>
+</ul>
+<p>未来将会有更多技术解决方案插件如 react-native，以及更多业务团队插件...</p>
 
               </div>
           </div>
