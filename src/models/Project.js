@@ -136,10 +136,12 @@ class Project {
                 if (typeof configMethod.config == 'function') {
                     const userConfigObj = configMethod.config.call(userConfig, options, this.cwd);
 
-                    this.config.setExports(userConfigObj.export);
-                    this.config.setCompiler(userConfigObj.modifyWebpackConfig);
-                    this.config.setSync(userConfigObj.sync);
-                    this.setCommands(userConfigObj.commands);
+                    if(userConfigObj) {
+                        this.config.setExports(userConfigObj.export);
+                        this.config.setCompiler(userConfigObj.modifyWebpackConfig);
+                        this.config.setSync(userConfigObj.sync);
+                        this.setCommands(userConfigObj.commands);
+                    }
                 } else {
                     error(this.configFile + ' 没有 exports 正确的方法！');
                     return this;
