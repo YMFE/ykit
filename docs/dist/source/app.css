@@ -64,6 +64,11 @@ button::-moz-focus-inner, input::-moz-focus-inner {
 mark {
   background-color: transparent; }
 
+mark,
+.mark {
+  background-color: #fcf8e3;
+  padding: .2em; }
+
 a, ins, s, u, del {
   text-decoration: none; }
 
@@ -256,7 +261,8 @@ sup, sub {
           text-decoration: underline; }
       .ydoc-container-content .docs-sidebar {
         background: #fff;
-        z-index: 9999; }
+        z-index: 9999;
+        overflow: hidden; }
         .ydoc-container-content .docs-sidebar .docs-sidenav {
           padding-left: 0; }
           .ydoc-container-content .docs-sidebar .docs-sidenav li {
@@ -293,15 +299,13 @@ sup, sub {
       .ydoc-container-content .docs-sidebar.affix-bottom {
         position: absolute; }
       .ydoc-container-content .docs-section {
-        margin: 0 10px;
-        overflow: hidden;
-        clear: both; }
-    .ydoc-container-content-hassidebar:before {
+        margin: 10px; }
+    .ydoc-container .docs-sidebar:before {
       height: 100%;
       background-color: #eee;
       width: 1px;
       position: absolute;
-      left: 25%;
+      right: 0;
       display: block;
       min-height: 500px;
       z-index: 99;
@@ -852,5 +856,3 @@ sup, sub {
   margin: -.1rem 0 .15rem;
   display: block;
   cursor: pointer; }
-
-/*# sourceMappingURL=app.css.map */
