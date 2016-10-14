@@ -32,6 +32,9 @@ module.exports = {
                 name: '命令行工具',
                 content: './docs/cli.md'
             }, {
+                name: '打包 JOB',
+                content: './docs/build.md'
+            }, {
                 name: '代理工具',
                 content: './docs/proxy.md'
             }, {

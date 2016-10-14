@@ -84,8 +84,8 @@
                         
                         
                         
-                        <!-- <li  class="active"   class="active" > -->
-                        <li  class="active" >
+                        <!-- <li  > -->
+                        <li >
                             
                             <a href="index-命令行工具.html">命令行工具</a>
                             
@@ -93,8 +93,8 @@
                         
                         
                         
-                        <!-- <li  > -->
-                        <li >
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
                             
                             <a href="index-打包 JOB.html">打包 JOB</a>
                             
@@ -134,60 +134,38 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 命令行工具 </h1>
+                <h1 style="font-weight: normal"> 打包 JOB </h1>
 
-<p>Ykit 命令行工具可以通过运行 <code>ykit -h</code> 查看所有基础命令。</p>
-<ul>
-<li>init            # 项目初始化</li>
-<li>server          # 开发服务</li>
-<li>pack            # 资源编译、打包</li>
-<li>lint            # 代码质量检测</li>
-</ul>
-<p>通过 <code>ykit {命令名} -h</code> 可以查看该指令的参数，如：</p>
-<pre><code>$ ykit server -h
+<h2 style="font-weight: normal"> 创建 Schema </h2>
 
-Options:
-  -p, --port         端口
-  -x, --proxy        启用proxy代理服务
-  -m, --middlewares  加载项目中间件
-  -l, --livereload   自动刷新
-  -a, --all          整体编译
-  -s, --https        使用https协议
-  -h, --help         查看帮助
-</code></pre><h3 style="font-weight: normal"> init </h3>
+<ol>
+<li>进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它项目信息正常填写即可。</li>
+</ol>
+<p><img src="../img/Schema-新建.png" alt="Schema-新建"></p>
+<ol>
+<li>进入 Schema 公共详细信息填写界面，在 build_command 字段填写以下打包命令：</li>
+</ol>
+<pre><code>npm install --production --registry http://registry.npm.corp.qunar.com/ &amp;&amp; ykit reload &amp;&amp; ykit pack -m -q
+</code></pre><p>其它字段按项目需求填写，如无特殊需求可不填，submit 即可。</p>
+<h2 style="font-weight: normal"> 创建 Job </h2>
 
-<p>这个命令将会配置初始化向导。用户通过选择项目类型，它就可以帮助用户快速地在当前工作目录下创建 ykit.{type}.js 文件，并安装相应插件。</p>
-<h3 style="font-weight: normal"> server </h3>
+<p>Ykit 对于创建 Job 并没有特殊的要求，按正常项目需求创建即可，下图是一个 demo 项目的 job 参数：</p>
+<p><img src="../img/JOB-新建.png" alt="JOB-新建"></p>
+<p><strong>注意：Job 创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加 Job 的 devqa 权限</a>才能在 Jenkins 中 Build.</strong></p>
+<h2 style="font-weight: normal"> Build 项目 </h2>
 
-<p>这个命令会在本地起静态服务，并对<code>/{project}/prd/</code>路径下的资源进行编译，保持与Fekit一致。</p>
-<p><strong>注意: 只有<code>ykit.{type}.js</code>中设置了export的资源才会编译。</strong></p>
-<p>编译静态资源有两种方式，默认是按请求编译，适合export资源较多的项目。</p>
-<p>当加上-a--all参数后，则在第一次加载时将export资源全部编译，适合单页应用等静态资源入口较少的项目。</p>
-<h3 style="font-weight: normal"> pack </h3>
+<h3 style="font-weight: normal"> Build 前检查 </h3>
 
-<p>对项目进行打包。对于Qunar的项目，打包后会生成相应目录，来放置带版本号的资源。</p>
-<ul>
-<li><p><code>ykit pack</code>命令，相当于之前的<code>fekit pack</code>。首先生成<code>dev</code>目录，并按目录结构生成<code>**/{name}@dev.{ext}</code>，另外会生成<code>**/{name}@dev.{ext}.map</code>用于调试。</p>
-</li>
-<li><p><code>ykit pack -m</code>命令，相当于之前的<code>fekit min</code>。首先生成<code>prd</code>和<code>ver</code>目录，并按目录结构生成<code>**/{name}@{version}.{ext}</code>，即打包压缩后的资源。同时在<code>ver</code>目录生成对应<code>{name}.{ext}.ver</code>和<code>versions.mapping</code>。</p>
-</li>
-<li><p><code>ykit pack -g {groupname}</code>命令，可指定分组打包，不影响其它已存在的打包资源。</p>
-</li>
-<li><p><code>ykit pack -c</code>命令，会在打包之前清空打包目标目录(dev/prd)，默认不清空。</p>
-</li>
-</ul>
-<h3 style="font-weight: normal"> lint </h3>
+<p>确保 pom.xml 里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于 master。</p>
+<h3 style="font-weight: normal"> 关于 node_modules </h3>
 
-<p>这个命令会对项目进行eslint和stylelint检查，第一次在项目中执行ykit lint后，会生成相应的.eslintrc.json，可后续对它进行更改，如添加lint规则、忽略目录等。</p>
-<p>进入项目目录，执行<code>ykit lint</code>即可，其它参数：</p>
-<p><code>ykit lint -d {dir}</code> 对指定目录或文件执行lint。</p>
-<p><code>ykit lint -t {type}</code> 对指定文件类型执行lint，{type}可以为<code>js</code>或<code>css</code></p>
-<h2 style="font-weight: normal"> 附加命令 </h2>
+<ol>
+<li><strong>确保项目中不存在 node_modules，或者 node_modules 是可兼容的。</strong> 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，而是在 build 机器上安装（之前创建 Schema 时已经配置了安装命令）。</li>
+<li>上面的安装命令中只会安装 dependencies，如果有编译过程中依赖了 devDependencies 中的包，则会报错。</li>
+</ol>
+<h3 style="font-weight: normal"> 开始 Build </h3>
 
-<p>在Ykit在项目中运行时，根据项目的插件，可以运行当前项目的附加命令。如在一个Qunar项目中，可以运行<code>ykit sync</code>命令等。当前环境的附加命令列表可以使用<code>ykit -h</code>查看。</p>
-<h2 style="font-weight: normal"> 项目自定义命令 </h2>
-
-<p>在Ykit在项目中运行时，可以运行<code>ykit.{type}.js</code>中自定义的命令，相当于执行一段Node.js脚本。当前环境自定义命令列表可以使用<code>ykit -h</code>查看。</p>
+<p>在 Jenkins 刚刚创建的 Job 页面中，选择 Build with Parameters。如果是分支开发方式，需要在 tag_name 字段填写分支号，其它参数按项目需求填写即可。</p>
 
               </div>
           </div>
