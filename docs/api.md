@@ -1,6 +1,6 @@
 <h1 style="font-weight: normal"> Node.js API </h1>
 
-<h2 style="font-weight: normal"> 调用Ykit打包方法 </h2>
+<h2 style="font-weight: normal"> 调用 Ykit 打包方法 </h2>
 
 ```javascript
 let ykit = require("ykit");
@@ -12,7 +12,7 @@ ykit.pack({
 });
 ```
 
-<h2 style="font-weight: normal"> 与Gulp结合使用 </h2>
+<h2 style="font-weight: normal"> 与 Gulp 结合使用 </h2>
 
 ```javascript
 let ykit = require("ykit");
@@ -25,7 +25,7 @@ gulp.task('pack', () => {
 });
 ```
 
-<h2 style="font-weight: normal"> 与Grunt结合使用 </h2>
+<h2 style="font-weight: normal"> 与 Grunt 结合使用 </h2>
 
 ```javascript
 grunt.initConfig({

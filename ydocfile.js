@@ -37,10 +37,13 @@ module.exports = {
                         "name": "代理工具",
                         "content": "./docs/proxy.md"
                     }, {
+                        "name": "打包 JOB",
+                        "content": "./docs/build.md"
+                    }, {
                         "name": "Node.js API",
                         "content": "./docs/api.md"
                     }, {
-                        "name": "为Ykit贡献代码",
+                        "name": "为 Ykit 贡献代码",
                         "content": "./docs/dev.md"
                     }
                 ]
