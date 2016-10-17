@@ -91,37 +91,41 @@
 
 <h2 style="font-weight: normal"> 启动代理 </h2>
 
-<p>Ykit Proxy使用<a href="https://github.com/Ellery0924/QProxy">Jerry Proxy</a>作为代理插件。它结合了<code>SwitchHost</code>和<code>Charles/Fiddler</code>的功能，包括：</p>
+<p>Ykit 使用 <a href="https://github.com/Ellery0924/QProxy">Jerry Proxy</a> 作为代理插件。它结合了<code>SwitchHost</code>和<code>Charles/Fiddler</code>的功能，包括：</p>
 <ul>
-<li>无DNS缓存的Host分组管理</li>
-<li>请求/响应日志（抓包）</li>
+<li>无 DNS 缓存的 Host 分组管理</li>
+<li>请求 / 响应日志（抓包）</li>
 <li>断点</li>
 <li>URL MAP</li>
-<li>接口Mock服务</li>
+<li>接口 Mock 服务</li>
 <li>网速控制(Throttling)</li>
 </ul>
-<p>并且支持Qunar通用域名的HTTPS。通过下面命令启动代理：</p>
+<p>并且支持 Qunar 通用域名的 HTTPS。通过下面命令启动代理：</p>
 <pre><code>$ sudo ykit server -x
-</code></pre><p>会打开代理页面，左侧导航是项目/方案列表，右侧面板是项目/方案的Host规则，点击左侧即可切换host分组，
-<strong>无需重启浏览器或者等待DNS缓存生效。</strong></p>
-<p><strong>Host管理功能支持HTTPS，无需任何配置</strong></p>
-<p><strong>对于Ykit项目，会检测当前目录下的Ykit项目，在项目内新建/读取<code>ykit.host</code>，并且同步更新。</strong></p>
+</code></pre><p>此时会打开代理页面，左侧导航是项目(方案)列表，右侧面板是该分组下 Host 规则。</p>
+<p><strong>对于Ykit项目，会在项目内新建/读取<code>ykit.host</code>，并且同步更新。</strong></p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/392730b24f/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.40.30.png" alt="屏幕快照 2016-09-08 上午11.40.30"></p>
 <h2 style="font-weight: normal"> 切换到代理服务 </h2>
 
-<p>此时代理还未生效，我们还需要把请求打到我们的本地代理上。简单的方式是使用<code>SwitchyOmega</code>等chrome代理插件，或者使用Proxy右上角推荐的代理插件。以下是<code>SwitchyOmega</code>的配置，我们将所有外部请求打到<code>127.0.0.1:999</code>也就是我们的本地代理上。</p>
+<p>注意此时代理还未生效，我们还需要把请求打到我们的本地代理上。简单的方式是使用<code>SwitchyOmega</code>等chrome代理插件，或者使用Proxy右上角推荐的代理插件。以下是<code>SwitchyOmega</code>的配置，我们将所有外部请求打到<code>127.0.0.1:999</code>，也就是我们的本地代理上。</p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/370cfe24b5/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.43.18.png" alt="屏幕快照 2016-09-08 上午11.43.18"></p>
 <h2 style="font-weight: normal"> 自定义 Url Map </h2>
 
-<p>切换到Url Map选项卡，可以设置请求的远程/本地映射，支持正则匹配：</p>
+<p>切换到Url Map选项卡，可以设置请求的远程/本地映射，支持正则匹配。</p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/c1f92f0479/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.53.39.png" alt="屏幕快照 2016-09-08 上午11.53.39"></p>
 <h2 style="font-weight: normal"> 查看 Log </h2>
 
-<p>切换到请求/响应日志选项卡，可以查看通过代理请求的接口详细信息，在进行移动端调试时十分便捷：</p>
+<p>切换到请求/响应日志选项卡，可以查看通过代理请求的接口详细信息，在进行移动端调试时十分便捷。点击详情Tab的&quot;设置断点&quot;可以给中断请求，并可即时修改响应的body。</p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/68d3467c6c/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.55.40.png" alt="屏幕快照 2016-09-08 上午11.55.40"></p>
-<p>点击详情Tab的&quot;设置断点&quot;可以给中断请求，并可即时修改响应的body。</p>
-<p><strong>注意：需要抓取移动设备的请求时，请记得修改移动设备的代理配置，让IP指向自己的电脑（当然移动设备和电脑需要在一个无线网络下），端口为999</strong></p>
-<p><strong>HTTPS请求的抓取需要安装根证书，并在网络配置面板中设置<code>开启HTTPS代理</code>，请联系jiao.shen</strong></p>
+<h2 style="font-weight: normal"> 注意事项 </h2>
+
+<ul>
+<li><p>需要抓取移动设备的请求时，请保证移动设备和电脑在同一个无线网络下，然后修改移动设备的代理配置，让IP指向自己的电脑，端口为<code>999</code></p>
+</li>
+<li><p>HTTPS请求的抓取需要安装根证书，并在网络配置面板中设置<code>开启HTTPS代理</code></p>
+</li>
+</ul>
+<p>如有其它问题请联系 <code>jiao.shen@qunar.com</code></p>
 
               </article>
           </div>

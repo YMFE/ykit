@@ -91,13 +91,9 @@
 
 <h2 style="font-weight: normal"> 创建 Schema </h2>
 
-<ol>
-<li>进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它项目信息正常填写即可。</li>
-</ol>
+<p>1.进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它项目信息正常填写即可。</p>
 <p><img src="http://ww3.sinaimg.cn/large/6af705b8gw1f8v3wuuz2dj20o50dnmzn.jpg" alt="Schema-新建"></p>
-<ol>
-<li>进入 Schema 公共详细信息填写界面，在 build_command 字段填写以下打包命令：</li>
-</ol>
+<p>2.进入 Schema 公共详细信息填写界面，在 build_command 字段填写以下打包命令：</p>
 <pre><code>npm install --production --registry http://registry.npm.corp.qunar.com/ &amp;&amp; ykit reload &amp;&amp; ykit pack -m -q
 </code></pre><p>其它字段按项目需求填写，如无特殊需求可不填，submit 即可。</p>
 <h2 style="font-weight: normal"> 创建 Job </h2>
@@ -114,11 +110,11 @@
 
 <ol>
 <li><strong>确保项目中不存在 node_modules，或者 node_modules 是可兼容的。</strong> 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，而是在 build 机器上安装（之前创建 Schema 时已经配置了安装命令）。</li>
-<li>上面的安装命令中只会安装 dependencies，如果有编译过程中依赖了 devDependencies 中的包，则会报错。</li>
+<li>上面的安装命令中只会安装<code>dependencies</code>，因此不要在将编译依赖的包放在<code>devDependencies</code>中。</li>
 </ol>
 <h3 style="font-weight: normal"> 开始 Build </h3>
 
-<p>在 Jenkins 刚刚创建的 Job 页面中，选择 Build with Parameters。如果是分支开发方式，需要在 tag_name 字段填写分支号，其它参数按项目需求填写即可。</p>
+<p>在 Jenkins 刚刚创建的 Job 页面中，选择 Build with Parameters。如果是分支开发方式，需要在<code>tag_name</code>字段填写分支号，其它参数按项目需求填写即可。</p>
 
               </article>
           </div>

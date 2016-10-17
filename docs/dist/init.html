@@ -87,7 +87,7 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <h1 style="font-weight: normal"> 起步 </h1>
+                  <h1 style="font-weight: normal"> 创建 Ykit 项目 &amp; 已有项目迁移到 Ykit </h1>
 
 <h2 style="font-weight: normal"> 1. 新建ykit项目 </h2>
 
@@ -101,13 +101,13 @@ $ ykit init
 $ ykit init
 </code></pre>
 <p>执行该命令后，会要求选择一个项目的类型，之后会生成一个对应的配置文件<code>ykit.{type}.js</code>。如：选择类型为qunar，则会在项目中生成<code>ykit.qunar.js</code>。</p>
-<h2 style="font-weight: normal"> 2. init 结束后，我们可在<code>ykit.qunar.js</code>中进行更多的项目配置。 </h2>
+<h2 style="font-weight: normal"> 2. init 结束后，在<code>ykit.{type}.js</code>中进行项目配置。 </h2>
 
 <ul>
 <li>如果是迁移fekit项目，则需要将<code>export &amp; alias</code>等拷贝过来。</li>
-<li>如果是迁移webpack项目，需要在<code>ykit.qunar.js</code>的<code>modifyWebpackConfig</code>函数中进行webpack的配置。</li>
+<li>如果是迁移webpack项目，需要在<code>ykit.qunar.js</code>的<code>modifyWebpackConfig</code>函数中更改当前默认 webpack 配置。</li>
 </ul>
-<p>具体config如何配置可参考<a href="./config.html">这里</a>。</p>
+<p>具体配置文档可参考 <a href="./config.html">Ykit-配置</a>。</p>
 <h2 style="font-weight: normal"> 3. 在项目外运行<code>ykit server</code>，并访问项目。 </h2>
 
 

@@ -13,7 +13,7 @@ ykit 核心代码基本都在src目录下:
 └── utils - 工具
 ```
 
-`src`会通过 gulp 编译到`lib`对应目录下，将 sr c中的 es6 编译为 es5 ，ykit运行是使用 es5 的代码，所以开发过程中要一直开着 gulp。
+`src`会通过 gulp 编译到`lib`对应目录下，将 src 中的 es6 编译为 es5 ，ykit运行是使用 es5 的代码，所以开发过程中要一直开着 gulp。
 
 <h2 style="font-weight: normal"> 本地开发 </h2>
 
