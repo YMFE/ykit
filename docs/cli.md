@@ -59,8 +59,8 @@ Options:
 
 <h2 style="font-weight: normal"> 附加命令 </h2>
 
-在Ykit在项目中运行时，根据项目的插件，可以运行当前项目的附加命令。如在一个Qunar项目中，可以运行`ykit sync`命令等。当前环境的附加命令列表可以使用`ykit -h`查看。
+Ykit 插件会为当前项目添加附加命令。如在一个 Qunar 项目中，可以运行`ykit sync`命令等。当前项目环境下的命令列表可以使用`ykit -h`查看。
 
 <h2 style="font-weight: normal"> 项目自定义命令 </h2>
 
-在Ykit在项目中运行时，可以运行`ykit.{type}.js`中自定义的命令，相当于执行一段Node.js脚本。当前环境自定义命令列表可以使用`ykit -h`查看。
+在`ykit.{type}.js`中可以配置项目自定义命令，相当于执行一段Node.js脚本。当前项目环境下的命令列表可以使用`ykit -h`查看。

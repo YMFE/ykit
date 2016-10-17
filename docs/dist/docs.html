@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
   <meta name="description" content="description of your site">
   <meta name="author" content="author of the site">
-  <title>YKit 配置</title>
+  <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/app.css"/>
   <link rel="stylesheet" href="source/highlight.min.css"/>
 </head>
@@ -36,31 +36,7 @@
                     
                     <li class="active">
                         
-                        <a href="config.html">配置</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="cli.html">命令行</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="build.html">发布</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="proxy.html">代理</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="api.html">API</a>
+                        <a href="docs.html">使用手册</a>
                         
                     </li>
                     
@@ -84,10 +60,63 @@
       <div class="ydoc-container">
         
           
-          <div class="ydoc-container-content" id="readme">
-              <article class="markdown-body">
-                  
-                  <h1 style="font-weight: normal"> 配置 </h1>
+          <div class="ydoc-container-content">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="docs-配置.html">配置</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="docs-命令行.html">命令行</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="docs-代理工具.html">代理工具</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="docs-Node.js API.html">Node.js API</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="docs-打包 JOB.html">打包 JOB</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <h1 style="font-weight: normal"> 配置 </h1>
 
 <h2 style="font-weight: normal"> ykit.{type}.js 文件示例 </h2>
 
@@ -131,15 +160,15 @@
 <h2 style="font-weight: normal"> 配置项 </h2>
 
 <ul>
-<li>export - 设置资源入口。将要导出至 prd 和 dev 目录的文件列表。其中所有路径, 均相对于 src 目录，同时也支持设置入口分组。</li>
-<li>sync - 设置同步开发机的配置，需要设置开发机的ip，以及项目要存储的路径。</li>
-<li>command - 设置项目自定义命令，在项目目录下执行ykit {cmd}即可运行。</li>
+<li>export - 设置资源入口。与 Fekit 相同，其中所有路径均默认相对于<code>src</code>目录，在<strong>本地请求 / 打包阶段</strong>，将会导出至 <strong>prd / dev</strong> 目录。同时也支持设置入口分组，打包时可针对分组进行打包。</li>
+<li>sync - 设置同步开发机的配置，需要设置开发机的 IP，以及项目要存储的路径。</li>
+<li>command - 设置项目自定义命令，在项目目录下执行<code>ykit {cmd}</code>即可运行。</li>
 </ul>
 <h3 style="font-weight: normal"> modifyWebpackConfig </h3>
 
 <p><code>modifyWebpackConfig</code>是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。</p>
 
-              </article>
+              </div>
           </div>
           
         

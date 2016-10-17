@@ -36,31 +36,7 @@
                     
                     <li class="">
                         
-                        <a href="config.html">配置</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="cli.html">命令行</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="build.html">发布</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="proxy.html">代理</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="api.html">API</a>
+                        <a href="docs.html">使用手册</a>
                         
                     </li>
                     
@@ -89,6 +65,11 @@
                   
                   <h1 style="font-weight: normal"> 创建 Ykit 项目 &amp; 已有项目迁移到 Ykit </h1>
 
+
+<h2 style="font-weight: normal"> 0. 安装Ykit(注意：需要在内网环境下，且包名有<code>@qnpm</code>前缀) </h2>
+
+<pre><code class="lang-bash">$ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
+</code></pre>
 <h2 style="font-weight: normal"> 1. 新建ykit项目 </h2>
 
 <p>如果是<strong>初始化项目</strong>，需要先创建项目目录，然后在该目录中执行<code>ykit init</code>：</p>
@@ -107,7 +88,7 @@ $ ykit init
 <li>如果是迁移fekit项目，则需要将<code>export &amp; alias</code>等拷贝过来。</li>
 <li>如果是迁移webpack项目，需要在<code>ykit.qunar.js</code>的<code>modifyWebpackConfig</code>函数中更改当前默认 webpack 配置。</li>
 </ul>
-<p>具体配置文档可参考 <a href="./config.html">Ykit-配置</a>。</p>
+<p>具体配置文档可参考 <a href="./docs-配置.html">Ykit-配置</a>。</p>
 <h2 style="font-weight: normal"> 3. 在项目外运行<code>ykit server</code>，并访问项目。 </h2>
 
 

@@ -9,12 +9,6 @@ Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括
 - 自带 lint 命令，支持 eslint 和 stylelint。
 - 自带代理工具，可实现 SwitchHost + Charles 的基本功能。
 
-<h2 style="font-weight: normal"> 安装(注意：需要在内网环境下，且包名有`@qnpm`前缀) </h2>
-
-```bash
-$ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
-```
-
 <h2 style="font-weight: normal"> Examples </h2>
 
 - [ykit-seed-avalon][6]: Avalon & OniUI 示例。

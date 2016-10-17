@@ -1,5 +1,12 @@
 <h1 style="font-weight: normal"> 创建 Ykit 项目 & 已有项目迁移到 Ykit </h1>
 
+
+<h2 style="font-weight: normal"> 0. 安装Ykit(注意：需要在内网环境下，且包名有`@qnpm`前缀) </h2>
+
+```bash
+$ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
+```
+
 <h2 style="font-weight: normal"> 1. 新建ykit项目 </h2>
 
 如果是**初始化项目**，需要先创建项目目录，然后在该目录中执行`ykit init`：
@@ -28,4 +35,4 @@ $ ykit init
 
 <h2 style="font-weight: normal"> 3. 在项目外运行`ykit server`，并访问项目。 </h2>
 
-[1]: ./config.html
+[1]: ./docs-配置.html

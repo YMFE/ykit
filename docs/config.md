@@ -44,9 +44,9 @@ exports.config = function() {
 
 <h2 style="font-weight: normal"> 配置项 </h2>
 
-- export - 设置资源入口。将要导出至 prd 和 dev 目录的文件列表。其中所有路径, 均相对于 src 目录，同时也支持设置入口分组。
-- sync - 设置同步开发机的配置，需要设置开发机的ip，以及项目要存储的路径。
-- command - 设置项目自定义命令，在项目目录下执行ykit {cmd}即可运行。
+- export - 设置资源入口。与 Fekit 相同，其中所有路径均默认相对于`src`目录，在**本地请求 / 打包阶段**，将会导出至 **prd / dev** 目录。同时也支持设置入口分组，打包时可针对分组进行打包。
+- sync - 设置同步开发机的配置，需要设置开发机的 IP，以及项目要存储的路径。
+- command - 设置项目自定义命令，在项目目录下执行`ykit {cmd}`即可运行。
 
 <h3 style="font-weight: normal"> modifyWebpackConfig </h3>
 
