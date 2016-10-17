@@ -1,21 +1,21 @@
-<h1 style="font-weight: normal"> [Ykit][10] </h1>
+## [Ykit][10]
 
 Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 [webpack][1]，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。
 
-<h2 style="font-weight: normal"> Features </h2>
+### Features
 
 - 本地的静态资源编译服务。
 - 通过扩展插件快速搭建开发环境。
 - 自带 lint 命令，支持 eslint 和 stylelint。
 - 自带代理工具，可实现 SwitchHost + Charles 的基本功能。
 
-<h2 style="font-weight: normal"> 安装(注意：需要在内网环境下，且包名有`@qnpm`前缀) </h2>
+### 安装(注意：需要在内网环境下，且包名有`@qnpm`前缀)
 
 ```bash
 $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 ```
 
-<h2 style="font-weight: normal"> Examples </h2>
+### Examples
 
 - [ykit-seed-avalon][6]: Avalon & OniUI 示例。
 - [ykit-seed-hy][7]: Hy 示例, 包括路由功能、滚动组件、手势功能。
@@ -23,7 +23,7 @@ $ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
 
 将 demo 工程 clone 下来后 npm install，然后项目外运行 ykit server 访问项目即可。
 
-<h2 style="font-weight: normal"> Change log </h2>
+### Change log
 
 [查看change log][11]
 
