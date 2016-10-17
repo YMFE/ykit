@@ -4,7 +4,7 @@
 
 1. 进入[万事屋][1]创建 Schema，注意前端类型选择`非 fekit 编译`，其它项目信息正常填写即可。
 
-![Schema-新建](../img/Schema-新建.png)
+![Schema-新建](http://ww3.sinaimg.cn/large/6af705b8gw1f8v3wuuz2dj20o50dnmzn.jpg)
 
 2. 进入 Schema 公共详细信息填写界面，在 build_command 字段填写以下打包命令：
 
@@ -18,7 +18,7 @@ npm install --production --registry http://registry.npm.corp.qunar.com/ && ykit 
 
 Ykit 对于创建 Job 并没有特殊的要求，按正常项目需求创建即可，下图是一个 demo 项目的 job 参数：
 
-![JOB-新建](../img/JOB-新建.png)
+![JOB-新建](http://ww1.sinaimg.cn/large/6af705b8gw1f8v3x6usblj20vw0hp770.jpg)
 
 **注意：Job 创建后需要[手动添加 Job 的 devqa 权限][2]才能在 Jenkins 中 Build.**
 

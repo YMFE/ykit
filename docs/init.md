@@ -21,7 +21,7 @@ $ ykit init
 
 <h2 style="font-weight: normal"> 2. init 结束后，我们可在`ykit.qunar.js`中进行更多的项目配置。 </h2>
 
-- 如果是迁移fekit项目，则需要将`export/alias`等拷贝过来。
+- 如果是迁移fekit项目，则需要将`export & alias`等拷贝过来。
 - 如果是迁移webpack项目，需要在`ykit.qunar.js`的`modifyWebpackConfig`函数中进行webpack的配置。
 
 具体config如何配置可参考[这里][1]。
