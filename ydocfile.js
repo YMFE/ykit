@@ -5,7 +5,7 @@ module.exports = {
         title: 'YKit',
         footer: '&copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>',
         home: 'YMFE',
-        homeUrl: 'http://ymfe.org/',
+        homeUrl: 'http://ued.qunar.com/ymfe/',
         navbars: []
     },
     pages: [{
@@ -16,7 +16,7 @@ module.exports = {
         content: './docs/README.md'
     }, {
         name: 'init',
-        title: '项目初始化 & 项目迁移',
+        title: '起步',
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/init.md'
@@ -28,31 +28,31 @@ module.exports = {
         content: './docs/config.md'
     }, {
         name: 'cli',
-        title: '命令行工具',
+        title: '命令行',
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/cli.md'
     }, {
         name: 'build',
-        title: '打包 JOB',
+        title: '发布',
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/build.md'
     }, {
         name: 'proxy',
-        title: '代理工具',
+        title: '代理',
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/proxy.md'
     }, {
         name: 'api',
-        title: 'Node.js API',
+        title: 'API',
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/api.md'
     }, {
         name: 'dev',
-        title: '为Ykit贡献代码',
+        title: '开发者',
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/dev.md'

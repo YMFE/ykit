@@ -41,6 +41,6 @@ Ykit 仍处在开发迭代阶段，有需求和问题可以[点击这里][9]提 
 [7]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-hy
 [8]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-react
 [9]: http://gitlab.corp.qunar.com/mfe/ykit/issues
-[10]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/ykit-dev
+[10]: ./dev.html
 [11]: http://gitlab.corp.qunar.com/mfe/ykit/blob/master/CHANGELOG.md
 [12]: http://gitlab.corp.qunar.com/mfe/ykit/wikis/proxy

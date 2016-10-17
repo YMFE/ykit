@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
   <meta name="description" content="description of your site">
   <meta name="author" content="author of the site">
-  <title>YKit 项目初始化 & 项目迁移</title>
+  <title>YKit 起步</title>
   <link rel="stylesheet" href="source/app.css"/>
   <link rel="stylesheet" href="source/highlight.min.css"/>
 </head>
@@ -15,7 +15,7 @@
       <header class="ydoc-header">
         <div class="ydoc-header-area">
             
-            <a href="http://ymfe.org/" class="navbar-brand">YMFE</a>
+            <a href="http://ued.qunar.com/ymfe/" class="navbar-brand">YMFE</a>
             
             <button class="ydocIcon navbar-toggle">&#xf020;</button>
             <nav class="ydoc-nav">
@@ -30,7 +30,7 @@
                     
                     <li class="active">
                         
-                        <a href="init.html">项目初始化 & 项目迁移</a>
+                        <a href="init.html">起步</a>
                         
                     </li>
                     
@@ -42,31 +42,31 @@
                     
                     <li class="">
                         
-                        <a href="cli.html">命令行工具</a>
+                        <a href="cli.html">命令行</a>
                         
                     </li>
                     
                     <li class="">
                         
-                        <a href="build.html">打包 JOB</a>
+                        <a href="build.html">发布</a>
                         
                     </li>
                     
                     <li class="">
                         
-                        <a href="proxy.html">代理工具</a>
+                        <a href="proxy.html">代理</a>
                         
                     </li>
                     
                     <li class="">
                         
-                        <a href="api.html">Node.js API</a>
+                        <a href="api.html">API</a>
                         
                     </li>
                     
                     <li class="">
                         
-                        <a href="dev.html">为Ykit贡献代码</a>
+                        <a href="dev.html">开发者</a>
                         
                     </li>
                     
@@ -87,28 +87,29 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <h1 style="font-weight: normal"> 项目初始化 &amp; 项目迁移 </h1>
+                  <h1 style="font-weight: normal"> 起步 </h1>
 
-<h2 style="font-weight: normal"> 1. 进入项目执行 init 命令 </h2>
+<h2 style="font-weight: normal"> 1. 新建ykit项目 </h2>
 
-<p>初始化项目：</p>
+<p>如果是<strong>初始化项目</strong>，需要先创建项目目录，然后在该目录中执行<code>ykit init</code>：</p>
 <pre><code class="lang-bash">$ mkdir MyYkitProject
 $ cd MyYkitProject
 $ ykit init
 </code></pre>
-<p>迁移项目：</p>
+<p>如果是<strong>已有项目</strong>，直接在项目中执行<code>ykit init</code>：</p>
 <pre><code class="lang-bash">$ cd MyProject
 $ ykit init
 </code></pre>
-<p>执行<code>ykit init</code>后，会要求选择一个项目的类型，之后会生成一个对应的配置文件<code>ykit.{type}.js</code>。如：选择类型为qunar，则会在项目中生成<code>ykit.qunar.js</code>。</p>
+<p>执行该命令后，会要求选择一个项目的类型，之后会生成一个对应的配置文件<code>ykit.{type}.js</code>。如：选择类型为qunar，则会在项目中生成<code>ykit.qunar.js</code>。</p>
 <h2 style="font-weight: normal"> 2. init 结束后，我们可在<code>ykit.qunar.js</code>中进行更多的项目配置。 </h2>
 
 <ul>
 <li>如果是迁移fekit项目，则需要将<code>export/alias</code>等拷贝过来。</li>
-<li>如果是迁移webpack项目，需要在<code>ykit.qunar.js</code>的<code>setCompiler</code>函数中进行webpack的配置。</li>
+<li>如果是迁移webpack项目，需要在<code>ykit.qunar.js</code>的<code>modifyWebpackConfig</code>函数中进行webpack的配置。</li>
 </ul>
-<p>具体config如何配置可参考<a href="config">这里</a>。</p>
+<p>具体config如何配置可参考<a href="./config.html">这里</a>。</p>
 <h2 style="font-weight: normal"> 3. 在项目外运行<code>ykit server</code>，并访问项目。 </h2>
+
 
               </article>
           </div>
