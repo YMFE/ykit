@@ -24,9 +24,11 @@ $ cd MyProject
 $ ykit init
 ```
 
-执行该命令后，会要求选择一个项目的类型，之后会生成一个对应的配置文件`ykit.{type}.js`。如：选择类型为qunar，则会在项目中生成`ykit.qunar.js`。
+init 主要完成了两件事：
+- 安装对应插件：根据 init 时选择的项目类型，会安装相应的 ykit 插件。它可以扩展项目的配置，帮助开发者快速搭建当前的开发环境。比如`ykit-config-qunar`插件会添加本地编译时的规则，将`src`目录下的资源对应到`prd`，`ykit-config-qunar`插件会支持 `fekit_moudles` 的引入以及支持打包编译过程中 fekit 支持的特殊语法。插件命名的格式均为 `ykit-config-{type}`。
+- 生成`ykit.{type}.js`：它是项目中的配置文件，其中的`{type}`与`ykit-config-{type}`相对应，用来在`node_modules`找到相应的插件。
 
-<h2 style="font-weight: normal"> 2. init 结束后，在`ykit.{type}.js`中进行项目配置。 </h2>
+<h2 style="font-weight: normal"> 2. 配置`ykit.{type}.js` </h2>
 
 - 如果是迁移fekit项目，则需要将`export & alias`等拷贝过来。
 - 如果是迁移webpack项目，需要在`ykit.qunar.js`的`modifyWebpackConfig`函数中更改当前默认 webpack 配置。
