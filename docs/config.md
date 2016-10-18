@@ -50,7 +50,7 @@ exports.config = function() {
 
 <h3 style="font-weight: normal"> modifyWebpackConfig </h3>
 
-`modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。
+`modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 **[webpack-merge][2]**。
 
 - 示例 - 使用 modifyWebpackConfig 添加编译插件
 
@@ -62,10 +62,11 @@ modifyWebpackConfig: function(baseConfig) {
             NODE_ENV: JSON.stringify("production")
         }
     })
-    
+
     baseConfig.plugins.push(newPlugin);
     return baseConfig;
 }
 ```
 
 [1]: https://webpack.github.io/docs/configuration.html
+[2]: https://github.com/survivejs/webpack-merge
