@@ -1,4 +1,6 @@
-<h1 style="font-weight: normal"> ![Ykit-icon](http://ww2.sinaimg.cn/large/6af705b8gw1f8whjnci5tj203k03kt8j.jpg) </h1>
+<h1 style="font-weight: normal">
+    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 150px"/>
+</h1>
 
 
 
