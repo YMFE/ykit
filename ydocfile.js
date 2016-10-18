@@ -12,17 +12,29 @@ module.exports = {
         name: 'index',
         title: '简介',
         compile: 'markdown',
+        banner: {
+            title: 'Ykit',
+            description: '新时代的前端开发工具'
+        },
         menuLevel: 2,
         content: './docs/README.md'
     }, {
         name: 'init',
         title: '起步',
         compile: 'markdown',
+        banner: {
+            title: 'Ykit',
+            description: '新时代的前端开发工具'
+        },
         menuLevel: 2,
         content: './docs/init.md'
     }, {
         name: 'docs',
         title: '使用手册',
+        banner: {
+            title: 'Ykit',
+            description: '新时代的前端开发工具'
+        },
         content: {
             sidebar: true,
             multi: true,
@@ -52,6 +64,10 @@ module.exports = {
     }, {
         name: 'dev',
         title: '开发者',
+        banner: {
+            title: 'Ykit',
+            description: '新时代的前端开发工具'
+        },
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/dev.md'

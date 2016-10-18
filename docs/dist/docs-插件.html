@@ -56,6 +56,14 @@
     
       <!-- Docs page layout -->
       
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>新时代的前端开发工具</p>
+              </div>
+          </div>
+      
 
       <div class="ydoc-container">
         
@@ -134,7 +142,7 @@
 <p>插件命名格式均为<code>ykit-config-{插件名}</code>，并且目前都是在<code>@qnpm</code>域下，在项目中通过 npm 安装插件：</p>
 <pre><code class="lang-bash">$ sudo npm install @qnpm/ykit-config-{插件名} --registry http://registry.npm.corp.qunar.com/
 </code></pre>
-<p>安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件<code>ykit.{插件名}.js</code>与使用的插件名对应即可。</p>
+<p>安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件<code>ykit.{插件名}.js</code>与使用的插件名对应即可。如安装了插件<code>@qnpm-ykit-config-qunar</code>，则配置文件命名为<code>ykit.qunar.js</code>。</p>
 <h2 style="font-weight: normal"> 技术解决方案插件 </h2>
 
 <p>总的来说，插件分为两种，<strong>技术解决方案插件</strong>和<strong>自定义插件</strong>。</p>
@@ -173,6 +181,8 @@
           
         
       </div>
+     
+     </div>
      
       <footer class="footer">
         <div class="copyright">

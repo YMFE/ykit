@@ -12,7 +12,7 @@ Ykit 通过插件来扩展基础配置：
 $ sudo npm install @qnpm/ykit-config-{插件名} --registry http://registry.npm.corp.qunar.com/
 ```
 
-安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件`ykit.{插件名}.js`与使用的插件名对应即可。
+安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件`ykit.{插件名}.js`与使用的插件名对应即可。如安装了插件`@qnpm-ykit-config-qunar`，则配置文件命名为`ykit.qunar.js`。
 
 <h2 style="font-weight: normal"> 技术解决方案插件 </h2>
 

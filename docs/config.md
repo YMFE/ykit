@@ -52,4 +52,48 @@ exports.config = function() {
 
 `modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。
 
+- modifyWebpackConfig - 添加编译插件
+
+```js
+modifyWebpackConfig: function(baseConfig) {
+    var webpack = require('webpack');
+    var newPlugin = new webpack.DefinePlugin({
+        "process.env": {
+            NODE_ENV: JSON.stringify("production")
+        }
+    })
+    baseConfig.plugins.push(newPlugin);
+
+    return baseConfig;
+}
+```
+
+- modifyWebpackConfig - 更改 js 编译方式
+
+由于基础配置中存在 js loader，因此如果需要修改它，则要将其匹配出来，并进行替换：
+
+```js
+modifyWebpackConfig: function(baseConfig) {
+    var webpack = require('webpack');
+
+    baseConfig.module = {
+        loaders: config.module.loaders.map((loader) => {
+            if (loader.test.test('.js')) {
+                return {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: 'babel',
+                    query: {
+                        presets: ['es2015', 'react', 'stage-0']
+                    }
+                }
+            }
+            return loader;
+        })
+    };
+
+    return baseConfig;
+}
+```
+
 [1]: https://webpack.github.io/docs/configuration.html

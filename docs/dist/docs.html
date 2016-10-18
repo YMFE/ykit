@@ -56,6 +56,14 @@
     
       <!-- Docs page layout -->
       
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>新时代的前端开发工具</p>
+              </div>
+          </div>
+      
 
       <div class="ydoc-container">
         
@@ -176,12 +184,55 @@
 <h3 style="font-weight: normal"> modifyWebpackConfig </h3>
 
 <p><code>modifyWebpackConfig</code>是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。</p>
+<ul>
+<li>modifyWebpackConfig - 添加编译插件</li>
+</ul>
+<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
+    var webpack = require(&#39;webpack&#39;);
+    var newPlugin = new webpack.DefinePlugin({
+        &quot;process.env&quot;: {
+            NODE_ENV: JSON.stringify(&quot;production&quot;)
+        }
+    })
+    baseConfig.plugins.push(newPlugin);
+
+    return baseConfig;
+}
+</code></pre>
+<ul>
+<li>modifyWebpackConfig - 更改 js 编译方式</li>
+</ul>
+<p>由于基础配置中存在 js loader，因此如果需要修改它，则要将其匹配出来，并进行替换：</p>
+<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
+    var webpack = require(&#39;webpack&#39;);
+
+    baseConfig.module = {
+        loaders: config.module.loaders.map((loader) =&gt; {
+            if (loader.test.test(&#39;.js&#39;)) {
+                return {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: &#39;babel&#39;,
+                    query: {
+                        presets: [&#39;es2015&#39;, &#39;react&#39;, &#39;stage-0&#39;]
+                    }
+                }
+            }
+            return loader;
+        })
+    };
+
+    return baseConfig;
+}
+</code></pre>
 
               </div>
           </div>
           
         
       </div>
+     
+     </div>
      
       <footer class="footer">
         <div class="copyright">
