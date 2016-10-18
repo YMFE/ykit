@@ -290,7 +290,7 @@ class Project {
         let config = this.config.getConfig();
         UtilFs.deleteFolderRecursive(this.cachePath)
 
-        let process = () => {
+        let compilerProcess = () => {
 
             if (opt.sourcemap) {
                 config.devtool = opt.sourcemap
@@ -339,6 +339,12 @@ class Project {
                         errorDetails: false
                     });
 
+                    process.stdout.write(
+                        "\x1b[90m"
+                        + '--------------------------  YKIT PACKED ASSETS  -------------------------- '
+                        + "\x1b[0m \n\n"
+                    )
+
                     if (statsInfo.errors.length > 0) {
                         statsInfo.errors.map((err) => {
                             error(err.red);
@@ -374,14 +380,14 @@ class Project {
             ], (err, results) => {
                 if (!err) {
                     if (results[0] && results[1]) {
-                        process();
+                        compilerProcess();
                     }
                 } else {
                     error(err.stack);
                 }
             });
         } else {
-            process();
+            compilerProcess();
         }
 
         return this;

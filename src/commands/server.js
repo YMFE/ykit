@@ -161,6 +161,7 @@ exports.run = (options) => {
                             })
 
                             nextConfig.plugins.push(require('../plugins/progressBarPlugin.js'))
+                            nextConfig.plugins.push(require('../plugins/compileInfoPlugin.js'))
 
                             return nextConfig
                         });

@@ -39,8 +39,7 @@ class Config {
             },
             plugins: [
                 require('../plugins/extTemplatedPathPlugin.js'),
-                require('../plugins/requireModulePlugin.js'),
-                require('../plugins/compileInfoPlugin.js'),
+                require('../plugins/requireModulePlugin.js')
             ],
             resolve: {
                 root: [],
