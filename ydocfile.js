@@ -14,7 +14,7 @@ module.exports = {
         compile: 'markdown',
         banner: {
             title: 'Ykit',
-            description: '新时代的前端开发工具'
+            description: 'Introduction'
         },
         menuLevel: 2,
         content: './docs/README.md'
@@ -24,7 +24,7 @@ module.exports = {
         compile: 'markdown',
         banner: {
             title: 'Ykit',
-            description: '新时代的前端开发工具'
+            description: 'Getting Started'
         },
         menuLevel: 2,
         content: './docs/init.md'
@@ -33,7 +33,7 @@ module.exports = {
         title: '使用手册',
         banner: {
             title: 'Ykit',
-            description: '新时代的前端开发工具'
+            description: 'User Manual'
         },
         content: {
             sidebar: true,
@@ -66,7 +66,7 @@ module.exports = {
         title: '开发者',
         banner: {
             title: 'Ykit',
-            description: '新时代的前端开发工具'
+            description: 'Contributing Code'
         },
         compile: 'markdown',
         menuLevel: 2,
