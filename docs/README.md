@@ -1,5 +1,5 @@
 <h1 style="font-weight: normal">
-    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 150px"/>
+    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 120px"/>
 </h1>
 
 
