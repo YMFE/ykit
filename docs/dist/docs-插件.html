@@ -84,8 +84,8 @@
                         
                         
                         
-                        <!-- <li  > -->
-                        <li >
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
                             
                             <a href="docs-插件.html">插件</a>
                             
@@ -102,8 +102,8 @@
                         
                         
                         
-                        <!-- <li  class="active"   class="active" > -->
-                        <li  class="active" >
+                        <!-- <li  > -->
+                        <li >
                             
                             <a href="docs-Node.js API.html">Node.js API</a>
                             
@@ -125,39 +125,48 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> Node.js API </h1>
+                <h1 style="font-weight: normal"> 使用插件 </h1>
 
-<h2 style="font-weight: normal"> 调用 Ykit 打包方法 </h2>
+<p>Ykit 通过插件来扩展基础配置：</p>
+<p><img src="http://ww2.sinaimg.cn/large/6af705b8gw1f8w9jkb8ffj20q308rmxr.jpg" alt="配置流程"></p>
+<h2 style="font-weight: normal"> 插件安装与引入 </h2>
 
-<pre><code class="lang-javascript">let ykit = require(&quot;ykit&quot;);
-
-ykit.pack({
-    // 配置
-}, (err, stats) =&gt; {
-
-});
+<p>插件命名格式均为<code>ykit-config-{插件名}</code>，并且目前都是在<code>@qnpm</code>域下，在项目中通过 npm 安装插件：</p>
+<pre><code class="lang-bash">$ sudo npm install @qnpm/ykit-config-{插件名} --registry http://registry.npm.corp.qunar.com/
 </code></pre>
-<h2 style="font-weight: normal"> 与 Gulp 结合使用 </h2>
+<p>安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件<code>ykit.{插件名}.js</code>与使用的插件名对应即可。</p>
+<h2 style="font-weight: normal"> 技术解决方案插件 </h2>
 
-<pre><code class="lang-javascript">let ykit = require(&quot;ykit&quot;);
+<p>总的来说，插件分为两种，<strong>技术解决方案插件</strong>和<strong>自定义插件</strong>。</p>
+<p>技术解决方案插件由 Ykit 提供，以便于快速搭建不同的开发环境：</p>
+<h3 style="font-weight: normal"> ykit-config-qunar </h3>
 
-gulp.task(&#39;pack&#39;, () =&gt; {
-    return gulp.src(&#39;./&#39;)
-        .pipe(ykit({
-            // 配置
-        }));
-});
-</code></pre>
-<h2 style="font-weight: normal"> 与 Grunt 结合使用 </h2>
+<ul>
+<li>添加 SASS 和 LESS 编译模块。</li>
+<li>实现资源入口从<code>src</code>到<code>prd &amp; dev</code>的映射。</li>
+<li>添加<code>ykit sync</code>命令，同步代码至开发机。</li>
+<li>添加<code>ykit source</code>命令，上传静态资源。</li>
+<li>支持引入<code>fekit_moudles</code></li>
+</ul>
+<h3 style="font-weight: normal"> ykit-config-fekit </h3>
 
-<pre><code class="lang-javascript">grunt.initConfig({
-    ykit: {
-        // 配置
-    }
-});
+<ul>
+<li>继承自 ykit-config-qunar。</li>
+<li>兼容 Fekit 模块引用特殊语法（如 CSS 中 require 另一样式文件）。</li>
+</ul>
+<h3 style="font-weight: normal"> ykit-config-hy </h3>
 
-grunt.loadNpmTasks(&#39;ykit&#39;);
-</code></pre>
+<ul>
+<li>继承自 ykit-config-qunar。</li>
+<li>添加 ES6 编译模块。</li>
+<li>添加 ES6 Lint 规则。</li>
+<li>内置 Hy2 (开发中)。</li>
+</ul>
+<h2 style="font-weight: normal"> 自定义插件 </h2>
+
+<p>自定义插件设计的初衷是<strong>让开发团队针对自身整合一套开发环境</strong>，在其中可以添加/修改编译规则以及编译插件，加入更多开发工具，添加自定义命令，设计团队 lint 规则等等。</p>
+<p>自定义插件示例：<a href="http://gitlab.corp.qunar.com/mfe/ykit-config-xta">ykit-config-xta</a>。</p>
+<p><strong>更多有关开发自定义插件的文档在编写中...</strong></p>
 
               </div>
           </div>

@@ -83,11 +83,12 @@ $ ykit init
 </code></pre>
 <p>init 主要完成了两件事：</p>
 <ul>
-<li>安装对应插件：根据 init 时选择的项目类型，会安装相应的 ykit 插件。它可以扩展项目的配置，帮助开发者快速搭建当前的开发环境。比如<code>ykit-config-qunar</code>插件会添加本地编译时的规则，将<code>src</code>目录下的资源对应到<code>prd</code>，<code>ykit-config-qunar</code>插件会支持 <code>fekit_moudles</code> 的引入以及支持打包编译过程中 fekit 支持的特殊语法。插件命名的格式均为 <code>ykit-config-{type}</code>。</li>
+<li>安装对应插件：根据 init 时选择的项目类型，会安装相应的 ykit 插件。它可以扩展项目的配置，帮助开发者快速搭建当前的开发环境，详见 <a href="./docs-插件.html">Ykit-插件</a>。</li>
 <li>生成<code>ykit.{type}.js</code>：它是项目中的配置文件，其中的<code>{type}</code>与<code>ykit-config-{type}</code>相对应，用来在<code>node_modules</code>找到相应的插件。</li>
 </ul>
 <h2 style="font-weight: normal"> 2. 配置<code>ykit.{type}.js</code> </h2>
 
+<p>在该文件中添加资源入口、更改当前 webpack 编译配置、添加自定义命令等。</p>
 <ul>
 <li>如果是迁移fekit项目，则需要将<code>export &amp; alias</code>等拷贝过来。</li>
 <li>如果是迁移webpack项目，需要在<code>ykit.qunar.js</code>的<code>modifyWebpackConfig</code>函数中更改当前默认 webpack 配置。</li>

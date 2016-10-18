@@ -35,7 +35,10 @@ module.exports = {
             }, {
                 name: '命令行',
                 content: './docs/cli.md'
-            },  {
+            }, {
+                name: '插件',
+                content: './docs/plugin.md'
+            }, {
                 name: '代理工具',
                 content: './docs/proxy.md'
             }, {
