@@ -1,5 +1,5 @@
 v0.1.4 - 2016.10.21
-* b8f8717 Feat: 支持返回对象设置config
+* b8fb717 Feat: 支持返回对象设置config
 * c67513e Refactor: 优化代码格式，引入代码检查
 * 319ce7b Refactor: 完善 utils，引入测试
 * 656c74e Revise: 修改ykit默认配置文件模板
@@ -11,7 +11,7 @@ v0.1.4 - 2016.10.21
 v0.1.3 - 2016.10.12
 * f5b9139 Feat: 添加 pack 静默模式
 * f017f5f Feat: 添加 qunar 默认 linst 规则
-* 06ec7bc Revise: 去掉 server livereload
+* 06ec7b3 Revise: 去掉 server livereload
 * 37ddf51 Fix: 修复在 windows 上 log 冗余问题
 * aba0339 Fix: 修复 windows 下重复设置header报错
 * 531d3fb Fix: 修复同目录下同名不同后缀文件编译冲突
