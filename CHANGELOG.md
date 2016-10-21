@@ -1,3 +1,25 @@
+v0.1.4 - 2016.10.21
+* b8f8717 Feat: 支持返回对象设置config
+* c67513e Refactor: 优化代码格式，引入代码检查
+* 319ce7b Refactor: 完善 utils，引入测试
+* 656c74e Revise: 修改ykit默认配置文件模板
+* 65d126c Docs: 初始化 ykit 文档
+* 2089c67 Fix: 修复读取 eslintrc 出错的问题
+* b9c3eb8 Fix: 修复编译config返回undefined时报错
+* 50b40ce Fix: 修复打包错误重复输出
+
+v0.1.3 - 2016.10.12
+* f5b9139 Feat: 添加 pack 静默模式
+* f017f5f Feat: 添加 qunar 默认 linst 规则
+* 06ec7bc Revise: 去掉 server livereload
+* 37ddf51 Fix: 修复在 windows 上 log 冗余问题
+* aba0339 Fix: 修复 windows 下重复设置header报错
+* 531d3fb Fix: 修复同目录下同名不同后缀文件编译冲突
+* e37dcf6 Fix: 修复 ext 插件找不到编译路径问题
+* 127206d Fix: 修复找不到 eslintrc 问题
+* 1a33339 Fix: 修复找不到 lint 配置文件 extends 字段
+* e7a53c6 Fix: 修复 pack -m mangle 参数配置问题
+
 v0.1.2 - 2016.10.9
 * ad09ebd Revise: reload命令兼容版本号格式为^0.1.0的ykit-config包
 * 6424cd2 Fix: 修复build机器上找不到process.stderr报错
