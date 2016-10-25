@@ -71,5 +71,15 @@ module.exports = {
         compile: 'markdown',
         menuLevel: 2,
         content: './docs/dev.md'
+    }, {
+        name: 'releases',
+        title: '版本记录',
+        banner: {
+            title: 'Ykit',
+            description: 'Releases'
+        },
+        compile: 'markdown',
+        menuLevel: 2,
+        content: './CHANGELOG.md'
     }]
 };

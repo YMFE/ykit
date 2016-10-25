@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title>YKit 版本记录</title>
+  <link rel="stylesheet" href="source/app.css"/>
+  <link rel="stylesheet" href="source/highlight.min.css"/>
+</head>
+<body>
+    <div class="ydoc">
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ued.qunar.com/ymfe/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="">
+                        
+                        <a href="index.html">简介</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="init.html">起步</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="docs.html">使用手册</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="dev.html">开发者</a>
+                        
+                    </li>
+                    
+                    <li class="active">
+                        
+                        <a href="releases.html">版本记录</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>Releases</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content" id="readme">
+              <article class="markdown-body">
+                  
+                  <p>v0.1.4 - 2016.10.21</p>
+<ul>
+<li>b8fb717 Feat: 支持返回对象设置config</li>
+<li>c67513e Refactor: 优化代码格式，引入代码检查</li>
+<li>319ce7b Refactor: 完善 utils，引入测试</li>
+<li>656c74e Revise: 修改ykit默认配置文件模板</li>
+<li>65d126c Docs: 初始化 ykit 文档</li>
+<li>2089c67 Fix: 修复读取 eslintrc 出错的问题</li>
+<li>b9c3eb8 Fix: 修复编译config返回undefined时报错</li>
+<li>50b40ce Fix: 修复打包错误重复输出</li>
+</ul>
+<p>v0.1.3 - 2016.10.12</p>
+<ul>
+<li>f5b9139 Feat: 添加 pack 静默模式</li>
+<li>f017f5f Feat: 添加 qunar 默认 linst 规则</li>
+<li>06ec7b3 Revise: 去掉 server livereload</li>
+<li>37ddf51 Fix: 修复在 windows 上 log 冗余问题</li>
+<li>aba0339 Fix: 修复 windows 下重复设置header报错</li>
+<li>531d3fb Fix: 修复同目录下同名不同后缀文件编译冲突</li>
+<li>e37dcf6 Fix: 修复 ext 插件找不到编译路径问题</li>
+<li>127206d Fix: 修复找不到 eslintrc 问题</li>
+<li>1a33339 Fix: 修复找不到 lint 配置文件 extends 字段</li>
+<li>e7a53c6 Fix: 修复 pack -m mangle 参数配置问题</li>
+</ul>
+<p>v0.1.2 - 2016.10.9</p>
+<ul>
+<li>ad09ebd Revise: reload命令兼容版本号格式为^0.1.0的ykit-config包</li>
+<li>6424cd2 Fix: 修复build机器上找不到process.stderr报错</li>
+<li>8761301 Fix: 修复not in gzip format解压报错</li>
+</ul>
+<p>v0.1.1 - 2016.10.8</p>
+<ul>
+<li>1c550d4 Revise: 全部打包时检测entry与上一次是否发生变化</li>
+<li>ef45fac Fix: 修复按请求编译css时入口filter未生效</li>
+<li>751c1a6 Fix: 修复请求资源中带query引起的重复编译</li>
+<li>43e08b2 Fix: 修复警告输出报错</li>
+<li>d48dac9 cebc126 Fix: 修复插件文件命名错误</li>
+</ul>
+<p>v0.1.0 - 2016.9.27</p>
+<ul>
+<li>2e23f7c Fix: 修复指定服务地址不生效</li>
+</ul>
+<p>v0.0.6 - 2016.9.23</p>
+<ul>
+<li>7382ef5 8d5b6b4 Feat: 增加从ykit服务拉取插件功能</li>
+</ul>
+<p>v0.0.5 - 2016.9.9</p>
+<ul>
+<li>e3554bc Feat: ykit-config-{type}插件支持查找全局模式</li>
+<li>92ecfa3 Feat: 默认改为按请求资源打包，整体打包改为可选参数</li>
+<li>a6bac57 Feat: server支持https</li>
+<li>e6563ab Feat: 添加初始化说明，支持无默认类型</li>
+<li>2c12dd7 Revise: devtool默认使用source map</li>
+<li>d02b242 Revise: minify模式不使用source map</li>
+<li>05a17d9 Revise: 根据lint结果区分返回值</li>
+<li>97aca37 Revise: 更改.cache目录为.ykit_cache</li>
+<li>f5b6d0e Fix: 修复windows下pack移除目录命令不生效</li>
+<li>1401222 Fix: 修复一些情况下启动server livereload不生效</li>
+<li>b81f867 Fix: 修复node_modules中resolve extension不生效</li>
+<li>56a4983 Fix: 修复eslint设置extend不生效</li>
+<li>9a59d61 ab7c1b0 Fix: 修复watch入口文件造成的内存泄露问题</li>
+<li>1880c2f 14330fe Fix: 修复更改入口以后服务 / 打包报错</li>
+</ul>
+<p>v0.0.4 - 2016.8.26</p>
+<ul>
+<li>1ca6010 aa9a1e2 7483355 Feat: 优化编译报错 log</li>
+<li>d1c8e9e Revise: json-loader exclude node_modules</li>
+<li>744f7f4 Revise: config api setCompile 改为 setCompiler</li>
+<li>fa170a3 Revise: 初始化时使用内网环境</li>
+<li>7136403 Fix: 修复404请求一直 pending</li>
+<li>e0462e5 Fix: 修复 init 命令重写 package.json 问题</li>
+</ul>
+<p>v0.0.3 - 2016.8.15</p>
+<ul>
+<li>423d485 Feat: 检测到config文件变化后可以重新生成compiler</li>
+<li>0e086ef Feat: 添加 jerryproxy 作为初始组件</li>
+<li>c9ff1b9 Feat: 兼容 fekit 形式 alias</li>
+<li>8c6302c Feat: 默认添加 context 为 resolve.root</li>
+<li>f4e9a12 Fix: 修复资源过大时第一次渲染失败</li>
+<li>b904079 Fix: 修复 setConfig 中覆盖 loaders 未生效</li>
+<li>53498bb Fix: 修复没有使用到本地 lint 规则</li>
+</ul>
+<p>v0.0.2 - 2016.7.30</p>
+<ul>
+<li>4380c73 Feat: 兼容 node 0.12.*</li>
+<li>6afd43d Feat: 支持设置 context 相对路径</li>
+<li>bbb5808 Feat: 支持入口每一项为数组</li>
+<li>3189f29 Feat: 添加 JerryProxy</li>
+<li>a8d90ff Fix: 修复 Windows 路径格式问题</li>
+<li>f679c63 Fix: 修复在不同 context 下 .cache 路径问题</li>
+</ul>
+<p>v0.0.1 - 2016.7.15</p>
+<ul>
+<li>dc8ad5f Feat: 完成 server / pack logger</li>
+<li>e77692b Feat: 完成 server livereload</li>
+<li>edca9f8 Feat: 完成 stylelint</li>
+<li>68e7fcb Feat: 支持 gulp &amp; grunt</li>
+<li>551c0b4 Feat: 支持分组打包</li>
+<li>a5013b3 Docs: 添加初始使用文档</li>
+</ul>
+
+              </article>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+    <script src="source/jquery.min.js"></script>
+    <script src="source/bootstrap.min.js"></script>
+    <script src="source/docs.min.js"></script>
+    <script src="source/highlight.min.js"></script>
+    <script src="source/app.js"></script>
+    
+    
+</body>
+</html>
