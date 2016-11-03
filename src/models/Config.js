@@ -54,18 +54,22 @@ class Config {
             devtool: 'cheap-source-map'
         };
     }
-    setExports(files) {
-        if(files && Array.isArray(files)) {
-            [].concat(files).forEach((file) => {
-                const entryFile = Array.isArray(file) ? file[file.length - 1] : file
+    setExports(entries) {
+        if(entries && Array.isArray(entries)) {
+            [].concat(entries).forEach((entry) => {
+                if(typeof entry === 'string' || Array.isArray(entry)) {
+                    const entryFile = Array.isArray(entry) ? entry[entry.length - 1] : entry
 
-                var name = entryFile;
-                if (name.indexOf('./') == 0) {
-                    name = name.substring(2);
-                } else if (name[0] == '/') {
-                    name = name.substring(1);
+                    var name = entryFile;
+                    if (name.indexOf('./') == 0) {
+                        name = name.substring(2);
+                    } else if (name[0] == '/') {
+                        name = name.substring(1);
+                    }
+                    this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
+                } else {
+                    this.setGroupExports(entry.name, entry.export)
                 }
-                this._config.entry[name] = Array.isArray(file) ? file : [file];
             });
             return this;
         }
