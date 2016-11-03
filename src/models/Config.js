@@ -100,12 +100,12 @@ class Config {
                 nextConfig = compileConfig(extend({}, this._config)) || {};
             }
 
-            // 处理context
+            // 处理 context
             if (nextConfig.context && !sysPath.isAbsolute(nextConfig.context)) {
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
             }
 
-            // 处理loaders => loader
+            // 处理 loaders => loader
             if (nextConfig.module && nextConfig.module.loaders) {
                 nextConfig.module.loaders.map((loader, i) => {
                     if (loader.loaders && !loader.loader) {
@@ -115,17 +115,8 @@ class Config {
                 })
             }
 
-            // 处理alias
+            // 处理 resolve.root
             const context = nextConfig.context || this._config.context
-            const relativeContext = sysPath.relative(this._config.cwd, context)
-            if (nextConfig.resolve && nextConfig.resolve.alias) {
-                let alias = nextConfig.resolve.alias
-                Object.keys(alias).map(function(key, i) {
-                    alias[key] = sysPath.relative(relativeContext, alias[key])
-                })
-                extend(true, this._config.resolve.alias, alias);
-            }
-
             this._config.resolve.root.push(context)
 
             extend(true, this._config, nextConfig);
