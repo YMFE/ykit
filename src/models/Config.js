@@ -97,7 +97,7 @@ class Config {
         if (compileConfig) {
             let nextConfig = {}
 
-            // 获取用户定义的compile配置
+            // 获取用户定义的 compile 配置
             if (typeof compileConfig === 'object') {
                 nextConfig = compileConfig
             } else if (typeof compileConfig === 'function') {
@@ -119,7 +119,17 @@ class Config {
                 })
             }
 
-            // 处理 resolve.root
+            // 处理 alias 中 { xyz: "/some/dir" } 的情况
+            if (nextConfig.resolve && nextConfig.resolve.alias) {
+                let alias = nextConfig.resolve.alias
+                Object.keys(alias).map((key, i) => {
+                    if(key.indexOf('$') === -1 && /^\/.+/.test(alias[key])) {
+                        alias[key] = sysPath.join(this._config.cwd, alias[key])
+                    }
+                })
+                extend(true, this._config.resolve.alias, alias);
+            }
+
             const context = nextConfig.context || this._config.context
             this._config.resolve.root.push(context)
 
