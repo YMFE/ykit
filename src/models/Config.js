@@ -123,7 +123,7 @@ class Config {
             if (nextConfig.resolve && nextConfig.resolve.alias) {
                 let alias = nextConfig.resolve.alias
                 Object.keys(alias).map((key, i) => {
-                    if(key.indexOf('$') === -1 && /^\/.+/.test(alias[key])) {
+                    if(key.indexOf('$') !== key.length - 1 && /^\/.+/.test(alias[key])) {
                         alias[key] = sysPath.join(this._config.cwd, alias[key])
                     }
                 })
