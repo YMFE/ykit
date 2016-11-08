@@ -340,9 +340,11 @@ class Project {
                     });
 
                     process.stdout.write(
-                        "\x1b[90m"
+                        // clear bundle log
+                        '                                                                           \n'
+                        + '\x1b[90m'
                         + '--------------------------  YKIT PACKED ASSETS  -------------------------- '
-                        + "\x1b[0m \n\n"
+                        + '\x1b[0m \n\n'
                     )
 
                     if (statsInfo.errors.length > 0) {
@@ -362,7 +364,7 @@ class Project {
                             (asset.size / 1024).toFixed(2) + ' kB' :
                             asset.size + ' bytes';
                         if (!/\.cache$/.test(asset.name)) {
-                            log('packed asset: '.gray + asset.name + ' - ' + size);
+                            log('- '.gray + asset.name + ' - ' + size);
                         }
                     })
                     info();
