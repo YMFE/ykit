@@ -287,14 +287,27 @@ exports.run = (options) => {
     })
 
     // 代理
+    var proxyProcess
     if(proxy) {
         const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js')
-        child_process.fork(proxyPath);
+        proxyProcess = child_process.fork(proxyPath);
     }
 
     // 权限降级
     if (process.env['SUDO_UID']) {
         process.setuid(parseInt(process.env['SUDO_UID']));
+    }
+
+    // exitHandler
+    process.on('exit', exitHandler.bind(null, {cleanup:true}));
+    // catches ctrl+c event
+    process.on('SIGINT', exitHandler.bind(null, {cleanup:true, exit:true}));
+    function exitHandler(options, err) {
+        if (options.cleanup) {
+            proxyProcess && proxyProcess.kill('SIGINT')
+        }
+        if (err) console.log(err.stack);
+        if (options.exit) process.exit(0);
     }
 
     // 监测配置文件变化

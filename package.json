@@ -24,7 +24,7 @@
     "globby": "^5.0.0",
     "html-loader": "^0.4.3",
     "inquirer": "^1.1.1",
-    "jerryproxy-ykit": "^1.0.55",
+    "jerryproxy-ykit": "^1.0.58",
     "js-yaml": "^3.6.1",
     "json-loader": "^0.5.4",
     "json5": "^0.5.0",
