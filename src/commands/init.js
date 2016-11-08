@@ -59,7 +59,7 @@ exports.run = function (options)  {
 
         // 如果没有package.json，先添加package.json
         if(!fileExists(packageJsonPath)){
-            writePackageJsonStream = createPakcageJson();
+            writePackageJsonStream = createPackageJson();
         }
 
         if(!writePackageJsonStream) {
@@ -74,7 +74,7 @@ exports.run = function (options)  {
             });
         }
 
-        function createPakcageJson() {
+        function createPackageJson() {
             return fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
                 .pipe(replaceStream('#_name', answers.name))
                 .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
