@@ -1,6 +1,7 @@
 'use strict';
 
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const WebpackMd5Hash = require('webpack-md5-hash');
 
 class Config {
     constructor(cwd) {
@@ -38,8 +39,12 @@ class Config {
                 postLoaders: []
             },
             plugins: [
+                // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
-                require('../plugins/requireModulePlugin.js')
+                require('../plugins/requireModulePlugin.js'),
+
+                // vender plugin
+                new WebpackMd5Hash(),
             ],
             resolve: {
                 root: [],
