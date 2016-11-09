@@ -59,6 +59,7 @@ exports.run = (options) => {
         const end = res.end;
     	req._startTime = new Date;
 
+        res.setHeader('Access-Control-Allow-Origin', '*');
     	res.end = (chunk, encoding) => {
     		res.end = end;
     		res.end(chunk, encoding);
