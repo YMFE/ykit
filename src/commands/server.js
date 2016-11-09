@@ -40,7 +40,8 @@ exports.run = (options) => {
         isCompilingAll = options.a || options.all,
         port = options.p || options.port || 80;
 
-    let middlewareCache = {},
+    let isWatcherRunning = false,
+        middlewareCache = {},
         promiseCache = {},
         watchCacheNames = {};
 
@@ -166,7 +167,10 @@ exports.run = (options) => {
                             return nextConfig
                         });
 
+                        isWatcherRunning = true
                         compiler.watch({}, function(err, stats) {
+                            isWatcherRunning = false
+
                             // compiler complete
                             if(!middlewareCache[cacheId]) {
                                 middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true});
@@ -175,6 +179,7 @@ exports.run = (options) => {
                                 next()
                             }
                         });
+
                         // 检测config文件变化
                         watchConfig(project, middleware, cacheId)
                     } else {
@@ -295,19 +300,21 @@ exports.run = (options) => {
 
     // 权限降级
     if (process.env['SUDO_UID']) {
-        process.setuid(parseInt(process.env['SUDO_UID']));
+        process.setuid(parseInt(process.env['SUDO_UID']))
     }
 
-    // exitHandler
-    process.on('exit', exitHandler.bind(null, {cleanup:true}));
-    // catches ctrl+c event
-    process.on('SIGINT', exitHandler.bind(null, {cleanup:true, exit:true}));
-    function exitHandler(options, err) {
-        if (options.cleanup) {
-            proxyProcess && proxyProcess.kill('SIGINT')
+    // exitHandler && catches ctrl+c event
+    process.on('exit', exitHandler.bind(null))
+    process.on('SIGINT', exitHandler.bind(null))
+    function exitHandler() {
+        // cleanup
+        proxyProcess && proxyProcess.kill('SIGINT')
+
+        if(isWatcherRunning) {
+            process.kill(process.pid, 'SIGKILL')
+        } else {
+            process.exit(0)
         }
-        if (err) console.log(err.stack);
-        if (options.exit) process.exit(0);
     }
 
     // 监测配置文件变化
