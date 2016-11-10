@@ -6,9 +6,9 @@ module.exports = {
 
         compiler.plugin("compilation", function(compilation) {
             compilation.mainTemplate.plugin("asset-path", function(path, data) {
-                let extName = '[ext]';
+                let extName = '.js';
                 let baseName = '';
-                if (data.chunk) {
+                if (data.chunk && data.chunk.origins && data.chunk.origins[0]) {
                     let module = data.chunk.origins[0].module,
                         rawRequest = module.rawRequest
                                         ? module.rawRequest
