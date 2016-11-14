@@ -2,6 +2,7 @@
 
 let connect = require('connect'),
     fs = require('fs'),
+    os = require('os'),
     http = require('http'),
     https = require('https'),
     serveStatic = require('serve-static'),
@@ -283,8 +284,22 @@ exports.run = (options) => {
         process.exit(1)
     })
     server.listen(port, () => {
-        warn('Listening on port ' + port);
-    })
+
+        info(['Starting up server, serving at',
+          options.cwd,
+          '\nAvailable on:'
+        ].join(''));
+
+        let networkInterfaces = os.networkInterfaces();
+        let protocol = options.https ? 'https://' : 'http://';
+        Object.keys(networkInterfaces).forEach(function (dev) {
+            networkInterfaces[dev].forEach(function (details) {
+                if (details.family === 'IPv4') {
+                    info('  ' + protocol + details.address + ':' + port);
+                }
+            });
+        });
+    });
 
     // 代理
     if(proxy) {
