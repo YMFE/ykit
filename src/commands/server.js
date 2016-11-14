@@ -290,18 +290,17 @@ exports.run = (options) => {
         process.exit(1)
     })
     server.listen(port, () => {
-
-        info(['Starting up server, serving at',
-          options.cwd,
-          '\nAvailable on:'
-        ].join(''));
+        log('Starting up server, serving at: ' + options.cwd)
+        log('Available on:')
 
         let networkInterfaces = os.networkInterfaces();
         let protocol = options.https ? 'https://' : 'http://';
         Object.keys(networkInterfaces).forEach(function (dev) {
             networkInterfaces[dev].forEach(function (details) {
                 if (details.family === 'IPv4') {
-                    info('  ' + protocol + details.address + ':' + port);
+                    details.address.indexOf('127.0.0.1') > -1
+                        ? info('  ' + (protocol + details.address + ':' + port).underline)
+                        : info(('  ' + protocol + details.address + ':' + port))
                 }
             });
         });
