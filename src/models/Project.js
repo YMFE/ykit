@@ -168,7 +168,7 @@ class Project {
             let output = this.config.getConfig().output;
             for (let key in output) {
                 var op = output[key];
-                if (!sysPath.isAbsolute(op.path)) {
+                if (op.path && !sysPath.isAbsolute(op.path)) {
                     op.path = sysPath.join(this.cwd, op.path);
                 }
             }
@@ -404,10 +404,11 @@ class Project {
 
     getServerCompiler(handler) {
         let config = this.config.getConfig();
-        config.output = {
+        config.output = extend(true, {
             path: '/cache',
             filename: '[name][ext]'
-        };
+        }, config.output.local || {});
+
         this.fixCss();
 
         if (handler && typeof handler === 'function') {
