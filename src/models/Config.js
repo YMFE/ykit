@@ -10,6 +10,7 @@ class Config {
             entry: {},
             entryGroup: {},
             output: {
+                local: {},
                 dev: {
                     path: "./dev",
                     filename: "[name][ext]"
