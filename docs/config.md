@@ -52,7 +52,7 @@ exports.config = function() {
 
 `modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 **[webpack-merge][2]**。
 
-- 示例 - 使用 modifyWebpackConfig 添加编译插件
+- 示例 - 添加 plugins：
 
 ```js
 modifyWebpackConfig: function(baseConfig) {
@@ -64,6 +64,52 @@ modifyWebpackConfig: function(baseConfig) {
     })
 
     baseConfig.plugins.push(newPlugin);
+    return baseConfig;
+}
+```
+
+- 示例 - 修改 output：
+
+```js
+modifyWebpackConfig: function(baseConfig) {
+    baseConfig.output: {
+        /**
+         * output 是 webpack 中对于编译结果的配置
+         * 在 ykit 中，根据每个环境(local / dev / prd)有特定的编译结果配置
+         * 可以对特定环境下的 output 进行修改或重置
+         */
+
+        local: {
+            // 重置本地 server 环境下配置
+        },
+        dev: baseConfig.output.dev, // 沿用 dev 环境下配置
+        prd: baseConfig.output.prd  // 沿用 prd 环境下配置
+    }
+    return baseConfig;
+}
+```
+
+<h2 style="font-weight: normal"> 配置函数上下文 </h2>
+
+业务在 ykit.{type}.js 中的配置函数上下文可以获取到当前的环境信息。
+
+- env: 当前 ykit 的执行环境，分为 `local / dev / prd`，示例：
+
+```js
+modifyWebpackConfig: function(baseConfig) {
+    switch (this.env) {
+        case 'local':
+            // 修改本地环境配置，在 ykit server 中访问项目会生效
+            break;
+        case 'dev':
+            // 修改开发环境配置，在 ykit pack 时生效
+            break;
+        case 'prd':
+            // 修改生产环境配置，在 ykit pack -m 时生效
+            break;
+        default:
+    }
+
     return baseConfig;
 }
 ```

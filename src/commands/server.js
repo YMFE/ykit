@@ -2,6 +2,7 @@
 
 let connect = require('connect'),
     fs = require('fs'),
+    os = require('os'),
     http = require('http'),
     https = require('https'),
     serveStatic = require('serve-static'),
@@ -40,7 +41,8 @@ exports.run = (options) => {
         isCompilingAll = options.a || options.all,
         port = options.p || options.port || 80;
 
-    let middlewareCache = {},
+    let isWatcherRunning = false,
+        middlewareCache = {},
         promiseCache = {},
         watchCacheNames = {};
 
@@ -58,6 +60,7 @@ exports.run = (options) => {
         const end = res.end;
     	req._startTime = new Date;
 
+        res.setHeader('Access-Control-Allow-Origin', '*');
     	res.end = (chunk, encoding) => {
     		res.end = end;
     		res.end(chunk, encoding);
@@ -167,7 +170,10 @@ exports.run = (options) => {
                             return nextConfig
                         });
 
+                        isWatcherRunning = true
                         compiler.watch({}, function(err, stats) {
+                            isWatcherRunning = false
+
                             // compiler complete
                             if(!middlewareCache[cacheId]) {
                                 middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true});
@@ -176,6 +182,7 @@ exports.run = (options) => {
                                 next()
                             }
                         });
+
                         // 检测config文件变化
                         watchConfig(project, middleware, cacheId)
                     } else {
@@ -284,18 +291,46 @@ exports.run = (options) => {
         process.exit(1)
     })
     server.listen(port, () => {
-        warn('Listening on port ' + port);
-    })
+        log('Starting up server, serving at: ' + options.cwd)
+        log('Available on:')
+
+        let networkInterfaces = os.networkInterfaces();
+        let protocol = options.https ? 'https://' : 'http://';
+        Object.keys(networkInterfaces).forEach(function (dev) {
+            networkInterfaces[dev].forEach(function (details) {
+                if (details.family === 'IPv4') {
+                    details.address.indexOf('127.0.0.1') > -1
+                        ? info('  ' + (protocol + details.address + ':' + port).underline)
+                        : info(('  ' + protocol + details.address + ':' + port))
+                }
+            });
+        });
+    });
 
     // 代理
+    var proxyProcess
     if(proxy) {
         const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js')
-        child_process.fork(proxyPath);
+        proxyProcess = child_process.fork(proxyPath);
     }
 
     // 权限降级
     if (process.env['SUDO_UID']) {
-        process.setuid(parseInt(process.env['SUDO_UID']));
+        process.setuid(parseInt(process.env['SUDO_UID']))
+    }
+
+    // exitHandler && catches ctrl+c event
+    process.on('exit', exitHandler.bind(null))
+    process.on('SIGINT', exitHandler.bind(null))
+    function exitHandler() {
+        // cleanup
+        proxyProcess && proxyProcess.kill('SIGINT')
+
+        if(isWatcherRunning) {
+            process.kill(process.pid, 'SIGKILL')
+        } else {
+            process.exit(0)
+        }
     }
 
     // 监测配置文件变化

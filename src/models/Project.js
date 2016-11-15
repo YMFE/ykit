@@ -12,6 +12,12 @@ let Config = require('./Config.js'),
 
 let UtilFs = require('../utils/fs.js');
 
+const ENVS = {
+    LOCAL: 'local',
+    DEV: 'dev',
+    PRD: 'prd',
+}
+
 class Project {
     constructor(cwd) {
         this.cwd = cwd;
@@ -50,25 +56,26 @@ class Project {
     readConfig(options) {
         if (this.check()) {
             let userConfig = {
-                    cwd: this.cwd,
-                    _manager: Manager,
-                    setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
-                    setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
-                    setCompiler: this.config.setCompiler.bind(this.config),
-                    setExports: this.config.setExports.bind(this.config),
-                    setGroupExports: this.config.setGroupExports.bind(this.config),
-                    setSync: this.config.setSync.bind(this.config),
-                    setCommands: this.setCommands.bind(this),
-                    setEslintConfig: this.setEslintConfig.bind(this),
-                    setStylelintConfig: this.setStylelintConfig.bind(this),
-                    config: this.config.getConfig(),
-                    commands: this.commands,
-                    middlewares: this.middlewares,
-                    packCallbacks: this.packCallbacks,
-                    eslintConfig: this.eslintConfig,
-                    stylelintConfig: this.stylelintConfig
-                },
-                globalConfigs = Manager.readRC().configs || [];
+                cwd: this.cwd,
+                _manager: Manager,
+                setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
+                setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
+                setCompiler: this.config.setCompiler.bind(this.config),
+                setExports: this.config.setExports.bind(this.config),
+                setGroupExports: this.config.setGroupExports.bind(this.config),
+                setSync: this.config.setSync.bind(this.config),
+                setCommands: this.setCommands.bind(this),
+                setEslintConfig: this.setEslintConfig.bind(this),
+                setStylelintConfig: this.setStylelintConfig.bind(this),
+                config: this.config.getConfig(),
+                commands: this.commands,
+                middlewares: this.middlewares,
+                packCallbacks: this.packCallbacks,
+                eslintConfig: this.eslintConfig,
+                stylelintConfig: this.stylelintConfig,
+                env: this._getCurrentEnv(), // 默认为本地环境
+            },
+            globalConfigs = Manager.readRC().configs || [];
 
             this.options = options = options || {};
             options.ExtractTextPlugin = ExtractTextPlugin;
@@ -161,7 +168,7 @@ class Project {
             let output = this.config.getConfig().output;
             for (let key in output) {
                 var op = output[key];
-                if (!sysPath.isAbsolute(op.path)) {
+                if (op.path && !sysPath.isAbsolute(op.path)) {
                     op.path = sysPath.join(this.cwd, op.path);
                 }
             }
@@ -340,9 +347,11 @@ class Project {
                     });
 
                     process.stdout.write(
-                        "\x1b[90m"
+                        // clear bundle log
+                        '                                                                           \n'
+                        + '\x1b[90m'
                         + '--------------------------  YKIT PACKED ASSETS  -------------------------- '
-                        + "\x1b[0m \n\n"
+                        + '\x1b[0m \n\n'
                     )
 
                     if (statsInfo.errors.length > 0) {
@@ -362,7 +371,7 @@ class Project {
                             (asset.size / 1024).toFixed(2) + ' kB' :
                             asset.size + ' bytes';
                         if (!/\.cache$/.test(asset.name)) {
-                            log('packed asset: '.gray + asset.name + ' - ' + size);
+                            log('- '.gray + asset.name + ' - ' + size);
                         }
                     })
                     info();
@@ -395,10 +404,11 @@ class Project {
 
     getServerCompiler(handler) {
         let config = this.config.getConfig();
-        config.output = {
+        config.output = extend(true, {
             path: '/cache',
             filename: '[name][ext]'
-        };
+        }, config.output.local || {});
+
         this.fixCss();
 
         if (handler && typeof handler === 'function') {
@@ -476,6 +486,18 @@ class Project {
         } catch (err) {
             return false;
         }
+    }
+
+    _getCurrentEnv() {
+        if(process.argv[2] === 'pack') {
+            if(process.argv.indexOf('-m') > -1) {
+                return ENVS.PRD
+            } else {
+                return ENVS.DEV
+            }
+        }
+
+        return ENVS.LOCAL
     }
 }
 

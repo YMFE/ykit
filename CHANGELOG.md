@@ -1,3 +1,21 @@
+v0.1.5 - 2016.11.14
+Feat: server 启动时i会使用 config.output.local
+Feat: 启动 server 的时候打印出 server address
+Feat: 使业务可以获取当前 ykit 环境
+Feat: 所有静态资源支持跨域
+Revise: 优化 server log 格式
+Fix: 修改 chunk 和 CommonsChunkPlugin 引入时产生的 bug
+Fix: 修复 webpack 编译过程中无法停止进程
+Fix: 修复 css 版本号引路径而变更
+Fix: 修复无法正确关闭代理
+Fix: 修复resolve.alias 不能带 $
+Fix: 修复 alias 中对于 { xyz: "/some/dir" } 的适配
+Fix: 修复无法设置分组入口
+Fix: 修复 alias 不生效
+Fix: 修复打包错误重复输出
+Fix: 去掉冗余 pack log
+docs: 更新ydoc@2.0.0版文档
+
 v0.1.4 - 2016.10.21
 * b8fb717 Feat: 支持返回对象设置config
 * c67513e Refactor: 优化代码格式，引入代码检查

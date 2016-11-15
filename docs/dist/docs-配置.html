@@ -7,8 +7,8 @@
   <meta name="description" content="description of your site">
   <meta name="author" content="author of the site">
   <title>YKit 使用手册</title>
-  <link rel="stylesheet" href="source/app.css"/>
-  <link rel="stylesheet" href="source/highlight.min.css"/>
+  <link rel="stylesheet" href="source/main.css"/>
+  
 </head>
 <body>
     <div class="ydoc">
@@ -191,7 +191,7 @@
 
 <p><code>modifyWebpackConfig</code>是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 <strong><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></strong>。</p>
 <ul>
-<li>示例 - 使用 modifyWebpackConfig 添加编译插件</li>
+<li>示例 - 添加 plugins：</li>
 </ul>
 <pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
     var webpack = require(&#39;webpack&#39;);
@@ -202,6 +202,49 @@
     })
 
     baseConfig.plugins.push(newPlugin);
+    return baseConfig;
+}
+</code></pre>
+<ul>
+<li>示例 - 修改 output：</li>
+</ul>
+<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
+    baseConfig.output: {
+        /**
+         * output 是 webpack 中对于编译结果的配置
+         * 在 ykit 中，根据每个环境(local / dev / prd)有特定的编译结果配置
+         * 可以对特定环境下的 output 进行修改或重置
+         */
+
+        local: {
+            // 重置本地 server 环境下配置
+        },
+        dev: baseConfig.output.dev, // 沿用 dev 环境下配置
+        prd: baseConfig.output.prd  // 沿用 prd 环境下配置
+    }
+    return baseConfig;
+}
+</code></pre>
+<h2 style="font-weight: normal"> 配置函数上下文 </h2>
+
+<p>业务在 ykit.{type}.js 中的配置函数上下文可以获取到当前的环境信息。</p>
+<ul>
+<li>env: 当前 ykit 的执行环境，分为 <code>local / dev / prd</code>，示例：</li>
+</ul>
+<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
+    switch (this.env) {
+        case &#39;local&#39;:
+            // 修改本地环境配置，在 ykit server 中访问项目会生效
+            break;
+        case &#39;dev&#39;:
+            // 修改开发环境配置，在 ykit pack 时生效
+            break;
+        case &#39;prd&#39;:
+            // 修改生产环境配置，在 ykit pack -m 时生效
+            break;
+        default:
+    }
+
     return baseConfig;
 }
 </code></pre>
@@ -220,12 +263,12 @@
         </div>
       </footer>
     </div>
-    <script src="source/jquery.min.js"></script>
-    <script src="source/bootstrap.min.js"></script>
-    <script src="source/docs.min.js"></script>
-    <script src="source/highlight.min.js"></script>
+    <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
     
+
+    
+
 </body>
 </html>
