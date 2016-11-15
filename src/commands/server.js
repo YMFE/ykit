@@ -111,6 +111,7 @@ exports.run = (options) => {
             compiler = null,
             projectName = keys[1],
             projectCwd = sysPath.join(cwd, projectName);
+        // console.log('receive req')
 
         // 处理prd资源
         if(keys[2] === 'prd') {

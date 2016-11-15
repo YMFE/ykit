@@ -11,7 +11,8 @@
     "node": ">=0.12"
   },
   "scripts":{
-    "test": "mocha --recursive --compilers js:babel-core/register"
+    "test": "mocha --recursive --compilers js:babel-core/register",
+    "start":"cd .. && sudo node ykit/bin/ykit server"
   },
   "license": "MIT",
   "dependencies": {
