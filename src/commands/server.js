@@ -122,9 +122,11 @@ exports.run = (options) => {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-            const customMiddleware = project.getMiddleware();
+            const customMiddleware = project.config.getMiddleware();
             if (typeof customMiddleware === 'function') {
                 customMiddleware(req, res, next);
+            } else {
+                next();
             }
         } catch (e) {
             console.error(e.stack);
@@ -196,18 +198,16 @@ exports.run = (options) => {
                             return nextConfig
                         });
 
-                        isWatcherRunning = true
-                        compiler.watch({}, function (err, stats) {
-                            isWatcherRunning = false
+                        isWatcherRunning = false
 
-                            // compiler complete
-                            if (!middlewareCache[cacheId]) {
-                                middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
-                                middleware(req, res, next);
-                            } else {
-                                next()
-                            }
-                        });
+                        // compiler complete
+                        if (!middlewareCache[cacheId]) {
+                            console.log('not cached')
+                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
+                            middleware(req, res, next);
+                        } else {
+                            next()
+                        }
 
                         // 检测config文件变化
                         watchConfig(project, middleware, cacheId)
