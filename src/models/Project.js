@@ -16,7 +16,7 @@ const ENVS = {
     LOCAL: 'local',
     DEV: 'dev',
     PRD: 'prd',
-}
+};
 
 class Project {
     constructor(cwd) {
@@ -434,7 +434,7 @@ class Project {
             });
 
         if (dir) {
-            dir = sysPath.resolve(this.cwd, dir)
+            dir = sysPath.resolve(this.cwd, dir);
             try {
                 fs.statSync(dir).isDirectory() ? context = dir : lintPath = sysPath.relative(context, dir)
             } catch (e) {

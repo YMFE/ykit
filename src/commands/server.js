@@ -123,6 +123,7 @@ exports.run = (options) => {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
             const customMiddleware = project.config.getMiddleware();
+
             if (typeof customMiddleware === 'function') {
                 customMiddleware(req, res, next);
             } else {
