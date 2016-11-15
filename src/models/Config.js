@@ -2,8 +2,9 @@
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const WebpackMd5Hash = require('webpack-md5-hash');
+const EventEmitter = require('../utils/EventEmitter');
 
-class Config {
+class Config extends EventEmitter {
     constructor(cwd) {
         this._config = {
             cwd: cwd,
