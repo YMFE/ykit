@@ -101,7 +101,7 @@ exports.run = (options) => {
             format = format.replace(/%contentLength/g, "\x1b[90m" + contentLength + '\x1b[31m' + "\x1b[0m");
             format = format.replace(/%(date|time)/g, "\x1b[90m" + (new Date - req._startTime) + "ms\x1b[0m");
             return format;
-        };
+        }
 
         return next();
     });
