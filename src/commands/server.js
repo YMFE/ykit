@@ -203,7 +203,6 @@ exports.run = (options) => {
 
                         // compiler complete
                         if (!middlewareCache[cacheId]) {
-                            console.log('not cached')
                             middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
                             middleware(req, res, next);
                         } else {
