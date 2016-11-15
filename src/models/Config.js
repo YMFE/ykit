@@ -4,7 +4,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const WebpackMd5Hash = require('webpack-md5-hash');
 const EventEmitter = require('../utils/EventEmitter');
 
-class Config extends EventEmitter {
+class Config {
     constructor(cwd) {
         this._config = {
             cwd: cwd,
@@ -156,7 +156,7 @@ class Config extends EventEmitter {
 
     applyMiddleware(mw) {
         if (typeof mw === 'function') {
-            this._config.middleware = mw.apply(this, this.getConfig());
+            this._config.middleware = mw;
         }
     }
 

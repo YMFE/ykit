@@ -28,8 +28,8 @@ class Project {
         this.eslintConfig = require('../config/eslint.json');
         this.stylelintConfig = require('../config/stylelint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], {
-            cwd: this.cwd
-        })[0] || '';
+                cwd: this.cwd
+            })[0] || '';
         this.extendConfig = this.configFile &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
@@ -39,43 +39,49 @@ class Project {
 
         this.readConfig();
     }
+
     check() {
         return !!this.configFile;
     }
+
     setCommands(nextCommands) {
         if (Array.isArray(nextCommands)) {
             this.commands = this.commands.concat(nextCommands)
         }
     }
+
     setEslintConfig(projectEslintConfig) {
         extend(true, this.eslintConfig, projectEslintConfig);
     }
+
     setStylelintConfig(projectStylelintConfig) {
         extend(true, this.stylelintConfig, projectStylelintConfig);
     }
+
     readConfig(options) {
         if (this.check()) {
             let userConfig = {
-                cwd: this.cwd,
-                _manager: Manager,
-                setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
-                setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
-                setCompiler: this.config.setCompiler.bind(this.config),
-                setExports: this.config.setExports.bind(this.config),
-                setGroupExports: this.config.setGroupExports.bind(this.config),
-                setSync: this.config.setSync.bind(this.config),
-                setCommands: this.setCommands.bind(this),
-                setEslintConfig: this.setEslintConfig.bind(this),
-                setStylelintConfig: this.setStylelintConfig.bind(this),
-                config: this.config.getConfig(),
-                commands: this.commands,
-                middlewares: this.middlewares,
-                packCallbacks: this.packCallbacks,
-                eslintConfig: this.eslintConfig,
-                stylelintConfig: this.stylelintConfig,
-                env: this._getCurrentEnv(), // 默认为本地环境
-            },
-            globalConfigs = Manager.readRC().configs || [];
+                    cwd: this.cwd,
+                    _manager: Manager,
+                    setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
+                    setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
+                    setCompiler: this.config.setCompiler.bind(this.config),
+                    setExports: this.config.setExports.bind(this.config),
+                    setGroupExports: this.config.setGroupExports.bind(this.config),
+                    setSync: this.config.setSync.bind(this.config),
+                    setCommands: this.setCommands.bind(this),
+                    setEslintConfig: this.setEslintConfig.bind(this),
+                    setStylelintConfig: this.setStylelintConfig.bind(this),
+                    config: this.config.getConfig(),
+                    commands: this.commands,
+                    middlewares: this.middlewares,
+                    packCallbacks: this.packCallbacks,
+                    eslintConfig: this.eslintConfig,
+                    stylelintConfig: this.stylelintConfig,
+                    applyMiddleware: this.config.applyMiddleware.bind(this.config),
+                    env: this._getCurrentEnv() // 默认为本地环境,
+                },
+                globalConfigs = Manager.readRC().configs || [];
 
             this.options = options = options || {};
             options.ExtractTextPlugin = ExtractTextPlugin;
@@ -143,10 +149,10 @@ class Project {
                 if (typeof configMethod.config == 'function') {
                     const userConfigObj = configMethod.config.call(userConfig, options, this.cwd);
 
-                    if(userConfigObj) {
-                        if(Array.isArray(userConfigObj.export)) {
+                    if (userConfigObj) {
+                        if (Array.isArray(userConfigObj.export)) {
                             userConfigObj.export = userConfigObj.export.filter((item) => {
-                                if(typeof item === 'object') {
+                                if (typeof item === 'object') {
                                     this.config.setGroupExports(item.name, item.export)
                                     return false
                                 } else {
@@ -175,6 +181,7 @@ class Project {
         }
         return this;
     }
+
     fixCss() {
         let config = this.config.getConfig(),
             entries = config.entry,
@@ -249,7 +256,7 @@ class Project {
         let config = UtilFs.readFileAny(files);
 
         // 本地无 lint 配置，创建 .eslintrc.json
-        if(!config){
+        if (!config) {
             let configPath = path.join(this.cwd, '.eslintrc.json');
             fs.writeFileSync(configPath, JSON.stringify(this.eslintConfig, null, 4));
         } else {
@@ -280,7 +287,7 @@ class Project {
         };
 
         if (config.files.length) {
-            stylelint.lint(config).then(function(data) {
+            stylelint.lint(config).then(function (data) {
                 if (data.errored) {
                     console.log(data.output);
                 }
@@ -310,7 +317,7 @@ class Project {
             if (opt.min) {
                 // variable name mangling
                 let mangle = true
-                if(typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false') {
+                if (typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false') {
                     mangle = false
                 }
 
@@ -331,13 +338,14 @@ class Project {
             if (opt.clean) {
                 try {
                     UtilFs.deleteFolderRecursive(config.output.path)
-                } catch (e) {}
+                } catch (e) {
+                }
             }
 
             webpack(config, (err, stats) => {
                 globby.sync('**/*.cache', {
-                        cwd: config.output.path
-                    })
+                    cwd: config.output.path
+                })
                     .map((p) => sysPath.join(config.output.path, p))
                     .forEach((fp) => fs.unlinkSync(fp));
 
@@ -368,8 +376,8 @@ class Project {
                     }
                     statsInfo.assets.map((asset) => {
                         const size = asset.size > 1024 ?
-                            (asset.size / 1024).toFixed(2) + ' kB' :
-                            asset.size + ' bytes';
+                        (asset.size / 1024).toFixed(2) + ' kB' :
+                        asset.size + ' bytes';
                         if (!/\.cache$/.test(asset.name)) {
                             log('- '.gray + asset.name + ' - ' + size);
                         }
@@ -489,8 +497,8 @@ class Project {
     }
 
     _getCurrentEnv() {
-        if(process.argv[2] === 'pack') {
-            if(process.argv.indexOf('-m') > -1) {
+        if (process.argv[2] === 'pack') {
+            if (process.argv.indexOf('-m') > -1) {
                 return ENVS.PRD
             } else {
                 return ENVS.DEV
