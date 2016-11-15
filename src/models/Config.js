@@ -2,6 +2,7 @@
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const WebpackMd5Hash = require('webpack-md5-hash');
+const EventEmitter = require('../utils/EventEmitter');
 
 class Config {
     constructor(cwd) {
@@ -57,13 +58,15 @@ class Config {
                 js: ['.js']
             },
             requireRules: [],
-            devtool: 'cheap-source-map'
+            devtool: 'cheap-source-map',
+            middleware: null
         };
     }
+
     setExports(entries) {
-        if(entries && Array.isArray(entries)) {
+        if (entries && Array.isArray(entries)) {
             [].concat(entries).forEach((entry) => {
-                if(typeof entry === 'string' || Array.isArray(entry)) {
+                if (typeof entry === 'string' || Array.isArray(entry)) {
                     const entryFile = Array.isArray(entry) ? entry[entry.length - 1] : entry
 
                     var name = entryFile;
@@ -80,16 +83,19 @@ class Config {
             return this;
         }
     }
+
     setGroupExports(group, exportsArr) {
         let exportGroup = this._config.entryGroup;
         exportGroup[group] = exportGroup[group] ? exportGroup[group].concat(exportsArr) : exportsArr;
 
         this.setExports(exportsArr);
     }
+
     setOutput(output) {
         extend(this._config.output, output);
         return this;
     }
+
     setSync(syncConfig) {
         if (syncConfig) {
             if (typeof syncConfig === 'object') {
@@ -99,6 +105,7 @@ class Config {
             }
         }
     }
+
     setCompiler(compileConfig) {
         if (compileConfig) {
             let nextConfig = {}
@@ -129,7 +136,7 @@ class Config {
             if (nextConfig.resolve && nextConfig.resolve.alias) {
                 let alias = nextConfig.resolve.alias
                 Object.keys(alias).map((key, i) => {
-                    if(key.indexOf('$') !== key.length - 1 && /^\/.+/.test(alias[key])) {
+                    if (key.indexOf('$') !== key.length - 1 && /^\/.+/.test(alias[key])) {
                         alias[key] = sysPath.join(this._config.cwd, alias[key])
                     }
                 })
@@ -142,9 +149,20 @@ class Config {
             extend(true, this._config, nextConfig);
         }
     }
+
     getConfig() {
         return this._config;
     }
-};
+
+    applyMiddleware(mw) {
+        if (typeof mw === 'function') {
+            this._config.middleware = mw;
+        }
+    }
+
+    getMiddleware() {
+        return this._config.middleware;
+    }
+}
 
 module.exports = Config;
