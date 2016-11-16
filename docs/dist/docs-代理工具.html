@@ -154,28 +154,87 @@
 </ul>
 <p>并且支持 Qunar 通用域名的 HTTPS。通过下面命令启动代理：</p>
 <pre><code>$ sudo ykit server -x
-</code></pre><p>此时会打开代理页面，左侧导航是项目(方案)列表，右侧面板是该分组下 Host 规则。</p>
-<p><strong>对于Ykit项目，会在项目内新建/读取<code>ykit.host</code>，并且同步更新。</strong></p>
-<p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/392730b24f/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.40.30.png" alt="屏幕快照 2016-09-08 上午11.40.30"></p>
-<h2 style="font-weight: normal"> 切换到代理服务 </h2>
+</code></pre><h2 style="font-weight: normal"> 切换到代理服务 </h2>
 
 <p>注意此时代理还未生效，我们还需要把请求打到我们的本地代理上。简单的方式是使用<code>SwitchyOmega</code>等chrome代理插件，或者使用Proxy右上角推荐的代理插件。以下是<code>SwitchyOmega</code>的配置，我们将所有外部请求打到<code>127.0.0.1:999</code>，也就是我们的本地代理上。</p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/370cfe24b5/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.43.18.png" alt="屏幕快照 2016-09-08 上午11.43.18"></p>
+<p><strong> 注意: 你需要把所有忽略的规则全部清空。另外, ShadowSocks和所有的代理都冲突, 在使用时也需要关闭。 </strong></p>
+<h2 style="font-weight:normal"> Host管理 </h2>
+
+<p>访问<a href="http://127.0.0.1:1000/qproxy#/?_k=1kpa78">http://127.0.0.1:1000/qproxy#/?_k=1kpa78</a>
+左侧导航是项目(方案)列表，右侧面板是该分组下 Host 规则。</p>
+<p><strong> 对于Ykit项目，会在项目内新建/读取<code>ykit.host</code>，并且同步更新。也就是说你不需要手动创建一个新的方案。</strong></p>
+<p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/392730b24f/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.40.30.png" alt="屏幕快照 2016-09-08 上午11.40.30"></p>
+<p>点击<code>添加规则</code>可以批量导入Host规则, 格式和Host文件完全相同, 除了不支持注释以外:</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/147927077876.png" alt="Host导入"></p>
+<p>在Host导入以后, 配置会立即生效, 无需重启浏览器。点击<code>导出Host</code>可以将当前的Host配置转换成Host文件的格式。</p>
+<p>另外, Jerry还提供了快速切换环境的功能, 每条Host的右侧有可选择的环境和机器IP, 你可以通过选择它们来快速切换环境。</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/147927237041.png" alt="切换Env"></p>
+<p>我们内置了一些常用的环境如qzz和local, 如果选择online等于没有配置host, 选择custom可以手动输入IP。</p>
+<p>如果你需要修改默认的环境/机器组配置, 可以在服务器组配置面板中手动编辑, 如图:</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/147927217132.png" alt="Edit Server Group"></p>
+<p>修改完成后, 你需要重新启动代理才能生效。</p>
+<h2 style="font-weight: normal"> Mock服务 </h2>
+
+<p>所有ykit项目都可以开启mock服务, 首先你需要在项目的根路径下添加一个mock.js, 内容如下:</p>
+<pre><code>module.exports = [
+    {
+        // 当前环境
+        current: &#39;local&#39;,
+        // 匹配规则
+        pattern: /test\.qunar\.com\/([^?]*)(\?.*)?/,
+        // 所有的responder, 生效的是等于current的那个
+        responders: {
+            &quot;beta&quot;: &#39;http://$1.qunar.com&#39;,
+            &quot;dev&quot;: &#39;http://$1.qunarman.com&#39;,
+            &quot;local&quot;: &#39;./mock/$1.json&#39;
+        },
+        // 配置jsonp wrapper函数名
+        jsonpCallback: &#39;jsCallback&#39;,
+        // 响应头的content-type
+        contentType: &#39;text/html&#39;
+    },
+    {
+        // 简易配置, 匹配规则
+        pattern: /test2\.qunar\.com\/(.*)/,
+        // 返回一个json格式数据, 而不是一个路径
+        responder: {id: 2222},
+        // 同样可以配这个和contentType
+        jsonpCallback: &#39;jsCallback&#39;
+    },
+    {
+        pattern: /test3\.qunar\.com/,
+        responder: {id: &#39;1212dl;akds;l&#39;}
+    }
+];
+</code></pre><p>然后在代理面板中找到你的项目, 然后在右侧开启Mock服务开关。</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/14792706369.png" alt="Mock"></p>
 <h2 style="font-weight: normal"> 自定义 Url Map </h2>
 
 <p>切换到Url Map选项卡，可以设置请求的远程/本地映射，支持正则匹配。</p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/c1f92f0479/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.53.39.png" alt="屏幕快照 2016-09-08 上午11.53.39"></p>
-<h2 style="font-weight: normal"> 查看 Log </h2>
+<h2 style="font-weight: normal"> 查看请求日志/设置断点 </h2>
 
-<p>切换到请求/响应日志选项卡，可以查看通过代理请求的接口详细信息，在进行移动端调试时十分便捷。点击详情Tab的&quot;设置断点&quot;可以给中断请求，并可即时修改响应的body。</p>
+<p>切换到请求/响应日志选项卡，可以查看通过代理请求的接口详细信息，在进行移动端调试时十分便捷。</p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/68d3467c6c/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.55.40.png" alt="屏幕快照 2016-09-08 上午11.55.40"></p>
+<p>点击日志详情右上角的设置断点可以中断请求, 设置断点之后的效果:</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/14792715856.png" alt="Block"></p>
+<p>点击Continue/Abort就可以让响应继续返回或者abort掉, 这在模拟接口超时或失败时很有用, 另外你还可以在Response选项卡中编辑响应的内容, 如下:</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/147927172206.png" alt="Block Edit Response"></p>
+<p>修改内容之后, 让响应Continue即可生效。在不需要中断时, 可以在断点配置面板中将断点关闭或者删除。</p>
+<h2 style="font-weight:normal"> HTTPS和Throttling </h2>
+
+<p>如果你在做HTTPS的开发但是仅仅需要使用host功能,HTTPS代理不必开启。这时候代理服务器会接收浏览器的隧道请求,host配置依然可以生效。</p>
+<p>需要在HTTPS下使用URL MAP/抓包等功能的时候,需要开启HTTPS代理,但是需要安装根证书JerryProxyCA.cer, 下载地址:
+<a href="https://github.com/Ellery0924/Jerry/blob/master/JerryProxyCA.cer">https://github.com/Ellery0924/Jerry/blob/master/JerryProxyCA.cer</a></p>
+<p>你需要手动信任这个证书, 整个流程和12306的证书安装流程一样。</p>
+<p>另外还需要在并在网络配置面板中设置<code>开启HTTPS代理</code>, 如下:</p>
+<p><img src="http://cfyyq.img48.wal8.com/img48/561720_20161116122834/147927120123.png" alt="开启https"></p>
+<p>另外JerryProxy还提供了常用的网速限流功能, 可以再网络配置中将它打开, 选择No Throttling之后会取消限速。</p>
 <h2 style="font-weight: normal"> 注意事项 </h2>
 
 <ul>
-<li><p>需要抓取移动设备的请求时，请保证移动设备和电脑在同一个无线网络下，然后修改移动设备的代理配置，让IP指向自己的电脑，端口为<code>999</code></p>
-</li>
-<li><p>HTTPS请求的抓取需要安装根证书，并在网络配置面板中设置<code>开启HTTPS代理</code></p>
-</li>
+<li>需要抓取移动设备的请求时，请保证移动设备和电脑在同一个无线网络下，然后修改移动设备的代理配置，让IP指向自己的电脑，端口为<code>999</code></li>
 </ul>
 <p>如有其它问题请联系 <code>jiao.shen@qunar.com</code></p>
 
