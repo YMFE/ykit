@@ -49,13 +49,11 @@ Options:
 
 <h3 style="font-weight: normal"> lint </h3>
 
-这个命令会对项目进行eslint和stylelint检查，第一次在项目中执行ykit lint后，会生成相应的.eslintrc.json，可后续对它进行更改，如添加lint规则、忽略目录等。
+这个命令会对项目进行 eslint 检查，第一次在项目中执行 ykit lint 后，会生成相应的 .eslintrc.json，可后续对它进行更改，如添加 lint 规则、忽略目录等。
 
 进入项目目录，执行`ykit lint`即可，其它参数：
 
-`ykit lint -d {dir}` 对指定目录或文件执行lint。
-
-`ykit lint -t {type}` 对指定文件类型执行lint，{type}可以为`js`或`css`
+`ykit lint -d {dir}` 对指定目录或文件执行 lint 。
 
 <h2 style="font-weight: normal"> 附加命令 </h2>
 
@@ -63,4 +61,4 @@ Ykit 插件会为当前项目添加附加命令。如在一个 Qunar 项目中�
 
 <h2 style="font-weight: normal"> 项目自定义命令 </h2>
 
-在`ykit.{type}.js`中可以配置项目自定义命令，相当于执行一段Node.js脚本。当前项目环境下的命令列表可以使用`ykit -h`查看。
+在`ykit.{type}.js`中可以配置项目自定义命令，相当于执行一段 Node 脚本。当前项目环境下的命令列表可以使用`ykit -h`查看。
