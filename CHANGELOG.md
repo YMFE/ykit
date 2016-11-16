@@ -1,3 +1,23 @@
+<a name="0.1.6-rc1"></a>
+## [0.1.6-rc1](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc0...0.1.6-rc1) (2016-11-16)
+
+
+### Features
+
+* 去掉 stylelint 以提升安装速度 ([06363d7](https://gitlab.corp.qunar.com/mfe/ykit/commit/06363d7))
+
+
+
+<a name="0.1.6-rc0"></a>
+## [0.1.6-rc0](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.5...0.1.6-rc0) (2016-11-16)
+
+
+### Features
+
+* **server:** 由显示所有本机 ip 改为只显示 127.0.0.1 ([145d4e5](https://gitlab.corp.qunar.com/mfe/ykit/commit/145d4e5))
+
+
+
 <a name="0.1.5"></a>
 ## [0.1.5](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.5-rc6...0.1.5) (2016-11-14)
 
@@ -258,3 +278,6 @@
 * **server:** add server command ([e93c20f](https://gitlab.corp.qunar.com/mfe/ykit/commit/e93c20f))
 * **server:** add source map ([c09678f](https://gitlab.corp.qunar.com/mfe/ykit/commit/c09678f))
 * **server:** 优化error/warning log信息 ([c70b54c](https://gitlab.corp.qunar.com/mfe/ykit/commit/c70b54c))
+
+
+
