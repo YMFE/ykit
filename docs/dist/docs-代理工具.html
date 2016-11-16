@@ -161,8 +161,9 @@
 <p><strong> 注意: 你需要把所有忽略的规则全部清空。另外, ShadowSocks和所有的代理都冲突, 在使用时也需要关闭。 </strong></p>
 <h2 style="font-weight:normal"> Host管理 </h2>
 
+<p><strong> 我们建议你彻底放弃编辑Host文件修改Host的方式并清空系统host文件中的所有内容, 直接转移到这套方案。这套方案不仅没有DNS缓存, 项目和环境的切换也十分便捷。 </strong></p>
 <p>访问<a href="http://127.0.0.1:1000/qproxy#/?_k=1kpa78">http://127.0.0.1:1000/qproxy#/?_k=1kpa78</a>
-左侧导航是项目(方案)列表，右侧面板是该分组下 Host 规则。</p>
+左侧导航是项目(方案)列表，右侧面板是该分组下 Host 规则。这里你需要手动选择当前激活的分组。</p>
 <p><strong> 对于Ykit项目，会在项目内新建/读取<code>ykit.host</code>，并且同步更新。也就是说你不需要手动创建一个新的方案。 </strong></p>
 <p><img src="http://gitlab.corp.qunar.com/uploads/mfe/ykit/392730b24f/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7_2016-09-08_%E4%B8%8A%E5%8D%8811.40.30.png" alt="屏幕快照 2016-09-08 上午11.40.30"></p>
 <p>点击<code>添加规则</code>可以批量导入Host规则, 格式和Host文件完全相同, 除了不支持注释以外:</p>
