@@ -321,16 +321,13 @@ exports.run = (options) => {
     })
     server.listen(port, () => {
         log('Starting up server, serving at: ' + options.cwd)
-        log('Available on:')
 
         let networkInterfaces = os.networkInterfaces();
         let protocol = options.https ? 'https://' : 'http://';
         Object.keys(networkInterfaces).forEach(function (dev) {
             networkInterfaces[dev].forEach(function (details) {
-                if (details.family === 'IPv4') {
-                    details.address.indexOf('127.0.0.1') > -1
-                        ? info('  ' + (protocol + details.address + ':' + port).underline)
-                        : info(('  ' + protocol + details.address + ':' + port))
+                if (details.family === 'IPv4' && details.address.indexOf('127.0.0.1') > -1) {
+                    log('Available on: ' + (protocol + details.address + ':' + port).underline)
                 }
             });
         });
