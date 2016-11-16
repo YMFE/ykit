@@ -1,8 +1,6 @@
 <h1 style="font-weight: normal">
-    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 120px"/>
+    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 110px"/>
 </h1>
-
-
 
 Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 [webpack][1]，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。
 
@@ -11,8 +9,8 @@ Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的
 <h2 style="font-weight: normal"> Features </h2>
 
 - 本地的静态资源编译服务。
+- 通过环境插件快速搭建开发环境。
 - 可扩展与可配置的打包方案（可支持 fekit_moudles 与 Qunar 资源打包形式）。
-- 自带 lint 命令，支持 eslint 和 stylelint。
 - 自带代理工具，可实现 SwitchHost + Charles 的基本功能。
 
 <h2 style="font-weight: normal"> Examples </h2>
