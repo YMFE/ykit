@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var colors = require('colors/safe');
 
-module.exports = new ProgressBarPlugin()
+module.exports = new ProgressBarPlugin();
 
 function ProgressBarPlugin() {
     var stream = process.stderr;
@@ -11,4 +11,4 @@ function ProgressBarPlugin() {
             stream.write(colors.grey('[Bundler] ') + colors.green(msg) + '\r');
         }
     });
-};
+}

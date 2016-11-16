@@ -1,6 +1,6 @@
 'use strict';
 
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
 
 class Config {
@@ -13,12 +13,12 @@ class Config {
             output: {
                 local: {},
                 dev: {
-                    path: "./dev",
-                    filename: "[name][ext]"
+                    path: './dev',
+                    filename: '[name][ext]'
                 },
                 prd: {
-                    path: "./prd",
-                    filename: "[name].min[ext]"
+                    path: './prd',
+                    filename: '[name].min[ext]'
                 }
             },
             module: {
@@ -45,12 +45,12 @@ class Config {
                 require('../plugins/requireModulePlugin.js'),
 
                 // vender plugin
-                new WebpackMd5Hash(),
+                new WebpackMd5Hash()
             ],
             resolve: {
                 root: [],
                 extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
-                alias: {},
+                alias: {}
             },
             entryExtNames: {
                 css: ['.css'],
@@ -66,7 +66,7 @@ class Config {
         if (entries && Array.isArray(entries)) {
             [].concat(entries).forEach((entry) => {
                 if (typeof entry === 'string' || Array.isArray(entry)) {
-                    const entryFile = Array.isArray(entry) ? entry[entry.length - 1] : entry
+                    const entryFile = Array.isArray(entry) ? entry[entry.length - 1] : entry;
 
                     var name = entryFile;
                     if (name.indexOf('./') == 0) {
@@ -76,7 +76,7 @@ class Config {
                     }
                     this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
                 } else {
-                    this.setGroupExports(entry.name, entry.export)
+                    this.setGroupExports(entry.name, entry.export);
                 }
             });
             return this;
@@ -107,43 +107,43 @@ class Config {
 
     setCompiler(compileConfig) {
         if (compileConfig) {
-            let nextConfig = {}
+            let nextConfig = {};
 
             // 获取用户定义的 compile 配置
             if (typeof compileConfig === 'object') {
-                nextConfig = compileConfig
+                nextConfig = compileConfig;
             } else if (typeof compileConfig === 'function') {
                 nextConfig = compileConfig(extend({}, this._config)) || {};
             }
 
             // 处理 context
             if (nextConfig.context && !sysPath.isAbsolute(nextConfig.context)) {
-                nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context)
+                nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context);
             }
 
             // 处理 loaders => loader
             if (nextConfig.module && nextConfig.module.loaders) {
-                nextConfig.module.loaders.map((loader, i) => {
+                nextConfig.module.loaders.map((loader) => {
                     if (loader.loaders && !loader.loader) {
-                        loader.loader = loader.loaders.join("!")
+                        loader.loader = loader.loaders.join('!');
                     }
-                    return loader
-                })
+                    return loader;
+                });
             }
 
             // 处理 alias 中 { xyz: "/some/dir" } 的情况
             if (nextConfig.resolve && nextConfig.resolve.alias) {
-                let alias = nextConfig.resolve.alias
-                Object.keys(alias).map((key, i) => {
+                let alias = nextConfig.resolve.alias;
+                Object.keys(alias).map((key) => {
                     if (key.indexOf('$') !== key.length - 1 && /^\/.+/.test(alias[key])) {
-                        alias[key] = sysPath.join(this._config.cwd, alias[key])
+                        alias[key] = sysPath.join(this._config.cwd, alias[key]);
                     }
-                })
+                });
                 extend(true, this._config.resolve.alias, alias);
             }
 
-            const context = nextConfig.context || this._config.context
-            this._config.resolve.root.push(context)
+            const context = nextConfig.context || this._config.context;
+            this._config.resolve.root.push(context);
 
             extend(true, this._config, nextConfig);
         }

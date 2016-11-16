@@ -1,9 +1,10 @@
-'use strict'
+'use strict';
 
 const inquirer = require('inquirer');
+const async = require('async');
 const child_process = require('child_process');
 
-exports.usage = "代码质量检测";
+exports.usage = '代码质量检测';
 
 exports.setOptions = (optimist) => {
     optimist.alias('d', 'dir');
@@ -13,17 +14,16 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = function (options)  {
-    let cwd = options.cwd,
-        project = this.project,
+    let project = this.project,
         dir = options.d || options.dir,
         lintType = options.t || options.type;
 
-    let isGoingToContinue = true
+    let isGoingToContinue = true;
 
     try {
-        require.resolve("eslint")
+        require.resolve('eslint');
     } catch(e) {
-        isGoingToContinue = false
+        isGoingToContinue = false;
 
         var questions = [{
             type: 'confirm',
@@ -34,38 +34,36 @@ exports.run = function (options)  {
         inquirer.prompt(questions).then((answers) => {
             if(answers.isGoingtoInstall) {
                 if(!(process.getuid && process.getuid() === 0)){
-                    warn('安装权限不足, 请使用sudo执行 ykit lint')
-                    process.exit(1)
+                    warn('安装权限不足, 请使用sudo执行 ykit lint');
+                    process.exit(1);
                 }
-
-                console.log(sysPath.resolve(__dirname, '../../'));
 
                 const installCmd = 'npm i eslint@2.13.1 stylelint@6.9.0 --registry https://registry.npm.taobao.org';
                 try {
-                    log('intalling eslint & stylelint ...')
+                    log('intalling eslint & stylelint ...');
                     log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
                 } catch (e) {
                     error(e);
                 }
             }
-        })
+        });
     }
 
     // lint type
-    let lintFileTypes = ['js', 'css']
+    let lintFileTypes = ['js', 'css'];
     if(lintType) {
         if(lintFileTypes.indexOf(lintType) > -1) {
-            lintFileTypes = [lintType]
+            lintFileTypes = [lintType];
         } else {
-            error('lintType只能为"js"或"css"')
-            process.exit(1)
+            error('lintType只能为"js"或"css"');
+            process.exit(1);
         }
     }
     const lintFuncs = lintFileTypes.map((lintFileTypeItem) => {
         return lintFileTypeItem === 'js'
                                 ? (callback) => project.lint(dir, callback)
-                                : (callback) => project.lintCss(dir, callback)
-    })
+                                : (callback) => project.lintCss(dir, callback);
+    });
 
     if(isGoingToContinue) {
         async.series(lintFuncs, (err, results) => {
@@ -84,4 +82,4 @@ exports.run = function (options)  {
             }
         });
     }
-}
+};

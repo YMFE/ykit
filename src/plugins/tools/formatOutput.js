@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 var friendlySyntaxErrorLabel = 'Syntax error:';
 
 function isLikelyASyntaxError(message) {
-  return message.indexOf(friendlySyntaxErrorLabel) !== -1;
+    return message.indexOf(friendlySyntaxErrorLabel) !== -1;
 }
 
 function formatMessage(message) {
-  return message
+    return message
     .replace(
       'Module build failed: SyntaxError:',
       friendlySyntaxErrorLabel
@@ -21,49 +21,49 @@ function formatMessage(message) {
 }
 
 function lineJoin(arr) {
-  var joined = arr.join('\n');
-  return joined;
-};
+    var joined = arr.join('\n');
+    return joined;
+}
 
 function formatOutput(stats) {
-  var output = [];
-  var hasErrors = stats.hasErrors();
-  var hasWarnings = stats.hasWarnings();
-  if (!hasErrors && !hasWarnings) {
-    return lineJoin(output);
-  }
-
-  var json = stats.toJson();
-  var formattedErrors = json.errors.map(function(message) {
-    return 'Error in ' + formatMessage(message);
-  });
-  var formattedWarnings = json.warnings.map(function(message) {
-    return 'Warning in ' + formatMessage(message);
-  });
-
-  if (hasErrors) {
-    if (formattedErrors.some(isLikelyASyntaxError)) {
-      formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
+    var output = [];
+    var hasErrors = stats.hasErrors();
+    var hasWarnings = stats.hasWarnings();
+    if (!hasErrors && !hasWarnings) {
+        return lineJoin(output);
     }
-    formattedErrors.forEach(function(message) {
-      output.push(message);
-      output.push('');
-    });
-    return lineJoin(output);
-  }
 
-  if (hasWarnings) {
-    formattedWarnings.forEach(function(message) {
-      output.push(message);
-      output.push('');
+    var json = stats.toJson();
+    var formattedErrors = json.errors.map(function(message) {
+        return 'Error in ' + formatMessage(message);
+    });
+    var formattedWarnings = json.warnings.map(function(message) {
+        return 'Warning in ' + formatMessage(message);
     });
 
-    output.push('You may use special comments to disable some warnings.');
-    output.push('Use eslint-disable-next-line to ignore the next line.');
-    output.push('Use  eslint-disable  to ignore all warnings in a file.');
+    if (hasErrors) {
+        if (formattedErrors.some(isLikelyASyntaxError)) {
+            formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
+        }
+        formattedErrors.forEach(function(message) {
+            output.push(message);
+            output.push('');
+        });
+        return lineJoin(output);
+    }
 
-    return lineJoin(output);
-  }
-};
+    if (hasWarnings) {
+        formattedWarnings.forEach(function(message) {
+            output.push(message);
+            output.push('');
+        });
+
+        output.push('You may use special comments to disable some warnings.');
+        output.push('Use eslint-disable-next-line to ignore the next line.');
+        output.push('Use  eslint-disable  to ignore all warnings in a file.');
+
+        return lineJoin(output);
+    }
+}
 
 module.exports = formatOutput;

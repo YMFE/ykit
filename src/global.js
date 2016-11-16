@@ -13,8 +13,8 @@ global.optimist = require('optimist');
 global.JSON5 = require('json5');
 global.loaderUtils = require('loader-utils');
 global.extend = require('extend');
-global.yaml = require("js-yaml");
-global.requireUncached = require("require-uncached");
+global.yaml = require('js-yaml');
+global.requireUncached = require('require-uncached');
 global.mkdirp = require('mkdirp');
 
 global.USER_HOME = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
@@ -23,17 +23,17 @@ global.YKIT_RC = sysPath.join(USER_HOME, '.ykitrc');
 global.YKIT_COMMANDS_PATH = sysPath.join(__dirname, 'commands');
 global.YKIT_COMPILERS_PATH = sysPath.join(__dirname, 'compilers');
 
-global.info = console.info;
+global.info = console.info; // eslint-disable-line
 global.success = function() {
     info((' √ ' + Array.prototype.join.call(arguments, ' ')).green);
-}
+};
 global.error = function() {
     info((' X ' + Array.prototype.join.call(arguments, ' ')).red);
-}
+};
 global.warn = function() {
     info((' ∆ ' + Array.prototype.join.call(arguments, ' ')).yellow);
-}
+};
 global.log = function() {
     info(('[YKit] ').gray + Array.prototype.join.call(arguments, ' '));
-}
+};
 global.packageJSON = require('../package.json');
