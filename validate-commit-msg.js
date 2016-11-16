@@ -10,9 +10,6 @@
 
 'use strict';
 
-
-
-
 var fs = require('fs');
 var util = require('util');
 var resolve = require('path').resolve;
