@@ -1,8 +1,9 @@
+'use strict';
+
 const path = require('path');
 const expect = require('chai').expect;
 
 const UtilFs = require('../../src/utils/fs.js');
-
 
 describe('readJSON', function(){
     let filePath = path.resolve(__dirname, './source/file.json');

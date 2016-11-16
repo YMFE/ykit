@@ -10,7 +10,7 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "test": "mocha --recursive --compilers js:babel-core/register",
+    "test": "mocha --recursive --compilers js:babel-core/register --timeout 0",
     "start": "cd .. && sudo node ykit/bin/ykit server"
   },
   "license": "MIT",
@@ -62,7 +62,9 @@
     "gulp-babel": "^6.1.2",
     "gulp-watch": "^4.3.8",
     "mocha": "^3.1.2",
-    "semver-regex": "^1.0.0"
+    "ps-tree": "^1.1.0",
+    "semver-regex": "^1.0.0",
+    "shelljs": "^0.7.5"
   },
   "config": {
     "ghooks": {
