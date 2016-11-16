@@ -134,7 +134,6 @@ https://github.com/Ellery0924/Jerry/blob/master/JerryProxyCA.cer
 
 - 需要抓取移动设备的请求时，请保证移动设备和电脑在同一个无线网络下，然后修改移动设备的代理配置，让IP指向自己的电脑，端口为`999`
 
-
 如有其它问题请联系 `jiao.shen@qunar.com`
 
 [1]: https://github.com/Ellery0924/QProxy
