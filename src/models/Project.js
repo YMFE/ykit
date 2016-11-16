@@ -381,7 +381,7 @@ class Project {
                         if (!/\.cache$/.test(asset.name)) {
                             log('- '.gray + asset.name + ' - ' + size);
                         }
-                    })
+                    });
                     info();
                     this.packCallbacks.forEach(cb => cb(opt, stats));
                 }
