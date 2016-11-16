@@ -64,12 +64,18 @@ describe('YKIT CLI', () => {
 
                 const output = shell.exec('curl -I localhost:3000');
                 expect(output.includes('200'));
-
+    
                 kill(child.pid);
                 done(0);
             } else if(!serverStarted){
                 done('Server fails to start');
             }
         });
+    })
+
+    it('runs the lint command', () => {
+        shell.cd('cli-test/ykit-seed-react');
+        const output = shell.exec(ykitPath + ' lint');
+        expect(output.includes('2 errors, 0 warnings'));
     })
 })
