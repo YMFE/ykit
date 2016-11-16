@@ -42,7 +42,7 @@ let Project = require('../models/Project.js'),
             throw e;
         }
     },
-    loadConfigFile = (filePath) => {
+    loadConfigFile = (filePath) => { // eslint-disable-line
         let config;
 
         switch (sysPath.extname(filePath)) {
@@ -150,8 +150,6 @@ exports.reloadRC = () => {
     return rc;
 };
 
-// lint config
-
 exports.loadEslintConfig = (path) => {
     try {
         const eslintConfigFile = require('eslint/lib/config/config-file.js');
@@ -161,20 +159,6 @@ exports.loadEslintConfig = (path) => {
     } catch (e) {
         return {};
     }
-};
-
-exports.loadStylelintConfig = (path) => {
-    let stylelintConfPath = globby.sync([
-        '.stylelintrc.js',
-        '.stylelintrc.yaml',
-        '.stylelintrc.yml',
-        '.stylelintrc.json',
-        '.stylelintrc',
-        'package.json'
-    ], {
-        cwd: path
-    })[0];
-    return stylelintConfPath ? loadConfigFile(sysPath.join(path, stylelintConfPath)) : {};
 };
 
 exports.loadIgnoreFile = (path) => {

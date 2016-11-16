@@ -42,7 +42,6 @@
     "serve-index": "^1.8.0",
     "serve-static": "^1.11.1",
     "style-loader": "^0.13.1",
-    "stylelint": "^6.9.0",
     "through2": "^2.0.1",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",

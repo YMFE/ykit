@@ -9,14 +9,11 @@ exports.usage = '代码质量检测';
 exports.setOptions = (optimist) => {
     optimist.alias('d', 'dir');
     optimist.describe('d', '检测特定目录/文件');
-    optimist.alias('t', 'type');
-    optimist.describe('t', '检测特定目录/文件');
 };
 
 exports.run = function (options)  {
     let project = this.project,
-        dir = options.d || options.dir,
-        lintType = options.t || options.type;
+        dir = options.d || options.dir;
 
     let isGoingToContinue = true;
 
@@ -38,9 +35,9 @@ exports.run = function (options)  {
                     process.exit(1);
                 }
 
-                const installCmd = 'npm i eslint@2.13.1 stylelint@6.9.0 --registry https://registry.npm.taobao.org';
+                const installCmd = 'npm i eslint@2.13.1 --registry https://registry.npm.taobao.org';
                 try {
-                    log('intalling eslint & stylelint ...');
+                    log('intalling eslint...');
                     log(child_process.execSync(installCmd, {cwd: sysPath.resolve(__dirname, '../../'), encoding: 'utf8'}));
                 } catch (e) {
                     error(e);
@@ -49,21 +46,12 @@ exports.run = function (options)  {
         });
     }
 
-    // lint type
-    let lintFileTypes = ['js', 'css'];
-    if(lintType) {
-        if(lintFileTypes.indexOf(lintType) > -1) {
-            lintFileTypes = [lintType];
-        } else {
-            error('lintType只能为"js"或"css"');
-            process.exit(1);
+    const lintFuncs = [
+        // 暂时只 lint js
+        function(callback) {
+            project.lint(dir, callback);
         }
-    }
-    const lintFuncs = lintFileTypes.map((lintFileTypeItem) => {
-        return lintFileTypeItem === 'js'
-                                ? (callback) => project.lint(dir, callback)
-                                : (callback) => project.lintCss(dir, callback);
-    });
+    ];
 
     if(isGoingToContinue) {
         async.series(lintFuncs, (err, results) => {

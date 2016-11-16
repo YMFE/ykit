@@ -26,7 +26,6 @@ class Project {
         this.middlewares = [];
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
-        this.stylelintConfig = require('../config/stylelint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], {
             cwd: this.cwd
         })[0] || '';
@@ -54,10 +53,6 @@ class Project {
         extend(true, this.eslintConfig, projectEslintConfig);
     }
 
-    setStylelintConfig(projectStylelintConfig) {
-        extend(true, this.stylelintConfig, projectStylelintConfig);
-    }
-
     readConfig(options) {
         if (this.check()) {
             let userConfig = {
@@ -71,13 +66,11 @@ class Project {
                     setSync: this.config.setSync.bind(this.config),
                     setCommands: this.setCommands.bind(this),
                     setEslintConfig: this.setEslintConfig.bind(this),
-                    setStylelintConfig: this.setStylelintConfig.bind(this),
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
                     packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
-                    stylelintConfig: this.stylelintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
                     env: this._getCurrentEnv() // 默认为本地环境,
                 },
@@ -106,7 +99,6 @@ class Project {
                 }
 
                 extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(modulePath));
-                extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(modulePath));
                 this.ignores.push(Manager.loadIgnoreFile(modulePath));
 
                 if (fs.existsSync(modulePath)) {
@@ -121,7 +113,6 @@ class Project {
                         let module = require(item.path);
 
                         extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(item.path));
-                        extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(item.path));
                         this.ignores.push(Manager.loadIgnoreFile(item.path));
 
                         if (module && module.config) {
@@ -139,7 +130,6 @@ class Project {
 
             let configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
             extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
-            extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(this.cwd));
             this.ignores.push(Manager.loadIgnoreFile(this.cwd));
 
             if (configMethod) {
@@ -274,32 +264,6 @@ class Project {
         callback(null, !report.errorCount);
     }
 
-    lintCss(dir, callback) {
-        const stylelint = require('stylelint');
-
-        warn('Linting CSS Files ...');
-
-        let config = {
-            config: this.stylelintConfig,
-            files: this._getLintFiles(dir, 'css'),
-            syntax: 'scss',
-            formatter: 'verbose'
-        };
-
-        if (config.files.length) {
-            stylelint.lint(config).then(function (data) {
-                if (data.errored) {
-                    error(data.output);
-                }
-                callback(null, !data.errored);
-            }).catch(() => {
-                callback(true);
-            });
-        } else {
-            callback(null, true);
-        }
-    }
-
     pack(opt, callback) {
         let config = this.config.getConfig();
         UtilFs.deleteFolderRecursive(this.cachePath);
@@ -393,8 +357,7 @@ class Project {
 
         if (opt.lint) {
             async.series([
-                (callback) => this.lint(callback),
-                (callback) => this.lintCss(callback)
+                (callback) => this.lint(callback)
             ], (err, results) => {
                 if (!err) {
                     if (results[0] && results[1]) {
