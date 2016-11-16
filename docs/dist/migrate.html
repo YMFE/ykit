@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
   <meta name="description" content="description of your site">
   <meta name="author" content="author of the site">
-  <title>YKit 简介</title>
+  <title>YKit 项目迁移</title>
   <link rel="stylesheet" href="source/main.css"/>
   
 </head>
@@ -22,7 +22,7 @@
               <ul class="navbar-left">
                 
                     
-                    <li class="active">
+                    <li class="">
                         
                         <a href="index.html">简介</a>
                         
@@ -34,7 +34,7 @@
                         
                     </li>
                     
-                    <li class="">
+                    <li class="active">
                         
                         <a href="migrate.html">项目迁移</a>
                         
@@ -72,7 +72,7 @@
           <div class="ydoc-banner">
               <div class="ydoc-banner-area">
                   <h1>Ykit</h1>
-                  <p>Introduction</p>
+                  <p>Migration</p>
               </div>
           </div>
       
@@ -83,33 +83,26 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <h1 style="font-weight: normal">
-    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 120px"/>
-</h1>
+                  <h1 style="font-weight: normal"> 迁移已有项目到 Ykit </h1>
 
+<p>Ykit 将各种功能和兼容特性封装成了插件，因此选择适合项目的插件，然后再迁移一个项目是相对简单的。</p>
+<h2 style="font-weight: normal"> 1. 在当前项目目录下执行<code>ykit init</code> </h2>
 
-
-<p>Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 <a href="https://github.com/webpack/webpack">webpack</a>，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。</p>
-<p>Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的基础配置，通过可插拔的插件来进行扩展（编译插件、服务中间件、工具和命令...），并让开发者可以灵活地根据不同项目来修改配置。</p>
-<h2 style="font-weight: normal"> Features </h2>
-
-<ul>
-<li>本地的静态资源编译服务。</li>
-<li>可扩展与可配置的打包方案（可支持 fekit_moudles 与 Qunar 资源打包形式）。</li>
-<li>自带 lint 命令，支持 eslint 和 stylelint。</li>
-<li>自带代理工具，可实现 SwitchHost + Charles 的基本功能。</li>
-</ul>
-<h2 style="font-weight: normal"> Examples </h2>
+<pre><code class="lang-bash">$ cd MyProject
+$ ykit init
+</code></pre>
+<h2 style="font-weight: normal"> 2. 选择 ykit 配置 </h2>
 
 <ul>
-<li><a href="http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-avalon">ykit-seed-avalon</a>: Avalon &amp; OniUI 示例。</li>
-<li><a href="http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-hy">ykit-seed-hy</a>: Hy 示例, 包括路由功能、滚动组件、手势功能。</li>
-<li><a href="http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-react">ykit-seed-react</a>: React 示例，支持 ES6、SASS、LESS。</li>
+<li>如果是迁移 webpack 项目，则选择 qunar 配置，它默认支持 sass/less，实现资源带版本号，fekit_moudles 的打包，sync 命令等。</li>
+<li>如果是迁移 fekit 项目，则选择 fekit 配置，里面包含了兼容旧 fekit 语法和配置的插件。</li>
 </ul>
-<p>将 demo 工程 clone 下来后 npm install，然后项目外运行 ykit server 访问项目即可。</p>
-<h2 style="font-weight: normal"> Change log </h2>
+<h2 style="font-weight: normal"> 3. 根据需求修改配置文件 </h2>
 
-<p><a href="http://gitlab.corp.qunar.com/mfe/ykit/blob/master/CHANGELOG.md">查看change log</a></p>
+<p>在生成的配置文件 <code>ykit.{type}.js</code> 中添加资源入口、更改当前 webpack 编译配置、添加 alias 等等。</p>
+<p>具体配置文档可参考 <a href="./docs-配置.html">Ykit-配置</a>。</p>
+<h2 style="font-weight: normal"> 4. 在项目外运行<code>ykit server</code>，并访问项目。 </h2>
+
 
               </article>
           </div>

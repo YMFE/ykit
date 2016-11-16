@@ -203,7 +203,12 @@ exports.run = (options) => {
 
                         // compiler complete
                         if (!middlewareCache[cacheId]) {
-                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
+                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {
+                                quiet: true,
+                                reporter: ({ state, stats, options }) => {
+                                    console.log(options, 'stats', Object.keys(stats.compilation.assets));
+                                }
+                            });
                             middleware(req, res, next);
                         } else {
                             next()
