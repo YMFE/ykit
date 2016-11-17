@@ -168,6 +168,7 @@ exports.run = (options) => {
                     if (project.check()) {
                         compiler = project.getServerCompiler(function (config) {
                             let nextConfig = extend({}, config)
+                            nextConfig.entry = {};
 
                             // 将webpack entry设置为当前请求的资源
                             Object.keys(config.entry).map((entryKey) => {
