@@ -71,6 +71,7 @@ exports.run = (options) => {
 
         function parse(req, res, format) {
             const dateFormat = 'YY.MM.DD HH:mm:ss';
+            /*eslint-disable */
             const status = (function () {
                 switch (true) {
                     case 500 <= res.statusCode:
@@ -83,6 +84,7 @@ exports.run = (options) => {
                         return '\x1b[32m';
                 }
             })();
+            /*eslint-disable */
 
             let contentLength = res._contentLength || '';
             if (contentLength) {
@@ -166,6 +168,7 @@ exports.run = (options) => {
                     if (project.check()) {
                         compiler = project.getServerCompiler(function (config) {
                             let nextConfig = extend({}, config);
+                            // entry应该是个空对象, 这样如果没有找到请求对应的entry, 就不会编译全部入口
                             nextConfig.entry = {};
 
                             // 将webpack entry设置为当前请求的资源
