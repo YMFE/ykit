@@ -1,5 +1,16 @@
+<a name="0.1.6-rc3"></a>
+## [0.1.6-rc3](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc2...v0.1.6-rc3) (2016-11-17)
+
+
+### Bug Fixes
+
+* 修复打出冗余 log ([c72bb40](https://gitlab.corp.qunar.com/mfe/ykit/commit/c72bb40))
+* **server:** 修复 entry 路径匹配不准 ([7c5a2f8](https://gitlab.corp.qunar.com/mfe/ykit/commit/7c5a2f8))
+
+
+
 <a name="0.1.6-rc2"></a>
-## [0.1.6-rc2](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc1...v0.1.6-rc2) (2016-11-17)
+## [0.1.6-rc2](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc1...0.1.6-rc2) (2016-11-17)
 
 
 ### Bug Fixes
