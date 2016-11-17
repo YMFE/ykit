@@ -16,6 +16,7 @@ let Manager = require('../modules/manager.js');
 let UtilFs = require('../utils/fs.js');
 
 exports.usage = '开发服务';
+exports.abbr = 's';
 
 exports.setOptions = (optimist) => {
     optimist.alias('p', 'port');

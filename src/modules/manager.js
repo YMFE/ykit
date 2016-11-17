@@ -98,6 +98,7 @@ exports.getCommands = () => {
         .map((name) => {
             return {
                 name: sysPath.basename(name, '.js'),
+                abbr: require(sysPath.join(YKIT_COMMANDS_PATH, name)).abbr,
                 module: require(sysPath.join(YKIT_COMMANDS_PATH, name))
             };
         })
