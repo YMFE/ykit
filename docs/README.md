@@ -24,6 +24,10 @@ Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的
 
 将 demo 工程 clone 下来后 npm install，然后项目外运行 ykit server 访问项目即可。
 
+<h2 style="font-weight: normal"> Issues </h2>
+
+如有任何需求和问题请在[这里][9]提出。
+
 <h2 style="font-weight: normal"> Change log </h2>
 
 [查看change log][11]
