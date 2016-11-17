@@ -1,6 +1,9 @@
-<h1 style="font-weight: normal">
-    <img src="http://ww4.sinaimg.cn/large/6af705b8gw1f8wjyiijutj20dw0dwglv.jpg" alt="ykit_icon" style="height: 110px"/>
-</h1>
+<img
+    src="http://ww4.sinaimg.cn/large/6af705b8gw1f9uy5nnbbfj20tp0h8tbo.jpg"
+    alt="ykit_dev"
+    style="display: block; height: 500px; margin: 0 auto 45px; "
+/>
+
 
 Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 [webpack][1]，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。
 
