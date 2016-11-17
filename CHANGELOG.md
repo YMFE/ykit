@@ -1,3 +1,13 @@
+<a name="0.1.6-rc2"></a>
+## [0.1.6-rc2](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc1...v0.1.6-rc2) (2016-11-17)
+
+
+### Bug Fixes
+
+* **server:** 解决入口没找到时compile全部资源的问题 ([e26a8bc](https://gitlab.corp.qunar.com/mfe/ykit/commit/e26a8bc))
+
+
+
 <a name="0.1.6-rc1"></a>
 ## [0.1.6-rc1](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc0...0.1.6-rc1) (2016-11-16)
 
