@@ -1,0 +1,9 @@
+{
+  "name": "ykit-test",
+  "version": "1.0.0",
+  "dependencies": {
+    "@qnpm/ykit": "latest"
+  },
+  "author": "",
+  "license": "ISC"
+}

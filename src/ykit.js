@@ -11,7 +11,7 @@ let ykit = module.exports = (options) => {
     return through.obj(function(file, enc, cb) {
         let cwd = file.cwd;
         new Project(cwd).pack(options, function() {
-            cb()
+            cb();
         });
     });
 };

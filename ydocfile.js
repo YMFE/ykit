@@ -29,6 +29,16 @@ module.exports = {
         menuLevel: 2,
         content: './docs/init.md'
     }, {
+        name: 'migrate',
+        title: '项目迁移',
+        compile: 'markdown',
+        banner: {
+            title: 'Ykit',
+            description: 'Migration'
+        },
+        menuLevel: 2,
+        content: './docs/migration.md'
+    }, {
         name: 'docs',
         title: '使用手册',
         banner: {

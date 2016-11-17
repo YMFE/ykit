@@ -1,8 +1,6 @@
 'use strict';
 
-let Manager = require('../modules/manager.js');
-
-exports.usage = "资源编译、打包";
+exports.usage = '资源编译、打包';
 
 exports.setOptions = (optimist) => {
     optimist.alias('l', 'lint');
@@ -20,8 +18,7 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = function (options) {
-    let cwd = options.cwd,
-        min = options.m || options.min || false,
+    let min = options.m || options.min || false,
         lint = options.l || options.lint || false,
         clean = options.c || options.clean || false,
         quiet = options.q || options.quiet || false,
@@ -43,7 +40,7 @@ exports.run = function (options) {
         min: min,
         sourcemap: sourcemap,
         clean: clean,
-        quiet: quiet,
+        quiet: quiet
     }, (err, stats) => {
         if (err) {
             if (err !== true) {

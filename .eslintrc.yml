@@ -27,4 +27,20 @@ globals:
   process: true
   it: true
   describe: true
-  
+  fs: true
+  sysPath: true
+  async: true
+  childProcess: true
+  leftPad: true
+  rightPad: true
+  globby: true
+  optimist: true
+  loaderUtils: true
+  extend: true
+  yaml: true
+  requireUncached: true
+  mkdirp: true
+  JSON5: true
+  YKIT_COMMANDS_PATH: true
+  YKIT_RC: true
+  USER_HOME: true

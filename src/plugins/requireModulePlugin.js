@@ -20,14 +20,16 @@ module.exports = {
                                 if (fs.existsSync(configPath)) {
                                     try {
                                         entry = JSON5.parse(fs.readFileSync(configPath, 'UTF-8'))[config[1] || 'main'] || entry;
-                                    } catch(e) {}
+                                    } catch (e) {
+                                        // do nothing
+                                    }
                                 }
                                 entry.replace('[ext]', param.ext || '.js');
                             }
                             callback(null, {
                                 path: sysPath.join(modulePath, entry),
-								query: query,
-								resolved: true
+                                query: query,
+                                resolved: true
                             });
                             return true;
                         } else {
@@ -38,11 +40,10 @@ module.exports = {
                 };
             });
 
-
-        compiler.resolvers.normal.plugin("module", function(request, finalCallback) {
+        compiler.resolvers.normal.plugin('module', function(request, finalCallback) {
             if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
                 finalCallback();
             }
         });
     }
-}
+};

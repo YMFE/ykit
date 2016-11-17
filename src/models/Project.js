@@ -15,7 +15,7 @@ let UtilFs = require('../utils/fs.js');
 const ENVS = {
     LOCAL: 'local',
     DEV: 'dev',
-    PRD: 'prd',
+    PRD: 'prd'
 };
 
 class Project {
@@ -26,16 +26,15 @@ class Project {
         this.middlewares = [];
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
-        this.stylelintConfig = require('../config/stylelint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], {
-                cwd: this.cwd
-            })[0] || '';
+            cwd: this.cwd
+        })[0] || '';
         this.extendConfig = this.configFile &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
-        this.ignores = ["node_modules/**/*", "bower_components/**/*", "dev/**/*", "prd/**/*", ".ykit_cache/**/*"];
-        this.cachePath = this._isCacheDirExists(cwd) || ''
+        this.ignores = ['node_modules/**/*', 'bower_components/**/*', 'dev/**/*', 'prd/**/*', '.ykit_cache/**/*'];
+        this.cachePath = this._isCacheDirExists(cwd) || '';
 
         this.readConfig();
     }
@@ -46,16 +45,12 @@ class Project {
 
     setCommands(nextCommands) {
         if (Array.isArray(nextCommands)) {
-            this.commands = this.commands.concat(nextCommands)
+            this.commands = this.commands.concat(nextCommands);
         }
     }
 
     setEslintConfig(projectEslintConfig) {
         extend(true, this.eslintConfig, projectEslintConfig);
-    }
-
-    setStylelintConfig(projectStylelintConfig) {
-        extend(true, this.stylelintConfig, projectStylelintConfig);
     }
 
     readConfig(options) {
@@ -71,13 +66,11 @@ class Project {
                     setSync: this.config.setSync.bind(this.config),
                     setCommands: this.setCommands.bind(this),
                     setEslintConfig: this.setEslintConfig.bind(this),
-                    setStylelintConfig: this.setStylelintConfig.bind(this),
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
                     packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
-                    stylelintConfig: this.stylelintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
                     env: this._getCurrentEnv() // 默认为本地环境,
                 },
@@ -90,23 +83,22 @@ class Project {
                 let moduleName = 'ykit-config-' + this.extendConfig,
                     modulePath = '';
 
-                const localSearchPath = sysPath.join(this.cwd, 'node_modules/', moduleName)
-                const localSearchPathQnpm = sysPath.join(this.cwd, 'node_modules/', '@qnpm/' + moduleName)
+                const localSearchPath = sysPath.join(this.cwd, 'node_modules/', moduleName);
+                const localSearchPathQnpm = sysPath.join(this.cwd, 'node_modules/', '@qnpm/' + moduleName);
 
                 if (requireg.resolve(localSearchPath)) {
-                    modulePath = localSearchPath
+                    modulePath = localSearchPath;
                 } else if (requireg.resolve(moduleName)) {
-                    modulePath = requireg.resolve(moduleName)
+                    modulePath = requireg.resolve(moduleName);
                 } else if (requireg.resolve(localSearchPathQnpm)) {
-                    modulePath = localSearchPathQnpm
-                    moduleName = '@qnpm/' + moduleName
+                    modulePath = localSearchPathQnpm;
+                    moduleName = '@qnpm/' + moduleName;
                 } else if (requireg.resolve('@qnpm/' + moduleName)) {
-                    modulePath = requireg.resolve('@qnpm/' + moduleName)
-                    moduleName = '@qnpm/' + moduleName
+                    modulePath = requireg.resolve('@qnpm/' + moduleName);
+                    moduleName = '@qnpm/' + moduleName;
                 }
 
                 extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(modulePath));
-                extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(modulePath));
                 this.ignores.push(Manager.loadIgnoreFile(modulePath));
 
                 if (fs.existsSync(modulePath)) {
@@ -121,7 +113,6 @@ class Project {
                         let module = require(item.path);
 
                         extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(item.path));
-                        extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(item.path));
                         this.ignores.push(Manager.loadIgnoreFile(item.path));
 
                         if (module && module.config) {
@@ -139,7 +130,6 @@ class Project {
 
             let configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
             extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
-            extend(true, userConfig.stylelintConfig, Manager.loadStylelintConfig(this.cwd));
             this.ignores.push(Manager.loadIgnoreFile(this.cwd));
 
             if (configMethod) {
@@ -153,12 +143,12 @@ class Project {
                         if (Array.isArray(userConfigObj.export)) {
                             userConfigObj.export = userConfigObj.export.filter((item) => {
                                 if (typeof item === 'object') {
-                                    this.config.setGroupExports(item.name, item.export)
-                                    return false
+                                    this.config.setGroupExports(item.name, item.export);
+                                    return false;
                                 } else {
-                                    return true
+                                    return true;
                                 }
-                            })
+                            });
                         }
                         this.config.setExports(userConfigObj.export);
                         this.config.setCompiler(userConfigObj.modifyWebpackConfig);
@@ -188,7 +178,7 @@ class Project {
             cssExtNames = config.entryExtNames.css,
             fps = [];
 
-        const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.'
+        const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.';
 
         for (let key in entries) {
             const entryItem = entries[key],
@@ -196,12 +186,12 @@ class Project {
                 extName = sysPath.extname(entry);
 
             // 放在cache目录下
-            const cachePath = this._isCacheDirExists(this.cwd)
+            const cachePath = this._isCacheDirExists(this.cwd);
             if (!cachePath) {
-                const newCachePath = sysPath.join(this.cwd, '.ykit_cache')
+                const newCachePath = sysPath.join(this.cwd, '.ykit_cache');
 
-                this.cachePath = newCachePath
-                mkdirp.sync(newCachePath)
+                this.cachePath = newCachePath;
+                mkdirp.sync(newCachePath);
             }
 
             if (cssExtNames.indexOf(extName) > -1) {
@@ -215,18 +205,18 @@ class Project {
                     // clear
                     fs.writeFileSync(cacheFilePath, '', 'utf-8');
 
-                    entryItem.forEach((cssPath, i) => {
-                        const originCssPath = sysPath.join(config.context, cssPath)
-                        const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath))
+                    entryItem.forEach((cssPath) => {
+                        const originCssPath = sysPath.join(config.context, cssPath);
+                        const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
                         fs.appendFileSync(
                             cacheFilePath,
                             'require("' + requiredPath + '");',
                             'utf-8'
                         );
-                    })
+                    });
                 } else {
-                    const originCssPath = sysPath.join(config.context, entry)
-                    const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath))
+                    const originCssPath = sysPath.join(config.context, entry);
+                    const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
                     fs.writeFileSync(
                         cacheFilePath,
                         'require("' + requiredPath + '");',
@@ -247,7 +237,7 @@ class Project {
 
         // 如果有本地eslint优先使用本地eslint
         if (requireg.resolve(sysPath.join(this.cwd, 'node_modules/', 'eslint'))) {
-            CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine
+            CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine;
         }
 
         let files = ['.js', '.yaml', '.yml', '.json', ''].map(ext => {
@@ -274,40 +264,14 @@ class Project {
         callback(null, !report.errorCount);
     }
 
-    lintCss(dir, callback) {
-        const stylelint = require('stylelint');
-
-        warn('Linting CSS Files ...');
-
-        let config = {
-            config: this.stylelintConfig,
-            files: this._getLintFiles(dir, 'css'),
-            syntax: 'scss',
-            formatter: 'verbose'
-        };
-
-        if (config.files.length) {
-            stylelint.lint(config).then(function (data) {
-                if (data.errored) {
-                    console.log(data.output);
-                }
-                callback(null, !data.errored);
-            }).catch(() => {
-                callback(true);
-            })
-        } else {
-            callback(null, true);
-        }
-    }
-
     pack(opt, callback) {
         let config = this.config.getConfig();
-        UtilFs.deleteFolderRecursive(this.cachePath)
+        UtilFs.deleteFolderRecursive(this.cachePath);
 
         let compilerProcess = () => {
 
             if (opt.sourcemap) {
-                config.devtool = opt.sourcemap
+                config.devtool = opt.sourcemap;
             }
 
             if (!opt.quiet) {
@@ -316,19 +280,19 @@ class Project {
 
             if (opt.min) {
                 // variable name mangling
-                let mangle = true
+                let mangle = true;
                 if (typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false') {
-                    mangle = false
+                    mangle = false;
                 }
 
                 config.plugins.push(new webpack.optimize.UglifyJsPlugin({
                     compress: {
-                        warnings: false,
+                        warnings: false
                     },
                     mangle: mangle
                 }));
                 config.output = config.output.prd;
-                config.devtool = ''
+                config.devtool = '';
             } else {
                 config.output = config.output.dev;
             }
@@ -337,8 +301,9 @@ class Project {
 
             if (opt.clean) {
                 try {
-                    UtilFs.deleteFolderRecursive(config.output.path)
+                    UtilFs.deleteFolderRecursive(config.output.path);
                 } catch (e) {
+                    error(e);
                 }
             }
 
@@ -360,19 +325,19 @@ class Project {
                         + '\x1b[90m'
                         + '--------------------------  YKIT PACKED ASSETS  -------------------------- '
                         + '\x1b[0m \n\n'
-                    )
+                    );
 
                     if (statsInfo.errors.length > 0) {
                         statsInfo.errors.map((err) => {
                             error(err.red);
                             info();
-                        })
+                        });
                     }
                     if (statsInfo.warnings.length > 0) {
                         statsInfo.warnings.map((warning) => {
                             warn(warning.yellow);
                             info();
-                        })
+                        });
                     }
                     statsInfo.assets.map((asset) => {
                         const size = asset.size > 1024 ?
@@ -388,12 +353,11 @@ class Project {
 
                 callback(err, stats);
             });
-        }
+        };
 
         if (opt.lint) {
             async.series([
-                (callback) => this.lint(callback),
-                (callback) => this.lintCss(callback)
+                (callback) => this.lint(callback)
             ], (err, results) => {
                 if (!err) {
                     if (results[0] && results[1]) {
@@ -420,7 +384,7 @@ class Project {
         this.fixCss();
 
         if (handler && typeof handler === 'function') {
-            config = handler(config)
+            config = handler(config);
         }
 
         return webpack(config);
@@ -430,13 +394,13 @@ class Project {
         let context = this.config._config.context,
             extNames = this.config._config.entryExtNames[fileType],
             lintPath = extNames.map((ext) => {
-                return sysPath.join('./**/*' + ext)
+                return sysPath.join('./**/*' + ext);
             });
 
         if (dir) {
             dir = sysPath.resolve(this.cwd, dir);
             try {
-                fs.statSync(dir).isDirectory() ? context = dir : lintPath = sysPath.relative(context, dir)
+                fs.statSync(dir).isDirectory() ? context = dir : lintPath = sysPath.relative(context, dir);
             } catch (e) {
                 error(e);
                 process.exit(1);
@@ -448,8 +412,8 @@ class Project {
             root: context,
             ignore: this.ignores
         }).map((lintPathItem) => {
-            return sysPath.resolve(context, lintPathItem)
-        })
+            return sysPath.resolve(context, lintPathItem);
+        });
     }
 
     _normalizePath(str, stripTrailing) {
@@ -464,28 +428,28 @@ class Project {
     }
 
     _requireUncached(module) {
-        delete require.cache[require.resolve(module)]
-        return require(module)
+        delete require.cache[require.resolve(module)];
+        return require(module);
     }
 
     _isCacheDirExists(cwd) {
-        let isCacheExists, isYkitCacheExists;
+        let isCacheExists;
 
         try {
-            fs.statSync(sysPath.join(cwd, '.ykit_cache'))
-            return sysPath.join(cwd, '.ykit_cache')
+            fs.statSync(sysPath.join(cwd, '.ykit_cache'));
+            return sysPath.join(cwd, '.ykit_cache');
         } catch (e) {
-            isYkitCacheExists = false
+            // do nothing
         }
 
         try {
-            fs.statSync(sysPath.join(cwd, '.cache'))
-            return sysPath.join(cwd, '.cache')
+            fs.statSync(sysPath.join(cwd, '.cache'));
+            return sysPath.join(cwd, '.cache');
         } catch (e) {
-            isCacheExists == false
+            isCacheExists == false;
         }
 
-        return false
+        return false;
     }
 
     _fileExists(filePath) {
@@ -499,13 +463,13 @@ class Project {
     _getCurrentEnv() {
         if (process.argv[2] === 'pack') {
             if (process.argv.indexOf('-m') > -1) {
-                return ENVS.PRD
+                return ENVS.PRD;
             } else {
-                return ENVS.DEV
+                return ENVS.DEV;
             }
         }
 
-        return ENVS.LOCAL
+        return ENVS.LOCAL;
     }
 }
 

@@ -1,7 +1,8 @@
+'use strict';
+
 let fs = require('fs');
 let path = require('path');
 let yaml = require('js-yaml');
-
 
 exports.readJSON = function(loc){
     try {
