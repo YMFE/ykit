@@ -64,7 +64,7 @@ describe('YKIT CLI', () => {
 
                 const output = shell.exec('curl -I localhost:3000');
                 expect(output.includes('200'));
-    
+
                 kill(child.pid);
                 done(0);
             } else if(!serverStarted){
@@ -78,4 +78,10 @@ describe('YKIT CLI', () => {
         const output = shell.exec(ykitPath + ' lint');
         expect(output.includes('2 errors, 0 warnings'));
     })
+
+    after(function() {
+        if (shell.test('-d', 'cli-test')) {
+            shell.rm('-rf', 'cli-test');
+        }
+    });
 })
