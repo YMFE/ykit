@@ -186,7 +186,7 @@ exports.run = (options) => {
 
                                 const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'));
                                 entryPath = entryPath.replace(cssReg, '.css'); // 将入口的.scss/.less后缀替换为.css
-                                isRequestingEntry = entryPath.indexOf(pureSourcePath) > -1;
+                                isRequestingEntry = sysPath.normalize(entryPath) === sysPath.normalize(pureSourcePath)
 
                                 if (isRequestingEntry) {
                                     nextConfig.entry = {
