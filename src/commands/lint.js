@@ -5,6 +5,7 @@ const async = require('async');
 const child_process = require('child_process');
 
 exports.usage = '代码质量检测';
+exports.abbr = 'l';
 
 exports.setOptions = (optimist) => {
     optimist.alias('d', 'dir');

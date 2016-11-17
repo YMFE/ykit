@@ -1,6 +1,7 @@
 'use strict';
 
 exports.usage = '资源编译、打包';
+exports.abbr = 'p';
 
 exports.setOptions = (optimist) => {
     optimist.alias('l', 'lint');

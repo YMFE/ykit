@@ -6,9 +6,9 @@ const inquirer = require('inquirer');
 const Manager = require('../modules/manager.js');
 
 exports.usage = '项目初始化';
+exports.abbr = 'i';
 
 exports.setOptions = () => {};
-
 exports.run = function(options) {
     Manager.reloadRC();
 

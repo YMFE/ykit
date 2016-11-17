@@ -7,6 +7,7 @@ const request = require('request');
 const semver = require('semver');
 
 exports.usage = '重载插件';
+exports.abbr = 'r';
 
 exports.setOptions = (optimist) => {
     optimist.alias('s', 'service');
