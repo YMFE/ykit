@@ -24,9 +24,10 @@ Ykit 对于创建 Job 并没有特殊的要求，按正常项目需求创建即�
 
 <h2 style="font-weight: normal"> Build 项目 </h2>
 
-<h3 style="font-weight: normal"> Build 前检查 </h3>
+<h3 style="font-weight: normal"> 【重要】Build 前检查 </h3>
 
-确保 pom.xml 里面的`artifactId`字段，已经从默认的`******`改为项目名称，并且当前分支不落后于 master。
+1. 确保 pom.xml 里面的`artifactId`字段，已经从默认的`******`改为项目名称，并且当前分支不落后于 master。
+2. 确保项目中 ykit.{type}.js 语法使用 es5，因为 Build 机器上的 node 版本为 0.12，>es5 的语法会在编译过程中报错。
 
 <h3 style="font-weight: normal"> 关于 node_modules </h3>
 

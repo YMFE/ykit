@@ -161,9 +161,12 @@
 <p><strong>注意：Job 创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加 Job 的 devqa 权限</a>才能在 Jenkins 中 Build.</strong></p>
 <h2 style="font-weight: normal"> Build 项目 </h2>
 
-<h3 style="font-weight: normal"> Build 前检查 </h3>
+<h3 style="font-weight: normal"> 【重要】Build 前检查 </h3>
 
-<p>确保 pom.xml 里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于 master。</p>
+<ol>
+<li>确保 pom.xml 里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于 master。</li>
+<li>确保项目中 ykit.{type}.js 语法使用 es5，因为 Build 机器上的 node 版本为 0.12，&gt;es5 的语法会在编译过程中报错。</li>
+</ol>
 <h3 style="font-weight: normal"> 关于 node_modules </h3>
 
 <ol>
