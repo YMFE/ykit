@@ -73,14 +73,14 @@ exports.run = (options) => {
             const dateFormat = 'YY.MM.DD HH:mm:ss';
             const status = (function () {
                 switch (true) {
-                case 500 <= res.statusCode:
-                    return '\x1b[31m';
-                case 400 <= res.statusCode:
-                    return '\x1b[33m';
-                case 300 <= res.statusCode:
-                    return '\x1b[36m';
-                case 200 <= res.statusCode:
-                    return '\x1b[32m';
+                    case 500 <= res.statusCode:
+                        return '\x1b[31m';
+                    case 400 <= res.statusCode:
+                        return '\x1b[33m';
+                    case 300 <= res.statusCode:
+                        return '\x1b[36m';
+                    case 200 <= res.statusCode:
+                        return '\x1b[32m';
                 }
             })();
 
@@ -166,6 +166,7 @@ exports.run = (options) => {
                     if (project.check()) {
                         compiler = project.getServerCompiler(function (config) {
                             let nextConfig = extend({}, config);
+                            nextConfig.entry = {};
 
                             // 将webpack entry设置为当前请求的资源
                             Object.keys(config.entry).map((entryKey) => {
@@ -201,7 +202,7 @@ exports.run = (options) => {
 
                         // compiler complete
                         if (!middlewareCache[cacheId]) {
-                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, {quiet: true});
+                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
                             middleware(req, res, next);
                         } else {
                             next();
