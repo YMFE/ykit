@@ -185,8 +185,57 @@
 <h2 style="font-weight: normal"> 自定义插件 </h2>
 
 <p>自定义插件设计的初衷是<strong>让开发团队针对自身整合一套开发环境</strong>，在其中可以添加/修改编译规则以及编译插件，加入更多开发工具，添加自定义命令，设计团队 lint 规则等等。</p>
-<p>自定义插件示例：<a href="http://gitlab.corp.qunar.com/mfe/ykit-config-xta">ykit-config-xta</a>。</p>
-<p><strong>更多有关开发自定义插件的文档在编写中...</strong></p>
+<p>自定义插件示例：<a href="http://gitlab.corp.qunar.com/mfe/ykit-config-qunar">ykit-config-qunar</a>。</p>
+<h2 style="font-weight: normal"> 自定义插件的编写 </h2>
+
+<p><strong>注意：为了使 build 机器（node 0.12）可以正常编译，插件内部必须使用 es5 语法。</strong></p>
+<p>插件主要有三大功能：更改编译中间过程、添加编译回调、自定义命令。</p>
+<h3 style="font-weight: normal"> 更改编译中间过程 </h3>
+
+<p>编译过程是一个不断更改 webapck 的过程，遵循 ykit基础配置 =&gt; 插件配置 =&gt; 业务配置 的流程。</p>
+<p>插件中可以从 <code>this.config</code> 获取到当前 webpack 配置，并对其进行修改。
+比如为某种后缀文件添加/修改 loader，下面例子修改了 scss 的 loader：</p>
+<pre><code>loaders: config.module.loaders.map(function(loader) {
+    // 匹配到之前的并替换
+    if(loader.test.test(&#39;.scss&#39;)){
+        return {
+            test: /\.(sass|scss)$/,
+            loader: options.ExtractTextPlugin.extract(
+                require.resolve(&#39;style-loader&#39;),
+
+                // 将 loader 替换为自己的
+                require.resolve(&#39;css-loader&#39;)
+                    + &#39;?sourceMap!&#39;
+                    + require.resolve(&#39;@qnpm/ykit-config-qunar/loaders/sass.js&#39;) + &#39;?sourceMap&#39;
+            )
+        }
+    }
+    return loader
+})
+</code></pre><h3 style="font-weight: normal"> 添加编译回调 </h3>
+
+<p>编译回调是在整体编译结束后调用的方法。通过 <code>this.packCallbacks</code> 添加，如：</p>
+<pre><code>// opt 是 pack 命令后面跟的参数，stats 是编译结束后的结果数据，以下代码输出了每个打包资源的名字。
+this.packCallbacks.push(function(opt, stats) {
+    if (opt.m || opt.min) {
+        var statsInfo = stats.toJson({
+            errorDetails: false
+        })
+
+        statsInfo.assets.map(function(asset) {
+            var name = asset.name;
+            console.log(asset.name)
+        });
+    }
+})
+</code></pre><h3 style="font-weight: normal"> 添加自定义命令 </h3>
+
+<p>自定义命令使得在当前项目目录下可以执行一段 node 脚本。通过 <code>this.commands</code> 添加，如：</p>
+<pre><code>this.commands.push({
+    name: &#39;my_command&#39;,
+    module: require(&#39;./commands/my_command.js&#39;)
+})
+</code></pre><p>添加过后，在每个安装了该插件的项目中，就可以执行 ykit my_command 命令了。</p>
 
               </div>
           </div>
