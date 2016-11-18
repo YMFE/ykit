@@ -5,6 +5,7 @@
 ### Bug Fixes
 
 * **pack:** 去掉重复的packCallback调用 ([923dbc1](https://gitlab.corp.qunar.com/mfe/ykit/commit/923dbc1))
+* 修复找不到从入口引用的 css ([9855caf](https://gitlab.corp.qunar.com/mfe/ykit/commit/9855caf))
 
 
 
