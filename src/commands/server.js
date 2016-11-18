@@ -72,7 +72,7 @@ exports.run = (options) => {
 
         function parse(req, res, format) {
             const dateFormat = 'YY.MM.DD HH:mm:ss';
-            /*eslint-disable */
+            /* eslint-disable */
             const status = (function () {
                 switch (true) {
                     case 500 <= res.statusCode:
@@ -85,7 +85,7 @@ exports.run = (options) => {
                         return '\x1b[32m';
                 }
             })();
-            /*eslint-disable */
+            /* eslint-enable */
 
             let contentLength = res._contentLength || '';
             if (contentLength) {
