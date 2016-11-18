@@ -132,7 +132,6 @@ exports.run = (options) => {
                 next();
             }
         } catch (e) {
-            error(e.stack);
             next();
         }
     });
