@@ -63,39 +63,17 @@ DashboardPlugin.prototype.apply = function(compiler) {
 
                     const dateFormat = 'YY.MM.DD HH:mm:ss';
                     if (stats.hasErrors()) {
-                        process.stdout && process.stdout.write('\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
-                        error('Compile Failed.');
-                    } else {
-                        // process.stdout && process.stdout.write('\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
-                        // success('Compile Succeed.');
+                        spinner.text = '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m' + ' Compile Failed.';
+                        spinner.fail();
+                        spinner.text = '';
                     }
 
-                    // self.logText.log(formatOutput(stats));
-                    // self.moduleTable.setData(formatModules(stats));
-                    // self.assetTable.setData(formatAssets(stats));
                     if(formatOutput(stats)) {
                         console.log(formatOutput(stats)); // eslint-disable-line
                     }
-                    // console.log(formatModules(stats));
-                    // console.log(formatAssets(stats));
 
                     break;
                 }
-                // case 'log':
-                //     {
-                //         self.logText.log(data.value);
-                //         break;
-                //     }
-                // case 'error':
-                //     {
-                //         self.logText.log("{red-fg}" + data.value + "{/}");
-                //         break;
-                //     }
-                // case 'clear':
-                //     {
-                //         self.logText.setContent('');
-                //         break;
-                //     }
             }
         });
     };

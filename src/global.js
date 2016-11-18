@@ -2,7 +2,7 @@
 
 require('colors');
 
-global.spinner = require('ora')('Loading unicorns');
+global.spinner = require('ora')();
 global.fs = require('fs');
 global.sysPath = require('path');
 global.async = require('async');

@@ -9,8 +9,7 @@ let connect = require('connect'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
     child_process = require('child_process'),
-    requireg = require('requireg'),
-    webpackDevMiddleware = require('webpack-dev-middleware');
+    requireg = require('requireg');
 
 let Manager = require('../modules/manager.js');
 let UtilFs = require('../utils/fs.js');
@@ -40,8 +39,7 @@ exports.run = (options) => {
         isCompilingAll = options.a || options.all,
         port = options.p || options.port || 80;
 
-    let isWatcherRunning = false,
-        middlewareCache = {},
+    let middlewareCache = {},
         promiseCache = {},
         watchCacheNames = {};
 
@@ -64,10 +62,11 @@ exports.run = (options) => {
             res.end = end;
             res.end(chunk, encoding);
             const format = '%date %status %method %url (%route%contentLength%time)';
-            const message = parse(req, res, format);
+            const parseResult = parse(req, res, format);
             return process.nextTick(() => {
-                spinner.text = message;
-                return spinner.succeed();
+                spinner.text = parseResult.message;
+                parseResult.status >= 400 ? spinner.fail() : spinner.succeed();
+                spinner.text = '';
             });
         };
 
@@ -102,7 +101,11 @@ exports.run = (options) => {
             format = format.replace(/%route/g, '\x1b[90m' + (req.route ? req.route.path + ' ' : '\x1b[31m') + '\x1b[0m');
             format = format.replace(/%contentLength/g, '\x1b[90m' + contentLength + '\x1b[31m' + '\x1b[0m');
             format = format.replace(/%(date|time)/g, '\x1b[90m' + (new Date - req._startTime) + 'ms\x1b[0m');
-            return format;
+
+            return {
+                message: format,
+                status: res.statusCode
+            };
         }
 
         return next();
@@ -148,18 +151,16 @@ exports.run = (options) => {
 
         // 处理prd资源
         if (keys[2] === 'prd') {
-            const requestUrl = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
+            // 去掉 query & 版本号
+            const requestUrl = keys.slice(3).join('/').replace(/\?[\w=&]+$/, '').replace('.map', '');
+
             // 只编译所请求的资源
             if (!isCompilingAll) {
-                // 去掉版本号和打头的"/"
-                let pureSourcePath = requestUrl.replace(/@[\d\w]+(?=\.\w+$)/, '');
-                pureSourcePath = pureSourcePath[0] === '/' ? pureSourcePath.slice(1) : pureSourcePath;
 
-                // 去掉url query
-                pureSourcePath = pureSourcePath.replace(/\?[\w=&]+$/, '');
+                let requestUrlNoVer = requestUrl.replace(/@[\d\w]+(?=\.\w+$)/, '');
 
-                // 从编译cache中取，map文件不必生成重复middleware
-                const cacheId = sysPath.join(projectName, pureSourcePath.replace('.map', ''));
+                // 从编译cache中取，map文件不必生成重复middleware TODO
+                const cacheId = sysPath.join(projectName, requestUrlNoVer);
                 let middleware = middlewareCache[cacheId];
 
                 if (!middleware) {
@@ -168,10 +169,11 @@ exports.run = (options) => {
                     if (project.check()) {
                         compiler = project.getServerCompiler(function (config) {
                             let nextConfig = extend({}, config);
-                            // entry应该是个空对象, 这样如果没有找到请求对应的entry, 就不会编译全部入口
+
+                            // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
                             nextConfig.entry = {};
 
-                            // 将webpack entry设置为当前请求的资源
+                            // 将 webpack entry 设置为当前请求的资源
                             Object.keys(config.entry).map((entryKey) => {
                                 const entryItem = config.entry[entryKey];
 
@@ -184,15 +186,22 @@ exports.run = (options) => {
                                     entryPath = entryItem;
                                 }
 
+                                // 将入口的 .scss/.less 后缀替换为.css
                                 const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'));
-                                entryPath = entryPath.replace(cssReg, '.css'); // 将入口的.scss/.less后缀替换为.css
+                                entryPath = entryPath.replace(cssReg, '.css');
 
-                                // 如果是 ykit 处理过的样式文件
+                                // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css.js => main/index.css)
                                 if(entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
                                     entryPath = entryPath.split('.ykit_cache/')[1].replace('.css.js', '.css');
                                 }
 
-                                isRequestingEntry = sysPath.normalize(entryPath) === sysPath.normalize(pureSourcePath);
+                                // 判断所请求的资源是否在入口配置中
+                                if(sysPath.normalize(entryPath) === sysPath.normalize(requestUrl)) {
+                                    isRequestingEntry = true;
+                                } else if(sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer)) {
+                                    req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                                    isRequestingEntry = true;
+                                }
 
                                 if (isRequestingEntry) {
                                     nextConfig.entry = {
@@ -207,35 +216,33 @@ exports.run = (options) => {
                             return nextConfig;
                         });
 
-                        isWatcherRunning = false;
-
                         compiler.watch({}, (err) => {
                             if(err) {
                                 error(err);
                             } else {
+                                middlewareCache[cacheId] = req.url;
                                 next();
                             }
                         });
 
-                        // if (!middlewareCache[cacheId]) {
-                        //     middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
-                        //     middleware(req, res, next);
-                        // } else {
-                        //     next();
-                        // }
-
                         // 检测config文件变化
-                        // watchConfig(project, middleware, cacheId);
+                        watchConfig(project, middleware, cacheId);
                     } else {
                         next();
                     }
                 } else {
-                    middleware(req, res, next);
+                    req.url = middleware;
+                    setTimeout(() => {
+                        next();
+                    }, 300);
                 }
             } else { // 一次编译全部资源
                 let middleware = middlewareCache[projectName],
                     compilerPromise = promiseCache[projectName],
                     project = Manager.getProject(projectCwd, { cache: false });
+
+                // 统一去掉版本号
+                req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
 
                 // 如果entry发生变化，则需要进行重新编译
                 const nextEntry = extend({}, project.config._config.entry);
@@ -266,22 +273,23 @@ exports.run = (options) => {
                     promiseCache[projectName].entry = extend({}, nextEntry);
 
                     if (project.check()) {
-                        compiler = project.getServerCompiler(function (config) {
+                        compiler = project.getServerCompiler((config) => {
                             config.plugins.push(require('../plugins/progressBarPlugin.js'));
+                            config.plugins.push(require('../plugins/compileInfoPlugin.js'));
                             return config;
                         });
 
-                        // compiler complete
-                        if (!middlewareCache[projectName]) {
-                            middleware = middlewareCache[projectName] = webpackDevMiddleware(compiler, { quiet: true });
-
-                            // 输出server运行中 error/warning 信息
+                        compiler.watch({}, (err) => {
                             creatingCompiler = false;
-                            middleware(req, res, next);
-                            resolve(middleware);
-                        } else {
-                            next();
-                        }
+
+                            if(err) {
+                                error(err);
+                            } else {
+                                middlewareCache[projectName] = projectName;
+                                resolve();
+                                next();
+                            }
+                        });
 
                         // 检测config文件变化
                         watchConfig(project, middleware, projectName);
@@ -290,8 +298,8 @@ exports.run = (options) => {
                     }
                 } else {
                     if (compilerPromise) {
-                        compilerPromise.then((middleware) => {
-                            middleware(req, res, next);
+                        compilerPromise.then(() => {
+                            next();
                         });
                     } else {
                         next();
@@ -362,12 +370,7 @@ exports.run = (options) => {
     function exitHandler() {
         // cleanup
         proxyProcess && proxyProcess.kill('SIGINT');
-
-        if (isWatcherRunning) {
-            process.kill(process.pid, 'SIGKILL');
-        } else {
-            process.exit(0);
-        }
+        process.exit(0);
     }
 
     // 监测配置文件变化

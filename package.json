@@ -46,7 +46,6 @@
     "style-loader": "^0.13.1",
     "through2": "^2.0.1",
     "webpack": "^1.13.1",
-    "webpack-dev-middleware": "^1.6.1",
     "webpack-md5-hash": "0.0.5"
   },
   "repository": {
