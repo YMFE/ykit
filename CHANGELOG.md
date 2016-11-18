@@ -1,5 +1,21 @@
+<a name="0.1.7-rc0"></a>
+## [0.1.7-rc0](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...v0.1.7-rc0) (2016-11-18)
+
+
+### Bug Fixes
+
+* 修复设置 entry 有语法问题时二次报错 ([d983709](https://gitlab.corp.qunar.com/mfe/ykit/commit/d983709))
+
+
+### Features
+
+* **server:** 采用新的 compile & watch 机制 ([09e1697](https://gitlab.corp.qunar.com/mfe/ykit/commit/09e1697))
+* **server:** 采用新的 logger 风格 ([4b4fbce](https://gitlab.corp.qunar.com/mfe/ykit/commit/4b4fbce))
+
+
+
 <a name="0.1.6"></a>
-## [0.1.6](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc5...v0.1.6) (2016-11-18)
+## [0.1.6](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc5...0.1.6) (2016-11-18)
 
 
 
