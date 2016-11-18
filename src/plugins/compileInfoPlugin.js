@@ -66,14 +66,16 @@ DashboardPlugin.prototype.apply = function(compiler) {
                         process.stdout && process.stdout.write('\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
                         error('Compile Failed.');
                     } else {
-                        process.stdout && process.stdout.write('\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
-                        success('Compile Succeed.');
+                        // process.stdout && process.stdout.write('\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
+                        // success('Compile Succeed.');
                     }
 
                     // self.logText.log(formatOutput(stats));
                     // self.moduleTable.setData(formatModules(stats));
                     // self.assetTable.setData(formatAssets(stats));
-                    console.log(formatOutput(stats)); // eslint-disable-line
+                    if(formatOutput(stats)) {
+                        console.log(formatOutput(stats)); // eslint-disable-line
+                    }
                     // console.log(formatModules(stats));
                     // console.log(formatAssets(stats));
 

@@ -66,7 +66,8 @@ exports.run = (options) => {
             const format = '%date %status %method %url (%route%contentLength%time)';
             const message = parse(req, res, format);
             return process.nextTick(() => {
-                return info(message);
+                spinner.text = message;
+                return spinner.succeed();
             });
         };
 
@@ -148,12 +149,11 @@ exports.run = (options) => {
 
         // 处理prd资源
         if (keys[2] === 'prd') {
-            req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
-
+            const requestUrl = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
             // 只编译所请求的资源
             if (!isCompilingAll) {
                 // 去掉版本号和打头的"/"
-                let pureSourcePath = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                let pureSourcePath = requestUrl.replace(/@[\d\w]+(?=\.\w+$)/, '');
                 pureSourcePath = pureSourcePath[0] === '/' ? pureSourcePath.slice(1) : pureSourcePath;
 
                 // 去掉url query
@@ -210,16 +210,23 @@ exports.run = (options) => {
 
                         isWatcherRunning = false;
 
-                        // compiler complete
-                        if (!middlewareCache[cacheId]) {
-                            middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
-                            middleware(req, res, next);
-                        } else {
-                            next();
-                        }
+                        compiler.watch({}, (err) => {
+                            if(err) {
+                                error(err);
+                            } else {
+                                next();
+                            }
+                        });
+
+                        // if (!middlewareCache[cacheId]) {
+                        //     middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler, { quiet: true });
+                        //     middleware(req, res, next);
+                        // } else {
+                        //     next();
+                        // }
 
                         // 检测config文件变化
-                        watchConfig(project, middleware, cacheId);
+                        // watchConfig(project, middleware, cacheId);
                     } else {
                         next();
                     }

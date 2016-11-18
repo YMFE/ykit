@@ -1,14 +1,17 @@
-var webpack = require('webpack');
-var colors = require('colors/safe');
+const webpack = require('webpack');
 
 module.exports = new ProgressBarPlugin();
 
 function ProgressBarPlugin() {
-    var stream = process.stderr;
-
     return new webpack.ProgressPlugin(function(percent, msg) {
-        if(stream && stream.write && msg) {
-            stream.write(colors.grey('[Bundler] ') + colors.green(msg) + '\r');
+        if(percent === 0) {
+            spinner.start();
+        } else if (msg === 'emit') {
+            spinner.stop();
+        }
+
+        if(msg) {
+            spinner.text = '[Bundler] ' + msg;
         }
     });
 }

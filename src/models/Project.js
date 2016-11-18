@@ -377,7 +377,7 @@ class Project {
     getServerCompiler(handler) {
         let config = this.config.getConfig();
         config.output = extend(true, {
-            path: '/cache',
+            path: config.output.prd.path,
             filename: '[name][ext]'
         }, config.output.local || {});
 

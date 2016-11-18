@@ -34,6 +34,7 @@
     "mkdirp": "^0.5.1",
     "moment": "^2.14.1",
     "optimist": "^0.6.1",
+    "ora": "^0.3.0",
     "replacestream": "^4.0.0",
     "request": "^2.75.0",
     "require-uncached": "^1.0.2",
