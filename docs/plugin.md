@@ -92,7 +92,6 @@ this.packCallbacks.push(function(opt, stats) {
         })
 
         statsInfo.assets.map(function(asset) {
-            var name = asset.name;
             console.log(asset.name)
         });
     }
