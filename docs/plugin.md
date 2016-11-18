@@ -54,13 +54,13 @@ $ sudo npm install @qnpm/ykit-config-{插件名} --registry http://registry.npm.
 
 <h3 style="font-weight: normal"> 更改编译中间过程 </h3>
 
-编译过程是一个不断更改 webapck 的过程，遵循 ykit基础配置 => 插件配置 => 业务配置 的流程。
+编译过程是一个不断更改 webapck 配置的过程，遵循 ykit基础配置 => 插件配置 => 业务配置 的流程。
 
 插件中可以从 `this.config` 获取到当前 webpack 配置，并对其进行修改。
 比如为某种后缀文件添加/修改 loader，下面例子修改了 scss 的 loader：
 
 ```
-loaders: config.module.loaders.map(function(loader) {
+this.config.module.loaders = this.config.module.loaders.map(function(loader) {
     // 匹配到之前的并替换
     if(loader.test.test('.scss')){
         return {

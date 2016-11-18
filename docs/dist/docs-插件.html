@@ -192,10 +192,10 @@
 <p>插件主要有三大功能：更改编译中间过程、添加编译回调、自定义命令。</p>
 <h3 style="font-weight: normal"> 更改编译中间过程 </h3>
 
-<p>编译过程是一个不断更改 webapck 的过程，遵循 ykit基础配置 =&gt; 插件配置 =&gt; 业务配置 的流程。</p>
+<p>编译过程是一个不断更改 webapck 配置的过程，遵循 ykit基础配置 =&gt; 插件配置 =&gt; 业务配置 的流程。</p>
 <p>插件中可以从 <code>this.config</code> 获取到当前 webpack 配置，并对其进行修改。
 比如为某种后缀文件添加/修改 loader，下面例子修改了 scss 的 loader：</p>
-<pre><code>loaders: config.module.loaders.map(function(loader) {
+<pre><code>this.config.module.loaders = this.config.module.loaders.map(function(loader) {
     // 匹配到之前的并替换
     if(loader.test.test(&#39;.scss&#39;)){
         return {
