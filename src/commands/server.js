@@ -187,7 +187,13 @@ exports.run = (options) => {
 
                                 const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'));
                                 entryPath = entryPath.replace(cssReg, '.css'); // 将入口的.scss/.less后缀替换为.css
-                                isRequestingEntry = sysPath.normalize(entryPath) === sysPath.normalize(pureSourcePath)
+
+                                // 如果是 ykit 处理过的样式文件
+                                if(entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
+                                    entryPath = entryPath.split('.ykit_cache/')[1].replace('.css.js', '.css');
+                                }
+
+                                isRequestingEntry = sysPath.normalize(entryPath) === sysPath.normalize(pureSourcePath);
 
                                 if (isRequestingEntry) {
                                     nextConfig.entry = {

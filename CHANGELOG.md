@@ -1,5 +1,15 @@
+<a name="0.1.6-rc5"></a>
+## [0.1.6-rc5](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc4...v0.1.6-rc5) (2016-11-18)
+
+
+### Bug Fixes
+
+* **pack:** 去掉重复的packCallback调用 ([923dbc1](https://gitlab.corp.qunar.com/mfe/ykit/commit/923dbc1))
+
+
+
 <a name="0.1.6-rc4"></a>
-## [0.1.6-rc4](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc3...v0.1.6-rc4) (2016-11-18)
+## [0.1.6-rc4](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc3...0.1.6-rc4) (2016-11-18)
 
 
 ### Bug Fixes
