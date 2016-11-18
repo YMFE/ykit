@@ -1,11 +1,32 @@
+<a name="0.1.6-rc4"></a>
+## [0.1.6-rc4](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc3...v0.1.6-rc4) (2016-11-18)
+
+
+### Bug Fixes
+
+* 修复没有错误提示 ([e6c4778](https://gitlab.corp.qunar.com/mfe/ykit/commit/e6c4778))
+
+
+### Features
+
+* 添加 command abbr ([1080784](https://gitlab.corp.qunar.com/mfe/ykit/commit/1080784))
+* 添加 command abbr ([0a63ff7](https://gitlab.corp.qunar.com/mfe/ykit/commit/0a63ff7))
+
+
+
 <a name="0.1.6-rc3"></a>
-## [0.1.6-rc3](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc2...v0.1.6-rc3) (2016-11-17)
+## [0.1.6-rc3](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc2...0.1.6-rc3) (2016-11-17)
 
 
 ### Bug Fixes
 
 * 修复打出冗余 log ([c72bb40](https://gitlab.corp.qunar.com/mfe/ykit/commit/c72bb40))
 * **server:** 修复 entry 路径匹配不准 ([7c5a2f8](https://gitlab.corp.qunar.com/mfe/ykit/commit/7c5a2f8))
+
+
+### Features
+
+* 添加 command abbr ([cf428c9](https://gitlab.corp.qunar.com/mfe/ykit/commit/cf428c9))
 
 
 

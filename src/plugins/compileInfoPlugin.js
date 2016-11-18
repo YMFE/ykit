@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const moment = require('moment');
+const formatOutput = require('./tools/formatOutput.js');
 
 function DashboardPlugin() {
 
@@ -72,8 +73,7 @@ DashboardPlugin.prototype.apply = function(compiler) {
                     // self.logText.log(formatOutput(stats));
                     // self.moduleTable.setData(formatModules(stats));
                     // self.assetTable.setData(formatAssets(stats));
-                    // console.log('stats', Object.keys(stats.compilation));
-                    // log(formatOutput(stats));
+                    console.log(formatOutput(stats)); // eslint-disable-line
                     // console.log(formatModules(stats));
                     // console.log(formatAssets(stats));
 
