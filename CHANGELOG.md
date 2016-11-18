@@ -1,5 +1,10 @@
+<a name="0.1.6"></a>
+## [0.1.6](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc5...v0.1.6) (2016-11-18)
+
+
+
 <a name="0.1.6-rc5"></a>
-## [0.1.6-rc5](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc4...v0.1.6-rc5) (2016-11-18)
+## [0.1.6-rc5](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6-rc4...0.1.6-rc5) (2016-11-18)
 
 
 ### Bug Fixes
