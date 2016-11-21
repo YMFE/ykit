@@ -2,6 +2,8 @@
 
 'use strict';
 
+require("harmonize")();
+
 var cli = require('../lib/cli'),
     cmd = process.argv[2];
 

@@ -26,6 +26,7 @@
     "extend": "^3.0.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "globby": "^5.0.0",
+    "harmonize": "^1.4.4",
     "html-loader": "^0.4.3",
     "inquirer": "^1.1.1",
     "jerryproxy": "^1.0.68",
