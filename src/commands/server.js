@@ -223,6 +223,8 @@ exports.run = (options) => {
                         if(Object.keys(nextConfig.entry).length === 0) {
                             setTimeout(() => {
                                 promiseCache[projectName] ? Promise.all(promiseCache[projectName]).then(() => {
+                                    // 统一去掉版本号
+                                    req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
                                     next();
                                 }) : null;
                             }, 1000);
