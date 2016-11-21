@@ -163,12 +163,15 @@ exports.run = (options) => {
                 const cacheId = sysPath.join(projectName, requestUrlNoVer);
                 let middleware = middlewareCache[cacheId];
 
+                // 准备生成 middleware
                 if (!middleware) {
                     let project = Manager.getProject(projectCwd, { cache: false });
 
                     if (project.check()) {
+
+                        let nextConfig;
                         compiler = project.getServerCompiler(function (config) {
-                            let nextConfig = extend({}, config);
+                            nextConfig = extend({}, config);
 
                             // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
                             nextConfig.entry = {};
@@ -216,14 +219,36 @@ exports.run = (options) => {
                             return nextConfig;
                         });
 
-                        compiler.watch({}, (err) => {
-                            if(err) {
-                                error(err);
+                        // 如果没找到该资源，在整个编译过程结束后再返回
+                        if(Object.keys(nextConfig.entry).length === 0) {
+                            setTimeout(() => {
+                                promiseCache[projectName] ? Promise.all(promiseCache[projectName]).then(() => {
+                                    next();
+                                }) : null;
+                            }, 1000);
+                        } else {
+                            // 生成该请求的 promiseCache
+                            let resolve = null;
+                            const requestPromise = new Promise((res) => {
+                                resolve = res;
+                            });
+
+                            if (!promiseCache[projectName]) {
+                                promiseCache[projectName] = [requestPromise];
                             } else {
-                                middlewareCache[cacheId] = req.url;
-                                next();
+                                promiseCache[projectName].push(requestPromise);
                             }
-                        });
+
+                            compiler.watch({}, (err) => {
+                                if(err) {
+                                    error(err);
+                                } else {
+                                    middlewareCache[cacheId] = req.url;
+                                    next();
+                                }
+                                resolve();
+                            });
+                        }
 
                         // 检测config文件变化
                         watchConfig(project, middleware, cacheId);
@@ -232,9 +257,7 @@ exports.run = (options) => {
                     }
                 } else {
                     req.url = middleware;
-                    setTimeout(() => {
-                        next();
-                    }, 300);
+                    next();
                 }
             } else { // 一次编译全部资源
                 let middleware = middlewareCache[projectName],
