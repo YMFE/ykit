@@ -1,10 +1,11 @@
-<a name="0.1.7-rc1"></a>
-## [0.1.7-rc1](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc0...v0.1.7-rc1) (2016-11-21)
+<a name="0.1.7-rc2"></a>
+## [0.1.7-rc2](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc0...v0.1.7-rc2) (2016-11-21)
 
 
 ### Bug Fixes
 
 * 修复 ora 不支持 node 0.12 ([c9d7120](https://gitlab.corp.qunar.com/mfe/ykit/commit/c9d7120))
+* 修复额外资源没有去掉版本号 ([83ff4d1](https://gitlab.corp.qunar.com/mfe/ykit/commit/83ff4d1))
 * 移除多余测试文件 ([4b3a960](https://gitlab.corp.qunar.com/mfe/ykit/commit/4b3a960))
 
 
