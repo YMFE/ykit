@@ -1,3 +1,20 @@
+<a name="0.1.7-rc1"></a>
+## [0.1.7-rc1](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc0...v0.1.7-rc1) (2016-11-21)
+
+
+### Bug Fixes
+
+* 修复 ora 不支持 node 0.12 ([c9d7120](https://gitlab.corp.qunar.com/mfe/ykit/commit/c9d7120))
+* 移除多余测试文件 ([4b3a960](https://gitlab.corp.qunar.com/mfe/ykit/commit/4b3a960))
+
+
+### Features
+
+* **server:** 延迟 404 的请求直到编译结束（使得编译副产物可以被请求到） ([9b7fb2c](https://gitlab.corp.qunar.com/mfe/ykit/commit/9b7fb2c))
+* 添加 harmonize 运行环境 ([f2aa43d](https://gitlab.corp.qunar.com/mfe/ykit/commit/f2aa43d))
+
+
+
 <a name="0.1.7-rc0"></a>
 ## [0.1.7-rc0](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...0.1.7-rc0) (2016-11-18)
 
