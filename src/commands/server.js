@@ -13,6 +13,7 @@ let connect = require('connect'),
 
 let Manager = require('../modules/manager.js');
 let UtilFs = require('../utils/fs.js');
+let UtilPath = require('../utils/path.js');
 
 exports.usage = '开发服务';
 exports.abbr = 's';
@@ -191,9 +192,10 @@ exports.run = (options) => {
 
                                 // 将入口的 .scss/.less 后缀替换为.css
                                 const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'));
-                                entryPath = entryPath.replace(cssReg, '.css');
+                                entryPath = UtilPath.normalize(entryPath.replace(cssReg, '.css'));
 
                                 // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css.js => main/index.css)
+
                                 if(entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
                                     entryPath = entryPath.split('.ykit_cache/')[1].replace('.css.js', '.css');
                                 }
