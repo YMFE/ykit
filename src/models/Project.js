@@ -11,6 +11,7 @@ let Config = require('./Config.js'),
     ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let UtilFs = require('../utils/fs.js');
+let UtilPath = require('../utils/path.js');
 
 const ENVS = {
     LOCAL: 'local',
@@ -206,7 +207,7 @@ class Project {
 
                     entryItem.forEach((cssPath) => {
                         const originCssPath = sysPath.join(config.context, cssPath);
-                        const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
+                        const requiredPath = UtilPath.normalize(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
                         fs.appendFileSync(
                             cacheFilePath,
                             'require("' + requiredPath + '");',
@@ -215,7 +216,7 @@ class Project {
                     });
                 } else {
                     const originCssPath = sysPath.join(config.context, entry);
-                    const requiredPath = this._normalizePath(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
+                    const requiredPath = UtilPath.normalize(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
                     fs.writeFileSync(
                         cacheFilePath,
                         'require("' + requiredPath + '");',
@@ -420,17 +421,6 @@ class Project {
         }).map((lintPathItem) => {
             return sysPath.resolve(context, lintPathItem);
         });
-    }
-
-    _normalizePath(str, stripTrailing) {
-        if (typeof str !== 'string') {
-            throw new TypeError('expected a string');
-        }
-        str = str.replace(/[\\\/]+/g, '/');
-        if (stripTrailing !== false) {
-            str = str.replace(/\/$/, '');
-        }
-        return str;
     }
 
     _requireUncached(module) {
