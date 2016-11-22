@@ -42,14 +42,11 @@ exports.run = function (options) {
         sourcemap: sourcemap,
         clean: clean,
         quiet: quiet
-    }, (err, stats) => {
+    }, (err) => {
         if (err) {
             if (err !== true) {
                 error(err);
             }
         }
-
-        project.packCallbacks.forEach(cb => cb(options, stats));
-        process.exit(0);
     });
 };
