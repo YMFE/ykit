@@ -162,6 +162,12 @@ class Config {
     getMiddleware() {
         return this._config.middleware;
     }
+
+    applyBeforePack(beforeCallback) {
+        if (typeof beforeCallback === 'function') {
+            this._config.beforePack = beforeCallback;
+        }
+    }
 }
 
 module.exports = Config;

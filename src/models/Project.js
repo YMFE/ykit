@@ -26,9 +26,7 @@ class Project {
         this.middlewares = [];
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
-        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], {
-            cwd: this.cwd
-        })[0] || '';
+        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
         this.extendConfig = this.configFile &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
@@ -69,6 +67,7 @@ class Project {
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
+                    applyBeforePack: this.config.applyBeforePack.bind(this.config),
                     packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
@@ -268,8 +267,13 @@ class Project {
         let config = this.config.getConfig();
         UtilFs.deleteFolderRecursive(this.cachePath);
 
-        let compilerProcess = () => {
+        if (!config.beforePack) {
+            config.beforePack = function (done) {
+                done();
+            };
+        }
 
+        let compilerProcess = () => {
             if (opt.sourcemap) {
                 config.devtool = opt.sourcemap;
             }
@@ -355,21 +359,23 @@ class Project {
             });
         };
 
-        if (opt.lint) {
-            async.series([
-                (callback) => this.lint(callback)
-            ], (err, results) => {
-                if (!err) {
-                    if (results[0] && results[1]) {
-                        compilerProcess();
+        config.beforePack(() => {
+            if (opt.lint) {
+                async.series([
+                    (callback) => this.lint(callback)
+                ], (err, results) => {
+                    if (!err) {
+                        if (results[0] && results[1]) {
+                            compilerProcess();
+                        }
+                    } else {
+                        error(err.stack);
                     }
-                } else {
-                    error(err.stack);
-                }
-            });
-        } else {
-            compilerProcess();
-        }
+                });
+            } else {
+                compilerProcess();
+            }
+        });
 
         return this;
     }
