@@ -1,5 +1,15 @@
+<a name="0.1.7-rc4"></a>
+## [0.1.7-rc4](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...v0.1.7-rc4) (2016-11-22)
+
+
+### Features
+
+* **Config:** 增加beforepack钩子 ([14f3e0d](https://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d))
+
+
+
 <a name="0.1.7-rc3"></a>
-## [0.1.7-rc3](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc2...v0.1.7-rc3) (2016-11-22)
+## [0.1.7-rc3](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc2...0.1.7-rc3) (2016-11-22)
 
 
 ### Bug Fixes
