@@ -1,5 +1,15 @@
+<a name="0.1.7-rc3"></a>
+## [0.1.7-rc3](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc2...v0.1.7-rc3) (2016-11-22)
+
+
+### Bug Fixes
+
+* 修复 windows 下入口路径匹配问题 ([21a372d](https://gitlab.corp.qunar.com/mfe/ykit/commit/21a372d))
+
+
+
 <a name="0.1.7-rc2"></a>
-## [0.1.7-rc2](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc0...v0.1.7-rc2) (2016-11-21)
+## [0.1.7-rc2](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc0...0.1.7-rc2) (2016-11-21)
 
 
 ### Bug Fixes
