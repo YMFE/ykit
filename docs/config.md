@@ -52,19 +52,25 @@ exports.config = function() {
 
 `modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 **[webpack-merge][2]**。
 
+*老版本的 ykit 项目中可能会有 setCompiler 方法，和 modifyWebpackConfig 功能是一样的*
+
 - 示例 - 添加 plugins：
 
 ```js
-modifyWebpackConfig: function(baseConfig) {
-    var webpack = require('webpack');
-    var newPlugin = new webpack.DefinePlugin({
-        "process.env": {
-            NODE_ENV: JSON.stringify("production")
-        }
-    })
+var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        var newPlugin = new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
+            }
+        })
 
-    baseConfig.plugins.push(newPlugin);
-    return baseConfig;
+        baseConfig.plugins.push(newPlugin);
+        return baseConfig;
+    }
 }
 ```
 
@@ -96,21 +102,39 @@ modifyWebpackConfig: function(baseConfig) {
 - env: 当前 ykit 的执行环境，分为 `local / dev / prd`，示例：
 
 ```js
-modifyWebpackConfig: function(baseConfig) {
-    switch (this.env) {
-        case 'local':
-            // 修改本地环境配置，在 ykit server 中访问项目会生效
-            break;
-        case 'dev':
-            // 修改开发环境配置，在 ykit pack 时生效
-            break;
-        case 'prd':
-            // 修改生产环境配置，在 ykit pack -m 时生效
-            break;
-        default:
-    }
+var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        switch (self.env) {
+            case 'local':
+                // 修改本地环境配置，在 ykit server 中访问项目会生效
+                break;
+            case 'dev':
+                // 修改开发环境配置，在 ykit pack 时生效
+                break;
+            case 'prd':
+                // 修改生产环境配置，在 ykit pack -m 时生效
+                break;
+            default:
+        }
 
-    return baseConfig;
+        return baseConfig;
+    }
+}
+```
+
+- webpack: 当前 ykit 内部 webapck，示例：
+
+```js
+var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        // 调用 webpack 内部插件等
+        return baseConfig;
+    }
 }
 ```
 

@@ -196,19 +196,24 @@
 <h3 style="font-weight: normal"> modifyWebpackConfig </h3>
 
 <p><code>modifyWebpackConfig</code>是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 <strong><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></strong>。</p>
+<p><em>老版本的 ykit 项目中可能会有 setCompiler 方法，和 modifyWebpackConfig 功能是一样的</em></p>
 <ul>
 <li>示例 - 添加 plugins：</li>
 </ul>
-<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
-    var webpack = require(&#39;webpack&#39;);
-    var newPlugin = new webpack.DefinePlugin({
-        &quot;process.env&quot;: {
-            NODE_ENV: JSON.stringify(&quot;production&quot;)
-        }
-    })
+<pre><code class="lang-js">var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        var newPlugin = new webpack.DefinePlugin({
+            &quot;process.env&quot;: {
+                NODE_ENV: JSON.stringify(&quot;production&quot;)
+            }
+        })
 
-    baseConfig.plugins.push(newPlugin);
-    return baseConfig;
+        baseConfig.plugins.push(newPlugin);
+        return baseConfig;
+    }
 }
 </code></pre>
 <ul>
@@ -237,21 +242,38 @@
 <ul>
 <li>env: 当前 ykit 的执行环境，分为 <code>local / dev / prd</code>，示例：</li>
 </ul>
-<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
-    switch (this.env) {
-        case &#39;local&#39;:
-            // 修改本地环境配置，在 ykit server 中访问项目会生效
-            break;
-        case &#39;dev&#39;:
-            // 修改开发环境配置，在 ykit pack 时生效
-            break;
-        case &#39;prd&#39;:
-            // 修改生产环境配置，在 ykit pack -m 时生效
-            break;
-        default:
-    }
+<pre><code class="lang-js">var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        switch (self.env) {
+            case &#39;local&#39;:
+                // 修改本地环境配置，在 ykit server 中访问项目会生效
+                break;
+            case &#39;dev&#39;:
+                // 修改开发环境配置，在 ykit pack 时生效
+                break;
+            case &#39;prd&#39;:
+                // 修改生产环境配置，在 ykit pack -m 时生效
+                break;
+            default:
+        }
 
-    return baseConfig;
+        return baseConfig;
+    }
+}
+</code></pre>
+<ul>
+<li>webpack: 当前 ykit 内部 webapck，示例：</li>
+</ul>
+<pre><code class="lang-js">var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        // 调用 webpack 内部插件等
+        return baseConfig;
+    }
 }
 </code></pre>
 

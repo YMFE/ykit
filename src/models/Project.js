@@ -72,7 +72,8 @@ class Project {
                     packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
-                    env: this._getCurrentEnv() // 默认为本地环境,
+                    env: this._getCurrentEnv(), // 默认为本地环境,
+                    webpack: webpack
                 },
                 globalConfigs = Manager.readRC().configs || [];
 
@@ -118,8 +119,6 @@ class Project {
                         if (module && module.config) {
                             module.config.call(userConfig, options, this.cwd);
                         }
-                    } else if ((Manager.reloadRC().configs || []).some((item) => item.name == moduleName)) {
-                        return this.readConfig(options);
                     } else {
                         if (this.extendConfig) {
                             warn('没有找到 ykit-config-' + this.extendConfig + ' 配置模块！');
