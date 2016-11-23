@@ -224,11 +224,16 @@ exports.run = (options) => {
                         // 如果没找到该资源，在整个编译过程结束后再返回
                         if(Object.keys(nextConfig.entry).length === 0) {
                             setTimeout(() => {
-                                promiseCache[projectName] ? Promise.all(promiseCache[projectName]).then(() => {
-                                    // 统一去掉版本号
-                                    req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                                if (promiseCache[projectName]) {
+                                    Promise.all(promiseCache[projectName]).then(function () {
+                                        // 统一去掉版本号
+                                        req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                                        next();
+                                    });
+                                } else {
+                                    res.statusCode = 404;
                                     next();
-                                }) : null;
+                                }
                             }, 1000);
                         } else {
                             // 生成该请求的 promiseCache

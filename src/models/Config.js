@@ -3,22 +3,36 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
 
+const normalize = require('../utils/path').normalize;
+
 class Config {
     constructor(cwd) {
+        const dir = normalize(cwd).split('/');
+        const projectDir = '/' + dir[dir.length - 1] + '/';
+
         this._config = {
             cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
             entryGroup: {},
             output: {
-                local: {},
+                local: {
+                    path: './prd',
+                    filename: '[name][ext]',
+                    chunkFilename: '[id].chunk.js',
+                    publicPath: projectDir + 'prd/'
+                },
                 dev: {
                     path: './dev',
-                    filename: '[name][ext]'
+                    filename: '[name][ext]',
+                    chunkFilename: '[id].chunk@dev.js',
+                    publicPath: projectDir + 'dev/'
                 },
                 prd: {
                     path: './prd',
-                    filename: '[name].min[ext]'
+                    filename: '[name].min[ext]',
+                    chunkFilename: '[id].chunk@[chunkhash].js',
+                    publicPath: projectDir + 'prd/'
                 }
             },
             module: {
