@@ -119,8 +119,6 @@ class Project {
                         if (module && module.config) {
                             module.config.call(userConfig, options, this.cwd);
                         }
-                    } else if ((Manager.reloadRC().configs || []).some((item) => item.name == moduleName)) {
-                        return this.readConfig(options);
                     } else {
                         if (this.extendConfig) {
                             warn('没有找到 ykit-config-' + this.extendConfig + ' 配置模块！');
