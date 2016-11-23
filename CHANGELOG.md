@@ -1,18 +1,36 @@
 <a name="0.1.7-rc6"></a>
-## [0.1.7-rc6](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...v0.1.7-rc6) (2016-11-23)
+## [0.1.7-rc6](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc5...0.1.7-rc6) (2016-11-23)
 
 
 ### Bug Fixes
 
 * 修复 map 文件返回错误 ([1f0f055](http://gitlab.corp.qunar.com/mfe/ykit/commit/1f0f055))
 * 修复找不到配置模块会重置 .ykitrc ([c1a03d5](http://gitlab.corp.qunar.com/mfe/ykit/commit/c1a03d5))
+
+
+
+<a name="0.1.7-rc5"></a>
+## [0.1.7-rc5](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc4...0.1.7-rc5) (2016-11-23)
+
+
+### Bug Fixes
+
 * 去掉 pack 二次回调 ([d3e1c1c](http://gitlab.corp.qunar.com/mfe/ykit/commit/d3e1c1c))
 
 
 ### Features
 
-* **Config:** 增加beforepack钩子 ([14f3e0d](http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d))
 * 添加 hacky 方式获取内部 webpack ([ed44919](http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919))
+
+
+
+<a name="0.1.7-rc4"></a>
+## [0.1.7-rc4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...0.1.7-rc4) (2016-11-22)
+
+
+### Features
+
+* **Config:** 增加beforepack钩子 ([14f3e0d](http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d))
 
 
 
