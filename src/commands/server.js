@@ -160,12 +160,12 @@ exports.run = (options) => {
 
                 let requestUrlNoVer = requestUrl.replace(/@[\d\w]+(?=\.\w+$)/, '');
 
-                // 从编译cache中取，map文件不必生成重复middleware TODO
+                // 从编译 cache 中取，map 文件不必生成重复 compiler TODO
                 const cacheId = sysPath.join(projectName, requestUrlNoVer);
-                let middleware = middlewareCache[cacheId];
+                let sourceCache = middlewareCache[cacheId];
 
-                // 准备生成 middleware
-                if (!middleware) {
+                // 准备生成 sourceCache
+                if (!sourceCache) {
                     let project = Manager.getProject(projectCwd, { cache: false });
 
                     if (project.check()) {
@@ -255,12 +255,12 @@ exports.run = (options) => {
                         }
 
                         // 检测config文件变化
-                        watchConfig(project, middleware, cacheId);
+                        watchConfig(project, cacheId);
                     } else {
                         next();
                     }
                 } else {
-                    req.url = middleware;
+                    req.url = sysPath.extname(req.url) !== '.map' ? sourceCache : req.url;
                     next();
                 }
             } else { // 一次编译全部资源
@@ -319,7 +319,7 @@ exports.run = (options) => {
                         });
 
                         // 检测config文件变化
-                        watchConfig(project, middleware, projectName);
+                        watchConfig(project, projectName);
                     } else {
                         next();
                     }
@@ -401,7 +401,7 @@ exports.run = (options) => {
     }
 
     // 监测配置文件变化
-    function watchConfig(project, middleware, cacheName) {
+    function watchConfig(project, cacheName) {
         const cwdConfigPath = sysPath.resolve(project.config._config.cwd, project.configFile);
 
         if (watchCacheNames[cwdConfigPath]) {

@@ -1,6 +1,6 @@
 {
   "name": "@qnpm/ykit",
-  "version": "0.1.7-rc5",
+  "version": "0.1.7-rc6",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
@@ -52,8 +52,8 @@
     "webpack-md5-hash": "0.0.5"
   },
   "repository": {
-    "type": "git",
-    "url": "git@gitlab.corp.qunar.com:mfe/ykit.git"
+    "type": "http",
+    "url": "http://gitlab.corp.qunar.com/mfe/ykit.git"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",

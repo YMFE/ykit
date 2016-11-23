@@ -8,66 +8,66 @@
   <meta name="author" content="author of the site">
   <title>YKit 版本记录</title>
   <link rel="stylesheet" href="source/main.css"/>
-
+  
 </head>
 <body>
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
-
+            
             <a href="http://ued.qunar.com/ymfe/" class="navbar-brand">YMFE</a>
-
+            
             <button class="ydocIcon navbar-toggle">&#xf020;</button>
             <nav class="ydoc-nav">
               <ul class="navbar-left">
                 
-
+                    
                     <li class="">
-
+                        
                         <a href="index.html">简介</a>
-
+                        
                     </li>
-
+                    
                     <li class="">
-
+                        
                         <a href="init.html">起步</a>
-
+                        
                     </li>
-
+                    
                     <li class="">
-
+                        
                         <a href="migrate.html">项目迁移</a>
-
+                        
                     </li>
-
+                    
                     <li class="">
-
+                        
                         <a href="docs.html">使用手册</a>
-
+                        
                     </li>
-
+                    
                     <li class="">
-
+                        
                         <a href="dev.html">开发者</a>
-
+                        
                     </li>
-
+                    
                     <li class="active">
-
+                        
                         <a href="releases.html">版本记录</a>
-
+                        
                     </li>
-
-
+                    
+                
               </ul>
             </nav>
         </div>
     </header>
-
+    
     <!-- <header style="height:20px"></header> -->
-
+    
       <!-- Docs page layout -->
-
+      
       <div class="ydoc-banner-bg">
           <div class="ydoc-banner">
               <div class="ydoc-banner-area">
@@ -75,21 +75,29 @@
                   <p>Releases</p>
               </div>
           </div>
-
+      
 
       <div class="ydoc-container">
-
-
+        
+          
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
-
-                  <p><a name="0.1.7-rc5"></a></p>
-<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...v0.1.7-rc5">0.1.7-rc5</a> (2016-11-23)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
+                  
+                  <p><a name="0.1.7-rc6"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc5...0.1.7-rc6">0.1.7-rc6</a> (2016-11-23)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
+<li>修复 map 文件返回错误 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/1f0f055">1f0f055</a>)</li>
+<li>修复找不到配置模块会重置 .ykitrc (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/c1a03d5">c1a03d5</a>)</li>
+</ul>
+<p><a name="0.1.7-rc5"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc4...0.1.7-rc5">0.1.7-rc5</a> (2016-11-23)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
 <li>去掉 pack 二次回调 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/d3e1c1c">d3e1c1c</a>)</li>
 </ul>
 <h3 id="Features">Features</h3><ul>
-<li><strong>Config:</strong> 增加beforepack钩子 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d">14f3e0d</a>)</li>
 <li>添加 hacky 方式获取内部 webpack (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919">ed44919</a>)</li>
+</ul>
+<p><a name="0.1.7-rc4"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...0.1.7-rc4">0.1.7-rc4</a> (2016-11-22)</h2><h3 id="Features">Features</h3><ul>
+<li><strong>Config:</strong> 增加beforepack钩子 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d">14f3e0d</a>)</li>
 </ul>
 <p><a name="0.1.7-rc3"></a></p>
 <h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc2...0.1.7-rc3">0.1.7-rc3</a> (2016-11-22)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
@@ -220,7 +228,7 @@
 <li><strong>lint:</strong> 根据lint结果返回不同值 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/05a17d9">05a17d9</a>)</li>
 <li><strong>logger:</strong> 编译状态log加上时间 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/b8e2630">b8e2630</a>)</li>
 <li><strong>plugin:</strong> 添加搜寻全局插件模式 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/e3554bc">e3554bc</a>)</li>
-<li><strong>server:</strong> 支持http (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/a6bac57">a6bac57</a>)</li>
+<li><strong>server:</strong> 支持https (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/a6bac57">a6bac57</a>)</li>
 <li><strong>server:</strong> 默认改为按请求资源打包，整体打包改为可选参数 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/92ecfa3">92ecfa3</a>)</li>
 </ul>
 <p><a name="0.0.4"></a></p>
@@ -314,12 +322,12 @@
 
               </article>
           </div>
-
-
+          
+        
       </div>
-
+     
      </div>
-
+     
       <footer class="footer">
         <div class="copyright">
             &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
@@ -328,10 +336,10 @@
     </div>
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
+    
+    
 
-
-
-
+    
 
 </body>
 </html>

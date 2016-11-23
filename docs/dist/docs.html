@@ -241,21 +241,25 @@ return {
 <ul>
 <li>env: 当前 ykit 的执行环境，分为 <code>local / dev / prd</code>，示例：</li>
 </ul>
-<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
-    switch (this.env) {
-        case &#39;local&#39;:
-            // 修改本地环境配置，在 ykit server 中访问项目会生效
-            break;
-        case &#39;dev&#39;:
-            // 修改开发环境配置，在 ykit pack 时生效
-            break;
-        case &#39;prd&#39;:
-            // 修改生产环境配置，在 ykit pack -m 时生效
-            break;
-        default:
-    }
+<pre><code class="lang-js">var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        switch (self.env) {
+            case &#39;local&#39;:
+                // 修改本地环境配置，在 ykit server 中访问项目会生效
+                break;
+            case &#39;dev&#39;:
+                // 修改开发环境配置，在 ykit pack 时生效
+                break;
+            case &#39;prd&#39;:
+                // 修改生产环境配置，在 ykit pack -m 时生效
+                break;
+            default:
+        }
 
-    return baseConfig;
+        return baseConfig;
+    }
 }
 </code></pre>
 <ul>
@@ -265,7 +269,7 @@ return {
 return {
     ...,
     modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack
+        var webpack = self.webpack;
         // 调用 webpack 内部插件等
         return baseConfig;
     }
