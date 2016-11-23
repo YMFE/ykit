@@ -1,10 +1,16 @@
-<a name="0.1.7-rc4"></a>
-## [0.1.7-rc4](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...v0.1.7-rc4) (2016-11-22)
+<a name="0.1.7-rc5"></a>
+## [0.1.7-rc5](https://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...v0.1.7-rc5) (2016-11-23)
+
+
+### Bug Fixes
+
+* 去掉 pack 二次回调 ([d3e1c1c](https://gitlab.corp.qunar.com/mfe/ykit/commit/d3e1c1c))
 
 
 ### Features
 
 * **Config:** 增加beforepack钩子 ([14f3e0d](https://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d))
+* 添加 hacky 方式获取内部 webpack ([ed44919](https://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919))
 
 
 

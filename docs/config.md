@@ -55,16 +55,20 @@ exports.config = function() {
 - 示例 - 添加 plugins：
 
 ```js
-modifyWebpackConfig: function(baseConfig) {
-    var webpack = require('webpack');
-    var newPlugin = new webpack.DefinePlugin({
-        "process.env": {
-            NODE_ENV: JSON.stringify("production")
-        }
-    })
+var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        var newPlugin = new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
+            }
+        })
 
-    baseConfig.plugins.push(newPlugin);
-    return baseConfig;
+        baseConfig.plugins.push(newPlugin);
+        return baseConfig;
+    }
 }
 ```
 
@@ -111,6 +115,20 @@ modifyWebpackConfig: function(baseConfig) {
     }
 
     return baseConfig;
+}
+```
+
+- webpack: 当前 ykit 内部 webapck，示例：
+
+```js
+var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        // 调用 webpack 内部插件等
+        return baseConfig;
+    }
 }
 ```
 

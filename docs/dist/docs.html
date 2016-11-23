@@ -199,16 +199,20 @@
 <ul>
 <li>示例 - 添加 plugins：</li>
 </ul>
-<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
-    var webpack = require(&#39;webpack&#39;);
-    var newPlugin = new webpack.DefinePlugin({
-        &quot;process.env&quot;: {
-            NODE_ENV: JSON.stringify(&quot;production&quot;)
-        }
-    })
+<pre><code class="lang-js">var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack;
+        var newPlugin = new webpack.DefinePlugin({
+            &quot;process.env&quot;: {
+                NODE_ENV: JSON.stringify(&quot;production&quot;)
+            }
+        })
 
-    baseConfig.plugins.push(newPlugin);
-    return baseConfig;
+        baseConfig.plugins.push(newPlugin);
+        return baseConfig;
+    }
 }
 </code></pre>
 <ul>
@@ -252,6 +256,19 @@
     }
 
     return baseConfig;
+}
+</code></pre>
+<ul>
+<li>webpack: 当前 ykit 内部 webapck，示例：</li>
+</ul>
+<pre><code class="lang-js">var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        var webpack = self.webpack
+        // 调用 webpack 内部插件等
+        return baseConfig;
+    }
 }
 </code></pre>
 
