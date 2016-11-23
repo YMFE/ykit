@@ -72,7 +72,8 @@ class Project {
                     packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
-                    env: this._getCurrentEnv() // 默认为本地环境,
+                    env: this._getCurrentEnv(), // 默认为本地环境,
+                    webpack: webpack
                 },
                 globalConfigs = Manager.readRC().configs || [];
 
