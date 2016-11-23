@@ -52,6 +52,8 @@ exports.config = function() {
 
 `modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 **[webpack-merge][2]**。
 
+*老版本的 ykit 项目中可能会有 setCompiler 方法，和 modifyWebpackConfig 功能是一样的*
+
 - 示例 - 添加 plugins：
 
 ```js
