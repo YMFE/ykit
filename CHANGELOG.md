@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 
+* 修复找不到配置模块会重置 .ykitrc ([c1a03d5](https://gitlab.corp.qunar.com/mfe/ykit/commit/c1a03d5))
 * 去掉 pack 二次回调 ([d3e1c1c](https://gitlab.corp.qunar.com/mfe/ykit/commit/d3e1c1c))
 
 

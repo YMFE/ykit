@@ -100,21 +100,25 @@ modifyWebpackConfig: function(baseConfig) {
 - env: 当前 ykit 的执行环境，分为 `local / dev / prd`，示例：
 
 ```js
-modifyWebpackConfig: function(baseConfig) {
-    switch (this.env) {
-        case 'local':
-            // 修改本地环境配置，在 ykit server 中访问项目会生效
-            break;
-        case 'dev':
-            // 修改开发环境配置，在 ykit pack 时生效
-            break;
-        case 'prd':
-            // 修改生产环境配置，在 ykit pack -m 时生效
-            break;
-        default:
-    }
+var self = this;
+return {
+    ...,
+    modifyWebpackConfig: function(baseConfig) {
+        switch (self.env) {
+            case 'local':
+                // 修改本地环境配置，在 ykit server 中访问项目会生效
+                break;
+            case 'dev':
+                // 修改开发环境配置，在 ykit pack 时生效
+                break;
+            case 'prd':
+                // 修改生产环境配置，在 ykit pack -m 时生效
+                break;
+            default:
+        }
 
-    return baseConfig;
+        return baseConfig;
+    }
 }
 ```
 
