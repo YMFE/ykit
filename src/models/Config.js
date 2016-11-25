@@ -20,19 +20,19 @@ class Config {
                     path: './prd/',
                     filename: '[name][ext]',
                     chunkFilename: '[id].chunk.js',
-                    publicPath: '//' + path.join('q.qunarzz.com', projectDir, 'prd')
+                    publicPath: '//' + path.join('q.qunarzz.com', projectDir, 'prd/')
                 },
                 dev: {
                     path: './dev/',
                     filename: '[name][ext]',
                     chunkFilename: '[id].chunk@dev.js',
-                    publicPath: '//' + path.join('q.qunarzz.com', projectDir, 'dev')
+                    publicPath: '//' + path.join('q.qunarzz.com', projectDir, 'dev/')
                 },
                 prd: {
                     path: './prd/',
                     filename: '[name].min[ext]',
                     chunkFilename: '[id].chunk@[chunkhash].js',
-                    publicPath: '//' + path.join('q.qunarzz.com', projectDir, 'prd')
+                    publicPath: '//' + path.join('q.qunarzz.com', projectDir, 'prd/')
                 }
             },
             module: {
