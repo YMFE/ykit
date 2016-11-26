@@ -139,8 +139,15 @@ class Project {
                     const userConfigObj = configMethod.config.call(userConfig, options, this.cwd);
 
                     if (userConfigObj) {
+                        let exports = null;
                         if (Array.isArray(userConfigObj.export)) {
-                            userConfigObj.export = userConfigObj.export.filter((item) => {
+                            exports = userConfigObj.export;
+                        } else if (Array.isArray(userConfigObj.exports)) {
+                            exports = userConfigObj.exports;
+                        }
+
+                        if (exports) {
+                            exports = exports.filter((item) => {
                                 if (typeof item === 'object') {
                                     this.config.setGroupExports(item.name, item.export);
                                     return false;
@@ -149,7 +156,7 @@ class Project {
                                 }
                             });
                         }
-                        this.config.setExports(userConfigObj.export);
+                        this.config.setExports(exports);
                         this.config.setCompiler(userConfigObj.modifyWebpackConfig);
                         this.config.setSync(userConfigObj.sync);
                         this.setCommands(userConfigObj.command);
