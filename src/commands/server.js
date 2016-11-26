@@ -224,7 +224,7 @@ exports.run = (options) => {
                         if (Object.keys(nextConfig.entry).length === 0) {
                             // 如果是js入口没找到，那肯定是出错了，这时候应该直接next让后面报错
                             if (req.url.match(/\.js$/)) {
-                                res.writeHead(200, { 'Content-Type': 'text/html' });
+                                res.writeHead(404, { 'Content-Type': 'text/html' });
                                 res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
                             } else {
                                 setTimeout(() => {
