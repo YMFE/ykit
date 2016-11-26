@@ -156,6 +156,7 @@ class Project {
                                 }
                             });
                         }
+
                         this.config.setExports(exports);
                         this.config.setCompiler(userConfigObj.modifyWebpackConfig);
                         this.config.setSync(userConfigObj.sync);
