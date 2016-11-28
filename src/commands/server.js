@@ -195,15 +195,14 @@ exports.run = (options) => {
                                 entryPath = UtilPath.normalize(entryPath.replace(cssReg, '.css'));
 
                                 // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css.js => main/index.css)
-
-                                if(entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
+                                if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
                                     entryPath = entryPath.split('.ykit_cache/')[1].replace('.css.js', '.css');
                                 }
 
                                 // 判断所请求的资源是否在入口配置中
-                                if(sysPath.normalize(entryPath) === sysPath.normalize(requestUrl)) {
+                                if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrl)) {
                                     isRequestingEntry = true;
-                                } else if(sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer)) {
+                                } else if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer)) {
                                     req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
                                     isRequestingEntry = true;
                                 }
@@ -222,7 +221,7 @@ exports.run = (options) => {
                         });
 
                         // 如果没找到该资源，在整个编译过程结束后再返回
-                        if(Object.keys(nextConfig.entry).length === 0) {
+                        if (Object.keys(nextConfig.entry).length === 0) {
                             setTimeout(() => {
                                 if (promiseCache[projectName]) {
                                     Promise.all(promiseCache[projectName]).then(function () {
@@ -232,14 +231,16 @@ exports.run = (options) => {
                                     });
                                 } else {
                                     res.statusCode = 404;
-                                    next();
+                                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
                                 }
                             }, 1000);
                         } else {
                             // 生成该请求的 promiseCache
                             let resolve = null;
-                            const requestPromise = new Promise((res) => {
+                            let reject = null;
+                            const requestPromise = new Promise((res, rej) => {
                                 resolve = res;
+                                reject = rej;
                             });
 
                             if (!promiseCache[projectName]) {
@@ -249,8 +250,8 @@ exports.run = (options) => {
                             }
 
                             compiler.watch({}, (err) => {
-                                if(err) {
-                                    error(err);
+                                if (err) {
+                                    reject(err);
                                 } else {
                                     middlewareCache[cacheId] = req.url;
                                     next();
@@ -314,7 +315,7 @@ exports.run = (options) => {
                         compiler.watch({}, (err) => {
                             creatingCompiler = false;
 
-                            if(err) {
+                            if (err) {
                                 error(err);
                             } else {
                                 middlewareCache[projectName] = projectName;
