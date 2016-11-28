@@ -1,3 +1,14 @@
+<a name="0.1.7-rc7"></a>
+## [0.1.7-rc7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc6...v0.1.7-rc7) (2016-11-23)
+
+
+### Bug Fixes
+
+* **server:** 修改权限不足错误提示 ([e8cb6a4](http://gitlab.corp.qunar.com/mfe/ykit/commit/e8cb6a4))
+* **server:** 添加默认 chunk 配置，修改未找到资源的 404 返回 ([6dda6d1](http://gitlab.corp.qunar.com/mfe/ykit/commit/6dda6d1))
+
+
+
 <a name="0.1.7-rc6"></a>
 ## [0.1.7-rc6](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc5...0.1.7-rc6) (2016-11-23)
 
@@ -272,22 +283,6 @@
 ### Bug Fixes
 
 * **config:** 修复setCompile报错 ([ef9f345](http://gitlab.corp.qunar.com/mfe/ykit/commit/ef9f345))
-* **server:** 修复打包大文件时第一次渲染失败 ([b29d873](http://gitlab.corp.qunar.com/mfe/ykit/commit/b29d873))
-* **server:** 修复资源过大时第一次渲染失败 ([f4e9a12](http://gitlab.corp.qunar.com/mfe/ykit/commit/f4e9a12))
-
-
-### Features
-
-* **server:** 检测到config文件变化后可以重新生成compiler ([423d485](http://gitlab.corp.qunar.com/mfe/ykit/commit/423d485))
-
-
-
-<a name="0.0.2"></a>
-## [0.0.2](http://gitlab.corp.qunar.com/mfe/ykit/compare/4615fd0...0.0.2) (2016-08-11)
-
-
-### Bug Fixes
-
 * **config:** 修复设置loaders不生效 ([b904079](http://gitlab.corp.qunar.com/mfe/ykit/commit/b904079))
 * **config:** 初始context改为src ([70be3c7](http://gitlab.corp.qunar.com/mfe/ykit/commit/70be3c7))
 * **fixcss:** 修复寻找cache路径 ([d4e14ac](http://gitlab.corp.qunar.com/mfe/ykit/commit/d4e14ac))
@@ -300,7 +295,6 @@
 * **install:** proxy改为使用时提示安装 ([877896c](http://gitlab.corp.qunar.com/mfe/ykit/commit/877896c))
 * **install proxy:** 检测权限 ([52d788a](http://gitlab.corp.qunar.com/mfe/ykit/commit/52d788a))
 * **js-loader:** 优化正则 ([39c8119](http://gitlab.corp.qunar.com/mfe/ykit/commit/39c8119))
-* **lint:** remove log ([353ac74](http://gitlab.corp.qunar.com/mfe/ykit/commit/353ac74))
 * **lint:** 优先使用项目配置的linter ([c592569](http://gitlab.corp.qunar.com/mfe/ykit/commit/c592569))
 * **lint:** 优化lint提示 ([39bf20f](http://gitlab.corp.qunar.com/mfe/ykit/commit/39bf20f))
 * **lint:** 修复context改变时lint路径问题 ([7030fa7](http://gitlab.corp.qunar.com/mfe/ykit/commit/7030fa7))
@@ -308,19 +302,14 @@
 * **lint:** 修复没有使用到本地lint规则 ([53498bb](http://gitlab.corp.qunar.com/mfe/ykit/commit/53498bb))
 * **lint:** 修复没有使用到本地lint规则 ([13d2a3f](http://gitlab.corp.qunar.com/mfe/ykit/commit/13d2a3f))
 * **logger:** 优化pack/server logger ([c003504](http://gitlab.corp.qunar.com/mfe/ykit/commit/c003504))
-* **pack:** min err ([f016a5f](http://gitlab.corp.qunar.com/mfe/ykit/commit/f016a5f))
 * **pack:** 修改默认context ([c91715d](http://gitlab.corp.qunar.com/mfe/ykit/commit/c91715d))
 * **package.json:** lint和livereload不在初始默认安装，而是调用命令式提示安装 ([72466b9](http://gitlab.corp.qunar.com/mfe/ykit/commit/72466b9))
 * **path:** 兼容windows path ([a8d90ff](http://gitlab.corp.qunar.com/mfe/ykit/commit/a8d90ff))
-* **Project:** 修复找不到this.options ([ea22ae6](http://gitlab.corp.qunar.com/mfe/ykit/commit/ea22ae6))
 * **QProxy:** 兼容windows ([f46ccb6](http://gitlab.corp.qunar.com/mfe/ykit/commit/f46ccb6))
 * **readrc:** 如果没有rc不报错，在init时reload ([ffbd178](http://gitlab.corp.qunar.com/mfe/ykit/commit/ffbd178))
-* **reload:** 修复找不到manager ([3da7549](http://gitlab.corp.qunar.com/mfe/ykit/commit/3da7549))
-* **server:** logger url改用相对路径（考虑一些工程相对路径已经很长了...所以不用绝对路径） ([d2e6dc5](http://gitlab.corp.qunar.com/mfe/ykit/commit/d2e6dc5))
 * **server:** 优化server启动报错提示 ([e36c697](http://gitlab.corp.qunar.com/mfe/ykit/commit/e36c697))
-* **server log:** 修复文件大小单位格式 ([c1055ec](http://gitlab.corp.qunar.com/mfe/ykit/commit/c1055ec))
-* **server logger:** 更改打包文件显示单位 ([11f7094](http://gitlab.corp.qunar.com/mfe/ykit/commit/11f7094))
-* **setConfig:** 修复setConfig中上下文环境不对 ([2c12155](http://gitlab.corp.qunar.com/mfe/ykit/commit/2c12155))
+* **server:** 修复打包大文件时第一次渲染失败 ([b29d873](http://gitlab.corp.qunar.com/mfe/ykit/commit/b29d873))
+* **server:** 修复资源过大时第一次渲染失败 ([f4e9a12](http://gitlab.corp.qunar.com/mfe/ykit/commit/f4e9a12))
 * **setConfig:** 修复返回undefined时报错 ([cdc1ad3](http://gitlab.corp.qunar.com/mfe/ykit/commit/cdc1ad3))
 * **setConfig:** 支持设置context相对路径 ([6afd43d](http://gitlab.corp.qunar.com/mfe/ykit/commit/6afd43d))
 
@@ -331,32 +320,54 @@
 * **cmd:** 添加init ([768a387](http://gitlab.corp.qunar.com/mfe/ykit/commit/768a387))
 * **compile:** 自动添加context为resolve.root ([8c6302c](http://gitlab.corp.qunar.com/mfe/ykit/commit/8c6302c))
 * **env:** 支持node 0.12 ([4380c73](http://gitlab.corp.qunar.com/mfe/ykit/commit/4380c73))
-* **ext plguin:** 支持js后缀转换 ([f4578c8](http://gitlab.corp.qunar.com/mfe/ykit/commit/f4578c8))
-* **global:** 添加全局log方法 ([8cb0c61](http://gitlab.corp.qunar.com/mfe/ykit/commit/8cb0c61))
 * **gulp:** 第一次启动时也编译 ([385748d](http://gitlab.corp.qunar.com/mfe/ykit/commit/385748d))
 * **init:** 添加xta/none init选项 ([e4330fc](http://gitlab.corp.qunar.com/mfe/ykit/commit/e4330fc))
-* **lint:** add lint command and example ([73bb6be](http://gitlab.corp.qunar.com/mfe/ykit/commit/73bb6be))
 * **lint:** lint可以指定目录/文件 ([9d21d95](http://gitlab.corp.qunar.com/mfe/ykit/commit/9d21d95))
+* **pack:** 可配置打包前是否清空输出目录 ([eac936a](http://gitlab.corp.qunar.com/mfe/ykit/commit/eac936a))
+* **package.json:** 添加jerryproxy作为初始组件 ([0e086ef](http://gitlab.corp.qunar.com/mfe/ykit/commit/0e086ef))
+* **server:** 检测到config文件变化后可以重新生成compiler ([423d485](http://gitlab.corp.qunar.com/mfe/ykit/commit/423d485))
+* **server:** 添加代理功能 ([3189f29](http://gitlab.corp.qunar.com/mfe/ykit/commit/3189f29))
+* **server/pack:** 支持入口为数组 ([bbb5808](http://gitlab.corp.qunar.com/mfe/ykit/commit/bbb5808))
+* **setConfig:** 添加对alias处理 ([e2b41ce](http://gitlab.corp.qunar.com/mfe/ykit/commit/e2b41ce))
+
+
+
+<a name="0.0.1"></a>
+## [0.0.1](http://gitlab.corp.qunar.com/mfe/ykit/compare/4615fd0...v0.0.1) (2016-07-15)
+
+
+### Bug Fixes
+
+* **lint:** remove log ([353ac74](http://gitlab.corp.qunar.com/mfe/ykit/commit/353ac74))
+* **pack:** min err ([f016a5f](http://gitlab.corp.qunar.com/mfe/ykit/commit/f016a5f))
+* **Project:** 修复找不到this.options ([ea22ae6](http://gitlab.corp.qunar.com/mfe/ykit/commit/ea22ae6))
+* **reload:** 修复找不到manager ([3da7549](http://gitlab.corp.qunar.com/mfe/ykit/commit/3da7549))
+* **server:** logger url改用相对路径（考虑一些工程相对路径已经很长了...所以不用绝对路径） ([d2e6dc5](http://gitlab.corp.qunar.com/mfe/ykit/commit/d2e6dc5))
+* **server log:** 修复文件大小单位格式 ([c1055ec](http://gitlab.corp.qunar.com/mfe/ykit/commit/c1055ec))
+* **server logger:** 更改打包文件显示单位 ([11f7094](http://gitlab.corp.qunar.com/mfe/ykit/commit/11f7094))
+* **setConfig:** 修复setConfig中上下文环境不对 ([2c12155](http://gitlab.corp.qunar.com/mfe/ykit/commit/2c12155))
+
+
+### Features
+
+* **ext plguin:** 支持js后缀转换 ([f4578c8](http://gitlab.corp.qunar.com/mfe/ykit/commit/f4578c8))
+* **global:** 添加全局log方法 ([8cb0c61](http://gitlab.corp.qunar.com/mfe/ykit/commit/8cb0c61))
+* **lint:** add lint command and example ([73bb6be](http://gitlab.corp.qunar.com/mfe/ykit/commit/73bb6be))
 * **pack:** add -m/--min option ([50cc200](http://gitlab.corp.qunar.com/mfe/ykit/commit/50cc200))
 * **pack:** add css-loader ([09d2391](http://gitlab.corp.qunar.com/mfe/ykit/commit/09d2391))
 * **pack:** add CssEntryLoaderPlugin ([7a3eecf](http://gitlab.corp.qunar.com/mfe/ykit/commit/7a3eecf))
 * **pack:** add es6 compiler ([51d5dda](http://gitlab.corp.qunar.com/mfe/ykit/commit/51d5dda))
 * **pack:** add pack command demo & test ([4615fd0](http://gitlab.corp.qunar.com/mfe/ykit/commit/4615fd0))
 * **pack:** add source map opt ([3a655f2](http://gitlab.corp.qunar.com/mfe/ykit/commit/3a655f2))
-* **pack:** 可配置打包前是否清空输出目录 ([eac936a](http://gitlab.corp.qunar.com/mfe/ykit/commit/eac936a))
 * **pack:** 显示错误详细信息 ([4f592be](http://gitlab.corp.qunar.com/mfe/ykit/commit/4f592be))
 * **pack:** 添加打包进度条 ([9e93625](http://gitlab.corp.qunar.com/mfe/ykit/commit/9e93625))
 * **pack:** 添加设置分组参数 ([551c0b4](http://gitlab.corp.qunar.com/mfe/ykit/commit/551c0b4))
 * **pack logger:** 添加打包log ([141fb55](http://gitlab.corp.qunar.com/mfe/ykit/commit/141fb55))
-* **package.json:** 添加jerryproxy作为初始组件 ([0e086ef](http://gitlab.corp.qunar.com/mfe/ykit/commit/0e086ef))
 * **server:** add live reload ([e77692b](http://gitlab.corp.qunar.com/mfe/ykit/commit/e77692b))
 * **server:** add logger ([dc8ad5f](http://gitlab.corp.qunar.com/mfe/ykit/commit/dc8ad5f))
 * **server:** add server command ([e93c20f](http://gitlab.corp.qunar.com/mfe/ykit/commit/e93c20f))
 * **server:** add source map ([c09678f](http://gitlab.corp.qunar.com/mfe/ykit/commit/c09678f))
 * **server:** 优化error/warning log信息 ([c70b54c](http://gitlab.corp.qunar.com/mfe/ykit/commit/c70b54c))
-* **server:** 添加代理功能 ([3189f29](http://gitlab.corp.qunar.com/mfe/ykit/commit/3189f29))
-* **server/pack:** 支持入口为数组 ([bbb5808](http://gitlab.corp.qunar.com/mfe/ykit/commit/bbb5808))
-* **setConfig:** 添加对alias处理 ([e2b41ce](http://gitlab.corp.qunar.com/mfe/ykit/commit/e2b41ce))
 
 
 

@@ -1,24 +1,38 @@
 'use strict';
-
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
 
+const normalize = require('../utils/path').normalize;
+
 class Config {
     constructor(cwd) {
+        const dir = normalize(cwd).split('/');
+        const projectDir = dir[dir.length - 1];
+
         this._config = {
             cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
             entryGroup: {},
             output: {
-                local: {},
+                local: {
+                    path: './prd/',
+                    filename: '[name][ext]',
+                    chunkFilename: '[id].chunk.js',
+                    publicPath: path.join('/', projectDir, 'prd/')
+                },
                 dev: {
-                    path: './dev',
-                    filename: '[name][ext]'
+                    path: './dev/',
+                    filename: '[name][ext]',
+                    chunkFilename: '[id].chunk.js',
+                    publicPath: path.join('/', projectDir, 'dev/')
                 },
                 prd: {
-                    path: './prd',
-                    filename: '[name].min[ext]'
+                    path: './prd/',
+                    filename: '[name].min[ext]',
+                    chunkFilename: '[id].chunk.min.js',
+                    publicPath: path.join('/', projectDir, 'prd/')
                 }
             },
             module: {

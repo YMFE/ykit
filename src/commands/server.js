@@ -222,23 +222,18 @@ exports.run = (options) => {
 
                         // 如果没找到该资源，在整个编译过程结束后再返回
                         if (Object.keys(nextConfig.entry).length === 0) {
-                            // 如果是js入口没找到，那肯定是出错了，这时候应该直接next让后面报错
-                            if (req.url.match(/\.js$/)) {
-                                res.writeHead(404, { 'Content-Type': 'text/html' });
-                                res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
-                            } else {
-                                setTimeout(() => {
-                                    promiseCache[projectName] ?
-                                        Promise.all(promiseCache[projectName]).then(() => {
-                                            // 统一去掉版本号
-                                            req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
-                                            next();
-                                        }).catch((err) => {
-                                            throw err;
-                                        }) :
-                                        null;
-                                }, 1000);
-                            }
+                            setTimeout(() => {
+                                if (promiseCache[projectName]) {
+                                    Promise.all(promiseCache[projectName]).then(function () {
+                                        // 统一去掉版本号
+                                        req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                                        next();
+                                    });
+                                } else {
+                                    res.statusCode = 404;
+                                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
+                                }
+                            }, 1000);
                         } else {
                             // 生成该请求的 promiseCache
                             let resolve = null;
