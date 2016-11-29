@@ -128,13 +128,17 @@ exports.run = (options) => {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-            const customMiddleware = project.config.getMiddleware();
+            const customMiddlewares = project.config.getMiddlewares();
+            const _next = () => {
+                if (customMiddlewares.length === 0) {
+                    next();
+                } else {
+                    const nextMw = customMiddlewares.shift();
+                    nextMw(req, res, _next);
+                }
+            };
 
-            if (typeof customMiddleware === 'function') {
-                customMiddleware(req, res, next);
-            } else {
-                next();
-            }
+            _next();
         } catch (e) {
             next();
         }
