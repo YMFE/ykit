@@ -237,7 +237,7 @@ exports.run = (options) => {
                                     res.statusCode = 404;
                                     res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
                                 }
-                            }, 1000);
+                            }, 100);
                         } else {
                             // 生成该请求的 promiseCache
                             let resolve = null;
