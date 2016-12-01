@@ -316,7 +316,7 @@ class Project {
 
             webpack(config, (err, stats) => {
                 globby.sync('**/*.cache', {cwd: config.output.path}).map((p) => {
-                    sysPath.join(config.output.path, p);
+                    return sysPath.join(config.output.path, p);
                 }).forEach((fp) => {
                     fs.unlinkSync(fp);
                 });
@@ -328,7 +328,6 @@ class Project {
                             callback(null);
                         };
                     }), (err) => {
-
                         let statsInfo = stats.toJson({errorDetails: false});
 
                         process.stdout.write('\n' +
