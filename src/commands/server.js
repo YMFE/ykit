@@ -2,7 +2,6 @@
 
 let connect = require('connect'),
     fs = require('fs'),
-    os = require('os'),
     http = require('http'),
     https = require('https'),
     serveStatic = require('serve-static'),
@@ -22,13 +21,13 @@ exports.setOptions = (optimist) => {
     optimist.alias('p', 'port');
     optimist.describe('p', '端口');
     optimist.alias('x', 'proxy');
-    optimist.describe('x', '启用proxy代理服务');
+    optimist.describe('x', '开启 proxy 代理服务');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
     optimist.alias('a', 'all');
-    optimist.describe('a', '整体编译');
+    optimist.describe('a', '使用整体编译模式');
     optimist.alias('s', 'https');
-    optimist.describe('s', '使用https协议');
+    optimist.describe('s', '开启 https 服务');
 };
 
 exports.run = (options) => {
@@ -355,37 +354,33 @@ exports.run = (options) => {
 
     app.use(serveIndex(cwd));
 
-    let server;
+    let servers = [];
 
-    if (!isHttps) {
-        server = http.createServer(app);
-    } else {
+    servers.push(extend(http.createServer(app), {_port: port}));
+    if (isHttps) {
         const httpsOpts = {
             key: fs.readFileSync(sysPath.join(__dirname, '../config/https/server.key')),
             cert: fs.readFileSync(sysPath.join(__dirname, '../config/https/server.crt'))
         };
-        server = https.createServer(httpsOpts, app);
+        servers.push(extend(https.createServer(httpsOpts, app), {_port: '443', _isHttps: true}));
     }
 
-    server.on('error', (e) => {
-        if (e.code === 'EACCES') {
-            warn('权限不足, 请使用sudo/管理员模式执行');
-        } else if (e.code === 'EADDRINUSE') {
-            warn('端口 ' + port + ' 已经被占用, 请关闭占用该端口的程序或者使用其它端口.');
-        }
-        process.exit(1);
-    });
-    server.listen(port, () => {
-        log('Starting up server, serving at: ' + options.cwd);
+    servers.forEach((server) => {
+        server.on('error', (e) => {
+            if (e.code === 'EACCES') {
+                warn('权限不足, 请使用sudo/管理员模式执行');
+            } else if (e.code === 'EADDRINUSE') {
+                warn('端口 ' + server._port + ' 已经被占用, 请关闭占用该端口的程序或者使用其它端口.');
+            }
+            process.exit(1);
+        });
+        server.listen(server._port, () => {
+            const serverUrl = (server._isHttps ? 'https' : 'http')
+                            + '://127.0.0.1:'
+                            + server._port;
 
-        let networkInterfaces = os.networkInterfaces();
-        let protocol = options.https ? 'https://' : 'http://';
-        Object.keys(networkInterfaces).forEach(function (dev) {
-            networkInterfaces[dev].forEach(function (details) {
-                if (details.family === 'IPv4' && details.address.indexOf('127.0.0.1') > -1) {
-                    log('Available on: ' + (protocol + details.address + ':' + port).underline);
-                }
-            });
+            !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
+            log('Available on: ' + serverUrl.underline);
         });
     });
 
