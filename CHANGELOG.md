@@ -1,5 +1,33 @@
+<a name="0.1.7-rc8"></a>
+## [0.1.7-rc8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc7...v0.1.7-rc8) (2016-12-01)
+
+
+### Bug Fixes
+
+* **pack:** 修复找不到删除的 .cache 文件 ([57fd410](http://gitlab.corp.qunar.com/mfe/ykit/commit/57fd410))
+* **Project:** 用户配置对象使用了export保留字作为属性，为了兼容性考虑继续支持，但另外提供正确的属性名exports作为以后的推荐配置。 ([4095833](http://gitlab.corp.qunar.com/mfe/ykit/commit/4095833))
+* **server:** js文件入口不存在时，依然会等待其他资源编译结束resolve而不是直接返回404，这时候会变成一个永远pending的请求。 ([2193385](http://gitlab.corp.qunar.com/mfe/ykit/commit/2193385))
+* **server:** 修复自身定义的 chunk 方式 ([40e147a](http://gitlab.corp.qunar.com/mfe/ykit/commit/40e147a))
+* **server:** 修复路径问题 ([ba291a6](http://gitlab.corp.qunar.com/mfe/ykit/commit/ba291a6))
+* **server:** 修改配置，去除 qunar 内容 ([f18aff1](http://gitlab.corp.qunar.com/mfe/ykit/commit/f18aff1))
+* **server:** 同步 lib/server.js ([7583c94](http://gitlab.corp.qunar.com/mfe/ykit/commit/7583c94))
+* **server:** 完善js文件404错误提示 ([a5b029f](http://gitlab.corp.qunar.com/mfe/ykit/commit/a5b029f))
+* **server:** 完善js文件404错误提示，修改状态码为404 ([36bc9fa](http://gitlab.corp.qunar.com/mfe/ykit/commit/36bc9fa))
+* **server:** 将server等待时间减少到100ms提升server响应速度 ([3a21d5e](http://gitlab.corp.qunar.com/mfe/ykit/commit/3a21d5e))
+* **server.js:** 开发服务在入口找不到时一直pending的错误修复 ([5c3fbdf](http://gitlab.corp.qunar.com/mfe/ykit/commit/5c3fbdf))
+
+
+### Features
+
+* **pack:** 允许在 packCallback 中更改 assetsInfo ([f263f05](http://gitlab.corp.qunar.com/mfe/ykit/commit/f263f05))
+* **server:** 使用 https 选项同时可以开启正常 http server ([a05480e](http://gitlab.corp.qunar.com/mfe/ykit/commit/a05480e))
+* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([afd868b](http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b))
+* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([eadd1c9](http://gitlab.corp.qunar.com/mfe/ykit/commit/eadd1c9))
+
+
+
 <a name="0.1.7-rc7"></a>
-## [0.1.7-rc7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc6...v0.1.7-rc7) (2016-11-23)
+## [0.1.7-rc7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc6...0.1.7-rc7) (2016-11-23)
 
 
 ### Bug Fixes

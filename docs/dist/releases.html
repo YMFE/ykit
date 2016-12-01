@@ -83,7 +83,27 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <p><a name="0.1.7-rc7"></a></p>
+                  <p><a name="0.1.7-rc8"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc7...v0.1.7-rc8">0.1.7-rc8</a> (2016-12-01)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
+<li><strong>pack:</strong> 修复找不到删除的 .cache 文件 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/57fd410">57fd410</a>)</li>
+<li><strong>Project:</strong> 用户配置对象使用了export保留字作为属性，为了兼容性考虑继续支持，但另外提供正确的属性名exports作为以后的推荐配置。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/4095833">4095833</a>)</li>
+<li><strong>server:</strong> js文件入口不存在时，依然会等待其他资源编译结束resolve而不是直接返回404，这时候会变成一个永远pending的请求。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/2193385">2193385</a>)</li>
+<li><strong>server:</strong> 修复自身定义的 chunk 方式 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/40e147a">40e147a</a>)</li>
+<li><strong>server:</strong> 修复路径问题 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/ba291a6">ba291a6</a>)</li>
+<li><strong>server:</strong> 修改配置，去除 qunar 内容 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f18aff1">f18aff1</a>)</li>
+<li><strong>server:</strong> 同步 lib/server.js (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/7583c94">7583c94</a>)</li>
+<li><strong>server:</strong> 完善js文件404错误提示 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/a5b029f">a5b029f</a>)</li>
+<li><strong>server:</strong> 完善js文件404错误提示，修改状态码为404 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/36bc9fa">36bc9fa</a>)</li>
+<li><strong>server:</strong> 将server等待时间减少到100ms提升server响应速度 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/3a21d5e">3a21d5e</a>)</li>
+<li><strong>server.js:</strong> 开发服务在入口找不到时一直pending的错误修复 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/5c3fbdf">5c3fbdf</a>)</li>
+</ul>
+<h3 id="Features">Features</h3><ul>
+<li><strong>pack:</strong> 允许在 packCallback 中更改 assetsInfo (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f263f05">f263f05</a>)</li>
+<li><strong>server:</strong> 使用 https 选项同时可以开启正常 http server (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/a05480e">a05480e</a>)</li>
+<li><strong>server.js:</strong> applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b">afd868b</a>)</li>
+<li><strong>server.js:</strong> applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/eadd1c9">eadd1c9</a>)</li>
+</ul>
+<p><a name="0.1.7-rc7"></a></p>
 <h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc6...0.1.7-rc7">0.1.7-rc7</a> (2016-11-23)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
 <li><strong>server:</strong> 修改权限不足错误提示 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/e8cb6a4">e8cb6a4</a>)</li>
 <li><strong>server:</strong> 添加默认 chunk 配置，修改未找到资源的 404 返回 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/6dda6d1">6dda6d1</a>)</li>
