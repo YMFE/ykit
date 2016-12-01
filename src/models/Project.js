@@ -27,11 +27,10 @@ class Project {
         this.middlewares = [];
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
-        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
-        this.extendConfig = this.configFile &&
-            this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
-            this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
-            this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
+        this.configFile = globby.sync([
+            'ykit.*.js', 'ykit.js'
+        ], {cwd: this.cwd})[0] || '';
+        this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/) && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = ['node_modules/**/*', 'bower_components/**/*', 'dev/**/*', 'prd/**/*', '.ykit_cache/**/*'];
         this.cachePath = this._isCacheDirExists(cwd) || '';
 
@@ -189,7 +188,9 @@ class Project {
 
         for (let key in entries) {
             const entryItem = entries[key],
-                entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
+                entry = Array.isArray(entryItem)
+                    ? entryItem[entryItem.length - 1]
+                    : entryItem,
                 extName = sysPath.extname(entry);
 
             // 放在cache目录下
@@ -215,20 +216,12 @@ class Project {
                     entryItem.forEach((cssPath) => {
                         const originCssPath = sysPath.join(config.context, cssPath);
                         const requiredPath = UtilPath.normalize(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
-                        fs.appendFileSync(
-                            cacheFilePath,
-                            'require("' + requiredPath + '");',
-                            'utf-8'
-                        );
+                        fs.appendFileSync(cacheFilePath, 'require("' + requiredPath + '");', 'utf-8');
                     });
                 } else {
                     const originCssPath = sysPath.join(config.context, entry);
                     const requiredPath = UtilPath.normalize(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
-                    fs.writeFileSync(
-                        cacheFilePath,
-                        'require("' + requiredPath + '");',
-                        'utf-8'
-                    );
+                    fs.writeFileSync(cacheFilePath, 'require("' + requiredPath + '");', 'utf-8');
                 }
 
                 fps.push(cacheFilePath);
@@ -272,11 +265,13 @@ class Project {
     }
 
     pack(opt, callback) {
-        let config = this.config.getConfig();
+        let self = this,
+            config = this.config.getConfig();
+
         UtilFs.deleteFolderRecursive(this.cachePath);
 
         if (!config.beforePack) {
-            config.beforePack = function (done) {
+            config.beforePack = function(done) {
                 done();
             };
         }
@@ -320,58 +315,60 @@ class Project {
             }
 
             webpack(config, (err, stats) => {
-                globby.sync('**/*.cache', {
-                    cwd: config.output.path
-                })
-                    .map((p) => sysPath.join(config.output.path, p))
-                    .forEach((fp) => fs.unlinkSync(fp));
+                globby.sync('**/*.cache', {cwd: config.output.path}).map((p) => {
+                    sysPath.join(config.output.path, p);
+                }).forEach((fp) => {
+                    fs.unlinkSync(fp);
+                });
 
                 if (!err) {
-                    let statsInfo = stats.toJson({
-                        errorDetails: false
-                    });
+                    async.series(this.packCallbacks.map((packCallback) => {
+                        return function(callback) {
+                            packCallback(opt, stats);
+                            callback(null);
+                        };
+                    }), (err) => {
 
-                    process.stdout.write(
-                        // clear bundle log
-                        '                                                                           \n'
-                        + '\x1b[90m'
-                        + '--------------------------  YKIT PACKED ASSETS  -------------------------- '
-                        + '\x1b[0m \n\n'
-                    );
+                        let statsInfo = stats.toJson({errorDetails: false});
 
-                    if (statsInfo.errors.length > 0) {
-                        statsInfo.errors.map((err) => {
-                            error(err.red);
-                            info();
-                        });
-                    }
-                    if (statsInfo.warnings.length > 0) {
-                        statsInfo.warnings.map((warning) => {
-                            warn(warning.yellow);
-                            info();
-                        });
-                    }
-                    statsInfo.assets.map((asset) => {
-                        const size = asset.size > 1024 ?
-                        (asset.size / 1024).toFixed(2) + ' kB' :
-                        asset.size + ' bytes';
-                        if (!/\.cache$/.test(asset.name)) {
-                            log('- '.gray + asset.name + ' - ' + size);
+                        process.stdout.write('\n' +
+                            '\x1b[90m' +
+                            '--------------------------  YKIT PACKED ASSETS  -------------------------- ' +
+                            '\x1b[0m \n\n');
+
+                        if (statsInfo.errors.length > 0) {
+                            statsInfo.errors.map((err) => {
+                                error(err.red);
+                                info();
+                            });
                         }
-                    });
-                    info();
-                    this.packCallbacks.forEach(cb => cb(opt, stats));
-                }
+                        if (statsInfo.warnings.length > 0) {
+                            statsInfo.warnings.map((warning) => {
+                                warn(warning.yellow);
+                                info();
+                            });
+                        }
 
-                callback(err, stats);
+                        const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
+                        assetsInfo.map((asset) => {
+                            const size = asset.size > 1024
+                                ? (asset.size / 1024).toFixed(2) + ' kB'
+                                : asset.size + ' bytes';
+                            if (!/\.cache$/.test(asset.name)) {
+                                log('- '.gray + asset.name + ' - ' + size);
+                            }
+                        });
+
+                        info();
+                        callback(err, stats);
+                    });
+                }
             });
         };
 
         config.beforePack(() => {
             if (opt.lint) {
-                async.series([
-                    (callback) => this.lint(callback)
-                ], (err, results) => {
+                async.series([(callback) => this.lint(callback)], (err, results) => {
                     if (!err) {
                         if (results[0] && results[1]) {
                             compilerProcess();
@@ -414,7 +411,9 @@ class Project {
         if (dir) {
             dir = sysPath.resolve(this.cwd, dir);
             try {
-                fs.statSync(dir).isDirectory() ? context = dir : lintPath = sysPath.relative(context, dir);
+                fs.statSync(dir).isDirectory()
+                    ? context = dir
+                    : lintPath = sysPath.relative(context, dir);
             } catch (e) {
                 error(e);
                 process.exit(1);
