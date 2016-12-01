@@ -453,14 +453,6 @@ class Project {
         return false;
     }
 
-    _fileExists(filePath) {
-        try {
-            return fs.statSync(filePath).isFile();
-        } catch (err) {
-            return false;
-        }
-    }
-
     _getCurrentEnv() {
         if (process.argv[2] === 'pack') {
             if (process.argv.indexOf('-m') > -1) {
