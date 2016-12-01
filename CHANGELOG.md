@@ -1,5 +1,5 @@
 <a name="0.1.7-rc8"></a>
-## [0.1.7-rc8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc7...v0.1.7-rc8) (2016-12-01)
+## [0.1.7-rc8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc7...0.1.7-rc8) (2016-12-01)
 
 
 ### Bug Fixes

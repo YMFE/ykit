@@ -43,4 +43,8 @@ Ykit 会在一个项目 commit 之前检查并更新 `npm-shrinkwrap.json`（如
 
 <h2 style="font-weight: normal"> 错误处理 </h2>
 
-生成 `npm-shrinkwrap.json` 过程的中报错，大多是因为 package.json 和 node_modules 中模块版本不一致（其实是不应该出现的），按照提示的错误改正即可。如果还有问题请 qtalk 联系 `yuhao.ju`。
+生成 `npm-shrinkwrap.json` 过程的中报错，大多是因为 package.json 和 node_modules 中模块版本不一致（其实是不应该出现的），按照提示的错误改正即可。
+
+![shrinkwrap 报错](http://ww1.sinaimg.cn/large/6af705b8gw1fabnozkuojj20iw09g41u.jpg)
+
+如果还有问题请 qtalk 联系 `yuhao.ju`。
