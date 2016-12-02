@@ -1,119 +1,44 @@
-<a name="0.1.7-rc8"></a>
-## [0.1.7-rc8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc7...0.1.7-rc8) (2016-12-01)
-
-
-### Bug Fixes
-
-* **pack:** 修复找不到删除的 .cache 文件 ([57fd410](http://gitlab.corp.qunar.com/mfe/ykit/commit/57fd410))
-* **Project:** 用户配置对象使用了export保留字作为属性，为了兼容性考虑继续支持，但另外提供正确的属性名exports作为以后的推荐配置。 ([4095833](http://gitlab.corp.qunar.com/mfe/ykit/commit/4095833))
-* **server:** js文件入口不存在时，依然会等待其他资源编译结束resolve而不是直接返回404，这时候会变成一个永远pending的请求。 ([2193385](http://gitlab.corp.qunar.com/mfe/ykit/commit/2193385))
-* **server:** 修复自身定义的 chunk 方式 ([40e147a](http://gitlab.corp.qunar.com/mfe/ykit/commit/40e147a))
-* **server:** 修复路径问题 ([ba291a6](http://gitlab.corp.qunar.com/mfe/ykit/commit/ba291a6))
-* **server:** 修改配置，去除 qunar 内容 ([f18aff1](http://gitlab.corp.qunar.com/mfe/ykit/commit/f18aff1))
-* **server:** 同步 lib/server.js ([7583c94](http://gitlab.corp.qunar.com/mfe/ykit/commit/7583c94))
-* **server:** 完善js文件404错误提示 ([a5b029f](http://gitlab.corp.qunar.com/mfe/ykit/commit/a5b029f))
-* **server:** 完善js文件404错误提示，修改状态码为404 ([36bc9fa](http://gitlab.corp.qunar.com/mfe/ykit/commit/36bc9fa))
-* **server:** 将server等待时间减少到100ms提升server响应速度 ([3a21d5e](http://gitlab.corp.qunar.com/mfe/ykit/commit/3a21d5e))
-* **server.js:** 开发服务在入口找不到时一直pending的错误修复 ([5c3fbdf](http://gitlab.corp.qunar.com/mfe/ykit/commit/5c3fbdf))
-
-
-### Features
-
-* **pack:** 允许在 packCallback 中更改 assetsInfo ([f263f05](http://gitlab.corp.qunar.com/mfe/ykit/commit/f263f05))
-* **server:** 使用 https 选项同时可以开启正常 http server ([a05480e](http://gitlab.corp.qunar.com/mfe/ykit/commit/a05480e))
-* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([afd868b](http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b))
-* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([eadd1c9](http://gitlab.corp.qunar.com/mfe/ykit/commit/eadd1c9))
-
-
-
-<a name="0.1.7-rc7"></a>
-## [0.1.7-rc7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc6...0.1.7-rc7) (2016-11-23)
-
-
-### Bug Fixes
-
-* **server:** 修改权限不足错误提示 ([e8cb6a4](http://gitlab.corp.qunar.com/mfe/ykit/commit/e8cb6a4))
-* **server:** 添加默认 chunk 配置，修改未找到资源的 404 返回 ([6dda6d1](http://gitlab.corp.qunar.com/mfe/ykit/commit/6dda6d1))
-
-
-
-<a name="0.1.7-rc6"></a>
-## [0.1.7-rc6](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc5...0.1.7-rc6) (2016-11-23)
+<a name="0.1.7"></a>
+## [0.1.7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...0.1.7) (2016-12-02)
 
 
 ### Bug Fixes
 
 * 修复 map 文件返回错误 ([1f0f055](http://gitlab.corp.qunar.com/mfe/ykit/commit/1f0f055))
+* 修复 ora 不支持 node 0.12 ([c9d7120](http://gitlab.corp.qunar.com/mfe/ykit/commit/c9d7120))
+* 修复 windows 下入口路径匹配问题 ([21a372d](http://gitlab.corp.qunar.com/mfe/ykit/commit/21a372d))
 * 修复找不到配置模块会重置 .ykitrc ([c1a03d5](http://gitlab.corp.qunar.com/mfe/ykit/commit/c1a03d5))
-
-
-
-<a name="0.1.7-rc5"></a>
-## [0.1.7-rc5](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc4...0.1.7-rc5) (2016-11-23)
-
-
-### Bug Fixes
-
+* **server:** 修复自身定义的 chunk 方式 ([40e147a](http://gitlab.corp.qunar.com/mfe/ykit/commit/40e147a))
+* 修复设置 entry 有语法问题时二次报错 ([d983709](http://gitlab.corp.qunar.com/mfe/ykit/commit/d983709))
+* **pack:** 修复找不到删除的 .cache 文件 ([57fd410](http://gitlab.corp.qunar.com/mfe/ykit/commit/57fd410))
+* **Project:** 用户配置对象使用了export保留字作为属性，为了兼容性考虑继续支持，但另外提供正确的属性名exports作为以后的推荐配置。 ([4095833](http://gitlab.corp.qunar.com/mfe/ykit/commit/4095833))
+* **server:** js文件入口不存在时，依然会等待其他资源编译结束resolve而不是直接返回404，这时候会变成一个永远pending的请求。 ([2193385](http://gitlab.corp.qunar.com/mfe/ykit/commit/2193385))
+* **server:** 修复路径问题 ([ba291a6](http://gitlab.corp.qunar.com/mfe/ykit/commit/ba291a6))
+* **server:** 修改权限不足错误提示 ([e8cb6a4](http://gitlab.corp.qunar.com/mfe/ykit/commit/e8cb6a4))
+* **server:** 修改配置，去除 qunar 内容 ([f18aff1](http://gitlab.corp.qunar.com/mfe/ykit/commit/f18aff1))
+* 修复额外资源没有去掉版本号 ([83ff4d1](http://gitlab.corp.qunar.com/mfe/ykit/commit/83ff4d1))
 * 去掉 pack 二次回调 ([d3e1c1c](http://gitlab.corp.qunar.com/mfe/ykit/commit/d3e1c1c))
-
-
-### Features
-
-* 添加 hacky 方式获取内部 webpack ([ed44919](http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919))
-
-
-
-<a name="0.1.7-rc4"></a>
-## [0.1.7-rc4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc3...0.1.7-rc4) (2016-11-22)
+* 移除多余测试文件 ([4b3a960](http://gitlab.corp.qunar.com/mfe/ykit/commit/4b3a960))
+* **server:** 同步 lib/server.js ([7583c94](http://gitlab.corp.qunar.com/mfe/ykit/commit/7583c94))
+* **server:** 完善js文件404错误提示 ([a5b029f](http://gitlab.corp.qunar.com/mfe/ykit/commit/a5b029f))
+* **server:** 完善js文件404错误提示，修改状态码为404 ([36bc9fa](http://gitlab.corp.qunar.com/mfe/ykit/commit/36bc9fa))
+* **server:** 将server等待时间减少到100ms提升server响应速度 ([3a21d5e](http://gitlab.corp.qunar.com/mfe/ykit/commit/3a21d5e))
+* **server:** 添加默认 chunk 配置，修改未找到资源的 404 返回 ([6dda6d1](http://gitlab.corp.qunar.com/mfe/ykit/commit/6dda6d1))
+* **server.js:** 开发服务在入口找不到时一直pending的错误修复 ([5c3fbdf](http://gitlab.corp.qunar.com/mfe/ykit/commit/5c3fbdf))
 
 
 ### Features
 
 * **Config:** 增加beforepack钩子 ([14f3e0d](http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d))
-
-
-
-<a name="0.1.7-rc3"></a>
-## [0.1.7-rc3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc2...0.1.7-rc3) (2016-11-22)
-
-
-### Bug Fixes
-
-* 修复 windows 下入口路径匹配问题 ([21a372d](http://gitlab.corp.qunar.com/mfe/ykit/commit/21a372d))
-
-
-
-<a name="0.1.7-rc2"></a>
-## [0.1.7-rc2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7-rc0...0.1.7-rc2) (2016-11-21)
-
-
-### Bug Fixes
-
-* 修复 ora 不支持 node 0.12 ([c9d7120](http://gitlab.corp.qunar.com/mfe/ykit/commit/c9d7120))
-* 修复额外资源没有去掉版本号 ([83ff4d1](http://gitlab.corp.qunar.com/mfe/ykit/commit/83ff4d1))
-* 移除多余测试文件 ([4b3a960](http://gitlab.corp.qunar.com/mfe/ykit/commit/4b3a960))
-
-
-### Features
-
-* **server:** 延迟 404 的请求直到编译结束（使得编译副产物可以被请求到） ([9b7fb2c](http://gitlab.corp.qunar.com/mfe/ykit/commit/9b7fb2c))
+* 添加 hacky 方式获取内部 webpack ([ed44919](http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919))
 * 添加 harmonize 运行环境 ([f2aa43d](http://gitlab.corp.qunar.com/mfe/ykit/commit/f2aa43d))
-
-
-
-<a name="0.1.7-rc0"></a>
-## [0.1.7-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...0.1.7-rc0) (2016-11-18)
-
-
-### Bug Fixes
-
-* 修复设置 entry 有语法问题时二次报错 ([d983709](http://gitlab.corp.qunar.com/mfe/ykit/commit/d983709))
-
-
-### Features
-
+* **pack:** 允许在 packCallback 中更改 assetsInfo ([f263f05](http://gitlab.corp.qunar.com/mfe/ykit/commit/f263f05))
+* **server:** 使用 https 选项同时可以开启正常 http server ([a05480e](http://gitlab.corp.qunar.com/mfe/ykit/commit/a05480e))
+* **server:** 延迟 404 的请求直到编译结束（使得编译副产物可以被请求到） ([9b7fb2c](http://gitlab.corp.qunar.com/mfe/ykit/commit/9b7fb2c))
 * **server:** 采用新的 compile & watch 机制 ([09e1697](http://gitlab.corp.qunar.com/mfe/ykit/commit/09e1697))
 * **server:** 采用新的 logger 风格 ([4b4fbce](http://gitlab.corp.qunar.com/mfe/ykit/commit/4b4fbce))
+* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([afd868b](http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b))
+* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([eadd1c9](http://gitlab.corp.qunar.com/mfe/ykit/commit/eadd1c9))
 
 
 
