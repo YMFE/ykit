@@ -54,7 +54,7 @@ let cli = module.exports = {
     help: () => {
         info(helpTitle);
         Manager.getProject(process.cwd()).commands.forEach((command) => {
-            info(` ${rightPad(command.name, 15)} # ${command.module.usage || ''}`);
+            info(` ${rightPad(command.name, 8)} ${rightPad(command.abbr, 26)} # ${command.module.usage || ''}`);
         });
         info();
         info(' 可用的全局配置有:', (Manager.readRC().configs || []).map((item) => item.name.substring(12)).join(', '));
