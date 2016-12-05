@@ -54,7 +54,7 @@ let cli = module.exports = {
     help: () => {
         info(helpTitle);
         Manager.getProject(process.cwd()).commands.forEach((command) => {
-            const commandStr = rightPad(rightPad(command.name, 8) + (command.abbr || ''), 35)
+            const commandStr = rightPad(rightPad(command.name, 8) + (command.abbr || ''), 35);
             info(` ${commandStr} # ${command.module.usage || ''}`);
         });
         info();
