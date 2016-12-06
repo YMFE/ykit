@@ -8,8 +8,9 @@ const Manager = require('../modules/manager.js');
 exports.usage = '项目初始化';
 exports.abbr = 'i';
 
-exports.setOptions = () => {};
-exports.run = function(options) {
+exports.setOptions = () => {
+};
+exports.run = function (options) {
     Manager.reloadRC();
 
     let cwd = options.cwd,
@@ -82,7 +83,7 @@ exports.run = function(options) {
                 : 'ykit.js';
 
             if (!fileExists('./' + configFileName)) {
-                const stream = fs.createReadStream(sysPath.resolve(initTmplPath, 'ykit.common.js')).pipe(replaceStream('#_name', answers.name)).pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
+                const stream = fs.createReadStream(sysPath.resolve(initTmplPath, configType !== 'fekit' ? 'ykit.common.js' : 'ykit.fekit.js')).pipe(replaceStream('#_name', answers.name)).pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
 
                 stream.on('finish', () => {
                     log('Successfully created ' + configFileName + ' file in ' + cwd);
