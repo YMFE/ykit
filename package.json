@@ -12,7 +12,8 @@
   "scripts": {
     "test": "mocha --recursive --compilers js:babel-core/register --timeout 0",
     "start": "cd .. && sudo node ykit/bin/ykit server",
-    "doc": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && ydoc build"
+    "doc": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && ydoc build",
+    "release": "tasks/release.sh"
   },
   "license": "MIT",
   "dependencies": {
