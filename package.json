@@ -77,7 +77,7 @@
   "config": {
     "ghooks": {
       "pre-commit": "eslint ./src",
-      "commit-msg": "node ./validate-commit-msg.js"
+      "commit-msg": "node ./tasks/validate-commit-msg.js"
     },
     "validate-commit-msg": {
       "types": [
