@@ -40,6 +40,7 @@ globals:
   yaml: true
   requireUncached: true
   spinner: true
+  logTime: true
   mkdirp: true
   JSON5: true
   YKIT_COMMANDS_PATH: true
