@@ -21,6 +21,7 @@ function ProgressBarPlugin() {
                 const dateFormat = 'YY.MM.DD HH:mm:ss';
                 spinner.text = '\x1b[90m' + '[' +moment().format(dateFormat) +'] build complete!' + '\x1b[0m';
                 spinner.stopAndPersist(logSymbols.info);
+                spinner.text = '';
             }
         }
     });

@@ -1,17 +1,17 @@
 'use strict';
 
-let webpack = require('webpack');
-let requireg = require('requireg');
+const webpack = require('webpack');
+const requireg = require('requireg');
 
-let path = require('path');
-let fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 
-let Config = require('./Config.js'),
-    Manager = require('../modules/manager.js'),
-    ExtractTextPlugin = require('extract-text-webpack-plugin');
+const Config = require('./Config.js');
+const Manager = require('../modules/manager.js');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-let UtilFs = require('../utils/fs.js');
-let UtilPath = require('../utils/path.js');
+const UtilFs = require('../utils/fs.js');
+const UtilPath = require('../utils/path.js');
 
 const ENVS = {
     LOCAL: 'local',
@@ -266,6 +266,7 @@ class Project {
 
     pack(opt, callback) {
         let self = this,
+            packStartTime = Date.now(),
             config = this.config.getConfig();
 
         UtilFs.deleteFolderRecursive(this.cachePath);
@@ -276,36 +277,20 @@ class Project {
             };
         }
 
-        let compilerProcess = () => {
+        const compilerProcess = () => {
+            // 打包前设置
             if (opt.sourcemap) {
                 config.devtool = opt.sourcemap;
             }
-
             if (!opt.quiet) {
                 config.plugins.push(require('../plugins/progressBarPlugin.js'));
             }
-
             if (opt.min) {
-                // variable name mangling
-                let mangle = true;
-                if (typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false') {
-                    mangle = false;
-                }
-
-                config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-                    compress: {
-                        warnings: false
-                    },
-                    mangle: mangle
-                }));
                 config.output = config.output.prd;
                 config.devtool = '';
             } else {
                 config.output = config.output.dev;
             }
-
-            this.fixCss();
-
             if (opt.clean) {
                 try {
                     UtilFs.deleteFolderRecursive(config.output.path);
@@ -314,52 +299,94 @@ class Project {
                 }
             }
 
+            this.fixCss();
+
             webpack(config, (err, stats) => {
-                globby.sync('**/*.cache', {cwd: config.output.path}).map((p) => {
+                const cwd = config.output.path;
+
+                globby.sync('**/*.cache', {cwd: cwd}).map((p) => {
                     return sysPath.join(config.output.path, p);
                 }).forEach((fp) => {
                     fs.unlinkSync(fp);
                 });
 
-                if (!err) {
-                    async.series(this.packCallbacks.map((packCallback) => {
-                        return function(callback) {
-                            packCallback(opt, stats);
-                            callback(null);
-                        };
-                    }), (err) => {
-                        let statsInfo = stats.toJson({errorDetails: false});
+                // 压缩
+                const computecluster = require('compute-cluster');
+                const cc = new computecluster({
+                    module: sysPath.resolve(__dirname , '../modules/minifyWorker.js'),
+                    max_backlog: -1,
+                    max_processes: 5
+                });
 
-                        process.stdout.write('\n' +
-                            '\x1b[90m' +
-                            '--------------------------  YKIT PACKED ASSETS  -------------------------- ' +
-                            '\x1b[0m \n\n');
+                if(opt.min) {
+                    spinner.start();
 
-                        if (statsInfo.errors.length > 0) {
-                            statsInfo.errors.map((err) => {
-                                error(err.red);
-                                info();
-                            });
-                        }
-                        if (statsInfo.warnings.length > 0) {
-                            statsInfo.warnings.map((warning) => {
-                                warn(warning.yellow);
-                                info();
-                            });
-                        }
+                    const assetsInfo = stats.toJson({
+                        errorDetails: false
+                    }).assets;
+                    let processToRun = assetsInfo.length;
 
-                        const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
-                        assetsInfo.map((asset) => {
-                            const size = asset.size > 1024
-                                ? (asset.size / 1024).toFixed(2) + ' kB'
-                                : asset.size + ' bytes';
-                            if (!/\.cache$/.test(asset.name)) {
-                                log('- '.gray + asset.name + ' - ' + size);
+                    assetsInfo.forEach((asset) => {
+                        cc.enqueue({
+                            opt: opt,
+                            cwd: cwd,
+                            assetName: asset.name
+                        }, (err) => {
+                            if (err) {
+                                error('an error occured:', err);
+                            }
+
+                            processToRun -= 1;
+                            spinner.text = `[Minify] ${assetsInfo.length - processToRun}/${assetsInfo.length} assets`;
+
+                            if (processToRun === 0) {
+                                cc.exit();
+                                spinner.stop();
+                                logTime('minify complete!');
+
+                                async.series(self.packCallbacks.map((packCallback) => {
+                                    return function(callback) {
+                                        packCallback(opt, stats);
+                                        callback(null);
+                                    };
+                                }), (err) => {
+                                    let statsInfo = stats.toJson({errorDetails: false});
+
+                                    process.stdout.write('\n' +
+                                        '\x1b[90m' +
+                                        '--------------------------  YKIT PACKED ASSETS  -------------------------- ' +
+                                        '\x1b[0m \n\n');
+
+                                    if (statsInfo.errors.length > 0) {
+                                        statsInfo.errors.map((err) => {
+                                            error(err.red + '\n');
+                                        });
+                                    }
+                                    if (statsInfo.warnings.length > 0) {
+                                        statsInfo.warnings.map((warning) => {
+                                            warn(warning.yellow + '\n');
+                                        });
+                                    }
+
+                                    const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
+                                    assetsInfo.map((asset) => {
+                                        const size = asset.size > 1024
+                                            ? (asset.size / 1024).toFixed(2) + ' kB'
+                                            : asset.size + ' bytes';
+                                        if (!/\.cache$/.test(asset.name)) {
+                                            log('- '.gray + asset.name + ' - ' + size);
+                                        }
+                                    });
+
+                                    const packDuration = Date.now() - packStartTime > 1000
+                                                        ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
+                                                        : (Date.now() - packStartTime) + 'ms';
+                                    log('Finished in ' + packDuration + '.\n');
+
+                                    callback(err, stats);
+                                });
                             }
                         });
-
-                        info();
-                        callback(err, stats);
                     });
                 }
             });
