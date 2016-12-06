@@ -72,7 +72,7 @@ class Config {
             },
             requireRules: [],
             devtool: 'cheap-source-map',
-            middleware: null
+            middleware: []
         };
     }
 
@@ -169,11 +169,11 @@ class Config {
 
     applyMiddleware(mw) {
         if (typeof mw === 'function') {
-            this._config.middleware = mw;
+            this._config.middleware.push(mw);
         }
     }
 
-    getMiddleware() {
+    getMiddlewares() {
         return this._config.middleware;
     }
 

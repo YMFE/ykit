@@ -13,14 +13,14 @@ gulp.task('compileJS', [], function() {
 
     return watch('src/**/*.js', {
         verbose: true,
-        ignoreInitial: true
+        ignoreInitial: false
     }).pipe(babelProcess).pipe(gulp.dest('lib'));
 })
 
 gulp.task('moveConfig', [], function() {
     return watch('src/config/**/*.*', {
         verbose: true,
-        ignoreInitial: true
+        ignoreInitial: false
     }, () => {
         gulp.src('src/config/**/*.*', {base: 'src/'}).pipe(gulp.dest('lib'));
     })

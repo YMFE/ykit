@@ -2,7 +2,6 @@
 
 let connect = require('connect'),
     fs = require('fs'),
-    os = require('os'),
     http = require('http'),
     https = require('https'),
     serveStatic = require('serve-static'),
@@ -22,13 +21,13 @@ exports.setOptions = (optimist) => {
     optimist.alias('p', 'port');
     optimist.describe('p', '端口');
     optimist.alias('x', 'proxy');
-    optimist.describe('x', '启用proxy代理服务');
+    optimist.describe('x', '开启 proxy 代理服务');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
     optimist.alias('a', 'all');
-    optimist.describe('a', '整体编译');
+    optimist.describe('a', '使用整体编译模式');
     optimist.alias('s', 'https');
-    optimist.describe('s', '使用https协议');
+    optimist.describe('s', '开启 https 服务');
 };
 
 exports.run = (options) => {
@@ -97,7 +96,7 @@ exports.run = (options) => {
 
             format = format.replace(/%date/g, '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
             format = format.replace(/%method/g, '\x1b[35m' + (req.method.toUpperCase()) + '\x1b[0m');
-            format = format.replace(/%url/g, '\x1b[90m' + decodeURI(req.originalUrl) + '\x1b[0m');
+            format = format.replace(/%url/g, decodeURI(req.originalUrl));
             format = format.replace(/%status/g, '' + status + res.statusCode + '\x1b[0m');
             format = format.replace(/%route/g, '\x1b[90m' + (req.route ? req.route.path + ' ' : '\x1b[31m') + '\x1b[0m');
             format = format.replace(/%contentLength/g, '\x1b[90m' + contentLength + '\x1b[31m' + '\x1b[0m');
@@ -128,13 +127,17 @@ exports.run = (options) => {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-            const customMiddleware = project.config.getMiddleware();
+            const customMiddlewares = project.config.getMiddlewares();
+            const _next = () => {
+                if (customMiddlewares.length === 0) {
+                    next();
+                } else {
+                    const nextMw = customMiddlewares.shift();
+                    nextMw(req, res, _next);
+                }
+            };
 
-            if (typeof customMiddleware === 'function') {
-                customMiddleware(req, res, next);
-            } else {
-                next();
-            }
+            _next();
         } catch (e) {
             next();
         }
@@ -233,7 +236,7 @@ exports.run = (options) => {
                                     res.statusCode = 404;
                                     res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
                                 }
-                            }, 1000);
+                            }, 100);
                         } else {
                             // 生成该请求的 promiseCache
                             let resolve = null;
@@ -351,37 +354,33 @@ exports.run = (options) => {
 
     app.use(serveIndex(cwd));
 
-    let server;
+    let servers = [];
 
-    if (!isHttps) {
-        server = http.createServer(app);
-    } else {
+    servers.push(extend(http.createServer(app), {_port: port}));
+    if (isHttps) {
         const httpsOpts = {
             key: fs.readFileSync(sysPath.join(__dirname, '../config/https/server.key')),
             cert: fs.readFileSync(sysPath.join(__dirname, '../config/https/server.crt'))
         };
-        server = https.createServer(httpsOpts, app);
+        servers.push(extend(https.createServer(httpsOpts, app), {_port: '443', _isHttps: true}));
     }
 
-    server.on('error', (e) => {
-        if (e.code === 'EACCES') {
-            warn('权限不足, 请使用sudo/管理员模式执行');
-        } else if (e.code === 'EADDRINUSE') {
-            warn('端口 ' + port + ' 已经被占用, 请关闭占用该端口的程序或者使用其它端口.');
-        }
-        process.exit(1);
-    });
-    server.listen(port, () => {
-        log('Starting up server, serving at: ' + options.cwd);
+    servers.forEach((server) => {
+        server.on('error', (e) => {
+            if (e.code === 'EACCES') {
+                warn('权限不足, 请使用sudo/管理员模式执行');
+            } else if (e.code === 'EADDRINUSE') {
+                warn('端口 ' + server._port + ' 已经被占用, 请关闭占用该端口的程序或者使用其它端口.');
+            }
+            process.exit(1);
+        });
+        server.listen(server._port, () => {
+            const serverUrl = (server._isHttps ? 'https' : 'http')
+                            + '://127.0.0.1:'
+                            + server._port;
 
-        let networkInterfaces = os.networkInterfaces();
-        let protocol = options.https ? 'https://' : 'http://';
-        Object.keys(networkInterfaces).forEach(function (dev) {
-            networkInterfaces[dev].forEach(function (details) {
-                if (details.family === 'IPv4' && details.address.indexOf('127.0.0.1') > -1) {
-                    log('Available on: ' + (protocol + details.address + ':' + port).underline);
-                }
-            });
+            !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
+            log('Available on: ' + serverUrl.underline);
         });
     });
 

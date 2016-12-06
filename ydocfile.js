@@ -69,6 +69,9 @@ module.exports = {
             }, {
                 name: '打包 JOB',
                 content: './docs/build.md'
+            }, {
+                name: 'npm shrinkwrap',
+                content: './docs/shrinkwrap.md'
             }]
         }
     }, {
