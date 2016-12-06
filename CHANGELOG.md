@@ -1,3 +1,21 @@
+<a name="0.1.8-rc0"></a>
+## [0.1.8-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8-rc0) (2016-12-06)
+
+
+### Bug Fixes
+
+* **cli:** 修复自定义命令没有缩写会造成 help 命令报错 ([17f6d7b](http://gitlab.corp.qunar.com/mfe/ykit/commit/17f6d7b))
+* **server:** 修复 rebuild 结束没有给出明显提示 ([9036cbc](http://gitlab.corp.qunar.com/mfe/ykit/commit/9036cbc))
+
+
+### Features
+
+* **init:** 修改fekit项目的config文件模板，因为fekit项目支持一键导入，所以所有的配置都可以直接从fekit.config中读取了。 ([9f94e87](http://gitlab.corp.qunar.com/mfe/ykit/commit/9f94e87))
+* **pack:** 使用 uglify 进行压缩 (+1 squashed commit) ([cb151c7](http://gitlab.corp.qunar.com/mfe/ykit/commit/cb151c7))
+* **pack:** 给出明确 optimize 提示 ([3e67b01](http://gitlab.corp.qunar.com/mfe/ykit/commit/3e67b01))
+
+
+
 <a name="0.1.7"></a>
 ## [0.1.7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...0.1.7) (2016-12-02)
 
@@ -236,6 +254,22 @@
 ### Bug Fixes
 
 * **config:** 修复setCompile报错 ([ef9f345](http://gitlab.corp.qunar.com/mfe/ykit/commit/ef9f345))
+* **server:** 修复打包大文件时第一次渲染失败 ([b29d873](http://gitlab.corp.qunar.com/mfe/ykit/commit/b29d873))
+* **server:** 修复资源过大时第一次渲染失败 ([f4e9a12](http://gitlab.corp.qunar.com/mfe/ykit/commit/f4e9a12))
+
+
+### Features
+
+* **server:** 检测到config文件变化后可以重新生成compiler ([423d485](http://gitlab.corp.qunar.com/mfe/ykit/commit/423d485))
+
+
+
+<a name="0.0.2"></a>
+## [0.0.2](http://gitlab.corp.qunar.com/mfe/ykit/compare/v0.0.1...0.0.2) (2016-08-11)
+
+
+### Bug Fixes
+
 * **config:** 修复设置loaders不生效 ([b904079](http://gitlab.corp.qunar.com/mfe/ykit/commit/b904079))
 * **config:** 初始context改为src ([70be3c7](http://gitlab.corp.qunar.com/mfe/ykit/commit/70be3c7))
 * **fixcss:** 修复寻找cache路径 ([d4e14ac](http://gitlab.corp.qunar.com/mfe/ykit/commit/d4e14ac))
@@ -261,8 +295,6 @@
 * **QProxy:** 兼容windows ([f46ccb6](http://gitlab.corp.qunar.com/mfe/ykit/commit/f46ccb6))
 * **readrc:** 如果没有rc不报错，在init时reload ([ffbd178](http://gitlab.corp.qunar.com/mfe/ykit/commit/ffbd178))
 * **server:** 优化server启动报错提示 ([e36c697](http://gitlab.corp.qunar.com/mfe/ykit/commit/e36c697))
-* **server:** 修复打包大文件时第一次渲染失败 ([b29d873](http://gitlab.corp.qunar.com/mfe/ykit/commit/b29d873))
-* **server:** 修复资源过大时第一次渲染失败 ([f4e9a12](http://gitlab.corp.qunar.com/mfe/ykit/commit/f4e9a12))
 * **setConfig:** 修复返回undefined时报错 ([cdc1ad3](http://gitlab.corp.qunar.com/mfe/ykit/commit/cdc1ad3))
 * **setConfig:** 支持设置context相对路径 ([6afd43d](http://gitlab.corp.qunar.com/mfe/ykit/commit/6afd43d))
 
@@ -278,7 +310,6 @@
 * **lint:** lint可以指定目录/文件 ([9d21d95](http://gitlab.corp.qunar.com/mfe/ykit/commit/9d21d95))
 * **pack:** 可配置打包前是否清空输出目录 ([eac936a](http://gitlab.corp.qunar.com/mfe/ykit/commit/eac936a))
 * **package.json:** 添加jerryproxy作为初始组件 ([0e086ef](http://gitlab.corp.qunar.com/mfe/ykit/commit/0e086ef))
-* **server:** 检测到config文件变化后可以重新生成compiler ([423d485](http://gitlab.corp.qunar.com/mfe/ykit/commit/423d485))
 * **server:** 添加代理功能 ([3189f29](http://gitlab.corp.qunar.com/mfe/ykit/commit/3189f29))
 * **server/pack:** 支持入口为数组 ([bbb5808](http://gitlab.corp.qunar.com/mfe/ykit/commit/bbb5808))
 * **setConfig:** 添加对alias处理 ([e2b41ce](http://gitlab.corp.qunar.com/mfe/ykit/commit/e2b41ce))
