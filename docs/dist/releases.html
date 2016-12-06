@@ -83,7 +83,17 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <p><a name="0.1.7"></a></p>
+                  <p><a name="0.1.8-rc0"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8-rc0">0.1.8-rc0</a> (2016-12-06)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
+<li><strong>cli:</strong> 修复自定义命令没有缩写会造成 help 命令报错 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/17f6d7b">17f6d7b</a>)</li>
+<li><strong>server:</strong> 修复 rebuild 结束没有给出明显提示 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/9036cbc">9036cbc</a>)</li>
+</ul>
+<h3 id="Features">Features</h3><ul>
+<li><strong>init:</strong> 修改fekit项目的config文件模板，因为fekit项目支持一键导入，所以所有的配置都可以直接从fekit.config中读取了。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/9f94e87">9f94e87</a>)</li>
+<li><strong>pack:</strong> 使用 uglify 进行压缩 (+1 squashed commit) (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/cb151c7">cb151c7</a>)</li>
+<li><strong>pack:</strong> 给出明确 optimize 提示 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/3e67b01">3e67b01</a>)</li>
+</ul>
+<p><a name="0.1.7"></a></p>
 <h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...0.1.7">0.1.7</a> (2016-12-02)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
 <li>修复 map 文件返回错误 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/1f0f055">1f0f055</a>)</li>
 <li>修复 ora 不支持 node 0.12 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/c9d7120">c9d7120</a>)</li>
@@ -241,6 +251,14 @@
 <p><a name="0.0.3"></a></p>
 <h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.0.2...0.0.3">0.0.3</a> (2016-08-15)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
 <li><strong>config:</strong> 修复setCompile报错 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/ef9f345">ef9f345</a>)</li>
+<li><strong>server:</strong> 修复打包大文件时第一次渲染失败 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/b29d873">b29d873</a>)</li>
+<li><strong>server:</strong> 修复资源过大时第一次渲染失败 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f4e9a12">f4e9a12</a>)</li>
+</ul>
+<h3 id="Features">Features</h3><ul>
+<li><strong>server:</strong> 检测到config文件变化后可以重新生成compiler (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/423d485">423d485</a>)</li>
+</ul>
+<p><a name="0.0.2"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/v0.0.1...0.0.2">0.0.2</a> (2016-08-11)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
 <li><strong>config:</strong> 修复设置loaders不生效 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/b904079">b904079</a>)</li>
 <li><strong>config:</strong> 初始context改为src (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/70be3c7">70be3c7</a>)</li>
 <li><strong>fixcss:</strong> 修复寻找cache路径 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/d4e14ac">d4e14ac</a>)</li>
@@ -266,8 +284,6 @@
 <li><strong>QProxy:</strong> 兼容windows (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f46ccb6">f46ccb6</a>)</li>
 <li><strong>readrc:</strong> 如果没有rc不报错，在init时reload (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/ffbd178">ffbd178</a>)</li>
 <li><strong>server:</strong> 优化server启动报错提示 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/e36c697">e36c697</a>)</li>
-<li><strong>server:</strong> 修复打包大文件时第一次渲染失败 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/b29d873">b29d873</a>)</li>
-<li><strong>server:</strong> 修复资源过大时第一次渲染失败 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f4e9a12">f4e9a12</a>)</li>
 <li><strong>setConfig:</strong> 修复返回undefined时报错 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/cdc1ad3">cdc1ad3</a>)</li>
 <li><strong>setConfig:</strong> 支持设置context相对路径 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/6afd43d">6afd43d</a>)</li>
 </ul>
@@ -281,7 +297,6 @@
 <li><strong>lint:</strong> lint可以指定目录/文件 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/9d21d95">9d21d95</a>)</li>
 <li><strong>pack:</strong> 可配置打包前是否清空输出目录 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/eac936a">eac936a</a>)</li>
 <li><strong>package.json:</strong> 添加jerryproxy作为初始组件 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/0e086ef">0e086ef</a>)</li>
-<li><strong>server:</strong> 检测到config文件变化后可以重新生成compiler (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/423d485">423d485</a>)</li>
 <li><strong>server:</strong> 添加代理功能 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/3189f29">3189f29</a>)</li>
 <li><strong>server/pack:</strong> 支持入口为数组 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/bbb5808">bbb5808</a>)</li>
 <li><strong>setConfig:</strong> 添加对alias处理 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/e2b41ce">e2b41ce</a>)</li>
