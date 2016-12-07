@@ -29,7 +29,6 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "globby": "^5.0.0",
     "html-loader": "^0.4.3",
-    "inquirer": "1.1.1",
     "jerryproxy": "^1.0.68",
     "js-yaml": "^3.6.1",
     "json-loader": "^0.5.4",

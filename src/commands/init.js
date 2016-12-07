@@ -1,15 +1,16 @@
 'use strict';
 
-const execSync = require('child_process').execSync;
 const replaceStream = require('replacestream');
-const inquirer = require('inquirer');
 const Manager = require('../modules/manager.js');
 
 exports.usage = '项目初始化';
 exports.abbr = 'i';
 
 exports.setOptions = () => {
+    optimist.alias('l', 'lint');
+    optimist.describe('l', '先进行验证');
 };
+
 exports.run = function (options) {
     Manager.reloadRC();
 
@@ -23,86 +24,44 @@ exports.run = function (options) {
         defaultName = sysPath.basename(cwd);
     }
 
-    const questions = [
-        {
-            type: 'input',
-            name: 'name',
-            message: 'project name(' + defaultName + '):'
-        }, {
-            type: 'list',
-            name: 'type',
-            message: 'project type:',
-            choices: [
-                {
-                    name: 'qunar - 支持sass/less，实现资源带版本号，fekit_moudles打包，sync命令等',
-                    value: 'qunar'
-                }, {
-                    name: 'fekit - 主要用于fekit项目迁移，兼容fekit配置和模块化语法等',
-                    value: 'fekit'
-                }, {
-                    name: 'hy    - 支持es6，更多功能仍在开发中',
-                    value: 'hy'
-                }, {
-                    name: 'basic - 默认基础配置',
-                    value: 'basic'
-                }
-            ]
-        }
-    ];
+    // TODO
+    const proName = defaultName;
 
-    inquirer.prompt(questions).then((answers) => {
-        answers.name = answers.name || defaultName;
+    const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/');
+    let writePackageJsonStream;
 
-        const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/');
-        let writePackageJsonStream;
+    // 如果没有package.json，先添加package.json
+    if (!fileExists(packageJsonPath)) {
+        writePackageJsonStream = createPackageJson();
+    }
 
-        // 如果没有package.json，先添加package.json
-        if (!fileExists(packageJsonPath)) {
-            writePackageJsonStream = createPackageJson();
-        }
+    if (!writePackageJsonStream) {
+        createConfigFile();
+    } else {
+        writePackageJsonStream.on('finish', () => {
+            log('Successfully created package.json file in ' + cwd);
 
-        if (!writePackageJsonStream) {
-            createConfigFile(answers.type);
-            installDependencies(answers.type);
-        } else {
-            writePackageJsonStream.on('finish', () => {
-                log('Successfully created package.json file in ' + cwd);
+            createConfigFile();
+        });
+    }
 
-                createConfigFile(answers.type);
-                installDependencies(answers.type);
+    function createPackageJson() {
+        return fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json')).pipe(replaceStream('#_name', proName)).pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
+    }
+
+    function createConfigFile() {
+        const configFileName = 'ykit.js';
+
+        if (!fileExists('./' + configFileName)) {
+            const writeStream = fs.createWriteStream(sysPath.resolve(cwd, configFileName));
+            const configFilePath = sysPath.resolve(initTmplPath, 'ykit.common.js');
+            const stream = fs.createReadStream(configFilePath).pipe(replaceStream('#_name', proName)).pipe(writeStream);
+
+            stream.on('finish', () => {
+                log('Successfully created ' + configFileName + ' file in ' + cwd);
             });
         }
-
-        function createPackageJson() {
-            return fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json')).pipe(replaceStream('#_name', answers.name)).pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
-        }
-
-        function createConfigFile(configType) {
-            const configFileName = configType !== 'basic'
-                ? 'ykit.' + configType + '.js'
-                : 'ykit.js';
-
-            if (!fileExists('./' + configFileName)) {
-                const stream = fs.createReadStream(sysPath.resolve(initTmplPath, configType !== 'fekit' ? 'ykit.common.js' : 'ykit.fekit.js')).pipe(replaceStream('#_name', answers.name)).pipe(fs.createWriteStream(sysPath.resolve(cwd, configFileName)));
-
-                stream.on('finish', () => {
-                    log('Successfully created ' + configFileName + ' file in ' + cwd);
-                });
-            }
-        }
-
-        function installDependencies(configType) {
-            if (configType === 'basic') {
-                return;
-            }
-
-            const packageName = 'ykit-config-' + configType,
-                installConfigPackageCmd = 'npm i --save-dev --registry http://registry.npm.corp.qunar.com/ @qnpm/ykit-config-' + configType;
-
-            log('Installing ' + packageName + '...');
-            execSync(installConfigPackageCmd);
-        }
-    });
+    }
 };
 
 function fileExists(filePath) {

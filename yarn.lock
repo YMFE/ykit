@@ -1048,7 +1048,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "http://registry.npm.corp.qunar.com/concat-map/download/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream@^1.4.6, concat-stream@^1.4.7:
+concat-stream@^1.4.6:
   version "1.5.2"
   resolved "http://registry.npm.corp.qunar.com/concat-stream/download/concat-stream-1.5.2.tgz#708978624d856af41a5a741defdd261da752c266"
   dependencies:
@@ -1884,14 +1884,6 @@ extend@^3.0.0, extend@~3.0.0:
   version "3.0.0"
   resolved "http://registry.npm.corp.qunar.com/extend/download/extend-3.0.0.tgz#5a474353b9f3353ddd8176dfd37b91c83a46f1d4"
 
-external-editor@^1.0.1:
-  version "1.1.1"
-  resolved "http://registry.npm.corp.qunar.com/external-editor/download/external-editor-1.1.1.tgz#12d7b0db850f7ff7e7081baf4005700060c4600b"
-  dependencies:
-    extend "^3.0.0"
-    spawn-sync "^1.0.15"
-    tmp "^0.0.29"
-
 extglob@^0.3.1:
   version "0.3.2"
   resolved "http://registry.npm.corp.qunar.com/extglob/download/extglob-0.3.2.tgz#2e18ff3d2f49ab2765cec9023f011daa8d8349a1"
@@ -2670,25 +2662,6 @@ ini@^1.3.2, ini@^1.3.4, ini@~1.3.0:
   version "1.3.4"
   resolved "http://registry.npm.corp.qunar.com/ini/download/ini-1.3.4.tgz#0537cb79daf59b59a1a517dff706c86ec039162e"
 
-inquirer@1.1.1:
-  version "1.1.1"
-  resolved "http://registry.npm.corp.qunar.com/inquirer/download/inquirer-1.1.1.tgz#20c57a81336a510a6be38fa8a7db6fe07c3ae70f"
-  dependencies:
-    ansi-escapes "^1.1.0"
-    chalk "^1.0.0"
-    cli-cursor "^1.0.1"
-    cli-width "^2.0.0"
-    external-editor "^1.0.1"
-    figures "^1.3.5"
-    lodash "^4.3.0"
-    mute-stream "0.0.6"
-    pinkie-promise "^2.0.0"
-    run-async "^2.2.0"
-    rx "^4.1.0"
-    string-width "^1.0.1"
-    strip-ansi "^3.0.0"
-    through "^2.3.6"
-
 inquirer@^0.12.0:
   version "0.12.0"
   resolved "http://registry.npm.corp.qunar.com/inquirer/download/inquirer-0.12.0.tgz#1ef2bfd63504df0bc75785fff8c2c41df12f077e"
@@ -2852,10 +2825,6 @@ is-posix-bracket@^0.1.0:
 is-primitive@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.corp.qunar.com/is-primitive/download/is-primitive-2.0.0.tgz#207bab91638499c07b2adf240a41a87210034575"
-
-is-promise@^2.1.0:
-  version "2.1.0"
-  resolved "http://registry.npm.corp.qunar.com/is-promise/download/is-promise-2.1.0.tgz#79a2a9ece7f096e80f36d2b2f3bc16c1ff4bf3fa"
 
 is-property@^1.0.0:
   version "1.0.2"
@@ -3515,10 +3484,6 @@ mute-stream@0.0.5:
   version "0.0.5"
   resolved "http://registry.npm.corp.qunar.com/mute-stream/download/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
 
-mute-stream@0.0.6:
-  version "0.0.6"
-  resolved "http://registry.npm.corp.qunar.com/mute-stream/download/mute-stream-0.0.6.tgz#48962b19e169fd1dfc240b3f1e7317627bbc47db"
-
 nan@^2.3.0:
   version "2.4.0"
   resolved "http://registry.npm.corp.qunar.com/nan/download/nan-2.4.0.tgz#fb3c59d45fe4effe215f0b890f8adf6eb32d2232"
@@ -3744,11 +3709,7 @@ os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
   resolved "http://registry.npm.corp.qunar.com/os-homedir/download/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
 
-os-shim@^0.1.2:
-  version "0.1.3"
-  resolved "http://registry.npm.corp.qunar.com/os-shim/download/os-shim-0.1.3.tgz#6b62c3791cf7909ea35ed46e17658bb417cb3917"
-
-os-tmpdir@^1.0.0, os-tmpdir@^1.0.1, os-tmpdir@~1.0.1:
+os-tmpdir@^1.0.0, os-tmpdir@^1.0.1:
   version "1.0.2"
   resolved "http://registry.npm.corp.qunar.com/os-tmpdir/download/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
@@ -4550,19 +4511,9 @@ run-async@^0.1.0:
   dependencies:
     once "^1.3.0"
 
-run-async@^2.2.0:
-  version "2.3.0"
-  resolved "http://registry.npm.corp.qunar.com/run-async/download/run-async-2.3.0.tgz#0371ab4ae0bdd720d4166d7dfda64ff7a445a6c0"
-  dependencies:
-    is-promise "^2.1.0"
-
 rx-lite@^3.1.2:
   version "3.1.2"
   resolved "http://registry.npm.corp.qunar.com/rx-lite/download/rx-lite-3.1.2.tgz#19ce502ca572665f3b647b10939f97fd1615f102"
-
-rx@^4.1.0:
-  version "4.1.0"
-  resolved "http://registry.npm.corp.qunar.com/rx/download/rx-4.1.0.tgz#a5f13ff79ef3b740fe30aa803fb09f98805d4782"
 
 sax@~1.2.1:
   version "1.2.1"
@@ -4811,13 +4762,6 @@ spawn-command@0.0.2:
 spawn-command@0.0.2-1:
   version "0.0.2-1"
   resolved "http://registry.npm.corp.qunar.com/spawn-command/download/spawn-command-0.0.2-1.tgz#62f5e9466981c1b796dc5929937e11c9c6921bd0"
-
-spawn-sync@^1.0.15:
-  version "1.0.15"
-  resolved "http://registry.npm.corp.qunar.com/spawn-sync/download/spawn-sync-1.0.15.tgz#b00799557eb7fb0c8376c29d44e8a1ea67e57476"
-  dependencies:
-    concat-stream "^1.4.7"
-    os-shim "^0.1.2"
 
 spdx-correct@~1.0.0:
   version "1.0.2"
@@ -5082,12 +5026,6 @@ timers-browserify@^1.0.1:
   resolved "http://registry.npm.corp.qunar.com/timers-browserify/download/timers-browserify-1.4.2.tgz#c9c58b575be8407375cb5e2462dacee74359f41d"
   dependencies:
     process "~0.11.0"
-
-tmp@^0.0.29:
-  version "0.0.29"
-  resolved "http://registry.npm.corp.qunar.com/tmp/download/tmp-0.0.29.tgz#f25125ff0dd9da3ccb0c2dd371ee1288bb9128c0"
-  dependencies:
-    os-tmpdir "~1.0.1"
 
 to-array@0.1.4:
   version "0.1.4"
