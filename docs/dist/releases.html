@@ -83,7 +83,14 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <p><a name="0.1.8-rc0"></a></p>
+                  <p><a name="0.1.8-rc1"></a></p>
+<h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/v0.1.8-rc0...v0.1.8-rc1">0.1.8-rc1</a> (2016-12-07)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
+<li><strong>pack:</strong> 修复自身版本号使用 webpack-md5-hash 时问题 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/2da0378">2da0378</a>)</li>
+</ul>
+<h3 id="Performance Improvements">Performance Improvements</h3><ul>
+<li><strong>pack:</strong> 优化 pack log (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/c814175">c814175</a>)</li>
+</ul>
+<p><a name="0.1.8-rc0"></a></p>
 <h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8-rc0">0.1.8-rc0</a> (2016-12-06)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
 <li><strong>cli:</strong> 修复自定义命令没有缩写会造成 help 命令报错 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/17f6d7b">17f6d7b</a>)</li>
 <li><strong>server:</strong> 修复 rebuild 结束没有给出明显提示 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/9036cbc">9036cbc</a>)</li>
@@ -119,15 +126,16 @@
 </ul>
 <h3 id="Features">Features</h3><ul>
 <li><strong>Config:</strong> 增加beforepack钩子 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d">14f3e0d</a>)</li>
-<li>添加 hacky 方式获取内部 webpack (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919">ed44919</a>)</li>
-<li>添加 harmonize 运行环境 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f2aa43d">f2aa43d</a>)</li>
 <li><strong>pack:</strong> 允许在 packCallback 中更改 assetsInfo (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f263f05">f263f05</a>)</li>
+<li><strong>server:</strong> time to 0.1.7 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/cc12792">cc12792</a>)</li>
+<li>添加 hacky 方式获取内部 webpack (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919">ed44919</a>)</li>
 <li><strong>server:</strong> 使用 https 选项同时可以开启正常 http server (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/a05480e">a05480e</a>)</li>
 <li><strong>server:</strong> 延迟 404 的请求直到编译结束（使得编译副产物可以被请求到） (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/9b7fb2c">9b7fb2c</a>)</li>
 <li><strong>server:</strong> 采用新的 compile &amp; watch 机制 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/09e1697">09e1697</a>)</li>
 <li><strong>server:</strong> 采用新的 logger 风格 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/4b4fbce">4b4fbce</a>)</li>
-<li><strong>server.js:</strong> applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b">afd868b</a>)</li>
+<li>添加 harmonize 运行环境 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/f2aa43d">f2aa43d</a>)</li>
 <li><strong>server.js:</strong> applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/eadd1c9">eadd1c9</a>)</li>
+<li><strong>server.js:</strong> applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 (<a href="http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b">afd868b</a>)</li>
 </ul>
 <p><a name="0.1.6"></a></p>
 <h2><a href="http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.5...0.1.6">0.1.6</a> (2016-11-18)</h2><h3 id="Bug Fixes">Bug Fixes</h3><ul>
