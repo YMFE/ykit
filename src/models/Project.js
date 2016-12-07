@@ -311,14 +311,14 @@ class Project {
                 });
 
                 // 压缩
-                const computecluster = require('compute-cluster');
-                const cc = new computecluster({
-                    module: sysPath.resolve(__dirname , '../modules/minifyWorker.js'),
-                    max_backlog: -1,
-                    max_processes: 5
-                });
-
                 if(opt.min) {
+                    const computecluster = require('compute-cluster');
+                    const cc = new computecluster({
+                        module: sysPath.resolve(__dirname , '../modules/minWorker.js'),
+                        max_backlog: -1,
+                        max_processes: 5
+                    });
+
                     spinner.start();
 
                     const assetsInfo = stats.toJson({
@@ -326,14 +326,25 @@ class Project {
                     }).assets;
                     let processToRun = assetsInfo.length;
 
+                    const originAssets = stats.compilation.assets;
+                    const nextAssets = {};
                     assetsInfo.forEach((asset) => {
                         cc.enqueue({
                             opt: opt,
                             cwd: cwd,
                             assetName: asset.name
-                        }, (err) => {
+                        }, (err, response) => {
                             if (err) {
                                 error('an error occured:', err);
+                            }
+
+                            // 将替换版本号的资源名取代原有名字
+                            if(response.length > 0) {
+                                const originAssetName = response[0];
+                                const nextAssetName = response[1];
+                                if(originAssets[originAssetName]) {
+                                    nextAssets[nextAssetName] = originAssets[originAssetName];
+                                }
                             }
 
                             processToRun -= 1;
@@ -347,6 +358,9 @@ class Project {
                             }
                         });
                     });
+
+                    // 更新 stats
+                    stats.compilation.assets = nextAssets;
                 } else {
                     afterPack();
                 }

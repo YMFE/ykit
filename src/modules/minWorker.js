@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const jsParser = require('uglify-js').parser;
 const jsUglify = require('uglify-js').uglify;
 const cssUglify = require('uglifycss');
@@ -8,6 +9,8 @@ process.on('message', function(m) {
     const opt = m.opt;
     const cwd = m.cwd;
     const assetName = m.assetName;
+    const nameReg = /^([^\@]*)\@?([^\.]+)(\.(js|css))$/;
+    let replacedAssets = [];
 
     if(/\.js$/.test(assetName) || /\.css$/.test(assetName)) {
         const content = fs.readFileSync(path.resolve(cwd, assetName), {encoding: 'utf8'});
@@ -25,10 +28,26 @@ process.on('message', function(m) {
             minifiedCode = jsUglify.gen_code(ast, true);
         } else if (path.extname(assetName) === '.css') {
             minifiedCode = cssUglify.processString(content);
-        } 
+        }
 
-        minifiedCode && fs.writeFileSync(path.resolve(cwd, assetName), minifiedCode, {encoding: 'utf8'});
+        if(minifiedCode) {
+            fs.writeFileSync(path.resolve(cwd, assetName), minifiedCode, {encoding: 'utf8'});
+
+            // 重新生成版本号， webpack 打的样式文件 hash 会根据所在目录不同而不同，造成 beta/prd 环境下版本号不一致
+            var matchInfo = assetName.match(nameReg),
+                version = matchInfo[2];
+
+            const nextVersion = md5(minifiedCode);
+            const nextName = assetName.replace(version, nextVersion);
+            fs.renameSync(path.resolve(cwd, assetName), path.resolve(cwd, nextName));
+
+            replacedAssets = [assetName, nextName];
+        }
     }
 
-    process.send('complete');
+    process.send(replacedAssets);
 });
+
+function md5(content) {
+    return crypto.createHash('md5').update(content).digest('hex');
+}
