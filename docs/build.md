@@ -9,7 +9,7 @@
 2.进入 Schema 公共详细信息填写界面，在 build_command 字段填写以下打包命令：
 
 ```
-export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm cache clean && npm install --production --registry http://registry.npm.corp.qunar.com/ && ykit pack -m mangle=false -q -c
+export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm cache clean && npm install --registry http://registry.npm.corp.qunar.com/ && ykit pack -m mangle=false -q -c
 ```
 
 其它字段按项目需求填写，如无特殊需求可不填，submit 即可。
