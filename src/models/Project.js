@@ -343,50 +343,55 @@ class Project {
                                 cc.exit();
                                 spinner.stop();
                                 logTime('minify complete!');
-
-                                async.series(self.packCallbacks.map((packCallback) => {
-                                    return function(callback) {
-                                        packCallback(opt, stats);
-                                        callback(null);
-                                    };
-                                }), (err) => {
-                                    let statsInfo = stats.toJson({errorDetails: false});
-
-                                    process.stdout.write('\n' +
-                                        '\x1b[90m' +
-                                        '--------------------------  YKIT PACKED ASSETS  -------------------------- ' +
-                                        '\x1b[0m \n\n');
-
-                                    if (statsInfo.errors.length > 0) {
-                                        statsInfo.errors.map((err) => {
-                                            error(err.red + '\n');
-                                        });
-                                    }
-                                    if (statsInfo.warnings.length > 0) {
-                                        statsInfo.warnings.map((warning) => {
-                                            warn(warning.yellow + '\n');
-                                        });
-                                    }
-
-                                    const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
-                                    assetsInfo.map((asset) => {
-                                        const size = asset.size > 1024
-                                            ? (asset.size / 1024).toFixed(2) + ' kB'
-                                            : asset.size + ' bytes';
-                                        if (!/\.cache$/.test(asset.name)) {
-                                            log('- '.gray + asset.name + ' - ' + size);
-                                        }
-                                    });
-
-                                    const packDuration = Date.now() - packStartTime > 1000
-                                                        ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
-                                                        : (Date.now() - packStartTime) + 'ms';
-                                    log('Finished in ' + packDuration + '.\n');
-
-                                    callback(err, stats);
-                                });
+                                afterPack();
                             }
                         });
+                    });
+                } else {
+                    afterPack();
+                }
+
+                function afterPack() {
+                    async.series(self.packCallbacks.map((packCallback) => {
+                        return function(callback) {
+                            packCallback(opt, stats);
+                            callback(null);
+                        };
+                    }), (err) => {
+                        let statsInfo = stats.toJson({errorDetails: false});
+
+                        process.stdout.write('\n' +
+                            '\x1b[90m' +
+                            '--------------------------  YKIT PACKED ASSETS  -------------------------- ' +
+                            '\x1b[0m \n\n');
+
+                        if (statsInfo.errors.length > 0) {
+                            statsInfo.errors.map((err) => {
+                                error(err.red + '\n');
+                            });
+                        }
+                        if (statsInfo.warnings.length > 0) {
+                            statsInfo.warnings.map((warning) => {
+                                warn(warning.yellow + '\n');
+                            });
+                        }
+
+                        const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
+                        assetsInfo.map((asset) => {
+                            const size = asset.size > 1024
+                                ? (asset.size / 1024).toFixed(2) + ' kB'
+                                : asset.size + ' bytes';
+                            if (!/\.cache$/.test(asset.name)) {
+                                log('- '.gray + asset.name + ' - ' + size);
+                            }
+                        });
+
+                        const packDuration = Date.now() - packStartTime > 1000
+                                            ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
+                                            : (Date.now() - packStartTime) + 'ms';
+                        log('Finished in ' + packDuration + '.\n');
+
+                        callback(err, stats);
                     });
                 }
             });
