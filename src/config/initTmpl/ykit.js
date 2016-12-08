@@ -5,19 +5,14 @@ exports.config = function() {
             './styles/index.scss'
         ],
         modifyWebpackConfig: function(baseConfig) {
-            // 修改 webpack 编译配置
-            // ...
+            // edit ykit's Webpack configs
 
             return baseConfig;
-        },
-        sync: {
-            host: '192.168.237.71',
-            path: '/home/q/www/qunarzz.com/#_name'
         },
         command: [{
             name: '#_name_cmd',
             module: {
-                usage: '项目自定义命令',
+                usage: 'user-defined command',
                 run: function() {}
             }
         }]

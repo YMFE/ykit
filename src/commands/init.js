@@ -54,11 +54,11 @@ exports.run = function (options) {
 
         if (!fileExists('./' + configFileName)) {
             const writeStream = fs.createWriteStream(sysPath.resolve(cwd, configFileName));
-            const configFilePath = sysPath.resolve(initTmplPath, 'ykit.common.js');
+            const configFilePath = sysPath.resolve(initTmplPath, 'ykit.js');
             const stream = fs.createReadStream(configFilePath).pipe(replaceStream('#_name', proName)).pipe(writeStream);
 
             stream.on('finish', () => {
-                log('Successfully created ' + configFileName + ' file in ' + cwd);
+                log('Successfully created ' + configFileName + ' in ' + cwd);
             });
         }
     }

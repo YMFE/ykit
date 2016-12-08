@@ -162,7 +162,7 @@ class Project {
                         this.setCommands(userConfigObj.command);
                     }
                 } else {
-                    error(this.configFile + ' 没有 exports 正确的方法！');
+                    error(this.configFile + ' 设置有误，请参考文档 ' + 'http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html'.underline);
                     return this;
                 }
             }
