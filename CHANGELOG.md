@@ -1,3 +1,18 @@
+<a name="0.1.8-rc1"></a>
+## [0.1.8-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/v0.1.8-rc0...v0.1.8-rc1) (2016-12-07)
+
+
+### Bug Fixes
+
+* **pack:** 修复自身版本号使用 webpack-md5-hash 时问题 ([2da0378](http://gitlab.corp.qunar.com/mfe/ykit/commit/2da0378))
+
+
+### Performance Improvements
+
+* **pack:** 优化 pack log ([c814175](http://gitlab.corp.qunar.com/mfe/ykit/commit/c814175))
+
+
+
 <a name="0.1.8-rc0"></a>
 ## [0.1.8-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8-rc0) (2016-12-06)
 
@@ -48,15 +63,16 @@
 ### Features
 
 * **Config:** 增加beforepack钩子 ([14f3e0d](http://gitlab.corp.qunar.com/mfe/ykit/commit/14f3e0d))
-* 添加 hacky 方式获取内部 webpack ([ed44919](http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919))
-* 添加 harmonize 运行环境 ([f2aa43d](http://gitlab.corp.qunar.com/mfe/ykit/commit/f2aa43d))
 * **pack:** 允许在 packCallback 中更改 assetsInfo ([f263f05](http://gitlab.corp.qunar.com/mfe/ykit/commit/f263f05))
+* **server:** time to 0.1.7 ([cc12792](http://gitlab.corp.qunar.com/mfe/ykit/commit/cc12792))
+* 添加 hacky 方式获取内部 webpack ([ed44919](http://gitlab.corp.qunar.com/mfe/ykit/commit/ed44919))
 * **server:** 使用 https 选项同时可以开启正常 http server ([a05480e](http://gitlab.corp.qunar.com/mfe/ykit/commit/a05480e))
 * **server:** 延迟 404 的请求直到编译结束（使得编译副产物可以被请求到） ([9b7fb2c](http://gitlab.corp.qunar.com/mfe/ykit/commit/9b7fb2c))
 * **server:** 采用新的 compile & watch 机制 ([09e1697](http://gitlab.corp.qunar.com/mfe/ykit/commit/09e1697))
 * **server:** 采用新的 logger 风格 ([4b4fbce](http://gitlab.corp.qunar.com/mfe/ykit/commit/4b4fbce))
-* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([afd868b](http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b))
+* 添加 harmonize 运行环境 ([f2aa43d](http://gitlab.corp.qunar.com/mfe/ykit/commit/f2aa43d))
 * **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([eadd1c9](http://gitlab.corp.qunar.com/mfe/ykit/commit/eadd1c9))
+* **server.js:** applyMiddleware API升级，现在允许用户调用多次绑定多个Middleware，它们将会按照绑定顺序依次执行。 ([afd868b](http://gitlab.corp.qunar.com/mfe/ykit/commit/afd868b))
 
 
 

@@ -1,7 +1,6 @@
 'use strict';
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WebpackMd5Hash = require('webpack-md5-hash');
 
 const normalize = require('../utils/path').normalize;
 
@@ -56,10 +55,7 @@ class Config {
             plugins: [
                 // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
-                require('../plugins/requireModulePlugin.js'),
-
-                // vender plugin
-                new WebpackMd5Hash()
+                require('../plugins/requireModulePlugin.js')
             ],
             resolve: {
                 root: [],
