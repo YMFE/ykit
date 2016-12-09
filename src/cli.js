@@ -35,7 +35,7 @@ let cli = module.exports = {
         let project = Manager.getProject(process.cwd());
         let command = project.commands.filter((command) => command.name === option || command.abbr === option)[0];
         if (!command) {
-            error('请确认是否存在 ' + option + ' 命令');
+            error('Command ' + option + ' not found.');
             return;
         }
         let module = command.module;
