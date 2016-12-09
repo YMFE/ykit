@@ -1,5 +1,15 @@
+<a name="0.1.8"></a>
+## [0.1.8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.8-rc1...v0.1.8) (2016-12-09)
+
+
+### Bug Fixes
+
+* **pack:**  修复资源无版本号时编译错误 ([57a77cc](http://gitlab.corp.qunar.com/mfe/ykit/commit/57a77cc))
+
+
+
 <a name="0.1.8-rc1"></a>
-## [0.1.8-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/v0.1.8-rc0...v0.1.8-rc1) (2016-12-07)
+## [0.1.8-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/v0.1.8-rc0...0.1.8-rc1) (2016-12-07)
 
 
 ### Bug Fixes
