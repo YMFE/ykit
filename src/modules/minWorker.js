@@ -5,11 +5,12 @@ const jsParser = require('uglify-js').parser;
 const jsUglify = require('uglify-js').uglify;
 const cssUglify = require('uglifycss');
 
+const HASH_PLACEHOLDER = '[hashPlaceholder]';
+
 process.on('message', function(m) {
     const opt = m.opt;
     const cwd = m.cwd;
     const assetName = m.assetName;
-    const nameReg = /^([^\@]*)\@?([^\.]+)(\.(js|css))$/;
     let replacedAssets = [];
 
     if(/\.js$/.test(assetName) || /\.css$/.test(assetName)) {
@@ -34,14 +35,12 @@ process.on('message', function(m) {
             fs.writeFileSync(path.resolve(cwd, assetName), minifiedCode, {encoding: 'utf8'});
 
             // 重新生成版本号， webpack 打的样式文件 hash 会根据所在目录不同而不同，造成 beta/prd 环境下版本号不一致
-            var matchInfo = assetName.match(nameReg),
-                version = matchInfo[2];
-
-            const nextVersion = md5(minifiedCode);
-            const nextName = assetName.replace(version, nextVersion);
-            fs.renameSync(path.resolve(cwd, assetName), path.resolve(cwd, nextName));
-
-            replacedAssets = [assetName, nextName];
+            if(assetName.indexOf(HASH_PLACEHOLDER) > -1) {
+                const version = md5(minifiedCode).slice(0, 16);
+                const nextName = assetName.replace(HASH_PLACEHOLDER, version);
+                fs.renameSync(path.resolve(cwd, assetName), path.resolve(cwd, nextName));
+                replacedAssets = [assetName, nextName];
+            }
         }
     }
 
