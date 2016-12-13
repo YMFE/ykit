@@ -1,8 +1,13 @@
+const fs = require('fs-extra');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const watch = require('gulp-watch');
 
-gulp.task('default', ['compileJS', 'moveConfig']);
+gulp.task('default', ['clearLib', 'compileJS', 'moveConfig']);
+
+gulp.task('clearLib', [], function() {
+    return fs.removeSync('./lib/')
+});
 
 gulp.task('compileJS', [], function() {
 	var babelProcess = babel({presets: ['es2015']})
