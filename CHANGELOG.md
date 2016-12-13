@@ -1,11 +1,12 @@
 <a name="0.1.8"></a>
-## [0.1.8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8) (2016-12-09)
+## [0.1.8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...v0.1.8) (2016-12-12)
 
 
 ### Bug Fixes
 
 * **cli:** 修复自定义命令没有缩写会造成 help 命令报错 ([17f6d7b](http://gitlab.corp.qunar.com/mfe/ykit/commit/17f6d7b))
 * **pack:**  修复资源无版本号时编译错误 ([57a77cc](http://gitlab.corp.qunar.com/mfe/ykit/commit/57a77cc))
+* **pack:** 修复 chunk 版本号问题 ([06039bf](http://gitlab.corp.qunar.com/mfe/ykit/commit/06039bf))
 * **pack:** 修复自身版本号使用 webpack-md5-hash 时问题 ([2da0378](http://gitlab.corp.qunar.com/mfe/ykit/commit/2da0378))
 * **server:** 修复 rebuild 结束没有给出明显提示 ([9036cbc](http://gitlab.corp.qunar.com/mfe/ykit/commit/9036cbc))
 
