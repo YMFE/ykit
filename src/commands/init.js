@@ -44,51 +44,30 @@ exports.run = function (options) {
         let isInitReady = false;
 
         async.series([
-            // 首先寻找是否存在 ykit xxx init 命令
-            (callback) => {
-                spinner.text = `checking cmd ykit ${initParam} init`;
-                checkInitCmd(callback);
-            }
-            // TODO
             // 寻找是否存在 ykit-config-xxx 的插件
-            // (callback) => {
-            //     spinner.text =`checking package ykit-config-${initParam}`;
-            //     checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao')
-            // },
-            // // 寻找是否存在 @qnpm/ykit-config-xxx 的插件
-            // (callback) => {
-            //     checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar')
-            // },
+            (callback) => {
+                spinner.text =`checking package ykit-config-${initParam}`;
+                checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org')
+            },
+            // 寻找是否存在 @qnpm/ykit-config-xxx 的插件
+            (callback) => {
+                checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar.com')
+            },
         ], (err) => {
             // results is now equal to ['one', 'two']
             isInitReady ? spinner.succeed() : spinner.fail();
         });
 
-        function checkInitCmd(callback) {
-            shell.exec(
-                `node ~/Desktop/pro/ykit/bin/ykit ${initParam} init`,
-                {silent: true},
-                (code, stdout, stderr) => {
-                    if(stdout.indexOf('X') > -1) {
-                        // do nothing
-                    } else {
-                        isInitReady = true;
-                    }
-                    callback(null, 'one');
-                }
-            );
-        }
-
         function checkConfigPkg(callback, packageName, registry) {
             if(!isInitReady) {
                 let timeout;
                 const child = shell.exec(
-                    `npm view ${packageName} --registry https://registry.npm.${registry}.org`,
+                    `npm view ${packageName} --registry http://registry.npm.${registry}`,
                     {silent: true},
                     (code, stdout, stderr) => {
                         if(stdout) {
                             isInitReady = true;
-                            initProject();
+                            initProject(packageName, registry);
                         }
                         clearTimeout(timeout);
                         callback(null);
@@ -104,13 +83,13 @@ exports.run = function (options) {
             }
         }
     } else {
-        // 如果没有package.json，先添加package.json
+        // 只初始化一个空白项目
         initProject();
     }
 
-    function initProject() {
+    function initProject(configPkgName, registry) {
         async.series([
-            // 首先寻找是否存在 ykit xxx init 命令
+            // 创建 packge.json
             (callback) => {
                 if (!UtilFs.fileExists(packageJsonPath)) {
                     writePackageJsonStream = createPackageJson();
@@ -122,18 +101,45 @@ exports.run = function (options) {
                     callback(null);
                 }
             },
+            // 创建 ykit.{type}.js
             (callback) => {
-                createConfigFile();
+                createConfigFile(configPkgName);
                 callback(null);
             },
+            // 拷贝模板
             (callback) => {
                 createTmpl();
                 callback(null);
             },
+            // 安装 config 插件
+            (callback) => {
+                if(configPkgName && registry) {
+                    installConfigPlugin(configPkgName, registry);
+                    callback(null);
+                } else {
+                    callback(null);
+                }
+            },
         ], (err, results) => {
-            // results is now equal to ['one', 'two']
             spinner.succeed();
+
         });
+    }
+
+    function installConfigPlugin(configPkgName, registry) {
+        if(configPkgName) {
+            console.log('installing ' + configPkgName);
+
+            shell.exec(
+                `npm install ${configPkgName} --registry http://registry.npm.${registry}`,
+                {silent: false},
+                (code, stdout, stderr) => {
+                    if(!stderr) {
+                        console.log('installing ' + configPkgName + ' succeed!!!');
+                    }
+                }
+            );
+        }
     }
 
     function createPackageJson() {
@@ -142,8 +148,14 @@ exports.run = function (options) {
                 .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
     }
 
-    function createConfigFile() {
-        const configFileName = 'ykit.js';
+    function createConfigFile(configPkgName) {
+        let configFileName = 'ykit.js';
+
+        if(configPkgName) {
+            configFileName = configPkgName.match(/ykit-config-([^\-]+)/)
+                            ? 'ykit.' + configPkgName.match(/ykit-config-([^\-]+)/)[1] + '.js'
+                            : configFileName
+        }
 
         if (!UtilFs.fileExists('./' + configFileName)) {
             const writeStream = fs.createWriteStream(sysPath.resolve(cwd, configFileName));
@@ -157,10 +169,10 @@ exports.run = function (options) {
     }
 
     function createTmpl() {
-        fs.move(sysPath.resolve(initTmplPath, './src'), sysPath.resolve(cwd, './src'), function (err) {
+        fs.copy(sysPath.resolve(initTmplPath, './src'), sysPath.resolve(cwd, './src'), function (err) {
             if (err) return console.error(err);
         });
-        fs.move(sysPath.resolve(initTmplPath, './index.html'), sysPath.resolve(cwd, './index.html'), function (err) {
+        fs.copy(sysPath.resolve(initTmplPath, './index.html'), sysPath.resolve(cwd, './index.html'), function (err) {
             if (err) return console.error(err);
         });
     }
