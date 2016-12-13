@@ -27,9 +27,7 @@ class Project {
         this.middlewares = [];
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
-        this.configFile = globby.sync([
-            'ykit.*.js', 'ykit.js'
-        ], {cwd: this.cwd})[0] || '';
+        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
         this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/) && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = ['node_modules/**/*', 'bower_components/**/*', 'dev/**/*', 'prd/**/*', '.ykit_cache/**/*'];
         this.cachePath = this._isCacheDirExists(cwd) || '';
@@ -272,7 +270,7 @@ class Project {
         UtilFs.deleteFolderRecursive(this.cachePath);
 
         if (!config.beforePack) {
-            config.beforePack = function(done) {
+            config.beforePack = function (done) {
                 done();
             };
         }
@@ -304,17 +302,17 @@ class Project {
             webpack(config, (err, stats) => {
                 const cwd = config.output.path;
 
-                globby.sync('**/*.cache', {cwd: cwd}).map((p) => {
+                globby.sync('**/*.cache', { cwd: cwd }).map((p) => {
                     return sysPath.join(config.output.path, p);
                 }).forEach((fp) => {
                     fs.unlinkSync(fp);
                 });
 
                 // 压缩
-                if(opt.min) {
+                if (opt.min) {
                     const computecluster = require('compute-cluster');
                     const cc = new computecluster({
-                        module: sysPath.resolve(__dirname , '../modules/minWorker.js'),
+                        module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
                         max_backlog: -1,
                         max_processes: 5
                     });
@@ -339,10 +337,10 @@ class Project {
                             }
 
                             // 将替换版本号的资源名取代原有名字
-                            if(response.length > 0) {
+                            if (response.length > 0) {
                                 const originAssetName = response[0];
                                 const nextAssetName = response[1];
-                                if(originAssets[originAssetName]) {
+                                if (originAssets[originAssetName]) {
                                     nextAssets[nextAssetName] = originAssets[originAssetName];
                                 }
                             }
@@ -353,26 +351,28 @@ class Project {
                             if (processToRun === 0) {
                                 cc.exit();
                                 spinner.stop();
+
                                 logTime('minify complete!');
+
+                                // 更新 stats
+                                stats.compilation.assets = Object.keys(nextAssets).length > 0 ? nextAssets : originAssets;
+
                                 afterPack();
                             }
                         });
                     });
-
-                    // 更新 stats
-                    stats.compilation.assets = nextAssets;
                 } else {
                     afterPack();
                 }
 
                 function afterPack() {
                     async.series(self.packCallbacks.map((packCallback) => {
-                        return function(callback) {
+                        return function (callback) {
                             packCallback(opt, stats);
                             callback(null);
                         };
                     }), (err) => {
-                        let statsInfo = stats.toJson({errorDetails: false});
+                        let statsInfo = stats.toJson({ errorDetails: false });
 
                         process.stdout.write('\n' +
                             '\x1b[90m' +
@@ -401,8 +401,8 @@ class Project {
                         });
 
                         const packDuration = Date.now() - packStartTime > 1000
-                                            ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
-                                            : (Date.now() - packStartTime) + 'ms';
+                            ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
+                            : (Date.now() - packStartTime) + 'ms';
                         log('Finished in ' + packDuration + '.\n');
 
                         callback(err, stats);
@@ -425,7 +425,7 @@ class Project {
             } else {
                 compilerProcess();
             }
-        });
+        }, opt);
 
         return this;
     }

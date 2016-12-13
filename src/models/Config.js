@@ -55,7 +55,8 @@ class Config {
             plugins: [
                 // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
-                require('../plugins/requireModulePlugin.js')
+                require('../plugins/requireModulePlugin.js'),
+                require('../plugins/hashPlaceholderPlugin.js')
             ],
             resolve: {
                 root: [],
