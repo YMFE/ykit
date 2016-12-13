@@ -24,7 +24,7 @@ process.on('message', function(m) {
                 willMangle = false;
             }
             let ast = jsParser.parse(content);
-            ast = willMangle ? jsUglify.ast_mangle(ast) : ast;
+            ast = jsUglify.ast_mangle(ast, willMangle);
             ast = jsUglify.ast_squeeze(ast);
             minifiedCode = jsUglify.gen_code(ast, true);
         } else if (path.extname(assetName) === '.css') {
