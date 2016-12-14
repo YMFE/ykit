@@ -58,8 +58,8 @@ ajv-keywords@^1.0.0:
   resolved "http://registry.npm.corp.qunar.com/ajv-keywords/download/ajv-keywords-1.2.0.tgz#676c4f087bfe1e8b12dca6fda2f3c74f417b099c"
 
 ajv@^4.7.0:
-  version "4.9.1"
-  resolved "http://registry.npm.corp.qunar.com/ajv/download/ajv-4.9.1.tgz#08e1b0a5fddc8b844d28ca7b03510e78812ee3a0"
+  version "4.10.0"
+  resolved "http://registry.npm.corp.qunar.com/ajv/download/ajv-4.10.0.tgz#7ae6169180eb199192a8b9a19fd0f47fc9ac8764"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -1399,13 +1399,13 @@ dateformat@^1.0.11, dateformat@^1.0.12:
     get-stdin "^4.0.1"
     meow "^3.3.0"
 
-debug@2.2.0, debug@^2.1.1, debug@~2.2.0:
+debug@2.2.0, debug@~2.2.0:
   version "2.2.0"
   resolved "http://registry.npm.corp.qunar.com/debug/download/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
 
-debug@2.3.3, debug@^2.2.0:
+debug@2.3.3, debug@^2.1.1, debug@^2.2.0:
   version "2.3.3"
   resolved "http://registry.npm.corp.qunar.com/debug/download/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
   dependencies:
@@ -1700,7 +1700,7 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@^2.13.1:
+eslint@2.13.1:
   version "2.13.1"
   resolved "http://registry.npm.corp.qunar.com/eslint/download/eslint-2.13.1.tgz#e4cc8fa0f009fb829aaae23855a29360be1f6c11"
   dependencies:
@@ -4512,13 +4512,13 @@ right-pad@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.corp.qunar.com/right-pad/download/right-pad-1.0.1.tgz#8ca08c2cbb5b55e74dafa96bf7fd1a27d568c8d0"
 
-rimraf@2, rimraf@~2.5.1, rimraf@~2.5.4:
+rimraf@2, rimraf@^2.2.8, rimraf@~2.5.1, rimraf@~2.5.4:
   version "2.5.4"
   resolved "http://registry.npm.corp.qunar.com/rimraf/download/rimraf-2.5.4.tgz#96800093cbf1a0c86bd95b4625467535c29dfa04"
   dependencies:
     glob "^7.0.5"
 
-rimraf@^2.2.8, rimraf@~2.4.3:
+rimraf@~2.4.3:
   version "2.4.5"
   resolved "http://registry.npm.corp.qunar.com/rimraf/download/rimraf-2.4.5.tgz#ee710ce5d93a8fdb856fb5ea8ff0e2d75934b2da"
   dependencies:
