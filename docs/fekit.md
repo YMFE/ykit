@@ -1,6 +1,6 @@
-<h1 style="font-weight: normal"> 将FEkit项目迁移到YKit </h1>
+# 将FEkit项目迁移到YKit
 
-<h2 style="font-weight: normal"> 下载依赖 </h2>
+## 下载依赖
 
 迁移所需要的依赖是`@qnpm/ykit-config-fekit`包：
 
@@ -12,24 +12,22 @@ qnpm i @qnpm/ykit-config-fekit --save
 
 和其他ykit项目不同的是你不需要写任何配置项，里面可配置的只有sync到开发机的命令。所有的相关配置都会从fekit.config中读取。
 
-<h2 style="font-weight: normal"> 尝试迁移 </h2>
+## 尝试迁移
 
 ** 以下内容非常重要，请仔细阅读后再进行操作 **
 
-<h3 style="font-weight: normal"> 目前不支持的项目类型： </h3>
+### 目前不支持的项目类型：
 
 - 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
 - 使用.less文件的项目
 - 使用了.mustache/.handlebar/.hogan文件的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
-以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
+以上三类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
-另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
+### 迁移步骤
 
-<h3 style="font-weight: normal"> 迁移步骤 </h3>
-
-<h4 style="font-weight: normal"> 1. 本地pack </h4>
+#### 1. 本地pack
 
 首先请在项目根目录下调用`ykit pack -c`生成dev文件。然后注意看一下命令行可能出现的报错，例如：
 
@@ -68,34 +66,34 @@ require("prepareSleeper/index/js");
 
 请重复以上两个步骤，直到没有报错为止。
 
-<h4 style="font-weight: normal"> 2. dev测试 </h4>
+#### 2. dev测试
 
 调用``ykit sync``可以将项目sync到开发机，然后请修改host进行dev测试（这个就不多说怎么弄了）。
 
 最好每个页面都看一下是否有问题。
 
-<h4 style="font-weight: normal"> beta/正式发布 </h4>
+#### beta/正式发布
 
 按流程走即可。
 
-<h2 style="font-weight: normal"> 支持 </h2>
+## 支持
 
 请qtalk jiao.shen或者yuhao.ju
 
-<h2 style="font-weight: normal"> 已经转化成功的项目列表 </h2>
+## 已经转化成功的项目列表
 
 注意，以下的项目绝大多数都有上面提到的css语法问题和js引用问题，都是手动修复以后转化成功的：
 
-- ugc_mall
-- ugc
-- ugchybrid
-- ugc_mall_admin
-- ugc_review_audit
-- ugc_topic
-- trainticket
-- hotel_fekit
-- bnb_fekit
-- bnbhybrid
-- hotel_luxury
-- mice_search_fekit
-- mice_operation_fekit
+ugc_mall
+ugc
+ugchybrid
+ugc_mall_admin
+ugc_review_audit
+ugc_topic
+trainticket
+hotel_fekit
+bnb_fekit
+bnbhybrid
+hotel_luxury
+mice_search_fekit
+mice_operation_fekit
