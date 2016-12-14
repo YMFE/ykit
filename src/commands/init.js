@@ -124,16 +124,13 @@ exports.run = function (options) {
 
     function installConfigPlugin(callback, configPkgName, registry) {
         if(configPkgName) {
-            console.log('installing ' + configPkgName);
+            log('installing ' + configPkgName + '...');
 
             shell.exec(
                 `npm install ${configPkgName} --registry http://registry.npm.${registry}`,
                 {silent: false},
                 (code, stdout, stderr) => {
-                    if(!stderr) {
-                        console.log('installing ' + configPkgName + ' succeed!!!');
-                    }
-                    callback(null)
+                    callback(stderr)
                 }
             );
         }
