@@ -31,18 +31,16 @@ exports.run = function (options) {
         defaultName = sysPath.basename(cwd);
     }
 
-    spinner.start();
-
     // TODO 也许可以改成通过命令行让用户输入
     const projectName = defaultName;
     const initTmplPath = sysPath.resolve(__dirname, '../config/initTmpl/');
-    let writePackageJsonStream;
 
     // 如果初始化时带着初始化类型
     if(typeof process.argv[3] === 'string') {
         const initParam = process.argv[3];
         let isInitReady = false;
 
+        spinner.start();
         async.series([
             // 寻找是否存在 ykit-config-xxx 的插件
             (callback) => {
@@ -55,7 +53,12 @@ exports.run = function (options) {
             },
         ], (err) => {
             // results is now equal to ['one', 'two']
-            isInitReady ? spinner.succeed() : spinner.fail();
+            if(isInitReady) {
+                spinner.stop()
+            } else {
+                spinner.text(`can't find package ykit-config-${initParam}`)
+                spinner.fail()
+            }
         });
 
         function checkConfigPkg(callback, packageName, registry) {
@@ -88,45 +91,38 @@ exports.run = function (options) {
     }
 
     function initProject(configPkgName, registry) {
-        async.series([
-            // 创建 packge.json
-            (callback) => {
-                if (!UtilFs.fileExists(packageJsonPath)) {
-                    writePackageJsonStream = createPackageJson();
-                    writePackageJsonStream.on('finish', () => {
-                        log('Saved package.json file in ' + cwd);
-                        callback(null);
-                    });
-                } else {
-                    callback(null);
-                }
-            },
-            // 创建 ykit.{type}.js
-            (callback) => {
-                createConfigFile(configPkgName);
-                callback(null);
-            },
-            // 拷贝模板
-            (callback) => {
-                createTmpl();
-                callback(null);
-            },
-            // 安装 config 插件
-            (callback) => {
-                if(configPkgName && registry) {
-                    installConfigPlugin(configPkgName, registry);
-                    callback(null);
-                } else {
-                    callback(null);
-                }
-            },
-        ], (err, results) => {
-            spinner.succeed();
+        let funcSeries = []
 
+        if(configPkgName) {
+            funcSeries = [
+                (callback) => createPackageJson(callback),
+                (callback) => installConfigPlugin(callback, configPkgName, registry),
+                (callback) => createConfigFile(callback, configPkgName),
+                (callback) => setup(callback)
+            ]
+        } else {
+            funcSeries = [
+                (callback) => createPackageJson(callback),
+                (callback) => createConfigFile(callback, configPkgName),
+                (callback) => createTmpl(callback)
+            ]
+        }
+
+        async.series(funcSeries, (err, results) => {
         });
     }
 
-    function installConfigPlugin(configPkgName, registry) {
+    function setup(callback) {
+        shell.exec(
+            `ykit setup`,
+            {silent: false},
+            (code, stdout, stderr) => {
+                callback(stderr)
+            }
+        );
+    }
+
+    function installConfigPlugin(callback, configPkgName, registry) {
         if(configPkgName) {
             console.log('installing ' + configPkgName);
 
@@ -137,18 +133,31 @@ exports.run = function (options) {
                     if(!stderr) {
                         console.log('installing ' + configPkgName + ' succeed!!!');
                     }
+                    callback(null)
                 }
             );
         }
     }
 
-    function createPackageJson() {
-        return fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
-                .pipe(replaceStream('#_name', projectName))
-                .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
+    function createPackageJson(callback) {
+        if (!UtilFs.fileExists(packageJsonPath)) {
+            let writePackageJsonStream = create();
+            writePackageJsonStream.on('finish', () => {
+                log('Saved package.json file in ' + cwd);
+                callback(null);
+            });
+        } else {
+            callback(null);
+        }
+
+        function create() {
+            return fs.createReadStream(sysPath.resolve(initTmplPath, 'package.json'))
+                    .pipe(replaceStream('#_name', projectName))
+                    .pipe(fs.createWriteStream(sysPath.resolve(cwd, 'package.json')));
+        }
     }
 
-    function createConfigFile(configPkgName) {
+    function createConfigFile(callback, configPkgName) {
         let configFileName = 'ykit.js';
 
         if(configPkgName) {
@@ -165,15 +174,16 @@ exports.run = function (options) {
             stream.on('finish', () => {
                 log('Saved ' + configFileName + ' in ' + cwd);
             });
+
+            callback(null)
+        } else {
+            callback(null)
         }
     }
 
-    function createTmpl() {
-        fs.copy(sysPath.resolve(initTmplPath, './src'), sysPath.resolve(cwd, './src'), function (err) {
-            if (err) return console.error(err);
-        });
-        fs.copy(sysPath.resolve(initTmplPath, './index.html'), sysPath.resolve(cwd, './index.html'), function (err) {
-            if (err) return console.error(err);
-        });
+    function createTmpl(callback) {
+        fs.copySync(sysPath.resolve(initTmplPath, './index.html'), sysPath.resolve(cwd, './index.html'));
+        fs.copySync(sysPath.resolve(initTmplPath, './src'), sysPath.resolve(cwd, './src'));
+        callback(null);
     }
 };
