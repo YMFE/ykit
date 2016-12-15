@@ -24,12 +24,18 @@ qnpm i @qnpm/ykit-config-fekit --save
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
 另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
 =======
 以上三类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 >>>>>>> 37ed6bb... feat(fekit.md): 迁移fekit新版文档
+=======
+以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
+
+另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
+>>>>>>> 83f96ae... feat(fekit.md): 迁移fekit新版文档
 
 ### 迁移步骤
 
