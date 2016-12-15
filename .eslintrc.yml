@@ -18,6 +18,10 @@ rules:
   semi:
     - error
     - always
+  no-unused-vars:
+    - off
+  no-inner-declarations:
+    - off
 globals:
   log: true
   error: true
