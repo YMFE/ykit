@@ -52,12 +52,25 @@ exports.run = (options) => {
         });
     }
 
+    // 预处理
+    app.use((req, res, next) => {
+        const extName = sysPath.extname(req.url);
+
+        if(extName === '.js') {
+            res.setHeader('Content-Type', 'application/javascript');
+        } else if(extName === '.css') {
+            res.setHeader('Content-Type', 'text/css; charset=UTF-8');
+        }
+
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        next();
+    });
+
     // logger
     app.use((req, res, next) => {
         const end = res.end;
         req._startTime = new Date;
 
-        res.setHeader('Access-Control-Allow-Origin', '*');
         res.end = (chunk, encoding) => {
             res.end = end;
             res.end(chunk, encoding);
