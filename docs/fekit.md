@@ -2,10 +2,10 @@
 
 ## 下载依赖
 
-迁移所需要的依赖是`ykit-config-fekit`包：
+迁移所需要的依赖是`@qnpm/ykit-config-fekit`包：
 
 ```
-qnpm i @qnpm/ykit-config-fekit
+qnpm i @qnpm/ykit-config-fekit --save
 ```
 
 然后包的postinstall脚本会帮你创建`ykit.fekit.js`到项目根目录下。
@@ -18,11 +18,12 @@ qnpm i @qnpm/ykit-config-fekit
 
 ### 目前不支持的项目类型：
 
-- 使用了`scripts`钩子脚本的项目
-- 使用less的项目
+- 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
+- 使用.less文件的项目
+- 使用了.mustache/.handlebar/.hogan文件的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
-以上三类项目目前完全无法迁移，请等待下一版本的ykit-config-fekit。
+以上三类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
 ### 迁移步骤
 
@@ -94,16 +95,5 @@ hotel_fekit
 bnb_fekit
 bnbhybrid
 hotel_luxury
-zeus
-travel_touch
 mice_search_fekit
-qunarhotel
-train_search
-flight_tts_new
-flight_traffic_hy
-flight_booking
-qtuan
-bus_tts (datetimepicker.js 1114行依赖jquery有误，项目中确实没有jquery)
-mobile_activity
 mice_operation_fekit
-flight_hd
