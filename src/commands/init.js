@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-disable */
-
 const shell = require('shelljs');
 const async = require('async');
 
@@ -39,23 +37,23 @@ exports.run = function (options) {
         let isInitReady = false;
 
         spinner.start();
-        spinner.text =`checking package ykit-config-${initParam}`;
+        spinner.text =`Checking package ykit-config-${initParam}`;
         async.series([
             // 寻找是否存在 @qnpm/ykit-config-xxx 的插件
             (callback) => {
-                checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar.com')
+                checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar.com');
             },
             // 寻找是否存在 ykit-config-xxx 的插件
             (callback) => {
-                checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org')
-            },
-        ], (err) => {
+                checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org');
+            }
+        ], () => {
             // results is now equal to ['one', 'two']
             if(isInitReady) {
-                spinner.stop()
+                spinner.stop();
             } else {
-                spinner.text(`can't find package ykit-config-${initParam}`)
-                spinner.fail()
+                spinner.text(`Can't find package ykit-config-${initParam}`);
+                spinner.fail();
             }
         });
 
@@ -89,7 +87,7 @@ exports.run = function (options) {
     }
 
     function initProject(configPkgName, registry) {
-        let funcSeries = []
+        let funcSeries = [];
 
         if(configPkgName) {
             funcSeries = [
@@ -97,13 +95,13 @@ exports.run = function (options) {
                 (callback) => installConfigPlugin(callback, configPkgName, registry),
                 (callback) => createConfigFile(callback, configPkgName),
                 (callback) => setup(callback)
-            ]
+            ];
         } else {
             funcSeries = [
                 (callback) => createPackageJson(callback),
                 (callback) => createConfigFile(callback, configPkgName),
                 (callback) => createTmpl(callback)
-            ]
+            ];
         }
 
         async.series(funcSeries, (err, results) => {
@@ -111,13 +109,13 @@ exports.run = function (options) {
     }
 
     function installConfigPlugin(callback, configPkgName, registry) {
-        log('installing ' + configPkgName + '...');
+        log('Installing ' + configPkgName + '...');
 
         shell.exec(
             `npm install ${configPkgName} --registry http://registry.npm.${registry} --save`,
             {silent: false},
             (code, stdout, stderr) => {
-                callback(null) // npm install 中的警告也会当成 stderr 输出，所以不在这里做错误处理
+                callback(null); // npm install 中的警告也会当成 stderr 输出，所以不在这里做错误处理
             }
         );
     }
@@ -146,7 +144,7 @@ exports.run = function (options) {
         if(configPkgName) {
             configFileName = configPkgName.match(/ykit-config-([^\-]+)/)
                             ? 'ykit.' + configPkgName.match(/ykit-config-([^\-]+)/)[1] + '.js'
-                            : configFileName
+                            : configFileName;
         }
 
         if (!UtilFs.fileExists('./' + configFileName)) {
@@ -156,22 +154,22 @@ exports.run = function (options) {
 
             stream.on('finish', () => {
                 log('Saved ' + configFileName + ' in ' + cwd);
+                callback(null);
             });
-
-            callback(null)
         } else {
-            callback(null)
+            callback(null);
         }
     }
 
     function setup(callback) {
-        const initParams = process.argv.slice(4);
+        const initParams = process.argv.slice(4) || [];
         const setupCmd = `ykit setup ${initParams.join(' ')}`;
+        log('Run ' + setupCmd);
         shell.exec(
             setupCmd,
-            {silent: true},
+            {silent: false},
             (code, stdout, stderr) => {
-                callback(null)
+                callback(null);
             }
         );
     }
