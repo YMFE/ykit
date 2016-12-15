@@ -14,14 +14,6 @@
 
 ### Features
 
-<<<<<<< HEAD
-* **fekit.md:** 迁移fekit新版文档 ([b7bf84a](http://gitlab.corp.qunar.com/mfe/ykit/commit/b7bf84a))
-* **fekit.md:** 迁移fekit新版文档 ([83f96ae](http://gitlab.corp.qunar.com/mfe/ykit/commit/83f96ae))
-* **fekit.md:** 迁移fekit新版文档 ([3443366](http://gitlab.corp.qunar.com/mfe/ykit/commit/3443366))
-* **fekit.md:** 迁移fekit新版文档 ([77798e7](http://gitlab.corp.qunar.com/mfe/ykit/commit/77798e7))
-* **fekit.md:** 迁移fekit新版文档 ([3461856](http://gitlab.corp.qunar.com/mfe/ykit/commit/3461856))
-* **fekit.md:** 迁移fekit新版文档 ([37ed6bb](http://gitlab.corp.qunar.com/mfe/ykit/commit/37ed6bb))
-=======
 * **fekit.md:** 迁移fekit新版文档 ([3461856](http://gitlab.corp.qunar.com/mfe/ykit/commit/3461856))
 * **fekit.md:** 迁移fekit新版文档 ([83f96ae](http://gitlab.corp.qunar.com/mfe/ykit/commit/83f96ae))
 * **fekit.md:** 迁移fekit新版文档 ([37ed6bb](http://gitlab.corp.qunar.com/mfe/ykit/commit/37ed6bb))
@@ -29,15 +21,11 @@
 * **fekit.md:** 迁移fekit新版文档 ([77798e7](http://gitlab.corp.qunar.com/mfe/ykit/commit/77798e7))
 * **fekit.md:** 迁移fekit新版文档 ([b7bf84a](http://gitlab.corp.qunar.com/mfe/ykit/commit/b7bf84a))
 * **fekit.md:** 迁移fekit新版文档 (+4 squashed commits) ([3572289](http://gitlab.corp.qunar.com/mfe/ykit/commit/3572289))
->>>>>>> 125577d... docs: 更新 release doc
 * **init:** 修改fekit项目的config文件模板，因为fekit项目支持一键导入，所以所有的配置都可以直接从fekit.config中读取了。 ([9f94e87](http://gitlab.corp.qunar.com/mfe/ykit/commit/9f94e87))
 * **pack:** 使用 uglify 进行压缩 (+1 squashed commit) ([cb151c7](http://gitlab.corp.qunar.com/mfe/ykit/commit/cb151c7))
 * **pack:** 给出明确 optimize 提示 ([3e67b01](http://gitlab.corp.qunar.com/mfe/ykit/commit/3e67b01))
 * **server:** beforepack现在可以访问到option参数了 ([328d6b9](http://gitlab.corp.qunar.com/mfe/ykit/commit/328d6b9))
-<<<<<<< HEAD
-=======
 * **server:** 添加 js & css 的 Content-Type 响应头 ([ff2d4dc](http://gitlab.corp.qunar.com/mfe/ykit/commit/ff2d4dc))
->>>>>>> 125577d... docs: 更新 release doc
 * **server:** 添加 js & css 的 Content-Type 响应头 ([77ae900](http://gitlab.corp.qunar.com/mfe/ykit/commit/77ae900))
 
 
