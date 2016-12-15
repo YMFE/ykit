@@ -164,7 +164,7 @@ exports.run = function (options) {
     function setup(callback) {
         const initParams = process.argv.slice(4) || [];
         const setupCmd = `ykit setup ${initParams.join(' ')}`;
-        log('Run ' + setupCmd);
+        log('Running ' + setupCmd);
         shell.exec(
             setupCmd,
             {silent: false},
