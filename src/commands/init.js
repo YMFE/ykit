@@ -14,8 +14,6 @@ exports.usage = '项目初始化';
 exports.abbr = 'i';
 
 exports.setOptions = () => {
-    optimist.alias('l', 'lint');
-    optimist.describe('l', '先进行验证');
 };
 
 exports.run = function (options) {
@@ -116,7 +114,7 @@ exports.run = function (options) {
         log('installing ' + configPkgName + '...');
 
         shell.exec(
-            `npm install ${configPkgName} --registry http://registry.npm.${registry}`,
+            `npm install ${configPkgName} --registry http://registry.npm.${registry} --save`,
             {silent: false},
             (code, stdout, stderr) => {
                 callback(null) // npm install 中的警告也会当成 stderr 输出，所以不在这里做错误处理
@@ -167,8 +165,10 @@ exports.run = function (options) {
     }
 
     function setup(callback) {
+        const initParams = process.argv.slice(4);
+        const setupCmd = `ykit setup ${initParams.join(' ')}`;
         shell.exec(
-            `ykit setup`,
+            setupCmd,
             {silent: true},
             (code, stdout, stderr) => {
                 callback(null)
