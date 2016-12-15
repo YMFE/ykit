@@ -23,7 +23,13 @@ qnpm i @qnpm/ykit-config-fekit --save
 - 使用了.mustache/.handlebar/.hogan文件的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
+<<<<<<< HEAD
+以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
+
+另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
+=======
 以上三类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
+>>>>>>> 37ed6bb... feat(fekit.md): 迁移fekit新版文档
 
 ### 迁移步骤
 
@@ -85,8 +91,6 @@ require("prepareSleeper/index/js");
 注意，以下的项目绝大多数都有上面提到的css语法问题和js引用问题，都是手动修复以后转化成功的：
 
 ugc_mall
-ugc
-ugchybrid
 ugc_mall_admin
 ugc_review_audit
 ugc_topic
@@ -97,3 +101,7 @@ bnbhybrid
 hotel_luxury
 mice_search_fekit
 mice_operation_fekit
+<<<<<<< HEAD
+flight_hd
+=======
+>>>>>>> 37ed6bb... feat(fekit.md): 迁移fekit新版文档
