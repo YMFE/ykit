@@ -41,15 +41,15 @@ exports.run = function (options) {
         let isInitReady = false;
 
         spinner.start();
+        spinner.text =`checking package ykit-config-${initParam}`;
         async.series([
-            // 寻找是否存在 ykit-config-xxx 的插件
-            (callback) => {
-                spinner.text =`checking package ykit-config-${initParam}`;
-                checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org')
-            },
             // 寻找是否存在 @qnpm/ykit-config-xxx 的插件
             (callback) => {
                 checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar.com')
+            },
+            // 寻找是否存在 ykit-config-xxx 的插件
+            (callback) => {
+                checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org')
             },
         ], (err) => {
             // results is now equal to ['one', 'two']
@@ -112,28 +112,16 @@ exports.run = function (options) {
         });
     }
 
-    function setup(callback) {
+    function installConfigPlugin(callback, configPkgName, registry) {
+        log('installing ' + configPkgName + '...');
+
         shell.exec(
-            `ykit setup`,
+            `npm install ${configPkgName} --registry http://registry.npm.${registry}`,
             {silent: false},
             (code, stdout, stderr) => {
-                callback(stderr)
+                callback(null) // npm install 中的警告也会当成 stderr 输出，所以不在这里做错误处理
             }
         );
-    }
-
-    function installConfigPlugin(callback, configPkgName, registry) {
-        if(configPkgName) {
-            log('installing ' + configPkgName + '...');
-
-            shell.exec(
-                `npm install ${configPkgName} --registry http://registry.npm.${registry}`,
-                {silent: false},
-                (code, stdout, stderr) => {
-                    callback(stderr)
-                }
-            );
-        }
     }
 
     function createPackageJson(callback) {
@@ -176,6 +164,16 @@ exports.run = function (options) {
         } else {
             callback(null)
         }
+    }
+
+    function setup(callback) {
+        shell.exec(
+            `ykit setup`,
+            {silent: true},
+            (code, stdout, stderr) => {
+                callback(null)
+            }
+        );
     }
 
     function createTmpl(callback) {
