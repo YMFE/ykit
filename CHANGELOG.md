@@ -1,3 +1,41 @@
+<a name="0.2.0"></a>
+# [0.2.0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.8...0.2.0) (2016-12-16)
+
+
+### Bug Fixes
+
+* **pack:** 修复 chunk 版本号问题 ([06039bf](http://gitlab.corp.qunar.com/mfe/ykit/commit/06039bf))
+* **pack:** 修复未调用压缩变量方法导致编译打包报错 ([fc10b01](http://gitlab.corp.qunar.com/mfe/ykit/commit/fc10b01))
+
+
+### Features
+
+* **cli:** 添加 config 命令用来进行全局配置 ([5e46a70](http://gitlab.corp.qunar.com/mfe/ykit/commit/5e46a70))
+* **cli:** 添加 config 命令用来进行全局配置 ([587e4a5](http://gitlab.corp.qunar.com/mfe/ykit/commit/587e4a5))
+* **fekit.md:** 迁移fekit新版文档 ([3461856](http://gitlab.corp.qunar.com/mfe/ykit/commit/3461856))
+* **fekit.md:** 迁移fekit新版文档 ([f1e6be9](http://gitlab.corp.qunar.com/mfe/ykit/commit/f1e6be9))
+* **fekit.md:** 迁移fekit新版文档 ([f2b3cd4](http://gitlab.corp.qunar.com/mfe/ykit/commit/f2b3cd4))
+* **fekit.md:** 迁移fekit新版文档 ([c651e4b](http://gitlab.corp.qunar.com/mfe/ykit/commit/c651e4b))
+* **fekit.md:** 迁移fekit新版文档 ([37ed6bb](http://gitlab.corp.qunar.com/mfe/ykit/commit/37ed6bb))
+* **fekit.md:** 迁移fekit新版文档 ([3443366](http://gitlab.corp.qunar.com/mfe/ykit/commit/3443366))
+* **fekit.md:** 迁移fekit新版文档 ([77798e7](http://gitlab.corp.qunar.com/mfe/ykit/commit/77798e7))
+* **fekit.md:** 迁移fekit新版文档 ([83f96ae](http://gitlab.corp.qunar.com/mfe/ykit/commit/83f96ae))
+* **fekit.md:** 迁移fekit新版文档 ([b7bf84a](http://gitlab.corp.qunar.com/mfe/ykit/commit/b7bf84a))
+* **fekit.md:** 迁移fekit新版文档 (+4 squashed commits) ([3572289](http://gitlab.corp.qunar.com/mfe/ykit/commit/3572289))
+* **init:** 优化初始化逻辑 ([d5de607](http://gitlab.corp.qunar.com/mfe/ykit/commit/d5de607))
+* **init:** 优化初始化逻辑 ([7550ce0](http://gitlab.corp.qunar.com/mfe/ykit/commit/7550ce0))
+* **init:** 优化初始化逻辑 ([29b6f33](http://gitlab.corp.qunar.com/mfe/ykit/commit/29b6f33))
+* **init:** 完善初始化逻辑 ([6177bb5](http://gitlab.corp.qunar.com/mfe/ykit/commit/6177bb5))
+* **init:** 完善插件添加逻辑 ([521b18c](http://gitlab.corp.qunar.com/mfe/ykit/commit/521b18c))
+* **server:** beforepack现在可以访问到option参数了 ([328d6b9](http://gitlab.corp.qunar.com/mfe/ykit/commit/328d6b9))
+* **server:** https 证书/秘钥改为全局配置 ([288b501](http://gitlab.corp.qunar.com/mfe/ykit/commit/288b501))
+* **server:** https 证书/秘钥改为全局配置 ([379c4a5](http://gitlab.corp.qunar.com/mfe/ykit/commit/379c4a5))
+* **server:** 添加 js & css 的 Content-Type 响应头 ([77ae900](http://gitlab.corp.qunar.com/mfe/ykit/commit/77ae900))
+* **server:** 添加 js & css 的 Content-Type 响应头 ([ff2d4dc](http://gitlab.corp.qunar.com/mfe/ykit/commit/ff2d4dc))
+* **server:** 添加 js & css 的 Content-Type 响应头 ([4ec269e](http://gitlab.corp.qunar.com/mfe/ykit/commit/4ec269e))
+
+
+
 <a name="0.1.8"></a>
 ## [0.1.8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8) (2016-12-09)
 
