@@ -1,32 +1,35 @@
-# 将FEkit项目迁移到YKit
+<h1 style="font-weight: normal"> 将FEkit项目迁移到YKit </h1>
 
-## 下载依赖
+<h2 style="font-weight: normal"> 下载依赖 </h2>
 
-迁移所需要的依赖是`ykit-config-fekit`包：
+迁移所需要的依赖是`@qnpm/ykit-config-fekit`包：
 
 ```
-qnpm i @qnpm/ykit-config-fekit
+qnpm i @qnpm/ykit-config-fekit --save
 ```
 
 然后包的postinstall脚本会帮你创建`ykit.fekit.js`到项目根目录下。
 
 和其他ykit项目不同的是你不需要写任何配置项，里面可配置的只有sync到开发机的命令。所有的相关配置都会从fekit.config中读取。
 
-## 尝试迁移
+<h2 style="font-weight: normal"> 尝试迁移 </h2>
 
 ** 以下内容非常重要，请仔细阅读后再进行操作 **
 
-### 目前不支持的项目类型：
+<h3 style="font-weight: normal"> 目前不支持的项目类型： </h3>
 
-- 使用了`scripts`钩子脚本的项目
-- 使用less的项目
+- 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
+- 使用.less文件的项目
+- 使用了.mustache/.handlebar/.hogan文件的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
-以上三类项目目前完全无法迁移，请等待下一版本的ykit-config-fekit。
+以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
-### 迁移步骤
+另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
 
-#### 1. 本地pack
+<h3 style="font-weight: normal"> 迁移步骤 </h3>
+
+<h4 style="font-weight: normal"> 1. 本地pack </h4>
 
 首先请在项目根目录下调用`ykit pack -c`生成dev文件。然后注意看一下命令行可能出现的报错，例如：
 
@@ -44,6 +47,8 @@ Module build failed: Missed semicolon (87:127)
 ```
 
 由于FEkit不会校验css的语法，因此我们发现大部分的项目都存在类似的各种css错误，这在ykit不再被允许，你需要手动修改这些错误以后再尝试迁移。
+
+以上错误只是各种css语法错误中的一种，请仔细阅读错误信息。
 
 另外，在js中也可能出现语法错误，例如：
 
@@ -63,68 +68,34 @@ require("prepareSleeper/index/js");
 
 请重复以上两个步骤，直到没有报错为止。
 
-#### 2. dev测试
+<h4 style="font-weight: normal"> 2. dev测试 </h4>
 
 调用``ykit sync``可以将项目sync到开发机，然后请修改host进行dev测试（这个就不多说怎么弄了）。
 
 最好每个页面都看一下是否有问题。
 
-#### beta/正式发布
+<h4 style="font-weight: normal"> beta/正式发布 </h4>
 
 按流程走即可。
 
-## 支持
+<h2 style="font-weight: normal"> 支持 </h2>
 
 请qtalk jiao.shen或者yuhao.ju
 
-## 已经转化成功的项目列表
+<h2 style="font-weight: normal"> 已经转化成功的项目列表 </h2>
 
 注意，以下的项目绝大多数都有上面提到的css语法问题和js引用问题，都是手动修复以后转化成功的：
 
-ugc_mall
-
-ugc
-
-ugchybrid
-
-ugc_mall_admin
-
-ugc_review_audit
-
-ugc_topic
-
-trainticket
-
-hotel_fekit
-
-bnb_fekit
-
-bnbhybrid
-
-hotel_luxury
-
-zeus
-
-travel_touch
-
-mice_search_fekit
-
-qunarhotel
-
-train_search
-
-flight_tts_new
-
-flight_traffic_hy
-
-flight_booking
-
-mobile_pay
-
-qtuan
-
-bus_tts (datetimepicker.js 1114行依赖jquery有误，项目中确实没有jquery)
-
-mobile_activity
-
-mice_operation_fekit
+- ugc_mall
+- ugc
+- ugchybrid
+- ugc_mall_admin
+- ugc_review_audit
+- ugc_topic
+- trainticket
+- hotel_fekit
+- bnb_fekit
+- bnbhybrid
+- hotel_luxury
+- mice_search_fekit
+- mice_operation_fekit

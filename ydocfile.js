@@ -27,7 +27,20 @@ module.exports = {
             description: 'Migration'
         },
         menuLevel: 2,
-        content: './docs/migration.md'
+        content: {
+            sidebar: true,
+            multi: true,
+            index: './docs/fekit.md',
+            compile: 'markdown',
+            menuLevel: 2,
+            pages: [{
+                name: '如何迁移 fekit 项目',
+                content: './docs/fekit.md'
+            }, {
+                name: '如何迁移 webpack 项目',
+                content: './docs/webpack.md'
+            }]
+        }
     }, {
         name: 'docs',
         title: '使用手册',

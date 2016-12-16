@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title>YKit 项目迁移</title>
+  <link rel="stylesheet" href="source/main.css"/>
+  
+</head>
+<body>
+    <div class="ydoc">
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ued.qunar.com/ymfe/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="">
+                        
+                        <a href="index.html">简介</a>
+                        
+                    </li>
+                    
+                    <li class="active">
+                        
+                        <a href="migrate.html">项目迁移</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="docs.html">使用手册</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="releases.html">版本记录</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>Migration</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="migrate-如何迁移 fekit 项目.html">如何迁移 fekit 项目</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
+                            
+                            <a href="migrate-如何迁移 webpack 项目.html">如何迁移 webpack 项目</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <p>由于 Ykit 是基于 Webpack 的，因此迁移 Webapck 项目只需要原有配置进行迁移。</p>
+<h2 style="font-weight: normal"> 1. 创建配置文件 </h2>
+
+<p>在项目目录下创建一个名为 <code>ykit.js</code> 的配置文件（如果使用某种类型的插件，则为 <code>ykit.{type}.js</code>），配置文件示例可参考 <a href="./docs-配置.html">Ykit-配置</a>。</p>
+<h2 style="font-weight: normal"> 2. 配置 modifyWebpackConfig </h2>
+
+<p>编辑配置文件，以下为配置示例：</p>
+<pre><code>var webpackConfig =  require(&#39;webpack.config.js&#39;)
+
+exports.config = function() {
+    return {
+        export: [], // 在 modifyWebpackConfig 中配置原有入口，所以这里留空
+        modifyWebpackConfig: function(baseConfig) {
+            // 配置入口
+            baseConfig.entry = webpackConfig.entry;
+            // 配置编译方式
+            baseConfig.module = webpackConfig.module;
+            // 迁移更多自定义的配置
+            // ...
+
+            return baseConfig;
+        }
+    };
+};
+</code></pre><p>具体配置文档可参考 <a href="./docs-配置.html">Ykit-配置</a>。</p>
+<h2 style="font-weight: normal"> 3. 执行 ykit pack 验证编译打包结果 </h2>
+
+<p>默认会打包至项目的 <code>dev</code> 目录下。</p>
+
+              </div>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+    <script src="source/main.js"></script>
+    <script src="source/app.js"></script>
+    
+    
+
+    
+
+</body>
+</html>

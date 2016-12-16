@@ -7,6 +7,7 @@ module.exports = new ProgressBarPlugin();
 function ProgressBarPlugin() {
     return new webpack.ProgressPlugin(function(percent, msg) {
         if(percent === 0) {
+            spinner.text = 'building...';
             spinner.start();
         }
 

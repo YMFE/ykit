@@ -1,3 +1,8 @@
+<a name="0.2.0"></a>
+# [0.2.0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.0-rc3...v0.2.0) (2016-12-16)
+
+
+
 <a name="0.2.0-rc3"></a>
 # [0.2.0-rc3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.0-rc1...0.2.0-rc3) (2016-12-15)
 
