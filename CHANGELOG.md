@@ -1,3 +1,31 @@
+<a name="0.1.8"></a>
+## [0.1.8](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.7...0.1.8) (2016-12-09)
+
+
+### Bug Fixes
+
+* **cli:** 修复自定义命令没有缩写会造成 help 命令报错 ([17f6d7b](http://gitlab.corp.qunar.com/mfe/ykit/commit/17f6d7b))
+* **pack:**  修复资源无版本号时编译错误 ([57a77cc](http://gitlab.corp.qunar.com/mfe/ykit/commit/57a77cc))
+* **pack:** 修复自身版本号使用 webpack-md5-hash 时问题 ([2da0378](http://gitlab.corp.qunar.com/mfe/ykit/commit/2da0378))
+* **server:** 修复 rebuild 结束没有给出明显提示 ([9036cbc](http://gitlab.corp.qunar.com/mfe/ykit/commit/9036cbc))
+
+
+### Features
+
+* **init:** 修改fekit项目的config文件模板，因为fekit项目支持一键导入，所以所有的配置都可以直接从fekit.config中读取了。 ([9f94e87](http://gitlab.corp.qunar.com/mfe/ykit/commit/9f94e87))
+* **init:** 初始化改为只生成一个空工程 ([ab08750](http://gitlab.corp.qunar.com/mfe/ykit/commit/ab08750))
+* **init:** 初始化模板文件改为 ykit.js ([48b979e](http://gitlab.corp.qunar.com/mfe/ykit/commit/48b979e))
+* **init:** 提供初始化模板 ([a3b8814](http://gitlab.corp.qunar.com/mfe/ykit/commit/a3b8814))
+* **pack:** 使用 uglify 进行压缩 (+1 squashed commit) ([cb151c7](http://gitlab.corp.qunar.com/mfe/ykit/commit/cb151c7))
+* **pack:** 给出明确 optimize 提示 ([3e67b01](http://gitlab.corp.qunar.com/mfe/ykit/commit/3e67b01))
+
+
+### Performance Improvements
+
+* **pack:** 优化 pack log ([c814175](http://gitlab.corp.qunar.com/mfe/ykit/commit/c814175))
+
+
+
 <a name="0.1.7"></a>
 ## [0.1.7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.6...0.1.7) (2016-12-02)
 
