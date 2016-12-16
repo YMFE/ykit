@@ -1,38 +1,86 @@
-## [Ykit][10]
+<h1 style="font-weight: normal"> Ykit </h1>
 
 Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 [webpack][1]，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。
 
 Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的基础配置，通过可插拔的插件来进行扩展（编译插件、服务中间件、工具和命令...），并让开发者可以灵活地根据不同项目来修改配置。
 
-### Features
+详细文档请查看 [http://ued.qunar.com/ykit/docs.html][3]
 
-- 本地的静态资源编译服务。
-- 通过扩展插件快速搭建开发环境。
-- 自带 lint 命令，支持 eslint 和 stylelint。
-- 自带代理工具，可实现 SwitchHost + Charles 的基本功能。
+<h2 style="font-weight: normal"> Features </h2>
 
-### 安装(注意：需要在内网环境下，且包名有`@qnpm`前缀)
+- 本地静态资源服务
+- 一键配置的开发环境
+- 自带 lint 工具和预设规则
+- 自带代理工具，可实现 SwitchHost + Charles 的基本功能
 
-```bash
-$ sudo npm install @qnpm/ykit -g --registry http://registry.npm.corp.qunar.com/
+<h2 style="font-weight: normal"> Install </h2>
+
+```
+(sudo) npm install ykit -g
 ```
 
-### Examples
+<h2 style="font-weight: normal"> Usage </h2>
 
-- [ykit-seed-avalon][6]: Avalon & OniUI 示例。
-- [ykit-seed-hy][7]: Hy 示例, 包括路由功能、滚动组件、手势功能。
-- [ykit-seed-react][8]: React 示例，支持 ES6、SASS、LESS。
+<h3 style="font-weight: normal"> Init </h3>
 
-将 demo 工程 clone 下来后 npm install，然后项目外运行 ykit server 访问项目即可。
+通过 init 命令快速搭建一个项目脚手架：
 
-### Change log
+1. 创建一个项目目录
+2. 进入目录执行 `ykit init [<type>]`
 
-[查看change log][11]
+初始化时可以选择项目类型（type 留空则为基础脚手架），目前支持的初始化类型：
+
+- yo
+- qunar
+
+<h3 style="font-weight: normal"> Server </h3>
+
+在项目目录外执行命令：
+
+```
+(sudo) ykit server // 或者使用缩写 ykit s
+```
+
+访问 `localhost/项目目录/index.html`
+
+<h3 style="font-weight: normal"> Pack </h3>
+
+在项目中执行命令：
+
+```
+ykit pack -m
+```
+
+将会对资源进行编译打包压缩，默认会打到 `prd` 目录。
+
+<h2 style="font-weight: normal"> 配置 ykit.{type}.js </h2>
+
+项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 `ykit.js`（基础环境）、`ykit.yo.js` 或者 `ykit.qunar.js`。配置文件样例：
+
+```js
+exports.config = function() {
+    return {
+        // export 定义项目资源入口，在本地服务请求时，会实现 /src -> /prd 目录的对应
+        // 比如在 html 中请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: ['./scripts/index.js', './styles/index.scss',],
+
+        // ykit 本身会有基础 webpack 配置
+        // 通过该函数可以获取（通过参数 baseConfig）和修改它
+        modifyWebpackConfig: function(baseConfig) {
+            // ...
+            return baseConfig
+        }
+    }
+};
+```
+
+详细配置请参考 [ykit-配置][4]。
+
+<h2 style="font-weight: normal"> Changelog </h2>
+
+[Changelog][2]
 
 [1]: https://github.com/webpack/webpack
-[6]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-avalon
-[7]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-hy
-[8]: http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-react
-[9]: http://gitlab.corp.qunar.com/mfe/ykit/issues
-[10]: http://ued.qunar.com/ykit
-[11]: http://gitlab.corp.qunar.com/mfe/ykit/blob/master/CHANGELOG.md
+[2]: ./releases.html
+[3]: http://ued.qunar.com/ykit/docs.html
+[4]: http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html

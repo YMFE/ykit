@@ -47,7 +47,7 @@ Options:
 
 - `ykit pack -g {groupname}`命令，可指定分组打包，不影响其它已存在的打包资源。
 
-- `ykit pack -c`命令，会在打包之前清空打包目标目录(dev/prd)，默认不清空。
+- `ykit pack -c false`ykit 在打包之前会清空打包目标目录(dev/prd)，使用这个命令使 ykit 不预先清空。
 
 <h3 style="font-weight: normal"> lint </h3>
 

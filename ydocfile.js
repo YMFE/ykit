@@ -17,17 +17,7 @@ module.exports = {
             description: 'Introduction'
         },
         menuLevel: 2,
-        content: './docs/README.md'
-    }, {
-        name: 'init',
-        title: '起步',
-        compile: 'markdown',
-        banner: {
-            title: 'Ykit',
-            description: 'Getting Started'
-        },
-        menuLevel: 2,
-        content: './docs/init.md'
+        content: './README.md'
     }, {
         name: 'migrate',
         title: '项目迁移',
@@ -74,16 +64,6 @@ module.exports = {
                 content: './docs/shrinkwrap.md'
             }]
         }
-    }, {
-        name: 'dev',
-        title: '开发者',
-        banner: {
-            title: 'Ykit',
-            description: 'Contributing Code'
-        },
-        compile: 'markdown',
-        menuLevel: 2,
-        content: './docs/dev.md'
     }, {
         name: 'releases',
         title: '版本记录',

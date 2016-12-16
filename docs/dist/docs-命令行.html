@@ -30,12 +30,6 @@
                     
                     <li class="">
                         
-                        <a href="init.html">起步</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
                         <a href="migrate.html">项目迁移</a>
                         
                     </li>
@@ -43,12 +37,6 @@
                     <li class="active">
                         
                         <a href="docs.html">使用手册</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="dev.html">开发者</a>
                         
                     </li>
                     
@@ -193,7 +181,7 @@ Options:
 </li>
 <li><p><code>ykit pack -g {groupname}</code>命令，可指定分组打包，不影响其它已存在的打包资源。</p>
 </li>
-<li><p><code>ykit pack -c</code>命令，会在打包之前清空打包目标目录(dev/prd)，默认不清空。</p>
+<li><p><code>ykit pack -c false</code>ykit 在打包之前会清空打包目标目录(dev/prd)，使用这个命令使 ykit 不预先清空。</p>
 </li>
 </ul>
 <h3 style="font-weight: normal"> lint </h3>

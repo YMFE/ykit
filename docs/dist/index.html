@@ -30,12 +30,6 @@
                     
                     <li class="">
                         
-                        <a href="init.html">起步</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
                         <a href="migrate.html">项目迁移</a>
                         
                     </li>
@@ -43,12 +37,6 @@
                     <li class="">
                         
                         <a href="docs.html">使用手册</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="dev.html">开发者</a>
                         
                     </li>
                     
@@ -83,35 +71,68 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <p><img
-    src="http://ww4.sinaimg.cn/large/6af705b8gw1f9uy5nnbbfj20tp0h8tbo.jpg"
-    alt="ykit_dev"
-    style="display: block; height: 500px; margin: 0 auto 45px; "
-/></p>
+                  <h1 style="font-weight: normal"> Ykit </h1>
+
 <p>Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 <a href="https://github.com/webpack/webpack">webpack</a>，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。</p>
 <p>Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的基础配置，通过可插拔的插件来进行扩展（编译插件、服务中间件、工具和命令...），并让开发者可以灵活地根据不同项目来修改配置。</p>
+<p>详细文档请查看 <a href="http://ued.qunar.com/ykit/docs.html">http://ued.qunar.com/ykit/docs.html</a></p>
 <h2 style="font-weight: normal"> Features </h2>
 
 <ul>
-<li>本地的静态资源编译服务。</li>
-<li>通过环境插件快速搭建开发环境。</li>
-<li>可扩展与可配置的打包方案（可支持 fekit_moudles 与 Qunar 资源打包形式）。</li>
-<li>自带代理工具，可实现 SwitchHost + Charles 的基本功能。</li>
+<li>本地静态资源服务</li>
+<li>一键配置的开发环境</li>
+<li>自带 lint 工具和预设规则</li>
+<li>自带代理工具，可实现 SwitchHost + Charles 的基本功能</li>
 </ul>
-<h2 style="font-weight: normal"> Examples </h2>
+<h2 style="font-weight: normal"> Install </h2>
 
+<pre><code>(sudo) npm install ykit -g
+</code></pre><h2 style="font-weight: normal"> Usage </h2>
+
+<h3 style="font-weight: normal"> Init </h3>
+
+<p>通过 init 命令快速搭建一个项目脚手架：</p>
+<ol>
+<li>创建一个项目目录</li>
+<li>进入目录执行 <code>ykit init [&lt;type&gt;]</code></li>
+</ol>
+<p>初始化时可以选择项目类型（type 留空则为基础脚手架），目前支持的初始化类型：</p>
 <ul>
-<li><a href="http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-avalon">ykit-seed-avalon</a>: Avalon &amp; OniUI 示例。</li>
-<li><a href="http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-hy">ykit-seed-hy</a>: Hy 示例, 包括路由功能、滚动组件、手势功能。</li>
-<li><a href="http://gitlab.corp.qunar.com/yuhao.ju/ykit-seed-react">ykit-seed-react</a>: React 示例，支持 ES6、SASS、LESS。</li>
+<li>yo</li>
+<li>qunar</li>
 </ul>
-<p>将 demo 工程 clone 下来后 npm install，然后项目外运行 ykit server 访问项目即可。</p>
-<h2 style="font-weight: normal"> Issues </h2>
+<h3 style="font-weight: normal"> Server </h3>
 
-<p>如有任何需求和问题请在<a href="http://gitlab.corp.qunar.com/mfe/ykit/issues">这里</a>提出。</p>
-<h2 style="font-weight: normal"> Change log </h2>
+<p>在项目目录外执行命令：</p>
+<pre><code>(sudo) ykit server // 或者使用缩写 ykit s
+</code></pre><p>访问 <code>localhost/项目目录/index.html</code></p>
+<h3 style="font-weight: normal"> Pack </h3>
 
-<p><a href="http://gitlab.corp.qunar.com/mfe/ykit/blob/master/CHANGELOG.md">查看change log</a></p>
+<p>在项目中执行命令：</p>
+<pre><code>ykit pack -m
+</code></pre><p>将会对资源进行编译打包压缩，默认会打到 <code>prd</code> 目录。</p>
+<h2 style="font-weight: normal"> 配置 ykit.{type}.js </h2>
+
+<p>项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 <code>ykit.js</code>（基础环境）、<code>ykit.yo.js</code> 或者 <code>ykit.qunar.js</code>。配置文件样例：</p>
+<pre><code class="lang-js">exports.config = function() {
+    return {
+        // export 定义项目资源入口，在本地服务请求时，会实现 /src -&gt; /prd 目录的对应
+        // 比如在 html 中请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;,],
+
+        // ykit 本身会有基础 webpack 配置
+        // 通过该函数可以获取（通过参数 baseConfig）和修改它
+        modifyWebpackConfig: function(baseConfig) {
+            // ...
+            return baseConfig
+        }
+    }
+};
+</code></pre>
+<p>详细配置请参考 <a href="http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html">ykit-配置</a>。</p>
+<h2 style="font-weight: normal"> Changelog </h2>
+
+<p><a href="./releases.html">Changelog</a></p>
 
               </article>
           </div>
