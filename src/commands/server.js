@@ -56,9 +56,9 @@ exports.run = (options) => {
     app.use((req, res, next) => {
         const extName = sysPath.extname(req.url);
 
-        if(extName === '.js') {
+        if (extName === '.js') {
             res.setHeader('Content-Type', 'application/javascript');
-        } else if(extName === '.css') {
+        } else if (extName === '.css') {
             res.setHeader('Content-Type', 'text/css; charset=UTF-8');
         }
 
@@ -168,13 +168,15 @@ exports.run = (options) => {
 
         // 处理prd资源
         if (keys[2] === 'prd') {
+            const rquery = /\?.+$/;
+            const rversion = /@[\d\w]+(?=\.\w+$)/;
             // 去掉 query & 版本号
-            const requestUrl = keys.slice(3).join('/').replace(/\?[\w=&]+$/, '').replace('.map', '');
+            const requestUrl = keys.slice(3).join('/').replace(rquery, '').replace('.map', '');
 
             // 只编译所请求的资源
             if (!isCompilingAll) {
 
-                let requestUrlNoVer = requestUrl.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                let requestUrlNoVer = requestUrl.replace(rversion, '');
 
                 // 从编译 cache 中取，map 文件不必生成重复 compiler TODO
                 const cacheId = sysPath.join(projectName, requestUrlNoVer);
@@ -219,7 +221,7 @@ exports.run = (options) => {
                                 if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrl)) {
                                     isRequestingEntry = true;
                                 } else if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer)) {
-                                    req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                                    req.url = req.url.replace(rversion, '');
                                     isRequestingEntry = true;
                                 }
 
@@ -242,7 +244,7 @@ exports.run = (options) => {
                                 if (promiseCache[projectName]) {
                                     Promise.all(promiseCache[projectName]).then(function () {
                                         // 统一去掉版本号
-                                        req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
+                                        req.url = req.url.replace(rquery, '').replace(rversion, '');
                                         next();
                                     });
                                 } else {
@@ -251,6 +253,7 @@ exports.run = (options) => {
                                 }
                             }, 100);
                         } else {
+                            req.url = req.url.replace(rquery, '').replace(rversion, '');
                             // 生成该请求的 promiseCache
                             let resolve = null;
                             let reject = null;
@@ -369,11 +372,11 @@ exports.run = (options) => {
 
     let servers = [];
 
-    servers.push(extend(http.createServer(app), {_port: port}));
+    servers.push(extend(http.createServer(app), { _port: port }));
     if (isHttps) {
-        const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, {encoding: 'utf8'}));
+        const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
-        if(!globalConfig['https-key'] || !globalConfig['https-crt']) {
+        if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
             warn('缺少 https 证书/秘钥配置，请使用以下命令设置:');
             !globalConfig['https-key'] && warn('ykit config set https-key <path-to-your-key>');
             !globalConfig['https-crt'] && warn('ykit config set https-crt <path-to-your-crt>');
@@ -384,7 +387,7 @@ exports.run = (options) => {
             key: fs.readFileSync(globalConfig['https-key']),
             cert: fs.readFileSync(globalConfig['https-crt'])
         };
-        servers.push(extend(https.createServer(httpsOpts, app), {_port: '443', _isHttps: true}));
+        servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
     servers.forEach((server) => {
@@ -398,8 +401,8 @@ exports.run = (options) => {
         });
         server.listen(server._port, () => {
             const serverUrl = (server._isHttps ? 'https' : 'http')
-                            + '://127.0.0.1:'
-                            + server._port;
+                + '://127.0.0.1:'
+                + server._port;
 
             !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
             log('Available on: ' + serverUrl.underline);
