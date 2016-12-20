@@ -1,3 +1,19 @@
+<a name="0.2.1"></a>
+## [0.2.1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.0...0.2.1) (2016-12-20)
+
+
+### Bug Fixes
+
+* **pack:** 修复压缩变量参数不生效 ([f7f4fc0](http://gitlab.corp.qunar.com/mfe/ykit/commit/f7f4fc0))
+* **server.js:** 修复url中带query时找不到本地资源的bug。 ([00dcb46](http://gitlab.corp.qunar.com/mfe/ykit/commit/00dcb46))
+
+
+### Features
+
+* **progressBarPlugin.js:** 现在ykit server能够在控制台中显示每次build的时间了。 ([d80c3a0](http://gitlab.corp.qunar.com/mfe/ykit/commit/d80c3a0))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.1.8...0.2.0) (2016-12-16)
 
