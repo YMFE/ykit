@@ -108,3 +108,11 @@ exports.deleteFolderRecursive = function(filePath, remainRootDir) {
         }
     }
 };
+
+exports.getFileSize = function(filename) {
+    const stats = fs.statSync(filename);
+
+    return stats['size'] > 1024
+            ? (stats['size'] / 1024).toFixed(2) + ' KB'
+            : stats['size'] + ' Bytes';
+};

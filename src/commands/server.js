@@ -103,8 +103,8 @@ exports.run = (options) => {
             let contentLength = res._contentLength || '';
             if (contentLength) {
                 contentLength = contentLength > 1024
-                    ? (contentLength / 1024).toFixed(2) + 'kB '
-                    : contentLength + 'bytes ';
+                    ? (contentLength / 1024).toFixed(2) + 'KB '
+                    : contentLength + 'Bytes ';
             }
 
             format = format.replace(/%date/g, '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');

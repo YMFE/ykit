@@ -392,11 +392,16 @@ class Project {
 
                         const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
                         assetsInfo.map((asset) => {
-                            const size = asset.size > 1024
-                                ? (asset.size / 1024).toFixed(2) + ' kB'
-                                : asset.size + ' bytes';
+
+                            let fileSize = UtilFs.getFileSize(path.resolve(cwd, asset.name));
+                            if(!fileSize) {
+                                fileSize = asset.size > 1024
+                                    ? (asset.size / 1024).toFixed(2) + ' KB'
+                                    : asset.size + ' Bytes';
+                            }
+
                             if (!/\.cache$/.test(asset.name)) {
-                                log('- '.gray + asset.name + ' - ' + size);
+                                log('- '.gray + asset.name + ' - ' + fileSize);
                             }
                         });
 
