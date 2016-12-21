@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const jsParser = require('uglify-js').parser;
 const jsUglify = require('uglify-js').uglify;
 const cssUglify = require('uglifycss');
+const extend = require('extend');
 
 const HASH_PLACEHOLDER = '[hashPlaceholder]';
 
@@ -12,7 +13,7 @@ process.on('message', function(m) {
     const cwd = m.cwd;
     const buildOpts = m.buildOpts;
     const assetName = m.assetName;
-    let replacedAssets = [];
+    let response = {};
 
     if(/\.js$/.test(assetName) || /\.css$/.test(assetName)) {
         const content = fs.readFileSync(path.resolve(cwd, assetName), {encoding: 'utf8'});
@@ -28,10 +29,15 @@ process.on('message', function(m) {
                 willMangle = false;
             }
 
-            let ast = jsParser.parse(content);
-            ast = willMangle ? jsUglify.ast_mangle(ast, uglifyjsOpts.mangle) : ast;
-            ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
-            minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
+            try {
+                let ast = jsParser.parse(content);
+                ast = willMangle ? jsUglify.ast_mangle(ast, uglifyjsOpts.mangle) : ast;
+                ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
+                minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
+            } catch(e) {
+                response.error = extend(true, e, {assetName: assetName});
+            }
+
         } else if (path.extname(assetName) === '.css') {
             const uglifycssOpts = buildOpts.uglifycss || {};
             minifiedCode = cssUglify.processString(content, uglifycssOpts);
@@ -45,14 +51,14 @@ process.on('message', function(m) {
                 const version = md5(minifiedCode).slice(0, 20); // 和 webpack hash 长度保持一致
                 const nextName = assetName.replace(HASH_PLACEHOLDER, version);
                 fs.renameSync(path.resolve(cwd, assetName), path.resolve(cwd, nextName));
-                replacedAssets = [assetName, nextName];
+                response.replacedAssets = [assetName, nextName];
             } else {
-                replacedAssets = [assetName, assetName];
+                response.replacedAssets = [assetName, assetName];
             }
         }
     }
 
-    process.send(replacedAssets);
+    process.send(response);
 });
 
 function md5(content) {

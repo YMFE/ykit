@@ -334,14 +334,25 @@ class Project {
                             buildOpts: this.config.build || {},
                             assetName: asset.name
                         }, (err, response) => {
-                            if (err) {
-                                error('an error occured:', err);
+                            if (response.error) {
+                                // err log
+                                const resErr = response.error;
+                                spinner.text = '';
+                                spinner.stop();
+                                info('\n');
+                                spinner.text = `error occured while minifying ${resErr.assetName}`;
+                                spinner.fail();
+                                info(`line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red);
+
+                                // continue
+                                spinner.start();
                             }
 
                             // 将替换版本号的资源名取代原有名字
-                            if (response.length > 0) {
-                                const originAssetName = response[0];
-                                const nextAssetName = response[1];
+                            const replacedAssets = response.replacedAssets;
+                            if (replacedAssets && replacedAssets.length > 0) {
+                                const originAssetName = replacedAssets[0];
+                                const nextAssetName = replacedAssets[1];
                                 if (originAssets[originAssetName]) {
                                     nextAssets[nextAssetName] = originAssets[originAssetName];
                                 }
