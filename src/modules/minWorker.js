@@ -10,6 +10,7 @@ const HASH_PLACEHOLDER = '[hashPlaceholder]';
 process.on('message', function(m) {
     const opt = m.opt;
     const cwd = m.cwd;
+    const buildOpts = m.buildOpts;
     const assetName = m.assetName;
     let replacedAssets = [];
 
@@ -20,15 +21,20 @@ process.on('message', function(m) {
         if(path.extname(assetName) === '.js') {
             // variable name mangling
             let willMangle = true;
-            if (typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false') {
+            const uglifyjsOpts = buildOpts.uglifyjs || {};
+            const isCliArgvCloseMangle = typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false';
+            const isBuildOptsCloseMangle = uglifyjsOpts.mangle === false;
+            if (isCliArgvCloseMangle || isBuildOptsCloseMangle) {
                 willMangle = false;
             }
+
             let ast = jsParser.parse(content);
-            ast = willMangle ? jsUglify.ast_mangle(ast) : ast;
-            ast = jsUglify.ast_squeeze(ast);
-            minifiedCode = jsUglify.gen_code(ast, true);
+            ast = willMangle ? jsUglify.ast_mangle(ast, uglifyjsOpts.mangle) : ast;
+            ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
+            minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
         } else if (path.extname(assetName) === '.css') {
-            minifiedCode = cssUglify.processString(content);
+            const uglifycssOpts = buildOpts.uglifycss || {};
+            minifiedCode = cssUglify.processString(content, uglifycssOpts);
         }
 
         if(minifiedCode) {

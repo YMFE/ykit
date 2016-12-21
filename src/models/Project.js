@@ -154,6 +154,7 @@ class Project {
                             });
                         }
 
+                        extend(true, this.config, userConfigObj);
                         this.config.setExports(exports);
                         this.config.setCompiler(userConfigObj.modifyWebpackConfig);
                         this.config.setSync(userConfigObj.sync);
@@ -330,6 +331,7 @@ class Project {
                         cc.enqueue({
                             opt: opt,
                             cwd: cwd,
+                            buildOpts: this.config.build || {},
                             assetName: asset.name
                         }, (err, response) => {
                             if (err) {
