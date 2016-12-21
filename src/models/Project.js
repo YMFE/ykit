@@ -405,16 +405,17 @@ class Project {
 
                         const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
                         assetsInfo.map((asset) => {
+                            if(sysPath.extname(asset.name) !== '.cache') {
+                                let fileSize = UtilFs.getFileSize(path.resolve(cwd, asset.name));
+                                if(!fileSize) {
+                                    fileSize = asset.size > 1024
+                                        ? (asset.size / 1024).toFixed(2) + ' KB'
+                                        : asset.size + ' Bytes';
+                                }
 
-                            let fileSize = UtilFs.getFileSize(path.resolve(cwd, asset.name));
-                            if(!fileSize) {
-                                fileSize = asset.size > 1024
-                                    ? (asset.size / 1024).toFixed(2) + ' KB'
-                                    : asset.size + ' Bytes';
-                            }
-
-                            if (!/\.cache$/.test(asset.name)) {
-                                log('- '.gray + asset.name + ' - ' + fileSize);
+                                if (!/\.cache$/.test(asset.name)) {
+                                    log('- '.gray + asset.name + ' - ' + fileSize);
+                                }
                             }
                         });
 
