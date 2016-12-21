@@ -86,13 +86,8 @@ class Project {
 
                 if (requireg.resolve(localSearchPath)) {
                     modulePath = localSearchPath;
-                } else if (requireg.resolve(moduleName)) {
-                    modulePath = requireg.resolve(moduleName);
                 } else if (requireg.resolve(localSearchPathQnpm)) {
                     modulePath = localSearchPathQnpm;
-                    moduleName = '@qnpm/' + moduleName;
-                } else if (requireg.resolve('@qnpm/' + moduleName)) {
-                    modulePath = requireg.resolve('@qnpm/' + moduleName);
                     moduleName = '@qnpm/' + moduleName;
                 }
 
