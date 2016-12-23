@@ -1,23 +1,3 @@
-<a name="0.2.2"></a>
-## [0.2.2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.1...v0.2.2) (2016-12-23)
-
-
-### Bug Fixes
-
-* **config:** 不再寻找全局插件（使用 npm_cache_share) 做缓存策略 ([835fa2b](http://gitlab.corp.qunar.com/mfe/ykit/commit/835fa2b))
-* **config:** 不在寻找全局插件（使用 npm_cache_share) 做缓存策略 ([32c1816](http://gitlab.corp.qunar.com/mfe/ykit/commit/32c1816))
-* **pack:** 修复获取压缩文件 size 不准确 ([c0eeb2a](http://gitlab.corp.qunar.com/mfe/ykit/commit/c0eeb2a))
-* **pack:** 修复获取资源大小时找不到 .cache 文件报错 ([e23ec8c](http://gitlab.corp.qunar.com/mfe/ykit/commit/e23ec8c))
-
-
-### Features
-
-* **compile:** 强制模块路径大小写正确 ([a89e1d7](http://gitlab.corp.qunar.com/mfe/ykit/commit/a89e1d7))
-* **minify:** 提供更友好的压缩错误提示 ([863e843](http://gitlab.corp.qunar.com/mfe/ykit/commit/863e843))
-* **pack:** 添加对 build 配置项的支持 ([449c0e8](http://gitlab.corp.qunar.com/mfe/ykit/commit/449c0e8))
-
-
-
 <a name="0.2.1"></a>
 ## [0.2.1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.0...0.2.1) (2016-12-20)
 
