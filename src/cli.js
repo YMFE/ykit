@@ -4,6 +4,7 @@ require('./global');
 const version = require('../package.json').version;
 const optimist = require('optimist');
 const rightPad = require('right-pad');
+const UtilFs = require('./utils/fs.js');
 
 let Manager = require('./modules/manager.js');
 
@@ -24,6 +25,17 @@ let initOptions = (cmd) => {
 
 let cli = module.exports = {
     run: (option) => {
+        // 如果不存在全局配置文件，首先创建一个
+        if(!UtilFs.fileExists(YKIT_RC) && !process.env['SUDO_UID']) {
+            const initRc = {
+                /* eslint-disable */
+                "commands": [],
+                "configs": []
+                /* eslint-enable */
+            };
+            fs.writeFileSync(YKIT_RC, JSON.stringify(initRc, null, '    '));
+        }
+
         if (option === '-v' || option === '--version') {
             log(version);
             return;
