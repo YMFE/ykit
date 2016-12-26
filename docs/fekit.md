@@ -19,13 +19,23 @@ qnpm i @qnpm/ykit-config-fekit --save
 <h3 style="font-weight: normal"> 目前不支持的项目类型： </h3>
 
 - 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
-- 使用.less文件的项目
-- 使用了.mustache/.handlebar/.hogan文件的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
 以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
 另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
+
+<h3 style="font-weight: normal"> 可能存在的问题 </h3>
+
+目前发现FEKit的模块加载器并未严格遵守CommonJS标准，它的模块ID和文件内容的md5 hash相关，这在一部分依赖了全局变量的项目中可能会导致大bug。
+根本原因是：某些文件内容相同的模块，在FEKit下会被编译成一个module，而在YKit下是两个。
+
+举例说明，假如项目中依赖了avalon.js又依赖了oniui，这表面上不会有问题，但是oniui内部的fekit_modules文件夹包含了avalon的依赖，这两个文件的内容完全相同，
+这会导致在YKit构建出来的js中avalon.js中的逻辑被执行两次，而FEKit构建的js只会执行一次（实际上，YKit的构建结果才是正确的）。
+由于avalon的插件如`mmRequest`,`mmPromise`都是扩展的window.avalon对象，执行两次avalon.js的结果就是
+之前挂载的插件会被完全覆盖。这将导致整个项目不可用。
+
+如果在迁移后控制台报出某个全局变量的方法找不到的错误，就很有可能是这种问题。目前这一类项目还没找到快捷的迁移方法，请先不要独自尝试。
 
 <h3 style="font-weight: normal"> 迁移步骤 </h3>
 
