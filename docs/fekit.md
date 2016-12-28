@@ -1,5 +1,9 @@
 <h1 style="font-weight: normal"> 将FEkit项目迁移到YKit </h1>
 
+<h2 style="font-weight:normal"> 生成package.json </h2>
+
+首先需要调用 `` npm init ``生成package.json文件，一路点回车即可。
+
 <h2 style="font-weight: normal"> 下载依赖 </h2>
 
 迁移所需要的依赖是`@qnpm/ykit-config-fekit`包：
@@ -10,7 +14,11 @@ qnpm i @qnpm/ykit-config-fekit --save
 
 然后包的postinstall脚本会帮你创建`ykit.fekit.js`到项目根目录下。
 
-和其他ykit项目不同的是你不需要写任何配置项，里面可配置的只有sync到开发机的命令。所有的相关配置都会从fekit.config中读取。
+所有fekit.config中的有效配置（和构建和发布相关的配置）会被拷贝到ykit.fekit.js中，今后在这个文件中修改即可。
+
+目前没有计划支持fekit install和fekit plugin（例如qmb）相关的配置项。
+
+** 你需要将package.json和ykit.fekit.js两个文件加入到git版本控制中（调用git add），node_modules不需要add。 **
 
 <h2 style="font-weight: normal"> 尝试迁移 </h2>
 
@@ -19,13 +27,23 @@ qnpm i @qnpm/ykit-config-fekit --save
 <h3 style="font-weight: normal"> 目前不支持的项目类型： </h3>
 
 - 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
-- 使用.less文件的项目
-- 使用了.mustache/.handlebar/.hogan文件的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 
 以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
 另外，如果是先使用webpack构建再用FEkit发布的项目，也可以迁移，但是需要手动执行webpack构建过程先生成pack后的文件。
+
+<h3 style="font-weight: normal"> 可能存在的问题 </h3>
+
+目前发现FEKit的模块加载器并未严格遵守CommonJS标准，它的模块ID和文件内容的md5 hash相关，这在一部分依赖了全局变量的项目中可能会导致大bug。
+根本原因是：某些文件内容相同的模块，在FEKit下会被编译成一个module，而在YKit下是两个。
+
+举例说明，假如项目中依赖了avalon.js又依赖了oniui，这表面上不会有问题，但是oniui内部的fekit_modules文件夹包含了avalon的依赖，这两个文件的内容完全相同，
+这会导致在YKit构建出来的js中avalon.js中的逻辑被执行两次，而FEKit构建的js只会执行一次（实际上，YKit的构建结果才是正确的）。
+由于avalon的插件如`mmRequest`,`mmPromise`都是扩展的window.avalon对象，执行两次avalon.js的结果就是
+之前挂载的插件会被完全覆盖。这将导致整个项目不可用。
+
+如果在迁移后控制台报出某个全局变量的方法找不到的错误，就很有可能是这种问题。目前这一类项目还没找到快捷的迁移方法，请先不要独自尝试。
 
 <h3 style="font-weight: normal"> 迁移步骤 </h3>
 
@@ -48,7 +66,15 @@ Module build failed: Missed semicolon (87:127)
 
 由于FEkit不会校验css的语法，因此我们发现大部分的项目都存在类似的各种css错误，这在ykit不再被允许，你需要手动修改这些错误以后再尝试迁移。
 
-以上错误只是各种css语法错误中的一种，请仔细阅读错误信息。
+另外一种错误是样式的循环依赖问题，例如在文件a中有`` @import 'a'; ``的语句，这在FEKit中会被默默无视，但是在YKit里不再被允许。
+在构建过程中你可以看到如下的错误提示：
+
+```
+X ./~/css-loader?-url!./~/@qnpm/ykit-config-fekit/loaders/fekit-scss.js!./src/yo/endorse-progress/page/endorse-progress.scss
+Module build failed: Error: [ykit-config-fekit]: 发现循环依赖config，位于文件/Users/chenjiao/Documents/qzz/complaint/src/yo/endorse-progress/core/config.scss中，请检查。
+```
+
+请修复错误以后再继续尝试。
 
 另外，在js中也可能出现语法错误，例如：
 
