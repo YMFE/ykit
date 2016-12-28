@@ -382,10 +382,7 @@ class Project {
                     }), (err) => {
                         let statsInfo = stats.toJson({ errorDetails: false });
 
-                        process.stdout.write('\n' +
-                            '\x1b[90m' +
-                            '--------------------------  YKIT PACKED ASSETS  -------------------------- ' +
-                            '\x1b[0m \n\n');
+                        process.stdout.write('\n--------------------------  YKIT PACKED ASSETS  --------------------------\n\n');
 
                         if (statsInfo.errors.length > 0) {
                             statsInfo.errors.map((err) => {
