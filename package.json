@@ -1,6 +1,6 @@
 {
   "name": "@qnpm/ykit",
-  "version": "0.2.2",
+  "version": "0.2.3-rc0",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
