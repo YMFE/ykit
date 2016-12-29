@@ -79,7 +79,7 @@
 
 答：如果模版里的前端资源版本号关联失败，可以参考：[http://wiki.corp.qunar.com/pages/viewpage.action?pageId=99772097]
 
-<h2 style="font-weight: normal; font-style: italic;"> 扩展功能 </h2>
+<h2 style="font-weight: normal;"> 扩展功能 </h2>
 
 <h3 style="font-weight: normal"> 关联报警 </h3>
 
