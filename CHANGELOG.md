@@ -1,5 +1,5 @@
-<a name="0.2.3-rc0"></a>
-## [0.2.3-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.2...0.2.3-rc0) (2016-12-28)
+<a name="0.2.3"></a>
+## [0.2.3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.2...0.2.3) (2016-12-29)
 
 
 ### Bug Fixes
