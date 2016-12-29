@@ -19,20 +19,17 @@ class Config {
                 local: {
                     path: './prd/',
                     filename: '[name][ext]',
-                    chunkFilename: '[id].chunk.js',
-                    publicPath: path.join('/', projectDir, 'prd/')
+                    chunkFilename: '[id].chunk.js'
                 },
                 dev: {
                     path: './dev/',
                     filename: '[name][ext]',
-                    chunkFilename: '[id].chunk.js',
-                    publicPath: path.join('/', projectDir, 'dev/')
+                    chunkFilename: '[id].chunk.js'
                 },
                 prd: {
                     path: './prd/',
                     filename: '[name].min[ext]',
-                    chunkFilename: '[id].chunk.min.js',
-                    publicPath: path.join('/', projectDir, 'prd/')
+                    chunkFilename: '[id].chunk.min.js'
                 }
             },
             module: {
