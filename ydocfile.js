@@ -73,6 +73,9 @@ module.exports = {
                 name: '打包 JOB',
                 content: './docs/build.md'
             }, {
+                name: '前后端版本号关联',
+                content: './docs/version.md'
+            }, {
                 name: 'npm shrinkwrap',
                 content: './docs/shrinkwrap.md'
             }]

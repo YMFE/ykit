@@ -1,3 +1,19 @@
+<a name="0.2.3-rc0"></a>
+## [0.2.3-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.2...0.2.3-rc0) (2016-12-28)
+
+
+### Bug Fixes
+
+* **config:** 修复全局文件不存在时报错 ([33c2ca4](http://gitlab.corp.qunar.com/mfe/ykit/commit/33c2ca4))
+* **pack:** 修复 assets 文件名更改后打包资源报错 ([2e301d3](http://gitlab.corp.qunar.com/mfe/ykit/commit/2e301d3))
+
+
+### Features
+
+* **postinstall:** 安装结束后初始化全局配置文件 ([c186c23](http://gitlab.corp.qunar.com/mfe/ykit/commit/c186c23))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.1...0.2.2) (2016-12-23)
 
