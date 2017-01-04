@@ -1,3 +1,13 @@
+<a name="0.2.4"></a>
+## [0.2.4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.3...0.2.4) (2017-01-04)
+
+
+### Features
+
+* **cmd:** 添加 build 命令 ([92d66aa](http://gitlab.corp.qunar.com/mfe/ykit/commit/92d66aa))
+
+
+
 <a name="0.2.3"></a>
 ## [0.2.3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.2...0.2.3) (2016-12-29)
 
@@ -6,6 +16,7 @@
 
 * **config:** 修复全局文件不存在时报错 ([33c2ca4](http://gitlab.corp.qunar.com/mfe/ykit/commit/33c2ca4))
 * **pack:** 修复 assets 文件名更改后打包资源报错 ([2e301d3](http://gitlab.corp.qunar.com/mfe/ykit/commit/2e301d3))
+* 默认不设置 publicPath ([ccedfc2](http://gitlab.corp.qunar.com/mfe/ykit/commit/ccedfc2))
 
 
 ### Features

@@ -1399,19 +1399,19 @@ dateformat@^1.0.11, dateformat@^1.0.12:
     get-stdin "^4.0.1"
     meow "^3.3.0"
 
-debug@2.2.0, debug@^2.1.1, debug@~2.2.0:
+debug@2.2.0, debug@~2.2.0:
   version "2.2.0"
   resolved "http://registry.npm.corp.qunar.com/debug/download/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
 
-debug@2.3.3, debug@^2.2.0:
+debug@2.3.3:
   version "2.3.3"
   resolved "http://registry.npm.corp.qunar.com/debug/download/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
   dependencies:
     ms "0.7.2"
 
-debug@^2.6.0:
+debug@^2.1.1, debug@^2.2.0, debug@^2.6.0:
   version "2.6.0"
   resolved "http://registry.npm.corp.qunar.com/debug/download/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
@@ -1751,13 +1751,13 @@ espree@^3.1.6:
     acorn "^4.0.1"
     acorn-jsx "^3.0.0"
 
-esprima@*, esprima@^2.6.0, esprima@^2.7.1:
-  version "2.7.3"
-  resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
-
-esprima@~3.1.0:
+esprima@*, esprima@~3.1.0:
   version "3.1.2"
   resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-3.1.2.tgz#954b5d19321ca436092fa90f06d6798531fe8184"
+
+esprima@^2.6.0, esprima@^2.7.1:
+  version "2.7.3"
+  resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
 
 esrecurse@^4.1.0:
   version "4.1.0"
@@ -5433,9 +5433,9 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
-ydoc@^2.1.1:
-  version "2.1.1"
-  resolved "http://registry.npm.corp.qunar.com/ydoc/download/ydoc-2.1.1.tgz#acec10a7ea97eb6dbecf542198d58d4f98269e15"
+ydoc@latest:
+  version "2.2.1"
+  resolved "http://registry.npm.corp.qunar.com/ydoc/download/ydoc-2.2.1.tgz#47d268a537e64b0e9e161d9d3924001cc72171b4"
   dependencies:
     art-template "^3.0.3"
     atropa-jsformatter "^0.1.2"
