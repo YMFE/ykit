@@ -1411,6 +1411,12 @@ debug@2.3.3, debug@^2.2.0:
   dependencies:
     ms "0.7.2"
 
+debug@^2.6.0:
+  version "2.6.0"
+  resolved "http://registry.npm.corp.qunar.com/debug/download/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
+  dependencies:
+    ms "0.7.2"
+
 decamelize@^1.0.0, decamelize@^1.1.2:
   version "1.2.0"
   resolved "http://registry.npm.corp.qunar.com/decamelize/download/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
