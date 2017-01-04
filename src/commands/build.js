@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var shell = require('shelljs');
+var child_process = require('child_process');
 
 exports.usage = '线上编译';
 
@@ -19,9 +20,14 @@ exports.run = function(options) {
         currentNpm = 'npm';
         log('指定 npm 进行模块安装');
     } else {
-        currentNpm = 'npm_cache_share';
-        log('指定 npm_cache_share 进行模块安装');
-        process.stdout && process.stdout.write('npm_cache_share version: ') && run('npm_cache_share -V');
+        try {
+            child_process.execSync('npm_cache_share -h');
+            currentNpm = 'npm_cache_share';
+            log('指定 npm_cache_share 进行模块安装');
+        } catch (e) {
+            currentNpm = 'npm';
+            log('npm_cache_share 不存在，将使用 npm 进行模块安装');
+        }
     }
 
     // 确定 node 版本
