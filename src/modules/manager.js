@@ -108,10 +108,6 @@ exports.getCommands = () => {
                 module: require(item.path)
             };
         }))
-        .filter((command) => {
-            const isInBuildEnv = process.env.PWD.indexOf('/home/q/jenkins/workspace/') > -1;
-            return command.name !== 'build' || isInBuildEnv;
-        })
         .filter((command) => !!command.module);
 };
 

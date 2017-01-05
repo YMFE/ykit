@@ -66,8 +66,10 @@ let cli = module.exports = {
     help: () => {
         info(helpTitle);
         Manager.getProject(process.cwd()).commands.forEach((command) => {
-            const commandStr = rightPad(rightPad(command.name, 8) + (command.abbr || ''), 25);
-            info(` ${commandStr} # ${command.module.usage || ''}`);
+            if(command.name !== 'build') {
+                const commandStr = rightPad(rightPad(command.name, 8) + (command.abbr || ''), 25);
+                info(` ${commandStr} # ${command.module.usage || ''}`);
+            }
         });
         info();
         info(' 可用的全局配置有:', (Manager.readRC().configs || []).map((item) => item.name.substring(12)).join(', '));
