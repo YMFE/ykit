@@ -414,7 +414,7 @@ class Project {
                         const packDuration = Date.now() - packStartTime > 1000
                             ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
                             : (Date.now() - packStartTime) + 'ms';
-                        log('Finished in ' + packDuration + '.\n');
+                        log('Packing Finished in ' + packDuration + '.\n');
 
                         callback(err, stats);
                     });

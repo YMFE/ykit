@@ -5,6 +5,8 @@ var path = require('path');
 var shell = require('shelljs');
 var child_process = require('child_process');
 
+var UtilFs = require('../utils/fs.js');
+
 exports.usage = '线上编译';
 
 exports.setOptions = (optimist) => {
@@ -18,12 +20,18 @@ exports.run = function(options) {
     var currentNpm = null;
     if (buildOpts.cache === false) {
         currentNpm = 'npm';
-        log('指定 npm 进行模块安装');
+        log('将使用 npm 进行模块安装');
     } else {
         try {
             child_process.execSync('npm_cache_share -h');
-            currentNpm = 'npm_cache_share';
-            log('指定 npm_cache_share 进行模块安装');
+
+            if(UtilFs.fileExists(sysPath.join(this.project.cwd, 'npm-shrinkwrap.json'))) {
+                currentNpm = 'npm_cache_share';
+                log('将使用 npm_cache_share 进行模块安装');
+            } else {
+                currentNpm = 'npm';
+                log('npm-shrinkwrap.json 不存在，将使用 npm 进行模块安装');
+            }
         } catch (e) {
             currentNpm = 'npm';
             log('npm_cache_share 不存在，将使用 npm 进行模块安装');
@@ -55,6 +63,10 @@ exports.run = function(options) {
     process.stdout && process.stdout.write('npm version: ') && run('npm -v');
     run('ykit -v');
 
+    // cache clean
+    currentNpm === 'npm' && run('npm cache clean');
+
+    // build
     log('Build Started.');
     run(currentNpm + ' install --registry http://registry.npm.corp.qunar.com/');
     run('ykit pack -m -q');
