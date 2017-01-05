@@ -28,6 +28,7 @@ qnpm i @qnpm/ykit-config-fekit --save
 
 - 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
+- 配置compile:false的项目
 
 以上几类项目目前完全无法迁移，会逐次提供支持，请等待之后版本的ykit-config-fekit。
 
