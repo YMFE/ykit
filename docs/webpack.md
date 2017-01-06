@@ -8,17 +8,29 @@
 
 编辑配置文件，以下为配置示例：
 ```
-var webpackConfig =  require('webpack.config.js')
-
 exports.config = function() {
     return {
-        export: [], // 在 modifyWebpackConfig 中配置原有入口，所以这里留空
+        // 将 webpack 中的入口改为数组的形式，放在 export 中
+        export: [
+            './scripts/index.js'
+            './styles/index.scss'
+        ],
         modifyWebpackConfig: function(baseConfig) {
-            // 配置入口
-            baseConfig.entry = webpackConfig.entry;
-            // 配置编译方式
-            baseConfig.module = webpackConfig.module;
-            // 迁移更多自定义的配置
+
+            // 配置编译方式（配置形式同 webapck）
+            baseConfig.module = {
+                loaders: [
+                    {
+                        test: /\.jsx?$/,
+                        loader: 'babel',
+                        query: {
+                            presets: ['es2015', 'react']
+                        }
+                    }
+                ]
+            };
+
+            // 更多 webapck 的配置可以直接 copy 过来
             // ...
 
             return baseConfig;
