@@ -377,15 +377,15 @@ exports.run = (options) => {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
         if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
-            warn('缺少 https 证书/秘钥配置，请使用以下命令设置:');
+            warn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
             !globalConfig['https-key'] && warn('ykit config set https-key <path-to-your-key>');
             !globalConfig['https-crt'] && warn('ykit config set https-crt <path-to-your-crt>');
-            process.exit(1);
         }
 
+        const defaultHttpsConfigPath = sysPath.join(__dirname, '../config/https/');
         const httpsOpts = {
-            key: fs.readFileSync(globalConfig['https-key']),
-            cert: fs.readFileSync(globalConfig['https-crt'])
+            key: fs.readFileSync(globalConfig['https-key'] || defaultHttpsConfigPath + 'server.key'),
+            cert: fs.readFileSync(globalConfig['https-crt'] || defaultHttpsConfigPath + 'server.crt')
         };
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
