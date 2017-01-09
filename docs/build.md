@@ -1,4 +1,4 @@
-<h1 style="font-weight: normal"> 打包 JOB </h1>
+<h1 style="font-weight: normal"> 发布 </h1>
 
 <h2 style="font-weight: normal"> 创建/编辑 Schema </h2>
 

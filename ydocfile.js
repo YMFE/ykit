@@ -70,7 +70,7 @@ module.exports = {
                 name: 'Node.js API',
                 content: './docs/api.md'
             }, {
-                name: '打包 JOB',
+                name: '发布',
                 content: './docs/build.md'
             }, {
                 name: '前后端版本号关联',
