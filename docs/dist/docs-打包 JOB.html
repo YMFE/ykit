@@ -154,32 +154,35 @@
                 
                 <h1 style="font-weight: normal"> 打包 JOB </h1>
 
-<h2 style="font-weight: normal"> 创建 Schema </h2>
+<h2 style="font-weight: normal"> 创建/编辑 Schema </h2>
 
-<p>1.进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它项目信息正常填写即可。</p>
-<p><img src="http://ww3.sinaimg.cn/large/6af705b8gw1f8v3wuuz2dj20o50dnmzn.jpg" alt="Schema-新建"></p>
-<p>2.进入 Schema 公共详细信息填写界面，在 build_command 字段填写以下打包命令：</p>
-<pre><code>export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH &amp;&amp; npm cache clean &amp;&amp; npm install --registry http://registry.npm.corp.qunar.com/ &amp;&amp; ykit pack -m -q
-</code></pre><p>其它字段按项目需求填写，如无特殊需求可不填，submit 即可。</p>
-<h2 style="font-weight: normal"> 创建 Job </h2>
+<p>进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建/编辑 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它按项目实际情况填写。</p>
+<p><img src="http://ww3.sinaimg.cn/large/6af705b8gw1f8v3wuuz2dj20o50dnmzn.jpg" width="650px;"></p>
+<h2 style="font-weight: normal"> 设置 build 参数</h2>
 
-<p>Ykit 对于创建 Job 并没有特殊的要求，按正常项目需求创建即可，下图是一个 demo 项目的 job 参数：</p>
-<p><img src="http://ww1.sinaimg.cn/large/6af705b8gw1f8v3x6usblj20vw0hp770.jpg" alt="JOB-新建"></p>
-<p><strong>注意：Job 创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加 Job 的 devqa 权限</a>才能在 Jenkins 中 Build.</strong></p>
+<p>点击进入编辑界面，首先设置 build_method ，<code>sfile</code> 代表普通编译模式，<code>node</code> 代表使用 node 模块缓存策略，安装更快，但是需要项目中存在 npm-shrinkwrap（详见 <a href="./docs-npm%20shrinkwrap.html">shrinkwrap 使用</a>）。</p>
+<p><img src="http://oji8kngu4.bkt.clouddn.com/build_params.jpeg" width="650px;"></p>
+<p><strong>注意：build_method 更改以后需要更新 job 才会生效（进入 job 编辑界面，点击保存即可）。</strong></p>
+<p><code>beta</code> 和 <code>prod</code> 标签下的 build_command 都设置为：</p>
+<pre><code>ykit build
+</code></pre><p>后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。</p>
+<h2 style="font-weight: normal"> 创建/编辑 Job </h2>
+
+<p>Ykit 对于 Job 并没有特殊的要求，按项目实际情况填写。</p>
 <h2 style="font-weight: normal"> Build 项目 </h2>
 
-<h3 style="font-weight: normal"> 【重要】Build 前检查 </h3>
+<h3 style="font-weight: normal"> 添加 Job 的 devqa 权限 </h3>
+
+<p>首先，Job 创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加 Job 的执行权限</a>才能在 Jenkins 中 Build，否则在 qdr 等平台无法执行 build 操作。</p>
+<h3 style="font-weight: normal"> Build 前检查 </h3>
 
 <ol>
 <li>确保 pom.xml 里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于 master。</li>
-<li>确保项目中 ykit.{type}.js 语法使用 es5，因为 Build 机器上的 node 版本为 0.12，&gt;es5 的语法会在编译过程中报错。</li>
+<li>确保项目中的配置文件 ykit.{type}.js 语法为 es5，因为 Build 机器上的 node 版本为 0.12，高于 es5 的语法会在编译过程中报错。</li>
 </ol>
-<h3 style="font-weight: normal"> 关于 node_modules </h3>
+<h3 style="font-weight: normal"> 管理 node_modules </h3>
 
-<ol>
-<li><strong>确保项目中不存在 node_modules，或者 node_modules 是可兼容的。</strong> 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，而是在 build 机器上安装（之前创建 Schema 时已经配置了安装命令）。</li>
-<li>上面的安装命令中只会安装<code>dependencies</code>，因此不要在将编译依赖的包放在<code>devDependencies</code>中。</li>
-</ol>
+<p><strong>确保项目中不存在 node_modules，或者 node_modules 是可兼容的。</strong> 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，在 build 机器上安装即可（之前创建 Schema 时 <code>ykit build</code> 中已经包含了安装命令）。</p>
 <h3 style="font-weight: normal"> 开始 Build </h3>
 
 <p>在 Jenkins 刚刚创建的 Job 页面中，选择 Build with Parameters。如果是分支开发方式，需要在<code>tag_name</code>字段填写分支号，其它参数按项目需求填写即可。</p>
