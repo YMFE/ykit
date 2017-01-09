@@ -17,7 +17,7 @@
 `beta` 和 `prod` 标签下的 build_command 都设置为：
 
 ```
-ykit build
+export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm install --registry http://registry.npm.corp.qunar.com/ && ykit pack -m -q
 ```
 
 后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。
@@ -34,12 +34,9 @@ ykit build
 
 <h3 style="font-weight: normal"> Build 前检查 </h3>
 
-1. 确保 pom.xml 里面的`artifactId`字段，已经从默认的`******`改为项目名称，并且当前分支不落后于 master。
-2. 确保项目中的配置文件 ykit.{type}.js 语法为 es5，因为 Build 机器上的 node 版本为 0.12，高于 es5 的语法会在编译过程中报错。
+- 确保 pom.xml 里面的`artifactId`字段，已经从默认的`******`改为项目名称，并且当前分支不落后于 master。
 
-<h3 style="font-weight: normal"> 管理 node_modules </h3>
-
-**确保项目中不存在 node_modules，或者 node_modules 是可兼容的。** 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，在 build 机器上安装即可（之前创建 Schema 时 `ykit build` 中已经包含了安装命令）。
+- **确保项目中不存在 node_modules，或者 node_modules 是可兼容的。** 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，在 build 机器上安装即可（之前创建 Schema 时 `ykit build` 中已经包含了安装命令）。
 
 <h3 style="font-weight: normal"> 开始 Build </h3>
 
