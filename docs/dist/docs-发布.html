@@ -158,14 +158,14 @@
 
 <p>进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建/编辑 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它按项目实际情况填写。</p>
 <p><img src="http://ww3.sinaimg.cn/large/6af705b8gw1f8v3wuuz2dj20o50dnmzn.jpg" width="650px;"></p>
-<h2 style="font-weight: normal"> 设置 build 参数</h2>
+<h2 style="font-weight: normal"> 设置 build 参数 </h2>
 
-<p>点击进入编辑界面，首先设置 build_method ，<code>sfile</code> 代表普通编译模式，<code>node</code> 代表使用 node 模块缓存策略，安装更快，但是需要项目中存在 npm-shrinkwrap（详见 <a href="./docs-npm%20shrinkwrap.html">shrinkwrap 使用</a>）。</p>
-<p><img src="http://oji8kngu4.bkt.clouddn.com/build_params.jpeg" width="650px;"></p>
+<p>点击进入编辑界面，首先设置 build_method 为 <code>node</code>。</p>
 <p><strong>注意：build_method 更改以后需要更新 job 才会生效（进入万事屋 <a href="http://wanshiwu.corp.qunar.com/job/search/edit">job 编辑菜单</a>，点击保存即可）。</strong></p>
-<p><code>beta</code> 和 <code>prod</code> 标签下的 build_command 都设置为：</p>
-<pre><code>export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH &amp;&amp; npm install --registry http://registry.npm.corp.qunar.com/ &amp;&amp; ykit pack -m -q
-</code></pre><p>后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。</p>
+<p>将 <code>beta</code> 和 <code>prod</code> 标签下的 build_command 都设置为：</p>
+<pre><code>export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH &amp;&amp; ykit build
+</code></pre><p><img src="http://oji8kngu4.bkt.clouddn.com/build_params_0109.jpeg" width="650px;"></p>
+<p>后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。</p>
 <h2 style="font-weight: normal"> 创建/编辑 Job </h2>
 
 <p>在万事屋的<a href="http://wanshiwu.corp.qunar.com/job/search/new">Job 菜单</a>中新建/编辑 Job。Ykit 对于 Job 并没有特殊的要求，按项目实际情况填写。</p>
@@ -174,12 +174,14 @@
 <h3 style="font-weight: normal"> 添加 Job 的 devqa 权限 </h3>
 
 <p>首先，Job 创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加 Job 的执行权限</a>才能在 Jenkins 中 Build，否则在 qdr 等平台无法执行 build 操作。</p>
-<h3 style="font-weight: normal"> Build 前检查 </h3>
+<h3 style="font-weight: normal"> Build 前检查（重要） </h3>
 
 <ul>
 <li><p>确保 pom.xml 里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于 master。</p>
 </li>
 <li><p><strong>确保项目中不存在 node_modules，或者 node_modules 是可兼容的。</strong> 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，在 build 机器上安装即可（之前创建 Schema 时 <code>ykit build</code> 中已经包含了安装命令）。</p>
+</li>
+<li><p>确保项目中存在 npm-shrinkwrap，否则可能会造成编译失败（详见 <a href="./docs-npm%20shrinkwrap.html">shrinkwrap 使用</a>）。</p>
 </li>
 </ul>
 <h3 style="font-weight: normal"> 开始 Build </h3>
