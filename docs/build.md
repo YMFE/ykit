@@ -12,7 +12,7 @@
 
 <img src="http://oji8kngu4.bkt.clouddn.com/build_params.jpeg" width="650px;">
 
-**注意：build_method 更改以后需要更新 job 才会生效（进入 job 编辑界面，点击保存即可）。**
+**注意：build_method 更改以后需要更新 job 才会生效（进入万事屋 [job 编辑菜单][5]，点击保存即可）。**
 
 `beta` 和 `prod` 标签下的 build_command 都设置为：
 
@@ -24,7 +24,7 @@ ykit build
 
 <h2 style="font-weight: normal"> 创建/编辑 Job </h2>
 
-Ykit 对于 Job 并没有特殊的要求，按项目实际情况填写。
+在万事屋的[Job 菜单][4]中新建/编辑 Job。Ykit 对于 Job 并没有特殊的要求，按项目实际情况填写。
 
 <h2 style="font-weight: normal"> Build 项目 </h2>
 
@@ -48,3 +48,5 @@ Ykit 对于 Job 并没有特殊的要求，按项目实际情况填写。
 [1]: http://wanshiwu.corp.qunar.com/schema/new
 [2]: http://wanshiwu.corp.qunar.com/permission/job
 [3]: ./docs-npm%20shrinkwrap.html
+[4]: http://wanshiwu.corp.qunar.com/job/search/new
+[5]: http://wanshiwu.corp.qunar.com/job/search/edit
