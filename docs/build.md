@@ -10,7 +10,7 @@
 
 点击进入编辑界面，首先设置 build_method 为 `node`。
 
-**注意：build_method 更改以后需要更新 job 才会生效（进入万事屋 [job 编辑菜单][5]，点击保存即可）。**
+**注意：对于已经存在的 job，build_method 更改以后需要更新 job 才会生效（进入万事屋 [job 编辑菜单][5]，点击保存即可）。**
 
 将 `beta` 和 `prod` 标签下的 build_command 都设置为：
 
