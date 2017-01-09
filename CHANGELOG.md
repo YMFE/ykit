@@ -1,10 +1,16 @@
 <a name="0.2.4"></a>
-## [0.2.4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.3...0.2.4) (2017-01-04)
+## [0.2.4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.3...0.2.4) (2017-01-09)
+
+
+### Bug Fixes
+
+* **build:** 兼容不存在 npm_cache_share 的场景 ([cc7483d](http://gitlab.corp.qunar.com/mfe/ykit/commit/cc7483d))
 
 
 ### Features
 
 * **cmd:** 添加 build 命令 ([92d66aa](http://gitlab.corp.qunar.com/mfe/ykit/commit/92d66aa))
+* **server:** 添加默认 https 证书 ([5be0261](http://gitlab.corp.qunar.com/mfe/ykit/commit/5be0261))
 
 
 
