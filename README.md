@@ -60,12 +60,11 @@ ykit pack -m
 ```js
 exports.config = function() {
     return {
-        // export 定义项目资源入口，在本地服务请求时，会实现 /src -> /prd 目录的对应
-        // 比如在 html 中请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
-        export: ['./scripts/index.js', './styles/index.scss',],
+        // 在本地服务请求时，会实现 /src -> /prd 目录的对应(类似 fekit)
+        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: ['./scripts/index.js', './styles/index.scss'],
 
-        // ykit 本身会有基础 webpack 配置
-        // 通过该函数可以获取（通过参数 baseConfig）和修改它
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
         modifyWebpackConfig: function(baseConfig) {
             // ...
             return baseConfig

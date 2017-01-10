@@ -1,3 +1,13 @@
+<a name="0.2.5-rc0"></a>
+## [0.2.5-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...v0.2.5-rc0) (2017-01-10)
+
+
+### Features
+
+* **server:** 支持  entry.key 路径匹配 ([a138998](http://gitlab.corp.qunar.com/mfe/ykit/commit/a138998))
+
+
+
 <a name="0.2.4"></a>
 ## [0.2.4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.3...0.2.4) (2017-01-09)
 
