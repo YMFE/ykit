@@ -218,9 +218,12 @@ exports.run = (options) => {
                                 }
 
                                 // 判断所请求的资源是否在入口配置中
-                                if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrl)) {
+                                const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
+                                const matchingPathWithoutVer = sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer);
+                                const matchingKeyWithoutVer = sysPath.normalize(requestUrlNoVer) === entryKey + sysPath.extname(requestUrl);
+                                if (matchingPath) {
                                     isRequestingEntry = true;
-                                } else if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer)) {
+                                } else if (matchingPathWithoutVer || matchingKeyWithoutVer) {
                                     req.url = req.url.replace(rversion, '');
                                     isRequestingEntry = true;
                                 }
