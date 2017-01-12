@@ -25,6 +25,7 @@ global.YKIT_HOME = sysPath.join(USER_HOME, '.ykit');
 global.YKIT_RC = sysPath.join(USER_HOME, '.ykitrc');
 global.YKIT_COMMANDS_PATH = sysPath.join(__dirname, 'commands');
 global.YKIT_COMPILERS_PATH = sysPath.join(__dirname, 'compilers');
+global.YKIT_CACHE_DIR = '.ykit_cache';
 
 global.info = console.info; // eslint-disable-line
 global.success = function() {

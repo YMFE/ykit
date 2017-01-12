@@ -162,19 +162,33 @@ exports.run = (options) => {
         let url = req.url,
             keys = url.split('/'),
             compiler = null;
+
         const projectInfo = getProjectInfo(req);
         const projectName = projectInfo.projectName;
         const projectCwd = projectInfo.projectCwd;
+        const outputDir = 'prd';
 
         // 处理prd资源
-        if (keys[2] === 'prd') {
+        if (keys[2] === outputDir) {
             const rquery = /\?.+$/;
             const rversion = /@[\d\w]+(?=\.\w+$)/;
             // 去掉 query & 版本号
             const requestUrl = keys.slice(3).join('/').replace(rquery, '').replace('.map', '');
 
+            // 清除 prd 目录资源
+            let isFirstCompileDir = true;
+            Object.keys(middlewareCache).map((cacheName) => {
+                if(cacheName.startsWith(projectName)) {
+                    isFirstCompileDir = false;
+                }
+            });
+            if(isFirstCompileDir) {
+                UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, outputDir), true);
+                UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
+            }
+
             // 只编译所请求的资源
-            if (!isCompilingAll) {
+            if(!isCompilingAll) {
 
                 let requestUrlNoVer = requestUrl.replace(rversion, '');
 
@@ -211,22 +225,36 @@ exports.run = (options) => {
                                 // 应用后缀转换规则
                                 const entryExtNames = config.entryExtNames;
                                 Object.keys(entryExtNames).map((targetExtName) => {
-                                    const exts = entryExtNames[targetExtName].map((name) => {
+                                    let exts = entryExtNames[targetExtName];
+
+                                    // 如果是 css 要考虑 css.js 的情况
+                                    if(targetExtName === 'css') {
+                                        exts = exts.concat(
+                                            entryExtNames[targetExtName].map((name) => {
+                                                return name + '.js';
+                                            })
+                                        );
+                                    }
+
+                                    // 创建正则匹配
+                                    exts = exts.map((name) => {
                                         return name + '$';
                                     });
                                     const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+
                                     entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
                                 });
 
-                                // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css.js => main/index.css)
+                                // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
                                 if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
-                                    entryPath = entryPath.split('.ykit_cache/')[1].replace('.css.js', '.css');
+                                    entryPath = entryPath.split('.ykit_cache/')[1];
                                 }
 
                                 // 判断所请求的资源是否在入口配置中
                                 const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
                                 const matchingPathWithoutVer = sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer);
                                 const matchingKeyWithoutVer = sysPath.normalize(requestUrlNoVer) === entryKey + sysPath.extname(requestUrl);
+
                                 if (matchingPath) {
                                     isRequestingEntry = true;
                                 } else if (matchingPathWithoutVer || matchingKeyWithoutVer) {

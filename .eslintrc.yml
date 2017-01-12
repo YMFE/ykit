@@ -49,4 +49,5 @@ globals:
   JSON5: true
   YKIT_COMMANDS_PATH: true
   YKIT_RC: true
+  YKIT_CACHE_DIR: true
   USER_HOME: true
