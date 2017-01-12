@@ -1,5 +1,25 @@
+<a name="0.2.5-rc2"></a>
+## [0.2.5-rc2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc1...0.2.5-rc2) (2017-01-12)
+
+
+### Bug Fixes
+
+* **server:** 修复 js 没有应用后缀转换规则 ([7a5a16e](http://gitlab.corp.qunar.com/mfe/ykit/commit/7a5a16e))
+
+
+
+<a name="0.2.5-rc1"></a>
+## [0.2.5-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc0...0.2.5-rc1) (2017-01-12)
+
+
+### Features
+
+* **compile:** 添加 jsx 进入默认编译后缀 ([79c3bc5](http://gitlab.corp.qunar.com/mfe/ykit/commit/79c3bc5))
+
+
+
 <a name="0.2.5-rc0"></a>
-## [0.2.5-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...v0.2.5-rc0) (2017-01-10)
+## [0.2.5-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...0.2.5-rc0) (2017-01-10)
 
 
 ### Features

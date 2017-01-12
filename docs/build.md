@@ -8,17 +8,17 @@
 
 <h2 style="font-weight: normal"> 设置 build 参数 </h2>
 
-点击进入编辑界面，首先设置 build_method 为 `node`。
+点击进入编辑界面，首先设置 build_method 为 `sfile`。
 
 **注意：对于已经存在的 job，build_method 更改以后需要更新 job 才会生效（进入万事屋 [job 编辑菜单][5]，点击保存即可）。**
 
 将 `beta` 和 `prod` 标签下的 build_command 都设置为：
 
 ```
-export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && ykit build
+export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm install && ykit pack -m -q
 ```
 
-<img src="http://oji8kngu4.bkt.clouddn.com/build_params_0109.jpeg" width="650px;">
+<!-- <img src="http://oji8kngu4.bkt.clouddn.com/build_params_0109.jpeg" width="650px;"> -->
 
 后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。
 
