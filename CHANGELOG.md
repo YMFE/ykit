@@ -1,10 +1,46 @@
+<a name="0.2.5-rc2"></a>
+## [0.2.5-rc2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc1...0.2.5-rc2) (2017-01-12)
+
+
+### Bug Fixes
+
+* **server:** 修复 js 没有应用后缀转换规则 ([7a5a16e](http://gitlab.corp.qunar.com/mfe/ykit/commit/7a5a16e))
+
+
+
+<a name="0.2.5-rc1"></a>
+## [0.2.5-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc0...0.2.5-rc1) (2017-01-12)
+
+
+### Features
+
+* **compile:** 添加 jsx 进入默认编译后缀 ([79c3bc5](http://gitlab.corp.qunar.com/mfe/ykit/commit/79c3bc5))
+
+
+
+<a name="0.2.5-rc0"></a>
+## [0.2.5-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...0.2.5-rc0) (2017-01-10)
+
+
+### Features
+
+* **server:** 支持  entry.key 路径匹配 ([a138998](http://gitlab.corp.qunar.com/mfe/ykit/commit/a138998))
+
+
+
 <a name="0.2.4"></a>
-## [0.2.4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.3...0.2.4) (2017-01-04)
+## [0.2.4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.3...0.2.4) (2017-01-09)
+
+
+### Bug Fixes
+
+* **build:** 兼容不存在 npm_cache_share 的场景 ([cc7483d](http://gitlab.corp.qunar.com/mfe/ykit/commit/cc7483d))
 
 
 ### Features
 
 * **cmd:** 添加 build 命令 ([92d66aa](http://gitlab.corp.qunar.com/mfe/ykit/commit/92d66aa))
+* **server:** 添加默认 https 证书 ([5be0261](http://gitlab.corp.qunar.com/mfe/ykit/commit/5be0261))
 
 
 

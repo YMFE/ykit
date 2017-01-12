@@ -26,7 +26,7 @@ $ sudo npm install @qnpm/ykit-config-{插件名} --registry http://registry.npm.
 - 实现资源入口从`src`到`prd & dev`的映射。
 - 添加`ykit sync`命令，同步代码至开发机。
 - 添加`ykit source`命令，上传静态资源。
-- 支持引入`fekit_moudles`
+- 支持引入`fekit_modules`
 
 <h3 style="font-weight: normal"> ykit-config-fekit </h3>
 

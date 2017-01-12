@@ -4,6 +4,7 @@ require('./global');
 const version = require('../package.json').version;
 const optimist = require('optimist');
 const rightPad = require('right-pad');
+const buildCmd = require('./commands/build');
 const UtilFs = require('./utils/fs.js');
 
 let Manager = require('./modules/manager.js');
@@ -34,6 +35,11 @@ let cli = module.exports = {
                 /* eslint-enable */
             };
             fs.writeFileSync(YKIT_RC, JSON.stringify(initRc, null, '    '));
+        }
+
+        // build 命令提前 npm install
+        if(process.argv[2] === 'build') {
+            buildCmd.npmInstall();
         }
 
         if (option === '-v' || option === '--version') {

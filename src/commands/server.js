@@ -208,9 +208,15 @@ exports.run = (options) => {
                                     entryPath = entryItem;
                                 }
 
-                                // 将入口的 .scss/.less 后缀替换为.css
-                                const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'));
-                                entryPath = UtilPath.normalize(entryPath.replace(cssReg, '.css'));
+                                // 应用后缀转换规则
+                                const entryExtNames = config.entryExtNames;
+                                Object.keys(entryExtNames).map((targetExtName) => {
+                                    const exts = entryExtNames[targetExtName].map((name) => {
+                                        return name + '$';
+                                    });
+                                    const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+                                    entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
+                                });
 
                                 // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css.js => main/index.css)
                                 if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
@@ -218,9 +224,12 @@ exports.run = (options) => {
                                 }
 
                                 // 判断所请求的资源是否在入口配置中
-                                if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrl)) {
+                                const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
+                                const matchingPathWithoutVer = sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer);
+                                const matchingKeyWithoutVer = sysPath.normalize(requestUrlNoVer) === entryKey + sysPath.extname(requestUrl);
+                                if (matchingPath) {
                                     isRequestingEntry = true;
-                                } else if (sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer)) {
+                                } else if (matchingPathWithoutVer || matchingKeyWithoutVer) {
                                     req.url = req.url.replace(rversion, '');
                                     isRequestingEntry = true;
                                 }
@@ -377,15 +386,15 @@ exports.run = (options) => {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
         if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
-            warn('缺少 https 证书/秘钥配置，请使用以下命令设置:');
+            warn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
             !globalConfig['https-key'] && warn('ykit config set https-key <path-to-your-key>');
             !globalConfig['https-crt'] && warn('ykit config set https-crt <path-to-your-crt>');
-            process.exit(1);
         }
 
+        const defaultHttpsConfigPath = sysPath.join(__dirname, '../config/https/');
         const httpsOpts = {
-            key: fs.readFileSync(globalConfig['https-key']),
-            cert: fs.readFileSync(globalConfig['https-crt'])
+            key: fs.readFileSync(globalConfig['https-key'] || defaultHttpsConfigPath + 'server.key'),
+            cert: fs.readFileSync(globalConfig['https-crt'] || defaultHttpsConfigPath + 'server.crt')
         };
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }

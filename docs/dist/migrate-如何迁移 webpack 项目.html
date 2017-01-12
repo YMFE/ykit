@@ -99,33 +99,188 @@
 
                 
                 <p>由于 Ykit 是基于 Webpack 的，因此迁移 Webapck 项目只需要原有配置进行迁移。</p>
-<h2 style="font-weight: normal"> 1. 创建配置文件 </h2>
+<h2 style="font-weight: normal"> 1. 安装 qunar 插件 </h2>
 
-<p>在项目目录下创建一个名为 <code>ykit.js</code> 的配置文件（如果使用某种类型的插件，则为 <code>ykit.{type}.js</code>），配置文件示例可参考 <a href="./docs-配置.html">Ykit-配置</a>。</p>
-<h2 style="font-weight: normal"> 2. 配置 modifyWebpackConfig </h2>
+<p>在项目中执行</p>
+<pre><code class="lang-sh">npm i @qnpm/ykit-config-qunar --registry http://registry.npm.corp.qunar.com/ --save
+</code></pre>
+<h2 style="font-weight: normal"> 2. 创建 ykit 配置文件 </h2>
 
-<p>编辑配置文件，以下为配置示例：</p>
-<pre><code>var webpackConfig =  require(&#39;webpack.config.js&#39;)
-
-exports.config = function() {
+<p>在项目目录下创建一个名为 <code>ykit.qunar.js</code> 的配置文件，示例：</p>
+<pre><code class="lang-javascript">exports.config = function() {
     return {
-        export: [], // 在 modifyWebpackConfig 中配置原有入口，所以这里留空
+        // ykit 中没有 entry 和 output 的概念，而是使用 export
+        // 在本地服务请求时，会实现 /src -&gt; /prd 目录的对应(类似 fekit)
+        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
+
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
+        // 具体更改哪些配置项参照下方的配置表
         modifyWebpackConfig: function(baseConfig) {
-            // 配置入口
-            baseConfig.entry = webpackConfig.entry;
-            // 配置编译方式
-            baseConfig.module = webpackConfig.module;
-            // 迁移更多自定义的配置
             // ...
+            return baseConfig
+        }
+    }
+};
+</code></pre>
+<h2 style="font-weight: normal"> 3. 配置 modifyWebpackConfig </h2>
+
+<p>modifyWebpackConfig 提供了在 ykit 基础上定制化配置的能力，详见下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">config 字段</th>
+<th style="text-align:left">环境</th>
+<th style="text-align:left">ykit 默认配置</th>
+<th style="text-align:left">是否支持业务自定义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">context</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">src</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">entry</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">output.path</td>
+<td style="text-align:left">local</td>
+<td style="text-align:left">prd</td>
+<td style="text-align:left">不建议自定义</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">dev</td>
+<td style="text-align:left">dev</td>
+<td style="text-align:left">不建议自定义，由开发机指定</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">prd</td>
+<td style="text-align:left">prd</td>
+<td style="text-align:left">不建议自定义，由发布系统指定</td>
+</tr>
+<tr>
+<td style="text-align:left">output.filename</td>
+<td style="text-align:left">local</td>
+<td style="text-align:left">[name][ext]</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">dev</td>
+<td style="text-align:left">[name]@dev[ext]</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">prd</td>
+<td style="text-align:left">[name]@[chunkhash][ext]</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">output.chunkFilename</td>
+<td style="text-align:left">local</td>
+<td style="text-align:left">[id].chunk.js</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">dev</td>
+<td style="text-align:left">[id].chunk@dev[ext]</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">prd</td>
+<td style="text-align:left">[id].chunk@[chunkhash][ext]</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">module.loaders</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">css, sass, less, html, json</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">resolve.alias</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">resolve.extensions</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">.js, .css, .json, .tpl, .string, .scss, .sass, .less</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">devtool</td>
+<td style="text-align:left">local &amp; dev</td>
+<td style="text-align:left">cheap-source-map</td>
+<td style="text-align:left">支持</td>
+</tr>
+<tr>
+<td style="text-align:left">plugins</td>
+<td style="text-align:left">prd</td>
+<td style="text-align:left">UglifyJsPlugin</td>
+<td style="text-align:left">支持</td>
+</tr>
+</tbody>
+</table>
+<p>需要注意的是，不同的配置项要根据当前 ykit 默认来选择<strong>赋值、追加或者合并</strong>操作，以下是简单示例：</p>
+<pre><code class="lang-javascript">exports.config = function() {
+    return {
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
+
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
+        // 具体更改哪些配置项参照下方的配置表
+        modifyWebpackConfig: function(baseConfig) {
+
+            // 设置 alias
+            baseConfig.resolve.alias = {
+                &#39;Utils&#39;: &#39;/src/scripts/utils&#39;,
+                &#39;Plugin&#39;: &#39;/src/scripts/plugin&#39;,
+                &#39;Config&#39;: &#39;/src/scripts/config&#39;
+            };
+
+            // 追加 loaders
+            baseConfig.module.loaders.push ({
+                test: /\.js|jsx$/,
+                exclude: /(node_modules|bower_components)/,
+                loader: &#39;babel&#39;,
+                query: {
+                    presets: [
+                        &#39;babel-preset-es2015&#39;,
+                        &#39;babel-preset-react&#39;
+                    ]
+                }
+            });
+
+            // 更改不同环境的 output.filename
+            baseConfig.output.local.filename = &#39;[name][ext]&#39;;
+            baseConfig.output.dev.filename = &#39;[name]@dev[ext]&#39;;
+            baseConfig.output.prd.filename = &#39;[name]@[chunkhash][ext]&#39;;
 
             return baseConfig;
         }
-    };
+    }
 };
-</code></pre><p>具体配置文档可参考 <a href="./docs-配置.html">Ykit-配置</a>。</p>
-<h2 style="font-weight: normal"> 3. 执行 ykit pack 验证编译打包结果 </h2>
+</code></pre>
+<h2 style="font-weight: normal"> 4. 验证 </h2>
 
-<p>默认会打包至项目的 <code>dev</code> 目录下。</p>
+<p>可针对不同环境，通过本地服务和编译打包资源进行验证</p>
+<ul>
+<li>local环境: 在项目外执行 <code>(sudo) ykit server</code>，通过本地服务验证资源</li>
+<li>dev环境: 在项目中执行 <code>ykit pack</code>，资源将被打到 dev 目录下（版本号统一为 @dev）</li>
+<li>prd环境: 在项目中执行 <code>ykit pack -m</code>，资源将被打到 prd 目录下（带 hash 版本号）</li>
+</ul>
 
               </div>
               <div class="open-panel"></div>

@@ -117,12 +117,11 @@
 <p>项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 <code>ykit.js</code>（基础环境）、<code>ykit.yo.js</code> 或者 <code>ykit.qunar.js</code>。配置文件样例：</p>
 <pre><code class="lang-js">exports.config = function() {
     return {
-        // export 定义项目资源入口，在本地服务请求时，会实现 /src -&gt; /prd 目录的对应
-        // 比如在 html 中请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
-        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;,],
+        // 在本地服务请求时，会实现 /src -&gt; /prd 目录的对应(类似 fekit)
+        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
 
-        // ykit 本身会有基础 webpack 配置
-        // 通过该函数可以获取（通过参数 baseConfig）和修改它
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
         modifyWebpackConfig: function(baseConfig) {
             // ...
             return baseConfig

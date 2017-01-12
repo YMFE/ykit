@@ -94,21 +94,18 @@ exports.getProject = (cwd, options) => {
 exports.getCommands = () => {
     return globby.sync(['*.js'], {
         cwd: YKIT_COMMANDS_PATH
-    })
-        .map((name) => {
-            return {
-                name: sysPath.basename(name, '.js'),
-                abbr: require(sysPath.join(YKIT_COMMANDS_PATH, name)).abbr,
-                module: require(sysPath.join(YKIT_COMMANDS_PATH, name))
-            };
-        })
-        .concat((readRC().commands || []).map((item) => {
-            return {
-                name: item.name,
-                module: require(item.path)
-            };
-        }))
-        .filter((command) => !!command.module);
+    }).map((name) => {
+        return {
+            name: sysPath.basename(name, '.js'),
+            abbr: require(sysPath.join(YKIT_COMMANDS_PATH, name)).abbr,
+            module: require(sysPath.join(YKIT_COMMANDS_PATH, name))
+        };
+    }).concat((readRC().commands || []).map((item) => {
+        return {
+            name: item.name,
+            module: require(item.path)
+        };
+    })).filter((command) => !!command.module);
 };
 
 // ykitrc

@@ -42,4 +42,7 @@ global.log = function() {
 global.logTime = function() {
     info(logSymbols.info + (' [' + moment().format('YY.MM.DD HH:mm:ss') + '] ').gray + Array.prototype.join.call(arguments, ' '));
 };
+global.logLinefeed = function() {
+    info();
+};
 global.packageJSON = require('../package.json');
