@@ -1,5 +1,7 @@
 <h1 style="font-weight: normal"> 将FEkit项目迁移到YKit </h1>
 
+** 注意：迁移所需npm至少为3以上，请先检查npm版本。 **
+
 <h2 style="font-weight:normal"> 生成package.json </h2>
 
 首先需要调用 `` npm init ``生成package.json文件，一路点回车即可。
