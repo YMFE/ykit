@@ -208,9 +208,15 @@ exports.run = (options) => {
                                     entryPath = entryItem;
                                 }
 
-                                // 将入口的 .scss/.less 后缀替换为.css
-                                const cssReg = new RegExp('\\' + config.entryExtNames.css.join('|\\'));
-                                entryPath = UtilPath.normalize(entryPath.replace(cssReg, '.css'));
+                                // 应用后缀转换规则
+                                const entryExtNames = config.entryExtNames;
+                                Object.keys(entryExtNames).map((targetExtName) => {
+                                    const exts = entryExtNames[targetExtName].map((name) => {
+                                        return name + '$';
+                                    });
+                                    const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+                                    entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
+                                });
 
                                 // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css.js => main/index.css)
                                 if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
