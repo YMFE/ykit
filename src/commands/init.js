@@ -39,16 +39,19 @@ exports.run = function (options) {
         spinner.start();
         spinner.text =`Checking package ykit-config-${initParam}`;
         async.series([
-            // 寻找是否存在 @qnpm/ykit-config-xxx 的插件
+            // qnpm 寻找是否存在 @qnpm/ykit-config-xxx 的插件
             (callback) => {
                 checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar.com');
             },
-            // 寻找是否存在 ykit-config-xxx 的插件
+            // qnpm 寻找是否存在 ykit-config-xxx 的插件
+            (callback) => {
+                checkConfigPkg(callback, `ykit-config-${initParam}`, 'corp.qunar.com');
+            },
+            // cnpm 寻找是否存在 ykit-config-xxx 的插件
             (callback) => {
                 checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org');
             }
         ], () => {
-            // results is now equal to ['one', 'two']
             if(isInitReady) {
                 spinner.stop();
             } else {
