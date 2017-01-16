@@ -15,7 +15,7 @@
 将 `beta` 和 `prod` 标签下的 build_command 都设置为：
 
 ```
-export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm install && ykit pack -m -q
+export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm install --registry http://registry.npm.corp.qunar.com/ && ykit pack -m -q
 ```
 
 <!-- <img src="http://oji8kngu4.bkt.clouddn.com/build_params_0109.jpeg" width="650px;"> -->

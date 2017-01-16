@@ -163,7 +163,7 @@
 <p>点击进入编辑界面，首先设置 build_method 为 <code>sfile</code>。</p>
 <p><strong>注意：对于已经存在的 job，build_method 更改以后需要更新 job 才会生效（进入万事屋 <a href="http://wanshiwu.corp.qunar.com/job/search/edit">job 编辑菜单</a>，点击保存即可）。</strong></p>
 <p>将 <code>beta</code> 和 <code>prod</code> 标签下的 build_command 都设置为：</p>
-<pre><code>export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH &amp;&amp; npm install &amp;&amp; ykit pack -m -q
+<pre><code>export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH &amp;&amp; npm install --registry http://registry.npm.corp.qunar.com/ &amp;&amp; ykit pack -m -q
 </code></pre><!-- <img src="http://oji8kngu4.bkt.clouddn.com/build_params_0109.jpeg" width="650px;"> -->
 <p>后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。</p>
 <h2 style="font-weight: normal"> 创建/编辑 Job </h2>
