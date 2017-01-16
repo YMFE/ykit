@@ -52,7 +52,7 @@ exports.run = function (options) {
             if(isInitReady) {
                 spinner.stop();
             } else {
-                spinner.text(`Can't find package ykit-config-${initParam}`);
+                spinner.text = `Can't find package ykit-config-${initParam}`;
                 spinner.fail();
             }
         });
@@ -76,7 +76,7 @@ exports.run = function (options) {
                 // 防止超时
                 timeout = setTimeout(() => {
                     child.kill('SIGINT');
-                }, 5000);
+                }, 20000);
             } else {
                 callback(null, 'two');
             }
