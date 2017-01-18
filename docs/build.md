@@ -8,19 +8,15 @@
 
 <h2 style="font-weight: normal"> 设置 build 参数 </h2>
 
-点击进入编辑界面，首先设置 build_method 为 `sfile`。
+点击进入编辑界面，首先设置 build_method 为 `ykit`。
 
-**注意：对于已经存在的 job，build_method 更改以后需要更新 job 才会生效（进入万事屋 [job 编辑菜单][5]，点击保存即可）。**
+**注意：对于已经存在的 job，build_method 更改以后需要更新 job 才会生效（进入万事屋 [job 编辑菜单][5]，点击保存）。**
 
-将 `beta` 和 `prod` 标签下的 build_command 都设置为：
+将 `beta` 和 `prod` 标签下的 build_command 都设置为空即可。
 
-```
-export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm install --registry http://registry.npm.corp.qunar.com/ && ykit pack -m -q
-```
+<img src="http://oji8kngu4.bkt.clouddn.com/build_params_0118.png" width="650px;">
 
-<!-- <img src="http://oji8kngu4.bkt.clouddn.com/build_params_0109.jpeg" width="650px;"> -->
-
-后续字段按项目实际情况填写，如无特殊需求可不进行更改，submit 即可。
+后续字段按项目实际情况填写，如无特殊需求可不进行更改。
 
 <h2 style="font-weight: normal"> 创建/编辑 Job </h2>
 
@@ -36,9 +32,9 @@ export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH && npm install --registry
 
 - 确保 pom.xml 里面的`artifactId`字段，已经从默认的`******`改为项目名称，并且当前分支不落后于 master。
 
-- **确保项目中不存在 node_modules，或者 node_modules 是可兼容的。** 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此建议使用 Ykit 的项目不要提交 node_modules，在 build 机器上安装即可（之前创建 Schema 时 `ykit build` 中已经包含了安装命令）。
+- **确保项目中不存在 node_modules。** 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此请不要提交 node_modules，在 ykit 编译之前会进行模块安装。
 
-- 确保项目中存在 npm-shrinkwrap，否则可能会造成编译失败（详见 [shrinkwrap 使用][3]）。
+- 确保项目中存在 npm-shrinkwrap，否则可能会造成编译结果与预期不符（详见 [shrinkwrap 使用][3]）。
 
 <h3 style="font-weight: normal"> 开始 Build </h3>
 
