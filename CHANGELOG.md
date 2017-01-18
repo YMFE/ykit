@@ -1,34 +1,18 @@
-<a name="0.2.5-rc3"></a>
-## [0.2.5-rc3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc2...0.2.5-rc3) (2017-01-12)
-
-
-
-<a name="0.2.5-rc2"></a>
-## [0.2.5-rc2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc1...0.2.5-rc2) (2017-01-12)
+<a name="0.2.5"></a>
+## [0.2.5](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...0.2.5) (2017-01-18)
 
 
 ### Bug Fixes
 
+* **init:** 修复 cnpm 响应太慢，预先去 qnpm 查找 ([6be1085](http://gitlab.corp.qunar.com/mfe/ykit/commit/6be1085))
+* **init:** 修复检测包存在超时时间过短 ([e3d6f16](http://gitlab.corp.qunar.com/mfe/ykit/commit/e3d6f16))
 * **server:** 修复 js 没有应用后缀转换规则 ([7a5a16e](http://gitlab.corp.qunar.com/mfe/ykit/commit/7a5a16e))
 
 
-
-<a name="0.2.5-rc1"></a>
-## [0.2.5-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5-rc0...0.2.5-rc1) (2017-01-12)
-
-
 ### Features
 
+* **build:** 检测 ykit 配置文件及 node_modules ([960dad3](http://gitlab.corp.qunar.com/mfe/ykit/commit/960dad3))
 * **compile:** 添加 jsx 进入默认编译后缀 ([79c3bc5](http://gitlab.corp.qunar.com/mfe/ykit/commit/79c3bc5))
-
-
-
-<a name="0.2.5-rc0"></a>
-## [0.2.5-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...0.2.5-rc0) (2017-01-10)
-
-
-### Features
-
 * **server:** 支持  entry.key 路径匹配 ([a138998](http://gitlab.corp.qunar.com/mfe/ykit/commit/a138998))
 
 
