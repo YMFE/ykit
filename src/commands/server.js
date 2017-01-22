@@ -1,6 +1,6 @@
 'use strict';
 
-let connect = require('connect'),
+const connect = require('connect'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
@@ -8,11 +8,12 @@ let connect = require('connect'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
     child_process = require('child_process'),
-    requireg = require('requireg');
+    requireg = require('requireg'),
+    webpackDevMiddleware = require('webpack-dev-middleware');
 
-let Manager = require('../modules/manager.js');
-let UtilFs = require('../utils/fs.js');
-let UtilPath = require('../utils/path.js');
+const Manager = require('../modules/manager.js');
+const UtilFs = require('../utils/fs.js');
+const UtilPath = require('../utils/path.js');
 
 exports.usage = '开发服务';
 exports.abbr = 's';
@@ -24,8 +25,6 @@ exports.setOptions = (optimist) => {
     optimist.describe('x', '开启 proxy 代理服务');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
-    optimist.alias('a', 'all');
-    optimist.describe('a', '使用整体编译模式');
     optimist.alias('s', 'https');
     optimist.describe('s', '开启 https 服务');
 };
@@ -36,7 +35,6 @@ exports.run = (options) => {
         proxy = options.x || options.proxy,
         middlewares = options.m || options.middlewares,
         isHttps = options.s || options.https,
-        isCompilingAll = options.a || options.all,
         port = options.p || options.port || 80;
 
     let middlewareCache = {},
@@ -56,11 +54,8 @@ exports.run = (options) => {
     app.use((req, res, next) => {
         const extName = sysPath.extname(req.url);
 
-        if (extName === '.js') {
-            res.setHeader('Content-Type', 'application/javascript');
-        } else if (extName === '.css') {
-            res.setHeader('Content-Type', 'text/css; charset=UTF-8');
-        }
+        extName === '.js' && res.setHeader('Content-Type', 'application/javascript');
+        extName === '.css' && res.setHeader('Content-Type', 'text/css; charset=UTF-8');
 
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
@@ -157,7 +152,6 @@ exports.run = (options) => {
     });
 
     // compiler
-    let creatingCompiler = false;
     app.use(function (req, res, next) {
         let url = req.url,
             keys = url.split('/'),
@@ -168,236 +162,161 @@ exports.run = (options) => {
         const projectCwd = projectInfo.projectCwd;
         const outputDir = 'prd';
 
-        // 处理prd资源
-        if (keys[2] === outputDir) {
-            const rquery = /\?.+$/;
-            const rversion = /@[\d\w]+(?=\.\w+$)/;
-            // 去掉 query & 版本号
-            const requestUrl = keys.slice(3).join('/').replace(rquery, '').replace('.map', '');
+        if(keys[2] !== outputDir) { // 非prd资源不做处理
+            next();
+            return;
+        }
 
-            // 清除 prd 目录资源
-            let isFirstCompileDir = true;
-            Object.keys(middlewareCache).map((cacheName) => {
-                if(cacheName.startsWith(projectName)) {
-                    isFirstCompileDir = false;
+        // 处理prd资源, 去掉 query & 版本号
+        const rquery = /\?.+$/;
+        const requestUrl = keys.slice(3).join('/').replace(rquery, '').replace('.map', '');
+
+        // 清除 YKIT_CACHE_DIR 资源
+        let isFirstCompileDir = true;
+        Object.keys(middlewareCache).map((cacheName) => {
+            if(cacheName.startsWith(projectName)) {
+                isFirstCompileDir = false;
+            }
+        });
+        if(isFirstCompileDir) {
+            UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
+        }
+
+        req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
+
+        // 只编译所请求的资源
+        const rversion = /@[\d\w]+(?=\.\w+$)/;
+        let requestUrlNoVer = requestUrl.replace(rversion, '');
+
+        // 从编译 cache 中取，map 文件不必生成重复 compiler
+        const cacheId = sysPath.join(projectName, requestUrlNoVer);
+
+        // 如果是 map 直接返回
+        if(middlewareCache[cacheId]) {
+            middlewareCache[cacheId](req, res, next);
+            return;
+        }
+
+        let project = Manager.getProject(projectCwd, { cache: false });
+        let nextConfig;
+
+        compiler = project.getServerCompiler(function (config) {
+            nextConfig = extend({}, config);
+
+            // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
+            nextConfig.entry = {};
+
+            // 将 webpack entry 设置为当前请求的资源
+            Object.keys(config.entry).map((entryKey) => {
+                const entryItem = config.entry[entryKey];
+
+                let isRequestingEntry = false,
+                    entryPath = '';
+
+                if (Array.isArray(entryItem)) {
+                    entryPath = entryItem[entryItem.length - 1];
+                } else {
+                    entryPath = entryItem;
+                }
+
+                // 应用后缀转换规则
+                const entryExtNames = config.entryExtNames;
+                Object.keys(entryExtNames).map((targetExtName) => {
+                    let exts = entryExtNames[targetExtName];
+
+                    // 如果是 css 要考虑 css.js 的情况
+                    if(targetExtName === 'css') {
+                        exts = exts.concat(
+                            entryExtNames[targetExtName].map((name) => {
+                                return name + '.js';
+                            })
+                        );
+                    }
+
+                    // 创建正则匹配
+                    exts = exts.map((name) => {
+                        return name + '$';
+                    });
+                    const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+
+                    entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
+                });
+
+                // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
+                if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
+                    entryPath = entryPath.split('.ykit_cache/')[1];
+                }
+
+                // 判断所请求的资源是否在入口配置中
+                const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
+                const matchingPathWithoutVer = sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer);
+                const matchingKeyWithoutVer = sysPath.normalize(requestUrlNoVer) === entryKey + sysPath.extname(requestUrl);
+
+                if (matchingPath) {
+                    isRequestingEntry = true;
+                } else if (matchingPathWithoutVer || matchingKeyWithoutVer) {
+                    req.url = req.url.replace(rversion, '');
+                    isRequestingEntry = true;
+                }
+
+                if (isRequestingEntry) {
+                    nextConfig.entry = {
+                        [entryKey]: entryItem
+                    };
                 }
             });
-            if(isFirstCompileDir) {
-                UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, outputDir), true);
-                UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
+
+            nextConfig.plugins.push(require('../plugins/progressBarPlugin.js'));
+            nextConfig.plugins.push(require('../plugins/compileInfoPlugin.js'));
+
+            return nextConfig;
+        });
+
+        // 如果没找到该资源，在整个编译过程结束后再返回
+        if (Object.keys(nextConfig.entry).length === 0) {
+            setTimeout(() => {
+                if (promiseCache[projectName]) {
+                    Promise.all(promiseCache[projectName]).then(function () {
+                        // 统一去掉版本号
+                        req.url = req.url.replace(rquery, '').replace(rversion, '');
+                        next();
+                    });
+                } else {
+                    res.statusCode = 404;
+                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
+                }
+            }, 100);
+        } else {
+            req.url = req.url.replace(rquery, '').replace(rversion, '');
+
+            // 生成该请求的 promiseCache
+            let resolve = null,
+                reject = null;
+
+            const requestPromise = new Promise((res, rej) => {
+                resolve = res;
+                reject = rej;
+            });
+
+            if (!promiseCache[projectName]) {
+                promiseCache[projectName] = [requestPromise];
+            } else {
+                promiseCache[projectName].push(requestPromise);
             }
 
-            // 只编译所请求的资源
-            if(!isCompilingAll) {
-
-                let requestUrlNoVer = requestUrl.replace(rversion, '');
-
-                // 从编译 cache 中取，map 文件不必生成重复 compiler TODO
-                const cacheId = sysPath.join(projectName, requestUrlNoVer);
-                let sourceCache = middlewareCache[cacheId];
-
-                // 准备生成 sourceCache
-                if (!sourceCache) {
-                    let project = Manager.getProject(projectCwd, { cache: false });
-
-                    if (project.check()) {
-
-                        let nextConfig;
-                        compiler = project.getServerCompiler(function (config) {
-                            nextConfig = extend({}, config);
-
-                            // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
-                            nextConfig.entry = {};
-
-                            // 将 webpack entry 设置为当前请求的资源
-                            Object.keys(config.entry).map((entryKey) => {
-                                const entryItem = config.entry[entryKey];
-
-                                let isRequestingEntry = false,
-                                    entryPath = '';
-
-                                if (Array.isArray(entryItem)) {
-                                    entryPath = entryItem[entryItem.length - 1];
-                                } else {
-                                    entryPath = entryItem;
-                                }
-
-                                // 应用后缀转换规则
-                                const entryExtNames = config.entryExtNames;
-                                Object.keys(entryExtNames).map((targetExtName) => {
-                                    let exts = entryExtNames[targetExtName];
-
-                                    // 如果是 css 要考虑 css.js 的情况
-                                    if(targetExtName === 'css') {
-                                        exts = exts.concat(
-                                            entryExtNames[targetExtName].map((name) => {
-                                                return name + '.js';
-                                            })
-                                        );
-                                    }
-
-                                    // 创建正则匹配
-                                    exts = exts.map((name) => {
-                                        return name + '$';
-                                    });
-                                    const replaceReg =  new RegExp('\\' + exts.join('|\\'));
-
-                                    entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
-                                });
-
-                                // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
-                                if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
-                                    entryPath = entryPath.split('.ykit_cache/')[1];
-                                }
-
-                                // 判断所请求的资源是否在入口配置中
-                                const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
-                                const matchingPathWithoutVer = sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer);
-                                const matchingKeyWithoutVer = sysPath.normalize(requestUrlNoVer) === entryKey + sysPath.extname(requestUrl);
-
-                                if (matchingPath) {
-                                    isRequestingEntry = true;
-                                } else if (matchingPathWithoutVer || matchingKeyWithoutVer) {
-                                    req.url = req.url.replace(rversion, '');
-                                    isRequestingEntry = true;
-                                }
-
-                                if (isRequestingEntry) {
-                                    nextConfig.entry = {
-                                        [entryKey]: entryItem
-                                    };
-                                }
-                            });
-
-                            nextConfig.plugins.push(require('../plugins/progressBarPlugin.js'));
-                            nextConfig.plugins.push(require('../plugins/compileInfoPlugin.js'));
-
-                            return nextConfig;
-                        });
-
-                        // 如果没找到该资源，在整个编译过程结束后再返回
-                        if (Object.keys(nextConfig.entry).length === 0) {
-                            setTimeout(() => {
-                                if (promiseCache[projectName]) {
-                                    Promise.all(promiseCache[projectName]).then(function () {
-                                        // 统一去掉版本号
-                                        req.url = req.url.replace(rquery, '').replace(rversion, '');
-                                        next();
-                                    });
-                                } else {
-                                    res.statusCode = 404;
-                                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
-                                }
-                            }, 100);
-                        } else {
-                            req.url = req.url.replace(rquery, '').replace(rversion, '');
-                            // 生成该请求的 promiseCache
-                            let resolve = null;
-                            let reject = null;
-                            const requestPromise = new Promise((res, rej) => {
-                                resolve = res;
-                                reject = rej;
-                            });
-
-                            if (!promiseCache[projectName]) {
-                                promiseCache[projectName] = [requestPromise];
-                            } else {
-                                promiseCache[projectName].push(requestPromise);
-                            }
-
-                            compiler.watch({}, (err) => {
-                                if (err) {
-                                    reject(err);
-                                } else {
-                                    middlewareCache[cacheId] = req.url;
-                                    next();
-                                }
-                                resolve();
-                            });
-                        }
-
-                        // 检测config文件变化
-                        watchConfig(project, cacheId);
-                    } else {
-                        next();
-                    }
-                } else {
-                    req.url = sysPath.extname(req.url) !== '.map' ? sourceCache : req.url;
-                    next();
-                }
-            } else { // 一次编译全部资源
-                let middleware = middlewareCache[projectName],
-                    compilerPromise = promiseCache[projectName],
-                    project = Manager.getProject(projectCwd, { cache: false });
-
-                // 统一去掉版本号
-                req.url = req.url.replace(/@[\d\w]+(?=\.\w+$)/, '');
-
-                // 如果entry发生变化，则需要进行重新编译
-                const nextEntry = extend({}, project.config._config.entry);
-                if (compilerPromise && compilerPromise.entry) {
-                    const prevEntry = compilerPromise.entry;
-
-                    const isEntryChanged = !Object.keys(nextEntry).every((item) => {
-                        prevEntry[item] = Array.isArray(prevEntry[item]) ? prevEntry[item][prevEntry[item].length - 1] : prevEntry[item];
-                        nextEntry[item] = Array.isArray(nextEntry[item]) ? nextEntry[item][nextEntry[item].length - 1] : nextEntry[item];
-                        return prevEntry[item] && prevEntry[item] === nextEntry[item];
-                    });
-
-                    if (isEntryChanged) {
-                        middleware = null; // 重新编译
-                        UtilFs.deleteFolderRecursive(project.cachePath, true);
+            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler,
+                {
+                    quiet: true, reporter: ({state, stats}) => {
+                        // console.log(Object.keys(stats.compilation.assets['scripts/index.js']))
+                        resolve();
                     }
                 }
-
-                if (!middleware && !creatingCompiler) {
-                    let resolve;
-
-                    creatingCompiler = true;
-                    compilerPromise = promiseCache[projectName] = new Promise((res) => {
-                        resolve = res;
-                    });
-
-                    // 把当前entry挂在promiseCache上，在以后rebuild时比对entry，决定是否需要重新编译
-                    promiseCache[projectName].entry = extend({}, nextEntry);
-
-                    if (project.check()) {
-                        compiler = project.getServerCompiler((config) => {
-                            config.plugins.push(require('../plugins/progressBarPlugin.js'));
-                            config.plugins.push(require('../plugins/compileInfoPlugin.js'));
-                            return config;
-                        });
-
-                        compiler.watch({}, (err) => {
-                            creatingCompiler = false;
-
-                            if (err) {
-                                error(err);
-                            } else {
-                                middlewareCache[projectName] = projectName;
-                                resolve();
-                                next();
-                            }
-                        });
-
-                        // 检测config文件变化
-                        watchConfig(project, projectName);
-                    } else {
-                        next();
-                    }
-                } else {
-                    if (compilerPromise) {
-                        compilerPromise.then(() => {
-                            next();
-                        });
-                    } else {
-                        next();
-                    }
-                }
-            }
-        } else { // 非prd资源不做处理
-            next();
+            );
+            middleware(req, res, next);
         }
+
+        // 检测config文件变化
+        watchConfig(project, cacheId);
     });
 
     app.use(serveStatic(cwd, {
