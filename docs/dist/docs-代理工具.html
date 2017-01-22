@@ -10,6 +10,7 @@
   <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/main.css"/>
   
+  
 </head>
 <body>
     <div class="ydoc">
@@ -219,6 +220,16 @@
     {
         pattern: /test3\.qunar\.com/,
         responder: {id: &#39;1212dl;akds;l&#39;}
+    },
+    {
+        pattern: /fakeurl/,
+        // 也支持传入函数，它的参数是一个parse过的URL对象
+        // 例如localhost/fakeurl?a=1&amp;b=2 parse的结果是 {&quot;protocol&quot;:&quot;http:&quot;,&quot;slashes&quot;:true,&quot;auth&quot;:null,&quot;host&quot;:&quot;localhost&quot;,&quot;port&quot;:null,&quot;hostname&quot;:&quot;localhost&quot;,&quot;hash&quot;:null,&quot;search&quot;:&quot;?a=1&amp;b=2&quot;,&quot;query&quot;:&quot;a=1&amp;b=2&quot;,&quot;pathname&quot;:&quot;/fakeurl&quot;,&quot;path&quot;:&quot;/fakeurl?a=1&amp;b=2&quot;,&quot;href&quot;:&quot;http://localhost/fakeurl?a=1&amp;b=2&quot;}
+        // 这在API依赖参数时会非常有用，例如某个分页列表的API需要传入当前页码的情况
+        responder: function (parsedUrl) {
+            // 它的返回值将作为请求的response.body
+            return parsedUrl;
+        }
     }
 ];
 </code></pre><p>然后在代理面板中找到你的项目, 然后在右侧开启Mock服务开关即可生效。</p>
@@ -254,7 +265,6 @@
 <p>如有其它问题请联系 <code>jiao.shen@qunar.com</code></p>
 
               </div>
-              <div class="open-panel"></div>
           </div>
           
         
@@ -269,6 +279,11 @@
       </footer>
     </div>
 
+    
+       <div class="open-panel"></div>
+    
+    
+
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -276,6 +291,7 @@
 
     
 
+    
     
 
 </body>
