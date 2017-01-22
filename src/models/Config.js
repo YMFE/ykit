@@ -67,7 +67,7 @@ class Config {
                 js: ['.js', '.jsx']
             },
             requireRules: [],
-            devtool: 'cheap-source-map',
+            devtool: 'source-map',
             middleware: []
         };
     }
