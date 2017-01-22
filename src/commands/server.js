@@ -23,6 +23,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('p', '端口');
     optimist.alias('x', 'proxy');
     optimist.describe('x', '开启 proxy 代理服务');
+    optimist.alias('v', 'verbose');
+    optimist.describe('v', '显示详细编译信息');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
     optimist.alias('s', 'https');
@@ -32,6 +34,7 @@ exports.setOptions = (optimist) => {
 exports.run = (options) => {
     let app = connect(),
         cwd = options.cwd,
+        verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
         middlewares = options.m || options.middlewares,
         isHttps = options.s || options.https,
@@ -297,8 +300,13 @@ exports.run = (options) => {
             const middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler,
                 {
                     quiet: true, reporter: ({state, stats}) => {
-                        // console.log(Object.keys(stats.compilation.assets['scripts/index.js']))
                         resolve();
+
+                        if(verbose) {
+                            Object.keys(stats.compilation.assets).map((key) => {
+                                log('emitted asset:', stats.compilation.assets[key].existsAt);
+                            });
+                        }
                     }
                 }
             );
