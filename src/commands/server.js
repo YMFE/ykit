@@ -69,13 +69,16 @@ exports.run = (options) => {
         res.end = (chunk, encoding) => {
             res.end = end;
             res.end(chunk, encoding);
-            const format = '%date %status %method %url (%route%contentLength%time)';
-            const parseResult = parse(req, res, format);
-            return process.nextTick(() => {
-                spinner.text = parseResult.message;
-                parseResult.status >= 400 ? spinner.fail() : spinner.succeed();
-                spinner.text = '';
-            });
+
+            if(sysPath.extname(req.url) !== '.map') {
+                const format = '%date %status %method %url (%route%contentLength%time)';
+                const parseResult = parse(req, res, format);
+                return process.nextTick(() => {
+                    spinner.text = parseResult.message;
+                    parseResult.status >= 400 ? spinner.fail() : spinner.succeed();
+                    spinner.text = '';
+                });
+            }
         };
 
         function parse(req, res, format) {
@@ -167,10 +170,6 @@ exports.run = (options) => {
             return;
         }
 
-        // 处理prd资源, 去掉 query & 版本号
-        const rquery = /\?.+$/;
-        const requestUrl = keys.slice(3).join('/').replace(rquery, '').replace('.map', '');
-
         // 清除 YKIT_CACHE_DIR 资源
         let isFirstCompileDir = true;
         Object.keys(middlewareCache).map((cacheName) => {
@@ -182,16 +181,16 @@ exports.run = (options) => {
             UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
         }
 
-        req.url = '/' + keys.slice(3).join('/').replace(/(\@[\d\w]+)?\.(js|css)/, '.$2');
+        // 处理资源路径, 去掉 query & 版本号
+        const rquery = /\?.+$/;
+        const rversion = /@[\d\w]+(?=\.\w+)/;
+        req.url = '/' + keys.slice(3).join('/').replace(rversion, '').replace(rquery, '');
 
-        // 只编译所请求的资源
-        const rversion = /@[\d\w]+(?=\.\w+$)/;
-        let requestUrlNoVer = requestUrl.replace(rversion, '');
+        // 生成 cacheId
+        const requestUrl = req.url.replace('.map', '').slice(1);
+        const cacheId = sysPath.join(projectName, requestUrl);
 
-        // 从编译 cache 中取，map 文件不必生成重复 compiler
-        const cacheId = sysPath.join(projectName, requestUrlNoVer);
-
-        // 如果是 map 直接返回
+        // 寻找已有的 middlewareCache
         if(middlewareCache[cacheId]) {
             middlewareCache[cacheId](req, res, next);
             return;
@@ -199,7 +198,6 @@ exports.run = (options) => {
 
         let project = Manager.getProject(projectCwd, { cache: false });
         let nextConfig;
-
         compiler = project.getServerCompiler(function (config) {
             nextConfig = extend({}, config);
 
@@ -249,13 +247,9 @@ exports.run = (options) => {
 
                 // 判断所请求的资源是否在入口配置中
                 const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
-                const matchingPathWithoutVer = sysPath.normalize(entryPath) === sysPath.normalize(requestUrlNoVer);
-                const matchingKeyWithoutVer = sysPath.normalize(requestUrlNoVer) === entryKey + sysPath.extname(requestUrl);
+                const matchingKey = sysPath.normalize(requestUrl) === entryKey + sysPath.extname(requestUrl);
 
-                if (matchingPath) {
-                    isRequestingEntry = true;
-                } else if (matchingPathWithoutVer || matchingKeyWithoutVer) {
-                    req.url = req.url.replace(rversion, '');
+                if (matchingPath || matchingKey) {
                     isRequestingEntry = true;
                 }
 
@@ -277,8 +271,6 @@ exports.run = (options) => {
             setTimeout(() => {
                 if (promiseCache[projectName]) {
                     Promise.all(promiseCache[projectName]).then(function () {
-                        // 统一去掉版本号
-                        req.url = req.url.replace(rquery, '').replace(rversion, '');
                         next();
                     });
                 } else {
@@ -287,8 +279,6 @@ exports.run = (options) => {
                 }
             }, 100);
         } else {
-            req.url = req.url.replace(rquery, '').replace(rversion, '');
-
             // 生成该请求的 promiseCache
             let resolve = null,
                 reject = null;
