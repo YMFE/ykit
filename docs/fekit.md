@@ -28,7 +28,6 @@ qnpm i @qnpm/ykit-config-fekit --save
 
 <h3 style="font-weight: normal"> 目前不支持的项目类型： </h3>
 
-- 使用了`scripts`(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目
 - 各种利用了非常规fekit bug的项目（例如使用注释来require依赖）
 - 配置compile:false的项目
 
