@@ -300,13 +300,16 @@ exports.run = (options) => {
             const middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler,
                 {
                     quiet: true, reporter: ({state, stats}) => {
-                        resolve();
+                        Object.keys(stats.compilation.assets).map((key) => {
+                            const keyCacheId = sysPath.join(projectName, key);
+                            middlewareCache[keyCacheId] = middleware;
 
-                        if(verbose) {
-                            Object.keys(stats.compilation.assets).map((key) => {
+                            if(verbose) {
                                 log('emitted asset:', stats.compilation.assets[key].existsAt);
-                            });
-                        }
+                            }
+                        });
+
+                        resolve();
                     }
                 }
             );
