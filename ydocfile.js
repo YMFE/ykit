@@ -10,7 +10,7 @@ module.exports = {
     },
     "options": {
         "insertCSS": [
-            "../theme/ydoc.css"
+            "http://oji8kngu4.bkt.clouddn.com/ydoc.css"
         ],
         "hasPageName": true
     },
