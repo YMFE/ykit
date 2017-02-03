@@ -10,19 +10,20 @@ module.exports = {
     },
     "options": {
         "insertCSS": [
-            "http://oji8kngu4.bkt.clouddn.com/ydoc.css"
+            "./theme/ydoc.css"
         ],
         "hasPageName": true
+    },
+    "resources": {
+        "theme": "./docs/theme/"
     },
     pages: [{
         name: 'index',
         title: '简介',
-        // compile: 'markdown',
         banner: {
             title: 'Ykit',
             description: 'Ykit 是一套可配置和可扩展的前端开发工具集，让开发者灵活地搭建开发环境，和使用资源打包、静态资源访问、网络代理等服务。<p><a href=\"docs.html\" class=\"getting\">Getting Started</a></p><p class=\"version\">当前版本：v0.2.5</p>'
         },
-        // menuLevel: 2,
         content: './README.md'
     }, {
         name: 'docs',

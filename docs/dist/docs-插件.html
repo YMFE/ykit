@@ -10,8 +10,9 @@
   <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/main.css"/>
   
+  
     
-<link rel="stylesheet" href="http://oji8kngu4.bkt.clouddn.com/ydoc.css"/>
+        <link rel="stylesheet" href="./theme/ydoc.css"/>
     
   
 </head>
@@ -172,7 +173,7 @@
 <h2 style="font-weight: normal"> 插件安装与引入 </h2>
 
 <p>插件命名格式均为<code>ykit-config-{插件名}</code>，并且目前都是在<code>@qnpm</code>域下，在项目中通过 npm 安装插件：</p>
-<pre><code class="lang-bash">$ sudo npm install @qnpm/ykit-config-{插件名} --registry http://registry.npm.corp.qunar.com/
+<pre><code class="lang-bash">$ <span class="token function">sudo</span> <span class="token function">npm</span> <span class="token function">install</span> @qnpm/ykit-config-<span class="token punctuation">{</span>插件名<span class="token punctuation">}</span> --registry http://registry.npm.corp.qunar.com/
 </code></pre>
 <p>安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件<code>ykit.{插件名}.js</code>与使用的插件名对应即可。如安装了插件<code>@qnpm-ykit-config-qunar</code>，则配置文件命名为<code>ykit.qunar.js</code>。</p>
 <h2 style="font-weight: normal"> 技术解决方案插件 </h2>
@@ -257,7 +258,6 @@ this.packCallbacks.push(function(opt, stats) {
 </code></pre><p>添加过后，在每个安装了该插件的项目中，就可以执行 ykit my_command 命令了。</p>
 
               </div>
-              <div class="open-panel"></div>
           </div>
           
         
@@ -272,6 +272,11 @@ this.packCallbacks.push(function(opt, stats) {
       </footer>
     </div>
 
+    
+       <div class="open-panel"></div>
+    
+    
+
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -279,6 +284,7 @@ this.packCallbacks.push(function(opt, stats) {
 
     
 
+    
     
 
 </body>

@@ -10,8 +10,9 @@
   <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/main.css"/>
   
+  
     
-<link rel="stylesheet" href="http://oji8kngu4.bkt.clouddn.com/ydoc.css"/>
+        <link rel="stylesheet" href="./theme/ydoc.css"/>
     
   
 </head>
@@ -170,24 +171,24 @@
 <h2 style="font-weight: normal"> 什么是 npm shrinkwrap？ </h2>
 
 <p>npm shrinkwrap 是 npm 包管理器的一项功能。可以按照当前项目 node_modules 目录内的安装包情况生成稳定的版本号描述。shrinkwrap 文件的结构类似以下这种形式：</p>
-<pre><code class="lang-json">{
-  &quot;name&quot;: &quot;A&quot;,
-  &quot;version&quot;: &quot;1.1.0&quot;,
-  &quot;dependencies&quot;: {
-    &quot;B&quot;: {
-      &quot;version&quot;: &quot;1.0.1&quot;,
-      &quot;from&quot;: &quot;B@^1.0.0&quot;,
-      &quot;resolved&quot;: &quot;https://registry.npmjs.org/B/-/B-1.0.1.tgz&quot;,
-      &quot;dependencies&quot;: {
-        &quot;C&quot;: {
-          &quot;version&quot;: &quot;1.0.1&quot;,
-          &quot;from&quot;: &quot;org/C#v1.0.1&quot;,
-          &quot;resolved&quot;: &quot;git://github.com/org/C.git#v1.0.1&quot;
-        }
-      }
-    }
-  }
-}
+<pre><code class="lang-json"><span class="token punctuation">{</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"A"</span><span class="token punctuation">,</span>
+  <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.1.0"</span><span class="token punctuation">,</span>
+  <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"B"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"B@^1.0.0"</span><span class="token punctuation">,</span>
+      <span class="token property">"resolved"</span><span class="token operator">:</span> <span class="token string">"https://registry.npmjs.org/B/-/B-1.0.1.tgz"</span><span class="token punctuation">,</span>
+      <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"C"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.1"</span><span class="token punctuation">,</span>
+          <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"org/C#v1.0.1"</span><span class="token punctuation">,</span>
+          <span class="token property">"resolved"</span><span class="token operator">:</span> <span class="token string">"git://github.com/org/C.git#v1.0.1"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h2 style="font-weight: normal"> 为什么需要它？ </h2>
 
@@ -206,7 +207,6 @@
 <p>如果还有问题请 qtalk 联系 <code>yuhao.ju</code>。</p>
 
               </div>
-              <div class="open-panel"></div>
           </div>
           
         
@@ -221,6 +221,11 @@
       </footer>
     </div>
 
+    
+       <div class="open-panel"></div>
+    
+    
+
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -228,6 +233,7 @@
 
     
 
+    
     
 
 </body>

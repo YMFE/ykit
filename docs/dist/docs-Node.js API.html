@@ -10,8 +10,9 @@
   <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/main.css"/>
   
+  
     
-<link rel="stylesheet" href="http://oji8kngu4.bkt.clouddn.com/ydoc.css"/>
+        <link rel="stylesheet" href="./theme/ydoc.css"/>
     
   
 </head>
@@ -169,38 +170,37 @@
 
 <h2 style="font-weight: normal"> 调用 Ykit 打包方法 </h2>
 
-<pre><code class="lang-javascript">let ykit = require(&quot;ykit&quot;);
+<pre><code class="lang-javascript"><span class="token keyword">let</span> ykit <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"ykit"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-ykit.pack({
-    // 配置
-}, (err, stats) =&gt; {
+ykit<span class="token punctuation">.</span><span class="token function">pack</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 配置</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>err<span class="token punctuation">,</span> stats<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
 
-});
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <h2 style="font-weight: normal"> 与 Gulp 结合使用 </h2>
 
-<pre><code class="lang-javascript">let ykit = require(&quot;ykit&quot;);
+<pre><code class="lang-javascript"><span class="token keyword">let</span> ykit <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"ykit"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-gulp.task(&#39;pack&#39;, () =&gt; {
-    return gulp.src(&#39;./&#39;)
-        .pipe(ykit({
-            // 配置
-        }));
-});
+gulp<span class="token punctuation">.</span><span class="token function">task</span><span class="token punctuation">(</span><span class="token string">'pack'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> gulp<span class="token punctuation">.</span><span class="token function">src</span><span class="token punctuation">(</span><span class="token string">'./'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">ykit</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 配置</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <h2 style="font-weight: normal"> 与 Grunt 结合使用 </h2>
 
-<pre><code class="lang-javascript">grunt.initConfig({
-    ykit: {
-        // 配置
-    }
-});
+<pre><code class="lang-javascript">grunt<span class="token punctuation">.</span><span class="token function">initConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    ykit<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 配置</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-grunt.loadNpmTasks(&#39;ykit&#39;);
+grunt<span class="token punctuation">.</span><span class="token function">loadNpmTasks</span><span class="token punctuation">(</span><span class="token string">'ykit'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 
               </div>
-              <div class="open-panel"></div>
           </div>
           
         
@@ -215,6 +215,11 @@ grunt.loadNpmTasks(&#39;ykit&#39;);
       </footer>
     </div>
 
+    
+       <div class="open-panel"></div>
+    
+    
+
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -222,6 +227,7 @@ grunt.loadNpmTasks(&#39;ykit&#39;);
 
     
 
+    
     
 
 </body>

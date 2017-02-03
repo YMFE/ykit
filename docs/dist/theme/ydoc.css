@@ -1,0 +1,119 @@
+/* homepage */
+.index .ydoc-banner {
+    padding: .8rem 0;
+    text-align: center;
+}
+.index .ydoc-banner-area > h1 {
+    margin-bottom: 20px;
+    font-size: .8rem;
+    font-weight: bold;
+}
+.index .ydoc-banner-area p {
+    width: auto;
+    margin-right: 0;
+}
+.index .ydoc-banner-area a {
+    display: inline-block;
+    margin-top: .2rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid;
+    border-radius: 0.05rem;
+    color: #ff503f;
+    font-size: .2rem;
+    font-weight: bold;
+}
+.index .ydoc-banner-area .version {
+    display: block;
+    margin-top: .15rem;
+    color: #ff503f;
+    font-size: .14rem;
+}
+.index .ydoc-banner-area a:hover {
+    text-decoration: none;
+    border-color: #ff503f;
+    background-color: #ff503f;
+    color: #fff;
+}
+@media (min-width: 1200px) {
+    .index .ydoc-banner-area p {
+        padding: 0 1rem;
+        font-size: .28rem;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .index .ydoc-banner-area p {
+        padding: 0 0.6rem;
+        font-size: .25rem;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .index .ydoc-banner-area p {
+        padding: 0 0.3rem;
+        font-size: .21rem;
+    }
+}
+@media (max-width: 767px) {
+    .index .ydoc-banner-area p {
+        padding: 0 0.2rem;
+        font-size: .2rem;
+    }
+}
+.index .markdown-body {
+    text-align: center;
+    padding-bottom: 1rem !important;
+}
+.index .markdown-body > h2 {
+    margin-top: .8rem !important;
+    border: none;
+    font-size: .35rem;
+}
+.index .markdown-body > p {
+    width: 80%;
+    margin: auto;
+    color: #666;
+    font-size: .24rem;
+}
+@media (max-width: 767px) {
+    .index .markdown-body > h2 {
+        font-size: .28rem;
+    }
+    .index .markdown-body > p {
+        font-size: .18rem;
+    }
+}
+.index .markdown-body ul {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-around;
+    -moz-box-pack: justify;
+    -moz-justify-content: space-around;
+    -ms-flex-pack: justify;
+    justify-content: space-around;
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding: 0 60px;
+    margin: 0;
+    list-style: none;
+}
+.index .markdown-body ul > li {
+    overflow: hidden;
+    width: 200px;
+    -webkit-background-clip: padding-box !important;
+    -moz-background-clip: padding-box !important;
+    -ms-background-clip: padding-box !important;
+    background-clip: padding-box !important;
+}
+.index .markdown-body ul p:not(:only-child):last-child {
+    color: #999;
+}
+.index .markdown-body ul img {
+    max-width: 100px;
+    max-height: 100px;
+}
