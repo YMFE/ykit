@@ -82,6 +82,15 @@
                         <!-- <li  > -->
                         <li >
                             
+                            <a href="docs-起步.html">起步</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
                             <a href="docs-配置.html">配置</a>
                             
                         </li>
@@ -118,15 +127,6 @@
                         <!-- <li  > -->
                         <li >
                             
-                            <a href="docs-Node.js API.html">Node.js API</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
                             <a href="docs-发布.html">发布</a>
                             
                         </li>
@@ -150,142 +150,66 @@
                         </li>
                         
                         
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="docs-Node.js API.html">Node.js API</a>
+                            
+                        </li>
+                        
+                        
                     </ul>
                   </nav>
               </div>
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 配置 </h1>
+                <h1 style="font-weight: normal"> 起步 </h1>
 
-<h2 style="font-weight: normal"> ykit.{type}.js 文件示例 </h2>
+<h2 style="font-weight: normal"> 安装 Ykit </h2>
 
+<pre><code>(sudo) npm install ykit -g
+</code></pre><h2 style="font-weight: normal"> 初始化一个项目 </h2>
+
+<h3 style="font-weight: normal"> Init </h3>
+
+<p>通过 init 命令可以快速搭建一个项目脚手架：</p>
+<ol>
+<li>创建一个项目目录</li>
+<li>进入目录执行 <code>ykit init qunar</code> (这里以初始化 qunar 项目为例)</li>
+</ol>
+<p>初始化时可以选择项目类型（init 后面接的参数），目前支持的初始化类型：</p>
+<ul>
+<li>qunar</li>
+<li>yo</li>
+</ul>
+<h3 style="font-weight: normal"> Server </h3>
+
+<p>在项目目录外执行命令：</p>
+<pre><code>(sudo) ykit server // 或者使用缩写 ykit s
+</code></pre><p>访问 <code>localhost/&lt;项目目录&gt;/index.html</code> 即可。</p>
+<h3 style="font-weight: normal"> Pack </h3>
+
+<p>在项目中执行命令：</p>
+<pre><code>ykit pack -m
+</code></pre><p>将会对资源进行编译打包压缩，默认会打到 <code>prd</code> 目录。</p>
+<h2 style="font-weight: normal"> 配置 ykit.{type}.js </h2>
+
+<p>项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 <code>ykit.js</code>（基础环境）、<code>ykit.yo.js</code> 或者 <code>ykit.qunar.js</code>。配置文件样例：</p>
 <pre><code class="lang-js">exports.config = function() {
     return {
-        export: [
-            // 项目资源入口
-            &#39;./scripts/index.js&#39;,
-            &#39;./styles/index.scss&#39;,
+        // 在本地服务请求时，会实现 /src -&gt; /prd 目录的对应(类似 fekit)
+        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
 
-            // 项目资源分组
-            {
-                name: &#39;common&#39;,
-                export: [
-                    &#39;./common_dir/util.js&#39;,
-                    &#39;./common_dir/common.css&#39;
-                ]
-            }
-        ],
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
         modifyWebpackConfig: function(baseConfig) {
-            // 修改 webpack 编译配置
             // ...
-
             return baseConfig
-        },
-        sync: {
-            // sync到开发机配置
-            host: &quot;192.168.237.71&quot;,
-            path: &quot;/home/q/www/qunarzz.com/#_name&quot;
-        },
-        command: [{
-            name: &#39;#_name_cmd&#39;,
-            module: {
-                usage: &#39;项目自定义命令&#39;,
-                run: function() {}
-            }
-        }]
+        }
     }
 };
-</code></pre>
-<h2 style="font-weight: normal"> 配置项 </h2>
-
-<ul>
-<li>export - 设置资源入口。与 Fekit 相同，其中所有路径均默认相对于<code>src</code>目录，在<strong>本地请求 / 打包阶段</strong>，将会导出至 <strong>prd / dev</strong> 目录。同时也支持设置入口分组，打包时可针对分组进行打包。</li>
-<li>sync - 设置同步开发机的配置，需要设置开发机的 IP，以及项目要存储的路径。</li>
-<li>command - 设置项目自定义命令，在项目目录下执行<code>ykit {cmd}</code>即可运行。</li>
-</ul>
-<h3 style="font-weight: normal"> modifyWebpackConfig </h3>
-
-<p><code>modifyWebpackConfig</code>是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 <strong><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></strong>。</p>
-<p><em>老版本的 ykit 项目中可能会有 setCompiler 方法，和 modifyWebpackConfig 功能是一样的</em></p>
-<ul>
-<li>示例 - 添加 plugins：</li>
-</ul>
-<pre><code class="lang-js">var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack;
-        var newPlugin = new webpack.DefinePlugin({
-            &quot;process.env&quot;: {
-                NODE_ENV: JSON.stringify(&quot;production&quot;)
-            }
-        })
-
-        baseConfig.plugins.push(newPlugin);
-        return baseConfig;
-    }
-}
-</code></pre>
-<ul>
-<li>示例 - 修改 output：</li>
-</ul>
-<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
-    baseConfig.output: {
-        /**
-         * output 是 webpack 中对于编译结果的配置
-         * 在 ykit 中，根据每个环境(local / dev / prd)有特定的编译结果配置
-         * 可以对特定环境下的 output 进行修改或重置
-         */
-
-        local: {
-            // 重置本地 server 环境下配置
-        },
-        dev: baseConfig.output.dev, // 沿用 dev 环境下配置
-        prd: baseConfig.output.prd  // 沿用 prd 环境下配置
-    }
-    return baseConfig;
-}
-</code></pre>
-<h2 style="font-weight: normal"> 配置函数上下文 </h2>
-
-<p>业务在 ykit.{type}.js 中的配置函数上下文可以获取到当前的环境信息。</p>
-<ul>
-<li>env: 当前 ykit 的执行环境，分为 <code>local / dev / prd</code>，示例：</li>
-</ul>
-<pre><code class="lang-js">var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        switch (self.env) {
-            case &#39;local&#39;:
-                // 修改本地环境配置，在 ykit server 中访问项目会生效
-                break;
-            case &#39;dev&#39;:
-                // 修改开发环境配置，在 ykit pack 时生效
-                break;
-            case &#39;prd&#39;:
-                // 修改生产环境配置，在 ykit pack -m 时生效
-                break;
-            default:
-        }
-
-        return baseConfig;
-    }
-}
-</code></pre>
-<ul>
-<li>webpack: 当前 ykit 内部 webapck，示例：</li>
-</ul>
-<pre><code class="lang-js">var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack;
-        // 调用 webpack 内部插件等
-        return baseConfig;
-    }
-}
 </code></pre>
 
               </div>

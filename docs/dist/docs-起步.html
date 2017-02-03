@@ -15,7 +15,7 @@
     
   
 </head>
-<body class=docs-命令行 >
+<body class=docs-起步 >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -79,8 +79,8 @@
                     <ul class="nav docs-sidenav">
                         
                         
-                        <!-- <li  > -->
-                        <li >
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
                             
                             <a href="docs-起步.html">起步</a>
                             
@@ -97,8 +97,8 @@
                         
                         
                         
-                        <!-- <li  class="active"   class="active" > -->
-                        <li  class="active" >
+                        <!-- <li  > -->
+                        <li >
                             
                             <a href="docs-命令行.html">命令行</a>
                             
@@ -165,59 +165,52 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 命令行工具 </h1>
+                <h1 style="font-weight: normal"> 起步 </h1>
 
-<p>Ykit 命令行工具可以通过运行 <code>ykit -h</code> 查看所有基础命令。</p>
+<h2 style="font-weight: normal"> 安装 Ykit </h2>
+
+<pre><code>(sudo) npm install ykit -g
+</code></pre><h2 style="font-weight: normal"> 初始化一个项目 </h2>
+
+<h3 style="font-weight: normal"> Init </h3>
+
+<p>通过 init 命令可以快速搭建一个项目脚手架：</p>
+<ol>
+<li>创建一个项目目录</li>
+<li>进入目录执行 <code>ykit init qunar</code> (这里以初始化 qunar 项目为例)</li>
+</ol>
+<p>初始化时可以选择项目类型（init 后面接的参数），目前支持的初始化类型：</p>
 <ul>
-<li>init            # 项目初始化</li>
-<li>server          # 开发服务</li>
-<li>pack            # 资源编译、打包</li>
-<li>lint            # 代码质量检测</li>
+<li>qunar</li>
+<li>yo</li>
 </ul>
-<p><strong>注：以上命令均可以使用缩写，如 <code>ykit s</code> 等同于 <code>ykit server</code>。</strong></p>
-<p>通过 <code>ykit {命令名} -h</code> 可以查看该指令的参数，如：</p>
-<pre><code>$ ykit server -h
+<h3 style="font-weight: normal"> Server </h3>
 
-Options:
-  -p, --port         端口
-  -x, --proxy        启用proxy代理服务
-  -m, --middlewares  加载项目中间件
-  -a, --all          整体编译
-  -s, --https        使用https协议
-  -h, --help         查看帮助
-</code></pre><h3 style="font-weight: normal"> init </h3>
+<p>在项目目录外执行命令：</p>
+<pre><code>(sudo) ykit server // 或者使用缩写 ykit s
+</code></pre><p>访问 <code>localhost/&lt;项目目录&gt;/index.html</code> 即可。</p>
+<h3 style="font-weight: normal"> Pack </h3>
 
-<p>这个命令将会配置初始化向导。用户通过选择项目类型，它就可以帮助用户快速地在当前工作目录下创建 ykit.{type}.js 文件，并安装相应插件。</p>
-<h3 style="font-weight: normal"> server </h3>
+<p>在项目中执行命令：</p>
+<pre><code>ykit pack -m
+</code></pre><p>将会对资源进行编译打包压缩，默认会打到 <code>prd</code> 目录。</p>
+<h2 style="font-weight: normal"> 配置 ykit.{type}.js </h2>
 
-<p>这个命令会在本地起静态服务，并对<code>/{project}/prd/</code>路径下的资源进行编译，保持与Fekit一致。</p>
-<p><strong>注意: 只有<code>ykit.{type}.js</code>中设置了export的资源才会编译。</strong></p>
-<p>编译静态资源有两种方式，默认是按请求编译，适合export资源较多的项目。</p>
-<p>当加上-a--all参数后，则在第一次加载时将export资源全部编译，适合单页应用等静态资源入口较少的项目。</p>
-<h3 style="font-weight: normal"> pack </h3>
+<p>项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 <code>ykit.js</code>（基础环境）、<code>ykit.yo.js</code> 或者 <code>ykit.qunar.js</code>。配置文件样例：</p>
+<pre><code class="lang-js">exports.config = function() {
+    return {
+        // 在本地服务请求时，会实现 /src -&gt; /prd 目录的对应(类似 fekit)
+        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
 
-<p>对项目进行打包。对于Qunar的项目，打包后会生成相应目录，来放置带版本号的资源。</p>
-<ul>
-<li><p><code>ykit pack</code>命令，相当于之前的<code>fekit pack</code>。首先生成<code>dev</code>目录，并按目录结构生成<code>**/{name}@dev.{ext}</code>，另外会生成<code>**/{name}@dev.{ext}.map</code>用于调试。</p>
-</li>
-<li><p><code>ykit pack -m</code>命令，相当于之前的<code>fekit min</code>。首先生成<code>prd</code>和<code>ver</code>目录，并按目录结构生成<code>**/{name}@{version}.{ext}</code>，即打包压缩后的资源。同时在<code>ver</code>目录生成对应<code>{name}.{ext}.ver</code>和<code>versions.mapping</code>。</p>
-</li>
-<li><p><code>ykit pack -g {groupname}</code>命令，可指定分组打包，不影响其它已存在的打包资源。</p>
-</li>
-<li><p><code>ykit pack -c false</code>ykit 在打包之前会清空打包目标目录(dev/prd)，使用这个命令使 ykit 不预先清空。</p>
-</li>
-</ul>
-<h3 style="font-weight: normal"> lint </h3>
-
-<p>这个命令会对项目进行 eslint 检查，第一次在项目中执行 ykit lint 后，会生成相应的 .eslintrc.json，可后续对它进行更改，如添加 lint 规则、忽略目录等。</p>
-<p>进入项目目录，执行<code>ykit lint</code>即可，其它参数：</p>
-<p><code>ykit lint -d {dir}</code> 对指定目录或文件执行 lint 。</p>
-<h2 style="font-weight: normal"> 附加命令 </h2>
-
-<p>Ykit 插件会为当前项目添加附加命令。如在一个 Qunar 项目中，可以运行<code>ykit sync</code>命令等。当前项目环境下的命令列表可以使用<code>ykit -h</code>查看。</p>
-<h2 style="font-weight: normal"> 项目自定义命令 </h2>
-
-<p>在<code>ykit.{type}.js</code>中可以配置项目自定义命令，相当于执行一段 Node 脚本。当前项目环境下的命令列表可以使用<code>ykit -h</code>查看。</p>
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
+        modifyWebpackConfig: function(baseConfig) {
+            // ...
+            return baseConfig
+        }
+    }
+};
+</code></pre>
 
               </div>
               <div class="open-panel"></div>

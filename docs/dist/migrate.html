@@ -104,7 +104,7 @@
                 
                 <h1 style="font-weight: normal"> 将FEkit项目迁移到YKit </h1>
 
-<p><strong> 注意：迁移所需npm至少为3以上，请先检查npm版本。 </strong></p>
+<p><strong> 注意：迁移所需npm至少为3以上，node版本至少为6以上，请先检查npm和node版本。 </strong></p>
 <h2 style="font-weight:normal"> 生成package.json </h2>
 
 <p>首先需要调用 <code>npm init</code>生成package.json文件，一路点回车即可。</p>
@@ -122,7 +122,6 @@
 <h3 style="font-weight: normal"> 目前不支持的项目类型： </h3>
 
 <ul>
-<li>使用了<code>scripts</code>(premin,prepack,postmin,postpack,prepublish)钩子脚本的项目</li>
 <li>各种利用了非常规fekit bug的项目（例如使用注释来require依赖）</li>
 <li>配置compile:false的项目</li>
 </ul>

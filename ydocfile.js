@@ -34,10 +34,13 @@ module.exports = {
         content: {
             sidebar: true,
             multi: true,
-            index: './docs/config.md',
+            index: './docs/getting_started.md',
             compile: 'markdown',
             menuLevel: 2,
             pages: [{
+                name: '起步',
+                content: './docs/getting_started.md'
+            },{
                 name: '配置',
                 content: './docs/config.md'
             }, {
@@ -50,9 +53,6 @@ module.exports = {
                 name: '代理工具',
                 content: './docs/proxy.md'
             }, {
-                name: 'Node.js API',
-                content: './docs/api.md'
-            }, {
                 name: '发布',
                 content: './docs/build.md'
             }, {
@@ -61,6 +61,9 @@ module.exports = {
             }, {
                 name: 'npm shrinkwrap',
                 content: './docs/shrinkwrap.md'
+            }, {
+                name: 'Node.js API',
+                content: './docs/api.md'
             }]
         }
     }, {
