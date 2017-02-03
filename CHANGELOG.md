@@ -1,3 +1,19 @@
+<a name="0.2.6-rc1"></a>
+## [0.2.6-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc0...0.2.6-rc1) (2017-01-23)
+
+
+
+<a name="0.2.6-rc0"></a>
+## [0.2.6-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.5...0.2.6-rc0) (2017-01-23)
+
+
+### Features
+
+* **server:**  server 转为 middleware 形式 ([a1736b3](http://gitlab.corp.qunar.com/mfe/ykit/commit/a1736b3))
+* **server:** 添加 verbose 配置项，打印出详细编译信息 ([b2d26c7](http://gitlab.corp.qunar.com/mfe/ykit/commit/b2d26c7))
+
+
+
 <a name="0.2.5"></a>
 ## [0.2.5](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.4...0.2.5) (2017-01-18)
 

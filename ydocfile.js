@@ -8,39 +8,22 @@ module.exports = {
         homeUrl: 'http://ued.qunar.com/ymfe/',
         navbars: []
     },
+    "options": {
+        "insertCSS": [
+            "../theme/ydoc.css"
+        ],
+        "hasPageName": true
+    },
     pages: [{
         name: 'index',
         title: '简介',
-        compile: 'markdown',
+        // compile: 'markdown',
         banner: {
             title: 'Ykit',
-            description: 'Introduction'
+            description: 'Ykit 是一套可配置和可扩展的前端开发工具集，让开发者灵活地搭建开发环境，和使用资源打包、静态资源访问、网络代理等服务。<p><a href=\"docs.html\" class=\"getting\">Getting Started</a></p><p class=\"version\">当前版本：v0.2.5</p>'
         },
-        menuLevel: 2,
+        // menuLevel: 2,
         content: './README.md'
-    }, {
-        name: 'migrate',
-        title: '项目迁移',
-        compile: 'markdown',
-        banner: {
-            title: 'Ykit',
-            description: 'Migration'
-        },
-        menuLevel: 2,
-        content: {
-            sidebar: true,
-            multi: true,
-            index: './docs/fekit.md',
-            compile: 'markdown',
-            menuLevel: 2,
-            pages: [{
-                name: '如何迁移 fekit 项目',
-                content: './docs/fekit.md'
-            }, {
-                name: '如何迁移 webpack 项目',
-                content: './docs/webpack.md'
-            }]
-        }
     }, {
         name: 'docs',
         title: '使用手册',
@@ -78,6 +61,29 @@ module.exports = {
             }, {
                 name: 'npm shrinkwrap',
                 content: './docs/shrinkwrap.md'
+            }]
+        }
+    }, {
+        name: 'migrate',
+        title: '项目迁移',
+        compile: 'markdown',
+        banner: {
+            title: 'Ykit',
+            description: 'Migration'
+        },
+        menuLevel: 2,
+        content: {
+            sidebar: true,
+            multi: true,
+            index: './docs/fekit.md',
+            compile: 'markdown',
+            menuLevel: 2,
+            pages: [{
+                name: '如何迁移 fekit 项目',
+                content: './docs/fekit.md'
+            }, {
+                name: '如何迁移 webpack 项目',
+                content: './docs/webpack.md'
             }]
         }
     }, {

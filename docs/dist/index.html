@@ -10,9 +10,12 @@
   <title>YKit 简介</title>
   <link rel="stylesheet" href="source/main.css"/>
   
+    
+<link rel="stylesheet" href="../theme/ydoc.css"/>
+    
   
 </head>
-<body>
+<body class=index >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -32,13 +35,13 @@
                     
                     <li class="">
                         
-                        <a href="migrate.html">项目迁移</a>
+                        <a href="docs.html">使用手册</a>
                         
                     </li>
                     
                     <li class="">
                         
-                        <a href="docs.html">使用手册</a>
+                        <a href="migrate.html">项目迁移</a>
                         
                     </li>
                     
@@ -62,7 +65,7 @@
           <div class="ydoc-banner">
               <div class="ydoc-banner-area">
                   <h1>Ykit</h1>
-                  <p>Introduction</p>
+                  <p>Ykit 是一套可配置和可扩展的前端开发工具集，让开发者灵活地搭建开发环境，和使用资源打包、静态资源访问、网络代理等服务。<p><a href="docs.html" class="getting">Getting Started</a></p><p class="version">当前版本：v0.2.5</p></p>
               </div>
           </div>
       
@@ -73,67 +76,28 @@
           <div class="ydoc-container-content" id="readme">
               <article class="markdown-body">
                   
-                  <h1 style="font-weight: normal"> Ykit </h1>
+                  <h2 style="font-weight: normal"> 核心 </h2>
 
-<p>Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 <a href="https://github.com/webpack/webpack">webpack</a>，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。</p>
-<p>Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的基础配置，通过可插拔的插件来进行扩展（编译插件、服务中间件、工具和命令...），并让开发者可以灵活地根据不同项目来修改配置。</p>
-<p>详细文档请查看 <a href="http://ued.qunar.com/ykit/docs.html">http://ued.qunar.com/ykit/docs.html</a></p>
+<p>Ykit 基于 <a href="https://github.com/webpack/webpack">Webpack</a>，可支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。Ykit 提供一个可靠的基础配置，并能通过插件快速扩展。</p>
 <h2 style="font-weight: normal"> Features </h2>
 
 <ul>
-<li>本地静态资源服务</li>
-<li>一键配置的开发环境</li>
-<li>自带 lint 工具和预设规则</li>
-<li>自带代理工具，可实现 SwitchHost + Charles 的基本功能</li>
+<li><p><img src="http://oji8kngu4.bkt.clouddn.com/doc_index_file.png" alt="本地静态资源服务"></p>
+<h3 style="font-weight: normal"> 静态资源服务 </h3>
+
+<p>对 js/css 等静态资源文件本地打包，同时支持 https 服务。</p>
+</li>
+<li><p><img src="http://oji8kngu4.bkt.clouddn.com/doc_index_config.png" alt="本地静态资源服务"></p>
+<h3 style="font-weight: normal"> 一键配置的开发环境 </h3>
+
+<p>Ykit 提供了插件机制来进行配置扩展，通过安装插件可快速获取到不同的编译方式和功能。</p>
+</li>
+<li><p><img src="http://oji8kngu4.bkt.clouddn.com/doc_index_host.png" alt="本地静态资源服务"></p>
+<h3 style="font-weight: normal"> 代理工具 </h3>
+
+<p>包括无 DNS 缓存 Host 管理、URL MAP、网络请求抓包、Mock 接口等功能。</p>
+</li>
 </ul>
-<h2 style="font-weight: normal"> Install </h2>
-
-<pre><code>(sudo) npm install ykit -g
-</code></pre><h2 style="font-weight: normal"> Usage </h2>
-
-<h3 style="font-weight: normal"> Init </h3>
-
-<p>通过 init 命令快速搭建一个项目脚手架：</p>
-<ol>
-<li>创建一个项目目录</li>
-<li>进入目录执行 <code>ykit init [&lt;type&gt;]</code></li>
-</ol>
-<p>初始化时可以选择项目类型（type 留空则为基础脚手架），目前支持的初始化类型：</p>
-<ul>
-<li>yo</li>
-<li>qunar</li>
-</ul>
-<h3 style="font-weight: normal"> Server </h3>
-
-<p>在项目目录外执行命令：</p>
-<pre><code>(sudo) ykit server // 或者使用缩写 ykit s
-</code></pre><p>访问 <code>localhost/项目目录/index.html</code></p>
-<h3 style="font-weight: normal"> Pack </h3>
-
-<p>在项目中执行命令：</p>
-<pre><code>ykit pack -m
-</code></pre><p>将会对资源进行编译打包压缩，默认会打到 <code>prd</code> 目录。</p>
-<h2 style="font-weight: normal"> 配置 ykit.{type}.js </h2>
-
-<p>项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 <code>ykit.js</code>（基础环境）、<code>ykit.yo.js</code> 或者 <code>ykit.qunar.js</code>。配置文件样例：</p>
-<pre><code class="lang-js">exports.config = function() {
-    return {
-        // 在本地服务请求时，会实现 /src -&gt; /prd 目录的对应(类似 fekit)
-        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
-        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
-
-        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
-        modifyWebpackConfig: function(baseConfig) {
-            // ...
-            return baseConfig
-        }
-    }
-};
-</code></pre>
-<p>详细配置请参考 <a href="http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html">ykit-配置</a>。</p>
-<h2 style="font-weight: normal"> Changelog </h2>
-
-<p><a href="./releases.html">Changelog</a></p>
 
               </article>
           </div>
@@ -150,9 +114,6 @@
       </footer>
     </div>
 
-    
-    
-
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -160,7 +121,6 @@
 
     
 
-    
     
 
 </body>
