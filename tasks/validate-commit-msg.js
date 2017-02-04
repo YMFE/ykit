@@ -14,7 +14,7 @@ var fs = require('fs');
 var util = require('util');
 var resolve = require('path').resolve;
 var findup = require('findup');
-var semverRegex = require('semver-regex')
+var semverRegex = require('semver-regex');
 
 var config = getConfig();
 var MAX_LENGTH = config.maxSubjectLength || 100;
