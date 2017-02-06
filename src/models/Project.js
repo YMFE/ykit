@@ -28,8 +28,17 @@ class Project {
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
-        this.extendConfig = this.configFile && this.configFile.match(/ykit\.([\w\.]+)\.js/) && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] && this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
-        this.ignores = ['node_modules/**/*', 'bower_components/**/*', 'dev/**/*', 'prd/**/*', '.ykit_cache/**/*'];
+        this.extendConfig = this.configFile &&
+            this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
+            this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
+            this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
+        this.ignores = [
+            'node_modules/**/*',
+            'bower_components/**/*',
+            'dev/**/*',
+            'prd/**/*',
+            '.ykit_cache/**/*'
+        ];
         this.cachePath = this._isCacheDirExists(cwd) || '';
 
         this.readConfig();
@@ -51,7 +60,8 @@ class Project {
 
     readConfig(options) {
         if (this.check()) {
-            let userConfig = {
+            let globalConfigs = Manager.readRC().configs || [],
+                userConfig = {
                     cwd: this.cwd,
                     _manager: Manager,
                     setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
@@ -71,18 +81,21 @@ class Project {
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
                     env: this._getCurrentEnv(), // 默认为本地环境,
                     webpack: webpack
-                },
-                globalConfigs = Manager.readRC().configs || [];
+                };
+
 
             this.options = options = options || {};
             options.ExtractTextPlugin = ExtractTextPlugin;
 
             if (this.extendConfig != 'config') {
-                let moduleName = 'ykit-config-' + this.extendConfig,
-                    modulePath = '';
+                let moduleName = 'ykit-config-' + this.extendConfig, modulePath = '';
 
                 const localSearchPath = sysPath.join(this.cwd, 'node_modules/', moduleName);
-                const localSearchPathQnpm = sysPath.join(this.cwd, 'node_modules/', '@qnpm/' + moduleName);
+                const localSearchPathQnpm = sysPath.join(
+                    this.cwd,
+                    'node_modules/',
+                    '@qnpm/' + moduleName
+                );
 
                 if (requireg.resolve(localSearchPath)) {
                     modulePath = localSearchPath;
@@ -101,7 +114,7 @@ class Project {
                         module.config.call(userConfig, options, this.cwd);
                     }
                 } else {
-                    let item = globalConfigs.filter((item) => item.name == moduleName)[0];
+                    let item = globalConfigs.filter(item => item.name == moduleName)[0];
                     if (item) {
                         let module = require(item.path);
 
@@ -139,7 +152,7 @@ class Project {
                         }
 
                         if (exports) {
-                            exports = exports.filter((item) => {
+                            exports = exports.filter(item => {
                                 if (typeof item === 'object') {
                                     this.config.setGroupExports(item.name, item.export);
                                     return false;
@@ -156,7 +169,11 @@ class Project {
                         this.setCommands(userConfigObj.command);
                     }
                 } else {
-                    error(this.configFile + ' 设置有误，请参考文档 ' + 'http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html'.underline);
+                    error(
+                        this.configFile +
+                            ' 设置有误，请参考文档 ' +
+                            'http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html'.underline
+                    );
                     return this;
                 }
             }
@@ -182,9 +199,7 @@ class Project {
 
         for (let key in entries) {
             const entryItem = entries[key],
-                entry = Array.isArray(entryItem)
-                    ? entryItem[entryItem.length - 1]
-                    : entryItem,
+                entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
                 extName = sysPath.extname(entry);
 
             // 放在cache目录下
@@ -197,7 +212,8 @@ class Project {
             }
 
             if (cssExtNames.indexOf(extName) > -1) {
-                let requireFilePath = entries[key] = './' + sysPath.join(contextPathRelativeToCwd, '/.ykit_cache', entry + '.js'),
+                let requireFilePath = entries[key] = './' +
+                    sysPath.join(contextPathRelativeToCwd, '/.ykit_cache', entry + '.js'),
                     cacheFilePath = sysPath.join(config.context, requireFilePath);
 
                 mkdirp.sync(sysPath.dirname(cacheFilePath));
@@ -207,14 +223,22 @@ class Project {
                     // clear
                     fs.writeFileSync(cacheFilePath, '', 'utf-8');
 
-                    entryItem.forEach((cssPath) => {
+                    entryItem.forEach(cssPath => {
                         const originCssPath = sysPath.join(config.context, cssPath);
-                        const requiredPath = UtilPath.normalize(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
-                        fs.appendFileSync(cacheFilePath, 'require("' + requiredPath + '");', 'utf-8');
+                        const requiredPath = UtilPath.normalize(
+                            sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath)
+                        );
+                        fs.appendFileSync(
+                            cacheFilePath,
+                            'require("' + requiredPath + '");',
+                            'utf-8'
+                        );
                     });
                 } else {
                     const originCssPath = sysPath.join(config.context, entry);
-                    const requiredPath = UtilPath.normalize(sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath));
+                    const requiredPath = UtilPath.normalize(
+                        sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath)
+                    );
                     fs.writeFileSync(cacheFilePath, 'require("' + requiredPath + '");', 'utf-8');
                 }
 
@@ -259,14 +283,12 @@ class Project {
     }
 
     pack(opt, callback) {
-        let self = this,
-            packStartTime = Date.now(),
-            config = this.config.getConfig();
+        let self = this, packStartTime = Date.now(), config = this.config.getConfig();
 
         UtilFs.deleteFolderRecursive(this.cachePath);
 
         if (!config.beforePack) {
-            config.beforePack = function (done) {
+            config.beforePack = function(done) {
                 done();
             };
         }
@@ -298,11 +320,14 @@ class Project {
             webpack(config, (err, stats) => {
                 const cwd = config.output.path;
 
-                globby.sync('**/*.cache', { cwd: cwd }).map((p) => {
-                    return sysPath.join(config.output.path, p);
-                }).forEach((fp) => {
-                    fs.unlinkSync(fp);
-                });
+                globby
+                    .sync('**/*.cache', { cwd: cwd })
+                    .map(p => {
+                        return sysPath.join(config.output.path, p);
+                    })
+                    .forEach(fp => {
+                        fs.unlinkSync(fp);
+                    });
 
                 // 压缩
                 if (opt.min) {
@@ -322,131 +347,153 @@ class Project {
 
                     const originAssets = stats.compilation.assets;
                     const nextAssets = {};
-                    assetsInfo.forEach((asset) => {
-                        cc.enqueue({
-                            opt: opt,
-                            cwd: cwd,
-                            buildOpts: this.config.build || {},
-                            assetName: asset.name
-                        }, (err, response) => {
-                            if (response.error) {
-                                // err log
-                                const resErr = response.error;
-                                spinner.text = '';
-                                spinner.stop();
-                                info('\n');
-                                spinner.text = `error occured while minifying ${resErr.assetName}`;
-                                spinner.fail();
-                                info(`line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red);
+                    assetsInfo.forEach(asset => {
+                        cc.enqueue(
+                            {
+                                opt: opt,
+                                cwd: cwd,
+                                buildOpts: this.config.build || {},
+                                assetName: asset.name
+                            },
+                            (err, response) => {
+                                if (response.error) {
+                                    // err log
+                                    const resErr = response.error;
+                                    spinner.text = '';
+                                    spinner.stop();
+                                    info('\n');
+                                    spinner.text = `error occured while minifying ${resErr.assetName}`;
+                                    spinner.fail();
+                                    info(
+                                        `line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red
+                                    );
 
-                                // continue
-                                spinner.start();
-                            }
+                                    // continue
+                                    spinner.start();
+                                }
 
-                            // 将替换版本号的资源名取代原有名字
-                            const replacedAssets = response.replacedAssets;
-                            if (replacedAssets && replacedAssets.length > 0) {
-                                const originAssetName = replacedAssets[0];
-                                const nextAssetName = replacedAssets[1];
-                                if (originAssets[originAssetName]) {
-                                    nextAssets[nextAssetName] = originAssets[originAssetName];
+                                // 将替换版本号的资源名取代原有名字
+                                const replacedAssets = response.replacedAssets;
+                                if (replacedAssets && replacedAssets.length > 0) {
+                                    const originAssetName = replacedAssets[0];
+                                    const nextAssetName = replacedAssets[1];
+                                    if (originAssets[originAssetName]) {
+                                        nextAssets[nextAssetName] = originAssets[originAssetName];
+                                    }
+                                }
+
+                                processToRun -= 1;
+                                spinner.text = `[Minify] ${assetsInfo.length -
+                                    processToRun}/${assetsInfo.length} assets`;
+
+                                if (processToRun === 0) {
+                                    cc.exit();
+                                    spinner.stop();
+
+                                    logTime('minify complete!');
+
+                                    // 更新 stats
+                                    stats.compilation.assets = Object.keys(nextAssets).length > 0
+                                        ? nextAssets
+                                        : originAssets;
+
+                                    afterPack();
                                 }
                             }
-
-                            processToRun -= 1;
-                            spinner.text = `[Minify] ${assetsInfo.length - processToRun}/${assetsInfo.length} assets`;
-
-                            if (processToRun === 0) {
-                                cc.exit();
-                                spinner.stop();
-
-                                logTime('minify complete!');
-
-                                // 更新 stats
-                                stats.compilation.assets = Object.keys(nextAssets).length > 0 ? nextAssets : originAssets;
-
-                                afterPack();
-                            }
-                        });
+                        );
                     });
                 } else {
                     afterPack();
                 }
 
                 function afterPack() {
-                    async.series(self.packCallbacks.map((packCallback) => {
-                        return function (callback) {
-                            packCallback(opt, stats);
-                            callback(null);
-                        };
-                    }), (err) => {
-                        let statsInfo = stats.toJson({ errorDetails: false });
+                    async.series(
+                        self.packCallbacks.map(packCallback => {
+                            return function(callback) {
+                                packCallback(opt, stats);
+                                callback(null);
+                            };
+                        }),
+                        err => {
+                            let statsInfo = stats.toJson({ errorDetails: false });
 
-                        process.stdout.write('\n--------------------------  YKIT PACKED ASSETS  --------------------------\n\n');
+                            process.stdout.write(
+                                '\n--------------------------  YKIT PACKED ASSETS  --------------------------\n\n'
+                            );
 
-                        if (statsInfo.errors.length > 0) {
-                            statsInfo.errors.map((err) => {
-                                error(err.red + '\n');
-                            });
-                        }
-                        if (statsInfo.warnings.length > 0) {
-                            statsInfo.warnings.map((warning) => {
-                                warn(warning.yellow + '\n');
-                            });
-                        }
-
-                        const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
-                        assetsInfo.map((asset) => {
-                            if(sysPath.extname(asset.name) !== '.cache') {
-                                let fileSize = UtilFs.getFileSize(path.resolve(cwd, asset.name));
-                                if(!fileSize) {
-                                    fileSize = asset.size > 1024
-                                        ? (asset.size / 1024).toFixed(2) + ' KB'
-                                        : asset.size + ' Bytes';
-                                }
-
-                                if (!/\.cache$/.test(asset.name)) {
-                                    log('- '.gray + asset.name + ' - ' + fileSize);
-                                }
+                            if (statsInfo.errors.length > 0) {
+                                statsInfo.errors.map(err => {
+                                    error(err.red + '\n');
+                                });
                             }
-                        });
+                            if (statsInfo.warnings.length > 0) {
+                                statsInfo.warnings.map(warning => {
+                                    warn(warning.yellow + '\n');
+                                });
+                            }
 
-                        const packDuration = Date.now() - packStartTime > 1000
-                            ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
-                            : (Date.now() - packStartTime) + 'ms';
-                        log('Packing Finished in ' + packDuration + '.\n');
+                            const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
+                            assetsInfo.map(asset => {
+                                if (sysPath.extname(asset.name) !== '.cache') {
+                                    let fileSize = UtilFs.getFileSize(
+                                        path.resolve(cwd, asset.name)
+                                    );
+                                    if (!fileSize) {
+                                        fileSize = asset.size > 1024
+                                            ? (asset.size / 1024).toFixed(2) + ' KB'
+                                            : asset.size + ' Bytes';
+                                    }
 
-                        callback(err, stats);
-                    });
+                                    if (!/\.cache$/.test(asset.name)) {
+                                        log('- '.gray + asset.name + ' - ' + fileSize);
+                                    }
+                                }
+                            });
+
+                            const packDuration = Date.now() - packStartTime > 1000
+                                ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
+                                : Date.now() - packStartTime + 'ms';
+                            log('Packing Finished in ' + packDuration + '.\n');
+
+                            callback(err, stats);
+                        }
+                    );
                 }
             });
         };
 
-        config.beforePack(() => {
-            if (opt.lint) {
-                async.series([(callback) => this.lint(callback)], (err, results) => {
-                    if (!err) {
-                        if (results[0] && results[1]) {
-                            compilerProcess();
+        config.beforePack(
+            () => {
+                if (opt.lint) {
+                    async.series([callback => this.lint(callback)], (err, results) => {
+                        if (!err) {
+                            if (results[0] && results[1]) {
+                                compilerProcess();
+                            }
+                        } else {
+                            error(err.stack);
                         }
-                    } else {
-                        error(err.stack);
-                    }
-                });
-            } else {
-                compilerProcess();
-            }
-        }, opt);
+                    });
+                } else {
+                    compilerProcess();
+                }
+            },
+            opt
+        );
 
         return this;
     }
 
     getServerCompiler(handler) {
         let config = this.config.getConfig();
-        config.output = extend(true, {
-            path: config.output.prd.path,
-            filename: '[name][ext]'
-        }, config.output.local || {});
+        config.output = extend(
+            true,
+            {
+                path: config.output.prd.path,
+                filename: '[name][ext]'
+            },
+            config.output.local || {}
+        );
 
         this.fixCss();
 
@@ -460,7 +507,7 @@ class Project {
     _getLintFiles(dir, fileType) {
         let context = this.config._config.context,
             extNames = this.config._config.entryExtNames[fileType],
-            lintPath = extNames.map((ext) => {
+            lintPath = extNames.map(ext => {
                 return sysPath.join('./**/*' + ext);
             });
 
@@ -476,13 +523,15 @@ class Project {
             }
         }
 
-        return globby.sync(lintPath, {
-            cwd: context,
-            root: context,
-            ignore: this.ignores
-        }).map((lintPathItem) => {
-            return sysPath.resolve(context, lintPathItem);
-        });
+        return globby
+            .sync(lintPath, {
+                cwd: context,
+                root: context,
+                ignore: this.ignores
+            })
+            .map(lintPathItem => {
+                return sysPath.resolve(context, lintPathItem);
+            });
     }
 
     _requireUncached(module) {
