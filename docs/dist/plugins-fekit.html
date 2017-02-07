@@ -146,11 +146,62 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h4><strong><em>文中链接各位根据自己项目对应修改</em></strong></h4><hr>
-<h4><strong>项目管理</strong>：</h4><h4><em>sp</em>:(<a href="http://sp.corp.qunar.com/default.aspx">http://sp.corp.qunar.com/default.aspx</a>)<br /></h4><h4><em>jira</em>:(<a href="http://task.corp.qunar.com/browse/">http://task.corp.qunar.com/browse/</a>)<br /></h4><hr>
-<h4><strong>发布相关</strong>:</h4><h4><em>devbds</em>:(<a href="http://devbds.corp.qunar.com/jenkins/">http://devbds.corp.qunar.com/jenkins/</a>)<br /></h4><h4><em>bds</em>:(<a href="http://bds.corp.qunar.com/jenkins/">http://bds.corp.qunar.com/jenkins/</a>)<br /></h4><hr>
-<h4><strong>质量管理</strong>:</h4><h4><em>bugfree</em>:(<a href="http://svn.corp.qunar.com/bugfree">http://svn.corp.qunar.com/bugfree</a>)<br /></h4><h4><em>case</em>:(<a href="http://bugfree.corp.qunar.com/bugfree/index.php/case">http://bugfree.corp.qunar.com/bugfree/index.php/case</a>)<br /></h4><hr>
-<h4><strong>项目信息</strong>:</h4><h4><em>wiki</em>:(<a href="http://wiki.corp.qunar.com/">http://wiki.corp.qunar.com/</a>)<br /></h4>
+                <h2 id="Features">Features</h2><p>该插件主要是为了迁移 FEkit 项目，详细迁移文档请参考<a href="./migrate-如何迁移%20fekit%20项目.html">这里</a>。</p>
+<h2 id="安装">安装</h2><p>直接按照以下命令安装即可，该插件会依照项目中的 <code>fekit.config</code> 生成 <code>ykit.fekit.js</code>。</p>
+<pre><code>$ npm install @qnpm/ykit-config-fekit --save --registry http://registry.npm.corp.qunar.com/
+</code></pre><h2 id="插件配置详情">插件配置详情</h2><pre><code class="lang-javascript"><span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+        <span class="token keyword">new</span> <span class="token class-name">webpack<span class="token punctuation">.</span>DefinePlugin</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token string">"process.env"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                FEKIT<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>envConfig<span class="token punctuation">[</span>self<span class="token punctuation">.</span>env<span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        preLoaders<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>module<span class="token punctuation">.</span>preLoaders<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+            <span class="token punctuation">{</span> test<span class="token punctuation">:</span> <span class="token regex">/\.(jsx?|coffee)$/</span><span class="token punctuation">,</span> loader<span class="token punctuation">:</span> sysPath<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./preloaders/script.js'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        loaders<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders
+            <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>loader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> loader<span class="token punctuation">.</span>test <span class="token operator">&amp;&amp;</span> loader<span class="token punctuation">.</span>test<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/less/</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>loader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>loader<span class="token punctuation">.</span>test<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/\.css/</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+                        test<span class="token punctuation">:</span> <span class="token regex">/\.(sass|scss|css|less)$/</span><span class="token punctuation">,</span>
+                        loader<span class="token punctuation">:</span> options<span class="token punctuation">.</span>ExtractTextPlugin<span class="token punctuation">.</span><span class="token function">extract</span><span class="token punctuation">(</span><span class="token string">'style'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+                            <span class="token string">'css-loader?-url'</span><span class="token punctuation">,</span>
+                            require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'./loaders/fekit-scss'</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">]</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>loader<span class="token punctuation">.</span>test<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/html|string/</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+                        test<span class="token punctuation">:</span> <span class="token regex">/\.(html|string)/</span><span class="token punctuation">,</span>
+                        loader<span class="token punctuation">:</span> <span class="token string">'raw-loader'</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">return</span> loader<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                test<span class="token punctuation">:</span> <span class="token regex">/\.coffee$/</span><span class="token punctuation">,</span> loader<span class="token punctuation">:</span> <span class="token string">"coffee-loader"</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                test<span class="token punctuation">:</span> <span class="token regex">/\.(handlebars|mustache)/</span><span class="token punctuation">,</span>
+                loader<span class="token punctuation">:</span> require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'./loaders/tmpl-loader'</span><span class="token punctuation">)</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    resolve<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        extensions<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>resolve<span class="token punctuation">.</span>extensions<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+            <span class="token string">'.js'</span><span class="token punctuation">,</span>
+            <span class="token string">'.jsx'</span><span class="token punctuation">,</span>
+            <span class="token string">'.html'</span><span class="token punctuation">,</span>
+            <span class="token string">'.coffee'</span><span class="token punctuation">,</span>
+            <span class="token string">'.string'</span><span class="token punctuation">,</span>
+            <span class="token string">'.mustache'</span><span class="token punctuation">,</span>
+            <span class="token string">'.handlebars'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
               </div>
           </div>
           

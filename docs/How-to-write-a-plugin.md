@@ -1,6 +1,6 @@
-每一个插件都是一个 npm 模块，命名规则为 `ykit-config-<name>`，比如 `ykit-config-yo`。
-
 ## 创建一个插件
+
+每一个插件都是一个 npm 模块，命名规则为 `ykit-config-<name>`，比如 `ykit-config-yo`。
 
 最简单的方法是 fork 一份 [ykit-config-seed][2]，根据需求在 `index.js` 中添加自己的内容。
 

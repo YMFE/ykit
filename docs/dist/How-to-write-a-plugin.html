@@ -146,8 +146,8 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <p>每一个插件都是一个 npm 模块，命名规则为 <code>ykit-config-&lt;name&gt;</code>，比如 <code>ykit-config-yo</code>。</p>
-<h2 id="创建一个插件">创建一个插件</h2><p>最简单的方法是 fork 一份 <a href="http://gitlab.corp.qunar.com/mfe/ykit-config-seed">ykit-config-seed</a>，根据需求在 <code>index.js</code> 中添加自己的内容。</p>
+                <h2 id="创建一个插件">创建一个插件</h2><p>每一个插件都是一个 npm 模块，命名规则为 <code>ykit-config-&lt;name&gt;</code>，比如 <code>ykit-config-yo</code>。</p>
+<p>最简单的方法是 fork 一份 <a href="http://gitlab.corp.qunar.com/mfe/ykit-config-seed">ykit-config-seed</a>，根据需求在 <code>index.js</code> 中添加自己的内容。</p>
 <h3 id="配置">配置</h3><p>从插件中可以修改 Webapck 配置，配置的优先级关系是 <code>项目配置 &gt; 插件配置 &gt; ykit基础配置</code>。</p>
 <p>在 <code>index.js</code> 的配置函数中，我们可以通过 <code>this.config</code> 获取到当前 webpack 配置，并对其进行修改。</p>
 <pre><code class="lang-javascript">exports<span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
