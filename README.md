@@ -1,20 +1,9 @@
-<h2 style="font-weight: normal"> 核心 </h2>
+<h1 style="font-weight: normal"> Ykit </h1>
 
-Ykit 基于 [Webpack][1]，可支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。Ykit 提供一个可靠的基础配置，并能通过插件快速扩展。
+Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 [webpack][1]，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。
 
-<h2 style="font-weight: normal"> Features </h2>
+Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的基础配置，通过可插拔的插件来进行扩展（编译插件、服务中间件、工具和命令...），并让开发者可以灵活地根据不同项目来修改配置。
 
-- ![本地静态资源服务](http://oji8kngu4.bkt.clouddn.com/doc_index_file.png)
-  <h3 style="font-weight: normal"> 静态资源服务 </h3>
+文档请查看[文档站][1]。
 
-  对 js/css 等静态资源文件本地打包，同时支持 https 服务。
-- ![本地静态资源服务](http://oji8kngu4.bkt.clouddn.com/doc_index_config.png)
-  <h3 style="font-weight: normal"> 一键配置的开发环境 </h3>
-
-  Ykit 提供了插件机制来进行配置扩展，通过安装插件可快速获取到不同的编译方式和功能。
-- ![本地静态资源服务](http://oji8kngu4.bkt.clouddn.com/doc_index_host.png)
-  <h3 style="font-weight: normal"> 代理工具 </h3>
-
-  包括无 DNS 缓存 Host 管理、URL MAP、网络请求抓包、Mock 接口等功能。
-
-[1]: https://github.com/webpack/webpack
+[1]: http://ued.qunar.com/ykit/index.html

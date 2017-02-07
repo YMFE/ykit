@@ -24,7 +24,7 @@ module.exports = {
             title: 'Ykit',
             description: 'Ykit 是一套可配置和可扩展的前端开发工具集，让开发者灵活地搭建开发环境，和使用资源打包、静态资源访问、网络代理等服务。<p><a href=\"docs.html\" class=\"getting\">Getting Started</a></p><p class=\"version\">当前版本：#VERSION#</p>'
         },
-        content: './README.md'
+        content: './docs/index.md'
     }, {
         name: 'docs',
         title: '使用手册',
