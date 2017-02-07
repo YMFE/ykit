@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
   <meta name="description" content="description of your site">
   <meta name="author" content="author of the site">
-  <title>YKit 使用手册</title>
+  <title>YKit 插件</title>
   <link rel="stylesheet" href="source/main.css"/>
   
   
@@ -16,7 +16,7 @@
     
   
 </head>
-<body class=docs-插件 >
+<body class=plugins-如何编写一个插件？ >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -34,9 +34,15 @@
                         
                     </li>
                     
-                    <li class="active">
+                    <li class="">
                         
                         <a href="docs.html">使用手册</a>
+                        
+                    </li>
+                    
+                    <li class="active">
+                        
+                        <a href="plugins.html">插件</a>
                         
                     </li>
                     
@@ -66,7 +72,7 @@
           <div class="ydoc-banner">
               <div class="ydoc-banner-area">
                   <h1>Ykit</h1>
-                  <p>User Manual</p>
+                  <p>Plugins</p>
               </div>
           </div>
       
@@ -83,7 +89,7 @@
                         <!-- <li  > -->
                         <li >
                             
-                            <a href="docs-起步.html">起步</a>
+                            <a href="plugins.html">简介</a>
                             
                         </li>
                         
@@ -92,70 +98,44 @@
                         <!-- <li  > -->
                         <li >
                             
-                            <a href="docs-配置.html">配置</a>
+                            <a href="javascript:void(0);">插件列表</a>
                             
                         </li>
                         
                         
                         
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-命令行.html">命令行</a>
-                            
-                        </li>
+                        
+                        <ul class="nav docs-sidenav-extend"  >
+                        
+                            <li >
+                                <a href="plugins-qunar.html">@qnpm/ykit-conifg-qunar</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-fekit.html">@qnpm/ykit-conifg-fekit</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-hy.html">ykit-conifg-hy</a>
+                            </li>
+                        
+                        </ul>
+                        
                         
                         
                         
                         <!-- <li  class="active"   class="active" > -->
                         <li  class="active" >
                             
-                            <a href="docs-插件.html">插件</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-代理工具.html">代理工具</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-发布.html">发布</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-前后端版本号关联.html">前后端版本号关联</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-npm shrinkwrap.html">npm shrinkwrap</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-Node.js API.html">Node.js API</a>
+                            <a href="How-to-write-a-plugin.html">如何编写一个插件？</a>
                             
                         </li>
                         
@@ -166,44 +146,7 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 使用插件 </h1>
-
-<p>Ykit 通过插件来扩展基础配置：</p>
-<p><img src="http://ww2.sinaimg.cn/large/6af705b8gw1f8w9jkb8ffj20q308rmxr.jpg" alt="配置流程"></p>
-<h2 style="font-weight: normal"> 插件安装与引入 </h2>
-
-<p>插件命名格式均为<code>ykit-config-{插件名}</code>，并且目前都是在<code>@qnpm</code>域下，在项目中通过 npm 安装插件：</p>
-<pre><code class="lang-bash">$ <span class="token function">sudo</span> <span class="token function">npm</span> <span class="token function">install</span> @qnpm/ykit-config-<span class="token punctuation">{</span>插件名<span class="token punctuation">}</span> --registry http://registry.npm.corp.qunar.com/
-</code></pre>
-<p>安装插件后无需特殊引入，只要保证项目内的 ykit 配置文件<code>ykit.{插件名}.js</code>与使用的插件名对应即可。如安装了插件<code>@qnpm-ykit-config-qunar</code>，则配置文件命名为<code>ykit.qunar.js</code>。</p>
-<h2 style="font-weight: normal"> 技术解决方案插件 </h2>
-
-<p>总的来说，插件分为两种，<strong>技术解决方案插件</strong>和<strong>自定义插件</strong>。</p>
-<p>技术解决方案插件由 Ykit 提供，以便于快速搭建不同的开发环境：</p>
-<h3 style="font-weight: normal"> ykit-config-qunar </h3>
-
-<ul>
-<li>添加 SASS 和 LESS 编译模块。</li>
-<li>实现资源入口从<code>src</code>到<code>prd &amp; dev</code>的映射。</li>
-<li>添加<code>ykit sync</code>命令，同步代码至开发机。</li>
-<li>添加<code>ykit source</code>命令，上传静态资源。</li>
-<li>支持引入<code>fekit_modules</code></li>
-</ul>
-<h3 style="font-weight: normal"> ykit-config-fekit </h3>
-
-<ul>
-<li>继承自 ykit-config-qunar。</li>
-<li>兼容 Fekit 模块引用特殊语法（如 CSS 中 require 另一样式文件）。</li>
-</ul>
-<h3 style="font-weight: normal"> ykit-config-hy </h3>
-
-<ul>
-<li>继承自 ykit-config-qunar。</li>
-<li>添加 ES6 编译模块。</li>
-<li>添加 ES6 Lint 规则。</li>
-<li>内置 Hy2 (开发中)。</li>
-</ul>
-<h2 style="font-weight: normal"> 自定义插件 </h2>
+                <h2 style="font-weight: normal"> 自定义插件 </h2>
 
 <p>自定义插件设计的初衷是<strong>让开发团队针对自身整合一套开发环境</strong>，在其中可以添加/修改编译规则以及编译插件，加入更多开发工具，添加自定义命令，设计团队 lint 规则等等。</p>
 <p>自定义插件示例：<a href="http://gitlab.corp.qunar.com/mfe/ykit-config-qunar">ykit-config-qunar</a>。</p>

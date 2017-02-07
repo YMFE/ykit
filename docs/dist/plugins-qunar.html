@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no,email=no" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title>YKit 插件</title>
+  <link rel="stylesheet" href="source/main.css"/>
+  
+  
+    
+        <link rel="stylesheet" href="./theme/ydoc.css"/>
+    
+  
+</head>
+<body class=plugins-@qnpm/ykit-conifg-qunar >
+    <div class="ydoc">
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ued.qunar.com/ymfe/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="">
+                        
+                        <a href="index.html">简介</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="docs.html">使用手册</a>
+                        
+                    </li>
+                    
+                    <li class="active">
+                        
+                        <a href="plugins.html">插件</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="migrate.html">项目迁移</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="releases.html">版本记录</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>Plugins</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="plugins.html">简介</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li   class="active" > -->
+                        <li >
+                            
+                            <a href="javascript:void(0);">插件列表</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        
+                        <ul class="nav docs-sidenav-extend"  style="display:block;"    style="display:block;" >
+                        
+                            <li  class="active" >
+                                <a href="plugins-qunar.html">@qnpm/ykit-conifg-qunar</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-fekit.html">@qnpm/ykit-conifg-fekit</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-hy.html">ykit-conifg-hy</a>
+                            </li>
+                        
+                        </ul>
+                        
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="How-to-write-a-plugin.html">如何编写一个插件？</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <h2 style="font-weight: normal"> Features </h2>
+
+<ul>
+<li>支持资源入口从 <code>src</code> 到 <code>dev &amp; prd</code> 的映射。</li>
+<li>支持 <code>.scss/.sass./.less</code> 类型样式资源文件的编译处理，并将每个文件打包成同名 css。</li>
+<li>支持 <code>ykit sync</code> 命令，同步代码至开发机。</li>
+<li>支持资源分片（chunk) 异步加载。</li>
+</ul>
+<h2 style="font-weight: normal"> 安装 </h2>
+
+<p>将 ykit 配置文件的名称改为<code>ykit.qunar.js</code>，并在项目中执行：</p>
+<pre><code>$ npm install @qnpm/ykit-config-qunar --save --registry http://registry.npm.corp.qunar.com/
+</code></pre><h2 style="font-weight: normal"> sync 命令 </h2>
+
+<p>sync 命令可将本地 <code>dev</code> 目录下代码上传至指定开发机，以便于联调测试。</p>
+<h3 style="font-weight: normal"> 前置条件 </h3>
+
+<p>执行 sync 命令之前要确保从本机可直连目标开发机，通过 ssh 命令可验证当前是否可直连，如：</p>
+<pre><code>ssh yuhao.ju@192.168.237.71
+</code></pre><p>如果没有提示需要密码，而直接登陆至目标开发机，则代表当前已经直连成功。配置直连的方法可以参考<a href="http://qtown.corp.qunar.com/knowledge/detail_knowledge.html?albumId=811">该课程</a>的最后一节。</p>
+<h3 style="font-weight: normal"> 修改配置文件 </h3>
+
+<p>在 ykit 配置文件中，指定 sync 参数，如：</p>
+<pre><code class="lang-javascript">exports<span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token keyword">export</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+            <span class="token comment" spellcheck="true">//...</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        sync<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 配置 sync 机器的 ip 地址和项目存放路径</span>
+            host<span class="token punctuation">:</span> <span class="token string">"192.168.237.71"</span><span class="token punctuation">,</span>
+            path<span class="token punctuation">:</span> <span class="token string">"/home/q/www/qunarzz.com/&lt;project_name>"</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 style="font-weight: normal"> 执行 sync </h3>
+
+<p>在项目中执行：</p>
+<pre><code>$ ykit sync
+</code></pre><p>第一次 sync 时会要求输入 qunar user id (如 yuhao.ju)，之后就不必再输了。</p>
+<h2 style="font-weight: normal"> 插件配置详情 </h2>
+
+<pre><code class="lang-javascript"><span class="token punctuation">{</span>
+    context<span class="token punctuation">:</span> <span class="token string">"./src"</span><span class="token punctuation">,</span>
+    output<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        local<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            path<span class="token punctuation">:</span> <span class="token string">'./prd/'</span><span class="token punctuation">,</span>
+            filename<span class="token punctuation">:</span> <span class="token string">'[name][ext]'</span>
+            chunkFilename<span class="token punctuation">:</span> <span class="token string">'[id].chunk.js'</span><span class="token punctuation">,</span>
+            publicPath<span class="token punctuation">:</span> <span class="token string">'//'</span> <span class="token operator">+</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'q.qunarzz.com'</span><span class="token punctuation">,</span> projectDir<span class="token punctuation">,</span> <span class="token string">'prd/'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        dev<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            path<span class="token punctuation">:</span> <span class="token string">'dev'</span><span class="token punctuation">,</span>
+            filename<span class="token punctuation">:</span> <span class="token string">'[name]@dev[ext]'</span><span class="token punctuation">,</span>
+            chunkFilename<span class="token punctuation">:</span> <span class="token string">'[id].chunk@dev.js'</span><span class="token punctuation">,</span>
+            publicPath<span class="token punctuation">:</span> <span class="token string">'//'</span> <span class="token operator">+</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'q.qunarzz.com'</span><span class="token punctuation">,</span> projectDir<span class="token punctuation">,</span> <span class="token string">'dev/'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        prd<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            path<span class="token punctuation">:</span> <span class="token string">'prd'</span><span class="token punctuation">,</span>
+            filename<span class="token punctuation">:</span> <span class="token string">'[name]@[chunkhash][ext]'</span><span class="token punctuation">,</span>
+            chunkFilename<span class="token punctuation">:</span> <span class="token string">'[id].chunk@[chunkhash].js'</span><span class="token punctuation">,</span>
+            publicPath<span class="token punctuation">:</span> <span class="token string">'//'</span> <span class="token operator">+</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'q.qunarzz.com'</span><span class="token punctuation">,</span> projectDir<span class="token punctuation">,</span> <span class="token string">'prd/'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        loaders<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+            <span class="token punctuation">{</span>
+                test<span class="token punctuation">:</span> <span class="token regex">/\.less$/</span><span class="token punctuation">,</span>
+                loader<span class="token punctuation">:</span> ExtractTextPlugin<span class="token punctuation">.</span><span class="token function">extract</span><span class="token punctuation">(</span>
+                    require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'style-loader'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'css-loader'</span><span class="token punctuation">)</span>
+                        <span class="token operator">+</span> <span class="token string">'?sourceMap!'</span>
+                        <span class="token operator">+</span> require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'less-loader'</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'?sourceMap'</span>
+                <span class="token punctuation">)</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span>
+                test<span class="token punctuation">:</span> <span class="token regex">/\.(sass|scss)$/</span><span class="token punctuation">,</span>
+                loader<span class="token punctuation">:</span> ExtractTextPlugin<span class="token punctuation">.</span><span class="token function">extract</span><span class="token punctuation">(</span>
+                    require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'style-loader'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'css-loader'</span><span class="token punctuation">)</span>
+                        <span class="token operator">+</span> <span class="token string">'?sourceMap!'</span>
+                        <span class="token operator">+</span> sysPath<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./loaders/sass.js'</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'?sourceMap'</span>
+                <span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    resolve<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        extensions<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>resolve<span class="token punctuation">.</span>extensions<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'.less'</span><span class="token punctuation">,</span> <span class="token string">'.sass'</span><span class="token punctuation">,</span> <span class="token string">'.scss'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
+              </div>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+
+    
+       <div class="open-panel"></div>
+    
+    
+
+    <script src="source/main.js"></script>
+    <script src="source/app.js"></script>
+    
+    
+
+    
+
+    
+    
+
+</body>
+</html>

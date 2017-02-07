@@ -63,6 +63,8 @@
     "url": "http://gitlab.corp.qunar.com/mfe/ykit.git"
   },
   "devDependencies": {
+    "@qnpm/ykit-config-fekit": "latest",
+    "@qnpm/ykit-config-qunar": "^0.3.10",
     "babel-preset-es2015": "^6.9.0",
     "chai": "^3.5.0",
     "conventional-changelog-cli": "^1.2.0",
@@ -75,7 +77,8 @@
     "mocha": "^3.1.2",
     "ps-tree": "^1.1.0",
     "semver-regex": "^1.0.0",
-    "ydoc": "latest"
+    "ydoc": "latest",
+    "ykit-config-yo": "^1.1.9"
   },
   "config": {
     "ghooks": {
@@ -97,7 +100,7 @@
       "warnOnFail": false,
       "maxSubjectLength": 100,
       "subjectPattern": ".+",
-      "subjectPatternErrorMsg": "subject does not match111 subject pattern!",
+      "subjectPatternErrorMsg": "subject does not match subject pattern!",
       "helpMessage": ""
     }
   }

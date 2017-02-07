@@ -83,7 +83,6 @@ class Project {
                     webpack: webpack
                 };
 
-
             this.options = options = options || {};
             options.ExtractTextPlugin = ExtractTextPlugin;
 

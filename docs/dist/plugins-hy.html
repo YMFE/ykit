@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
   <meta name="description" content="description of your site">
   <meta name="author" content="author of the site">
-  <title>YKit 使用手册</title>
+  <title>YKit 插件</title>
   <link rel="stylesheet" href="source/main.css"/>
   
   
@@ -16,7 +16,7 @@
     
   
 </head>
-<body class=docs-发布 >
+<body class=plugins-ykit-conifg-hy >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -34,13 +34,13 @@
                         
                     </li>
                     
-                    <li class="active">
+                    <li class="">
                         
                         <a href="docs.html">使用手册</a>
                         
                     </li>
                     
-                    <li class="">
+                    <li class="active">
                         
                         <a href="plugins.html">插件</a>
                         
@@ -72,7 +72,7 @@
           <div class="ydoc-banner">
               <div class="ydoc-banner-area">
                   <h1>Ykit</h1>
-                  <p>User Manual</p>
+                  <p>Plugins</p>
               </div>
           </div>
       
@@ -89,70 +89,53 @@
                         <!-- <li  > -->
                         <li >
                             
-                            <a href="docs-起步.html">起步</a>
+                            <a href="plugins.html">简介</a>
                             
                         </li>
+                        
+                        
+                        
+                        <!-- <li   class="active" > -->
+                        <li >
+                            
+                            <a href="javascript:void(0);">插件列表</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        
+                        <ul class="nav docs-sidenav-extend"    style="display:block;" >
+                        
+                            <li >
+                                <a href="plugins-qunar.html">@qnpm/ykit-conifg-qunar</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-fekit.html">@qnpm/ykit-conifg-fekit</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li  class="active" >
+                                <a href="plugins-hy.html">ykit-conifg-hy</a>
+                            </li>
+                        
+                        </ul>
+                        
                         
                         
                         
                         <!-- <li  > -->
                         <li >
                             
-                            <a href="docs-配置.html">配置</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-命令行.html">命令行</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-代理工具.html">代理工具</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  class="active"   class="active" > -->
-                        <li  class="active" >
-                            
-                            <a href="docs-发布.html">发布</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-前后端版本号关联.html">前后端版本号关联</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-npm shrinkwrap.html">npm shrinkwrap</a>
-                            
-                        </li>
-                        
-                        
-                        
-                        <!-- <li  > -->
-                        <li >
-                            
-                            <a href="docs-Node.js API.html">Node.js API</a>
+                            <a href="How-to-write-a-plugin.html">如何编写一个插件？</a>
                             
                         </li>
                         
@@ -163,40 +146,41 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 发布 </h1>
-
-<h2 style="font-weight: normal"> 创建/编辑 Schema </h2>
-
-<p>进入<a href="http://wanshiwu.corp.qunar.com/schema/new">万事屋</a>创建/编辑 Schema，注意前端类型选择<code>非 fekit 编译</code>，其它按项目实际情况填写。</p>
-<p><img src="http://ww3.sinaimg.cn/large/6af705b8gw1f8v3wuuz2dj20o50dnmzn.jpg" width="650px;"></p>
-<h2 style="font-weight: normal"> 设置 build 参数 </h2>
-
-<p>点击进入编辑界面，首先设置 build_method 为 <code>ykit</code>。</p>
-<p><strong>注意：对于已经存在的 job，build_method 更改以后需要更新 job 才会生效（进入万事屋 <a href="http://wanshiwu.corp.qunar.com/job/search/edit">job 编辑菜单</a>，点击保存）。</strong></p>
-<p>将 <code>beta</code> 和 <code>prod</code> 标签下的 build_command 都设置为空即可。</p>
-<p><img src="http://oji8kngu4.bkt.clouddn.com/build_params_0118.png" width="650px;"></p>
-<p>后续字段按项目实际情况填写，如无特殊需求可不进行更改。</p>
-<h2 style="font-weight: normal"> 创建/编辑 Job </h2>
-
-<p>在万事屋的<a href="http://wanshiwu.corp.qunar.com/job/search/new">Job 菜单</a>中新建/编辑 Job。Ykit 对于 Job 并没有特殊的要求，按项目实际情况填写。</p>
-<h2 style="font-weight: normal"> Build 项目 </h2>
-
-<h3 style="font-weight: normal"> 添加 Job 的 devqa 权限 </h3>
-
-<p>首先，Job 创建后需要<a href="http://wanshiwu.corp.qunar.com/permission/job">手动添加 Job 的执行权限</a>才能在 Jenkins 中 Build，否则在 qdr 等平台无法执行 build 操作。</p>
-<h3 style="font-weight: normal"> Build 前检查（重要） </h3>
-
+                <h1 id="ykit-config-yo">ykit-config-yo</h1><p>为Hy2.0项目量身定制的构建方案和开发服务。包括：</p>
 <ul>
-<li><p>确保 pom.xml 里面的<code>artifactId</code>字段，已经从默认的<code>******</code>改为项目名称，并且当前分支不落后于 master。</p>
+<li>初始化基于 yo 的项目</li>
+<li>从js export中提取css/scss依赖并去重合并</li>
+<li>dll库的构建</li>
+<li>js/css的开发服务中间件</li>
+</ul>
+<h2 id="项目初始化">项目初始化</h2><p>在项目中安装本插件之后，即可通过<code>ykit setup</code>来构建项目。</p>
+<p><code>ykit init yo</code>命令会自动安装本插件并执行<code>ykit setup</code>。</p>
+<h2 id="scss/css编译方案">scss/css编译方案</h2><p>在webpack已经成为绝对主流的构建工具的情况下，使用js引用样式的好处也逐渐被大家接受。但是webpack
+的style loader在加载scss文件时会出现依赖重复的问题，另外，插入style标签来引入样式的方式相比传统的
+link标签，在性能和缓存上有一定的劣势。</p>
+<p>ykit-config-hy2的scss构建方案是完全手工编写的，没有依赖webpack的loader。它的工作原理是：</p>
+<ul>
+<li><ol>
+<li>使用scss-preloader移除js代码中所有的样式引用（并不会修改源文件）</li>
+</ol>
 </li>
-<li><p><strong>确保项目中不存在 node_modules。</strong> 由于 build 机器与本地的系统和 node 版本原因，有些 node_modules 包在 build 机器版本无法正常工作。因此请不要提交 node_modules，在 ykit 编译之前会进行模块安装。</p>
+<li><ol>
+<li>使用手工编写的scss-extract工具函数构建scss的依赖列表，并去重合并成一份完整的scss代码</li>
+</ol>
 </li>
-<li><p>确保项目中存在 npm-shrinkwrap，否则可能会造成编译结果与预期不符（详见 <a href="./docs-npm%20shrinkwrap.html">shrinkwrap 使用</a>）。</p>
+<li><ol>
+<li>使用node-sass编译合并后的scss到css，并输出css代码。</li>
+</ol>
 </li>
 </ul>
-<h3 style="font-weight: normal"> 开始 Build </h3>
-
-<p>在 Jenkins 刚刚创建的 Job 页面中，选择 Build with Parameters。如果是分支开发方式，需要在<code>tag_name</code>字段填写分支号，其它参数按项目需求填写即可。</p>
+<p>这套方案的优势在于scss-extract完全解决了依赖重复问题，使用者无需再关注复杂的scss模块之间的依赖关系。
+除此之外，使用这套方案构建出来的css会输出为文件的形式，可以直接使用link标签引入页面，这一点与使用了
+ExtractTextPlugin的结果类似。</p>
+<p>在开发时，这套方案并没有采取watch文件改动驱动的方式，而是直接根据请求全量编译scss，这样做使开发时的
+编译性能得到了提升。因为watch文件以后每次改动样式都会导致js+scss的全量编译，这是很不经济的。实际上，全量编译scss的时间只需要几百毫秒。</p>
+<h2 id="js构建方案">js构建方案</h2><p>js的构建方案仍然基于webpack实现。不同之处在于默认使用了动态链接库的性能优化方式。</p>
+<p>由于React和相关库体积巨大，因此每次改动以后compile所有模块非常缓慢，如果能够在编译时跳过这部分代码，就可以让编译速度提升数倍甚至十几倍。</p>
+<p>因此我们采取了使用动态链接库的方式，在init工程时，会自动创建好一个包括react,react-dom,babel-polyfill,fetch等等模块的lib.js包,无需再做其他工作。</p>
 
               </div>
           </div>

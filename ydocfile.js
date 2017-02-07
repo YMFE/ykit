@@ -48,9 +48,6 @@ module.exports = {
                 name: '命令行',
                 content: './docs/cli.md'
             }, {
-                name: '插件',
-                content: './docs/plugin.md'
-            }, {
                 name: '代理工具',
                 content: './docs/proxy.md'
             }, {
@@ -65,6 +62,48 @@ module.exports = {
             }, {
                 name: 'Node.js API',
                 content: './docs/api.md'
+            }]
+        }
+    }, {
+        name: 'plugins',
+        title: '插件',
+        compile: 'markdown',
+        banner: {
+            title: 'Ykit',
+            description: 'Plugins'
+        },
+        menuLevel: 2,
+        content: {
+            sidebar: true,
+            multi: true,
+            index: './docs/plugin.md',
+            compile: 'markdown',
+            menuLevel: 2,
+            pages: [{
+                name: '简介',
+                index: "plugins",
+                content: './docs/plugin.md'
+            }, {
+                name: '插件列表',
+            }, {
+                "name": "@qnpm\/ykit-conifg-qunar",
+                "index": "plugins-qunar",
+                "content": "./node_modules/@qnpm/ykit-config-qunar/README.md",
+                "sub": true
+            }, {
+                "name": "@qnpm\/ykit-conifg-fekit",
+                "index": "plugins-fekit",
+                "content": "./node_modules/@qnpm/ykit-config-fekit/README.md",
+                "sub": true
+            }, {
+                "name": "ykit-conifg-hy",
+                "index": "plugins-hy",
+                "content": "./node_modules/ykit-config-yo/README.md",
+                "sub": true
+            }, {
+                name: '如何编写一个插件？',
+                index: "How-to-write-a-plugin",
+                content: './docs/plugin_custom.md'
             }]
         }
     }, {
