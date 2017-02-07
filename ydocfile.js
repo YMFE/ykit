@@ -101,9 +101,9 @@ module.exports = {
                 "content": "./node_modules/ykit-config-yo/README.md",
                 "sub": true
             }, {
-                name: '如何编写一个插件？',
+                name: '如何写一个插件',
                 index: "How-to-write-a-plugin",
-                content: './docs/plugin_custom.md'
+                content: './docs/How-to-write-a-plugin.md'
             }]
         }
     }, {
