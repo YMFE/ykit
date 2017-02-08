@@ -49,17 +49,17 @@ class Project {
     }
 
     setCommands(nextCommands) {
-        // 检查是否有重复的命令
-        const existCommands = this.commands.map((cmd) => {
-            return cmd.name;
-        });
-        nextCommands.forEach((cmd) => {
-            if(existCommands.indexOf(cmd.name) > -1) {
-                warn(`命令 ${cmd.name} 已经存在，可能会造成冲突。\n`);
-            }
-        });
-
         if (Array.isArray(nextCommands)) {
+            // 检查是否有重复的命令
+            const existCommands = this.commands.map((cmd) => {
+                return cmd.name;
+            });
+            nextCommands.forEach((cmd) => {
+                if(existCommands.indexOf(cmd.name) > -1) {
+                    warn(`命令 ${cmd.name} 已经存在，可能会造成冲突。\n`);
+                }
+            });
+
             this.commands = this.commands.concat(nextCommands);
         }
     }
