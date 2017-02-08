@@ -23,10 +23,10 @@ gulp.task('compileJS', [], function() {
 })
 
 gulp.task('moveConfig', [], function() {
-    return watch('src/config/**/*.*', {
+    return watch(['src/config/**/*.*', 'src/config/**/.*'], {
         verbose: true,
         ignoreInitial: false
     }, () => {
-        gulp.src('src/config/**/*.*', {base: 'src/'}).pipe(gulp.dest('lib'));
+        gulp.src(['src/config/**/*.*', 'src/config/**/.*'], {base: 'src/'}).pipe(gulp.dest('lib'));
     })
 });
