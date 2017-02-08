@@ -16,7 +16,7 @@
     
   
 </head>
-<body class=plugins-如何写一个插件 >
+<body class=plugins-如何编写一个插件 >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -124,7 +124,7 @@
                         
                         
                             <li >
-                                <a href="plugins-hy.html">ykit-conifg-hy</a>
+                                <a href="plugins-yo.html">ykit-conifg-yo</a>
                             </li>
                         
                         </ul>
@@ -135,7 +135,7 @@
                         <!-- <li  class="active"   class="active" > -->
                         <li  class="active" >
                             
-                            <a href="How-to-write-a-plugin.html">如何写一个插件</a>
+                            <a href="How-to-write-a-plugin.html">如何编写一个插件</a>
                             
                         </li>
                         
@@ -146,7 +146,7 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h2 id="创建一个插件">创建一个插件</h2><p>每一个插件都是一个 npm 模块，命名规则为 <code>ykit-config-&lt;name&gt;</code>，比如 <code>ykit-config-yo</code>。</p>
+                <h2 id="创建插件">创建插件</h2><p>每一个插件都是一个 npm 模块，命名规则为 <code>ykit-config-&lt;name&gt;</code>，比如 <code>ykit-config-yo</code>。</p>
 <p>最简单的方法是 fork 一份 <a href="http://gitlab.corp.qunar.com/mfe/ykit-config-seed">ykit-config-seed</a>，根据需求在 <code>index.js</code> 中添加自己的内容。</p>
 <h3 id="配置">配置</h3><p>从插件中可以修改 Webapck 配置，配置的优先级关系是 <code>项目配置 &gt; 插件配置 &gt; ykit基础配置</code>。</p>
 <p>在 <code>index.js</code> 的配置函数中，我们可以通过 <code>this.config</code> 获取到当前 webpack 配置，并对其进行修改。</p>
@@ -195,6 +195,17 @@
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>添加过后，在每个安装了该插件的项目中，就可以执行 <code>ykit &lt;command_name&gt;</code> 命令了。</p>
+<h3 id="继承">继承</h3><p>插件之间可以继承。如果想包含某个别的插件的配置和功能，可以直接将其继承过来。</p>
+<pre><code class="lang-javascript"><span class="token keyword">var</span> qunarConfig <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@qnpm/ykit-config-qunar'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+exports<span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>options<span class="token punctuation">,</span> cwd<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 继承 @qnpm/ykit-config-qunar</span>
+    qunarConfig<span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> options<span class="token punctuation">,</span> cwd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 后续自身的配置可以覆盖之前的</span>
+    <span class="token comment" spellcheck="true">// ...</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
 <h2 id="发布插件">发布插件</h2><p>编辑 <code>package.json</code> 中的模块名称、版本号等信息，执行 <code>npm publish</code> 即可。</p>
 <p>如果想加入官方插件请联系 <code>yuhao.ju</code>。</p>
 

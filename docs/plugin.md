@@ -1,12 +1,12 @@
-<h2 style="font-weight: normal"> 什么是插件？ </h2>
+## 插件
 
 简单来说，**ykit 插件是对一类配置和功能的封装**。它可以包含 Webpack 配置和插件、脚手架、第三方 npm 模块、自定义命令、构建钩子、lint 规则等等。
 
 通过安装插件开发者可以获取到这些配置和功能来快速搭建开发环境。
 
-<h2 style="font-weight: normal"> 插件安装 </h2>
+## 插件安装
 
-<h3 style="font-weight: normal"> 安装 npm 包 </h3>
+### 安装 npm 包
 
 插件命名格式均为`ykit-config-{插件名}`，通过以下命令在项目中安装插件：
 
@@ -20,7 +20,7 @@ $ npm install ykit-config-{插件名} --save
 $ npm install @qnpm/ykit-config-{插件名} --save --registry http://registry.npm.corp.qunar.com/
 ```
 
-<h3 style="font-weight: normal"> 引入 </h3>
+### 引入
 
 注意安装之后此时插件还未生效，要更改 ykit 配置文件的名称来引入插件，命名规则为 `ykit.{插件名}.js`。
 

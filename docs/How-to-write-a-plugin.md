@@ -1,4 +1,4 @@
-## 创建一个插件
+## 创建插件
 
 每一个插件都是一个 npm 模块，命名规则为 `ykit-config-<name>`，比如 `ykit-config-yo`。
 
@@ -72,6 +72,22 @@ exports.config = function () {
 ```
 
 添加过后，在每个安装了该插件的项目中，就可以执行 `ykit <command_name>` 命令了。
+
+### 继承
+
+插件之间可以继承。如果想包含某个别的插件的配置和功能，可以直接将其继承过来。
+
+```javascript
+var qunarConfig = require('@qnpm/ykit-config-qunar');
+
+exports.config = function (options, cwd) {
+    // 继承 @qnpm/ykit-config-qunar
+    qunarConfig.config.call(this, options, cwd);
+
+    // 后续自身的配置可以覆盖之前的
+    // ...
+};
+```
 
 ## 发布插件
 

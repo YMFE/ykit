@@ -124,7 +124,7 @@
                         
                         
                             <li >
-                                <a href="plugins-hy.html">ykit-conifg-hy</a>
+                                <a href="plugins-yo.html">ykit-conifg-yo</a>
                             </li>
                         
                         </ul>
@@ -135,7 +135,7 @@
                         <!-- <li  > -->
                         <li >
                             
-                            <a href="How-to-write-a-plugin.html">如何写一个插件</a>
+                            <a href="How-to-write-a-plugin.html">如何编写一个插件</a>
                             
                         </li>
                         
@@ -146,29 +146,20 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h2 style="font-weight: normal"> Features </h2>
-
-<ul>
+                <h1 id="ykit-config-qunar">ykit-config-qunar</h1><h2 id="Features">Features</h2><ul>
 <li>支持资源入口从 <code>src</code> 到 <code>dev &amp; prd</code> 的映射。</li>
 <li>支持 <code>.scss/.sass./.less</code> 类型样式资源文件的编译处理，并将每个文件打包成同名 css。</li>
 <li>支持 <code>ykit sync</code> 命令，同步代码至开发机。</li>
 <li>支持资源分片（chunk) 异步加载。</li>
 </ul>
-<h2 style="font-weight: normal"> 安装 </h2>
-
-<p>将 ykit 配置文件的名称改为<code>ykit.qunar.js</code>，并在项目中执行：</p>
+<h2 id="安装">安装</h2><p>在项目中执行：</p>
 <pre><code>$ npm install @qnpm/ykit-config-qunar --save --registry http://registry.npm.corp.qunar.com/
-</code></pre><h2 style="font-weight: normal"> sync 命令 </h2>
-
-<p>sync 命令可将本地 <code>dev</code> 目录下代码上传至指定开发机，以便于联调测试。</p>
-<h3 style="font-weight: normal"> 前置条件 </h3>
-
-<p>执行 sync 命令之前要确保从本机可直连目标开发机，通过 ssh 命令可验证当前是否可直连，如：</p>
-<pre><code>ssh yuhao.ju@192.168.237.71
+</code></pre><p>为了使该插件生效，需要将 ykit 配置文件的名称改为<code>ykit.qunar.js</code>。</p>
+<h2 id="sync 命令">sync 命令</h2><p>sync 命令可将本地 <code>dev</code> 目录下代码上传至指定开发机，以便于联调测试。</p>
+<h3 id="前置条件">前置条件</h3><p>执行 sync 命令之前要确保从本机可直连目标开发机，通过 ssh 命令可验证当前是否可直连，如：</p>
+<pre><code>$ ssh yuhao.ju@192.168.237.71
 </code></pre><p>如果没有提示需要密码，而直接登陆至目标开发机，则代表当前已经直连成功。配置直连的方法可以参考<a href="http://qtown.corp.qunar.com/knowledge/detail_knowledge.html?albumId=811">该课程</a>的最后一节。</p>
-<h3 style="font-weight: normal"> 修改配置文件 </h3>
-
-<p>在 ykit 配置文件中，指定 sync 参数，如：</p>
+<h3 id="修改配置文件">修改配置文件</h3><p>在 ykit 配置文件中，指定 sync 参数，如：</p>
 <pre><code class="lang-javascript">exports<span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token punctuation">{</span>
         <span class="token keyword">export</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
@@ -185,14 +176,41 @@
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
-<h3 style="font-weight: normal"> 执行 sync </h3>
-
-<p>在项目中执行：</p>
+<h3 id="执行 sync">执行 sync</h3><p>在项目中执行：</p>
 <pre><code>$ ykit sync
 </code></pre><p>第一次 sync 时会要求输入 qunar user id (如 yuhao.ju)，之后就不必再输了。</p>
-<h2 style="font-weight: normal"> 插件配置详情 </h2>
-
-<pre><code class="lang-javascript"><span class="token punctuation">{</span>
+<h2 id="shrinkwrap 命令">shrinkwrap 命令</h2><p>shrinkwrap 命令是对 npm shrinkwrap 进行的一层封装。</p>
+<h3 id="什么是 npm shrinkwrap？">什么是 npm shrinkwrap？</h3><p>npm shrinkwrap 是 npm 包管理器的一项功能。可以按照当前项目 node_modules 目录内的安装包情况生成稳定的版本号描述。shrinkwrap 文件的结构类似以下这种形式：</p>
+<pre><code class="lang-json"><span class="token punctuation">{</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"A"</span><span class="token punctuation">,</span>
+  <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.1.0"</span><span class="token punctuation">,</span>
+  <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"B"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"B@^1.0.0"</span><span class="token punctuation">,</span>
+      <span class="token property">"resolved"</span><span class="token operator">:</span> <span class="token string">"https://registry.npmjs.org/B/-/B-1.0.1.tgz"</span><span class="token punctuation">,</span>
+      <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"C"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.1"</span><span class="token punctuation">,</span>
+          <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"org/C#v1.0.1"</span><span class="token punctuation">,</span>
+          <span class="token property">"resolved"</span><span class="token operator">:</span> <span class="token string">"git://github.com/org/C.git#v1.0.1"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="为什么需要它？">为什么需要它？</h3><p>在没有 shrinkwrap 的项目中，任意一个依赖包都可能在开发者不知情的情况下发生改动，进而引发线上故障。</p>
+<p>在一个 JavaScript 项目中，每次执行 <code>npm install</code>，最后生成的结果可能是不一样的。譬如说现在某个项目依赖了模块 A, 虽然我们可以为它指定一个固定的版本号，然而 A 所依赖的其它模块版本使用的是 npm semver 规则（semantic version，npm 模块依赖默认遵循的规则）。它并不严格规定版本，而是选择符合当前 semver 规则的最新版本进行安装。</p>
+<p>一个简单的例子：假如模块 A 中依赖了 B，并且在 A 的 package.json 中指定 B 的 semver 为 ~1.2.3，那么所有形式为 1.2.x 的版本都是符合规则的。当模块 B 更新了一个 1.2.x 的小版本后，项目在下次构建中就会获取到它。</p>
+<p>semver 这样设计的初衷是使模块的开发者可以将 bugfix 等微小的改动能更便捷地到达使用方。但它的负面影响却是使每次 npm install 构建过程之间，项目内的模块内容随时可能发生改变。我们没法确定在每个模块内部，每一次小版本更新时究竟是加入了 bugfix，还是改变了 API，亦或是注入了恶意代码。</p>
+<p>为了保证线上构建的稳定性，建议为每个使用 npm 模块的项目添加 shrinkwrap。</p>
+<h3 id="什么时候执行 shrinkwrap 命令？">什么时候执行 shrinkwrap 命令？</h3><p>当项目中不存在 <code>npm-shrinkwrap.json</code> 时，执行该命令。</p>
+<pre><code>$ ykit shrinkwrap // 或使用命令简写 ykit sw
+</code></pre><p>另外插件会在每次 git commit 之前检查 <code>npm-shrinkwrap.json</code>，如果提示需要更新则代表当前 <code>npm-shrinkwrap.json</code> 中记录的模块信息和当前 <code>node_modules</code> 中的不一致，需要再次执行 shrinkwrap 命令进行更新。</p>
+<h3 id="错误处理">错误处理</h3><p>生成 <code>npm-shrinkwrap.json</code> 过程的中报错，大多是因为 package.json 和 node_modules 中模块版本不一致，按照提示的错误改正即可。</p>
+<p><img src="http://ww1.sinaimg.cn/large/6af705b8gw1fabnozkuojj20iw09g41u.jpg" alt="shrinkwrap 报错"></p>
+<h2 id="插件配置详情">插件配置详情</h2><pre><code class="lang-javascript"><span class="token punctuation">{</span>
     context<span class="token punctuation">:</span> <span class="token string">"./src"</span><span class="token punctuation">,</span>
     output<span class="token punctuation">:</span> <span class="token punctuation">{</span>
         local<span class="token punctuation">:</span> <span class="token punctuation">{</span>

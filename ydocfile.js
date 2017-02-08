@@ -56,12 +56,6 @@ module.exports = {
             }, {
                 name: '前后端版本号关联',
                 content: './docs/version.md'
-            }, {
-                name: 'npm shrinkwrap',
-                content: './docs/shrinkwrap.md'
-            }, {
-                name: 'Node.js API',
-                content: './docs/api.md'
             }]
         }
     }, {
@@ -96,12 +90,12 @@ module.exports = {
                 "content": "./node_modules/@qnpm/ykit-config-fekit/README.md",
                 "sub": true
             }, {
-                "name": "ykit-conifg-hy",
-                "index": "plugins-hy",
+                "name": "ykit-conifg-yo",
+                "index": "plugins-yo",
                 "content": "./node_modules/ykit-config-yo/README.md",
                 "sub": true
             }, {
-                name: '如何写一个插件',
+                name: '如何编写一个插件',
                 index: "How-to-write-a-plugin",
                 content: './docs/How-to-write-a-plugin.md'
             }]

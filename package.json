@@ -63,8 +63,8 @@
     "url": "http://gitlab.corp.qunar.com/mfe/ykit.git"
   },
   "devDependencies": {
-    "@qnpm/ykit-config-fekit": "latest",
-    "@qnpm/ykit-config-qunar": "^0.3.10",
+    "@qnpm/ykit-config-qunar": "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-qunar.git",
+    "@qnpm/ykit-config-fekit": "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-fekit.git#dev",
     "babel-preset-es2015": "^6.9.0",
     "chai": "^3.5.0",
     "conventional-changelog-cli": "^1.2.0",
@@ -78,11 +78,11 @@
     "ps-tree": "^1.1.0",
     "semver-regex": "^1.0.0",
     "ydoc": "latest",
-    "ykit-config-yo": "^1.1.9"
+    "ykit-config-yo": "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-yo.git#dev-v1.2.0"
   },
   "config": {
     "ghooks": {
-      "pre-commit": "eslint ./src",
+      "pre-commit": "node node_modules/ykit-config-yo/shrinkwrap/checker.js",
       "commit-msg": "node ./tasks/validate-commit-msg.js"
     },
     "validate-commit-msg": {
