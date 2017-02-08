@@ -2248,13 +2248,13 @@ espree@^3.4.0:
     acorn "4.0.4"
     acorn-jsx "^3.0.0"
 
-esprima@*, esprima@~3.1.0:
-  version "3.1.2"
-  resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-3.1.2.tgz#954b5d19321ca436092fa90f06d6798531fe8184"
-
-esprima@^2.6.0, esprima@^2.7.1:
+esprima@*, esprima@^2.6.0, esprima@^2.7.1:
   version "2.7.3"
   resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
+
+esprima@~3.1.0:
+  version "3.1.2"
+  resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-3.1.2.tgz#954b5d19321ca436092fa90f06d6798531fe8184"
 
 esrecurse@^4.1.0:
   version "4.1.0"
@@ -6268,7 +6268,7 @@ yeast@0.1.2:
 
 "ykit-config-yo@git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-yo.git#dev-v1.2.0":
   version "1.1.9"
-  resolved "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-yo.git#7dfffe6cba09aff9ce0664f3ba15d9c3832150e7"
+  resolved "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-yo.git#9e0aed61e692a151e0f673c63cec226ced7f71f3"
   dependencies:
     babel-core "^6.10.4"
     babel-loader "^6.2.4"

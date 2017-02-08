@@ -161,6 +161,30 @@
 </code></pre><h2 id="dll 命令">dll 命令</h2><p>dll 命令是对编译流程的一个优化。</p>
 <p>由于 yo 依赖的库和组件很多，为了提升编译性能，我们通过 Webpack 的 DLLPlugin 将这些第三方模块打包成 <code>lib.js</code>，从而提升编译速度并更有效地利用客户端缓存。</p>
 <p>构建和发布时插件都会自动调用该命令生成 <code>lib.js</code>，只有我们手动改了库中包含的模块并希望立即生效时才需要手动调用 <code>ykit dll</code> 命令。具体说明详见 <a href="http://ued.qunar.com/hy2/yo/start-lib.html">Yo 官方文档-关于 lib.js</a>。</p>
+<p>另外你也可以调用 <code>ykit dll-min</code> 来生成 <code>production</code> 环境下的 <code>lib.js</code>。这种 <code>lib.js</code> 去除了 <code>React</code> 内部的冗余代码和警告，并且性能要比普通的 <code>lib.js</code>好。可以模拟线上环境App的真实性能。</p>
+<h2 id="配置 chunk">配置 chunk</h2><p>一般情况下不需要手动配置 chunk 的 <code>publicPath</code> 和 <code>chunkFilename</code>，如果有这种需求，可以通过如下配置实现：</p>
+<pre><code>{
+    modifyConfig: function(config) {
+        config.output.local.chunkFilename = &#39;[id].chunk.js&#39;;
+        config.output.local.publicPath = &#39;//&#39; + path.join(&#39;q.qunarzz.com&#39;, projectDir, &#39;prd/&#39;);
+        config.output.dev.chunkFilename = &#39;[id].chunk@dev.js&#39;;
+        config.output.dev.publicPath = &#39;//&#39; + path.join(&#39;q.qunarzz.com&#39;, projectDir, &#39;dev/&#39;);
+        config.output.prd.chunkFilename = &#39;[id].chunk@[chunkhash].js&#39;;
+        config.output.prd.publicPath = &#39;//&#39; + path.join(&#39;q.qunarzz.com&#39;, projectDir, &#39;prd/&#39;);
+    }
+}
+</code></pre><p>其中 <code>local</code>，<code>dev</code> 和 <code>prd</code> 分别对应着本地，开发机和线上环境。</p>
+<h2 id="配置lib.js">配置lib.js</h2><p>默认情况下 <code>lib.js</code> 中包含了 <code>React</code>，<code>ReactDOM</code>，<code>Babel-Polyfill</code>，<code>Yo-Router</code>四个依赖，如果你有更多的公用依赖需要打在 <code>lib.js</code> 中
+可以通过如下配置实现：</p>
+<pre><code>{
+    modifyConfig: function(config) {
+        config.getVendor = function(vendors) {
+            return vendors.concat(&#39;newLib&#39;);
+        }
+    }
+}
+</code></pre><p>其中参数 <code>vendors</code> 是原有的四个依赖，你可以向其中加入新的 <code>node_modules</code> 中的依赖，也可以加入业务模块，这时候你需要提供一个相对于 <code>src</code> 文件夹
+的路径。</p>
 <h2 id="插件配置详情">插件配置详情</h2><pre><code class="lang-javascript">{
     module: {
         loaders: this.config.module.loaders.concat([

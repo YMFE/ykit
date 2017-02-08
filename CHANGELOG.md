@@ -1,3 +1,19 @@
+<a name="0.2.6-rc2"></a>
+## [0.2.6-rc2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc1...0.2.6-rc2) (2017-02-08)
+
+
+### Bug Fixes
+
+* **server:** 修复因为权限降级无法操作 cache 文件 ([60c2305](http://gitlab.corp.qunar.com/mfe/ykit/commit/60c2305))
+
+
+### Features
+
+* **init:** 添加 .gitignore ([4e4c842](http://gitlab.corp.qunar.com/mfe/ykit/commit/4e4c842))
+* **pack:** 添加 beforePackCallbacks 回调 ([27198dd](http://gitlab.corp.qunar.com/mfe/ykit/commit/27198dd))
+
+
+
 <a name="0.2.6-rc1"></a>
 ## [0.2.6-rc1](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc0...0.2.6-rc1) (2017-01-23)
 
