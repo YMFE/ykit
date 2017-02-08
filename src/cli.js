@@ -26,8 +26,13 @@ let initOptions = (cmd) => {
 
 let cli = module.exports = {
     run: (option) => {
+        // 权限降级
+        if (process.env['SUDO_UID']) {
+            process.setuid(parseInt(process.env['SUDO_UID']));
+        }
+
         // 如果不存在全局配置文件，首先创建一个
-        if(!UtilFs.fileExists(YKIT_RC) && !process.env['SUDO_UID']) {
+        if(!UtilFs.fileExists(YKIT_RC)) {
             const initRc = {
                 /* eslint-disable */
                 "commands": [],

@@ -125,18 +125,6 @@ exports.run = (options) => {
         return next();
     });
 
-    function getProjectInfo(req) {
-        var url = req.url,
-            keys = url.split('/'),
-            projectName = keys[1],
-            projectCwd = sysPath.join(cwd, projectName);
-
-        return {
-            projectName: projectName,
-            projectCwd: projectCwd
-        };
-    }
-
     app.use(function (req, res, next) {
         try {
             const projectInfo = getProjectInfo(req);
@@ -327,8 +315,8 @@ exports.run = (options) => {
 
     app.use(serveIndex(cwd));
 
+    // 启动 http server 和 https server(如果有)
     let servers = [];
-
     servers.push(extend(http.createServer(app), { _port: port }));
     if (isHttps) {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
@@ -373,11 +361,6 @@ exports.run = (options) => {
         proxyProcess = child_process.fork(proxyPath);
     }
 
-    // 权限降级
-    if (process.env['SUDO_UID']) {
-        process.setuid(parseInt(process.env['SUDO_UID']));
-    }
-
     // exitHandler && catches ctrl+c event
     process.on('exit', exitHandler.bind(null));
     process.on('SIGINT', exitHandler.bind(null));
@@ -405,5 +388,17 @@ exports.run = (options) => {
                 UtilFs.deleteFolderRecursive(project.cachePath, true);
             });
         }
+    }
+
+    function getProjectInfo(req) {
+        var url = req.url,
+            keys = url.split('/'),
+            projectName = keys[1],
+            projectCwd = sysPath.join(cwd, projectName);
+
+        return {
+            projectName: projectName,
+            projectCwd: projectCwd
+        };
     }
 };
