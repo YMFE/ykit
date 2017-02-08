@@ -10,9 +10,8 @@
   <title>YKit 插件</title>
   <link rel="stylesheet" href="source/main.css"/>
   
-  
     
-        <link rel="stylesheet" href="./theme/ydoc.css"/>
+<link rel="stylesheet" href="./theme/ydoc.css"/>
     
   
 </head>
@@ -162,29 +161,30 @@
 </code></pre><h2 id="dll 命令">dll 命令</h2><p>dll 命令是对编译流程的一个优化。</p>
 <p>由于 yo 依赖的库和组件很多，为了提升编译性能，我们通过 Webpack 的 DLLPlugin 将这些第三方模块打包成 <code>lib.js</code>，从而提升编译速度并更有效地利用客户端缓存。</p>
 <p>构建和发布时插件都会自动调用该命令生成 <code>lib.js</code>，只有我们手动改了库中包含的模块并希望立即生效时才需要手动调用 <code>ykit dll</code> 命令。具体说明详见 <a href="http://ued.qunar.com/hy2/yo/start-lib.html">Yo 官方文档-关于 lib.js</a>。</p>
-<h2 id="插件配置详情">插件配置详情</h2><pre><code class="lang-javascript"><span class="token punctuation">{</span>
-    module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-        loaders<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
-            <span class="token punctuation">{</span>
-                test<span class="token punctuation">:</span> <span class="token regex">/\.js$/</span><span class="token punctuation">,</span>
-                exclude<span class="token punctuation">:</span> <span class="token regex">/(node_modules|bower_components)/</span><span class="token punctuation">,</span>
-                loaders<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'happypack/loader'</span><span class="token punctuation">]</span>
-            <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-                test<span class="token punctuation">:</span> <span class="token regex">/\.(scss|css)$/</span><span class="token punctuation">,</span>
-                loaders<span class="token punctuation">:</span> <span class="token punctuation">[</span>require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'./loader/empty-loader'</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    devtool<span class="token punctuation">:</span> <span class="token string">'source-map'</span><span class="token punctuation">,</span>
-    plugins<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span>concat<span class="token punctuation">[</span>
-        dllPlugin<span class="token punctuation">,</span>
-        envPlugin<span class="token punctuation">,</span>
-        happyPackPlugin<span class="token punctuation">,</span>
-    <span class="token punctuation">]</span>
-<span class="token punctuation">}</span>
+<h2 id="插件配置详情">插件配置详情</h2><pre><code class="lang-javascript">{
+    module: {
+        loaders: this.config.module.loaders.concat([
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                loaders: [&#39;happypack/loader&#39;]
+            }, {
+                test: /\.(scss|css)$/,
+                loaders: [require.resolve(&#39;./loader/empty-loader&#39;)]
+            }
+        ])
+    },
+    devtool: &#39;source-map&#39;,
+    plugins: this.config.plugins.concat[
+        dllPlugin,
+        envPlugin,
+        happyPackPlugin,
+    ]
+}
 </code></pre>
 
               </div>
+              <div class="open-panel"></div>
           </div>
           
         
@@ -199,11 +199,6 @@
       </footer>
     </div>
 
-    
-       <div class="open-panel"></div>
-    
-    
-
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -211,7 +206,6 @@
 
     
 
-    
     
 
 </body>

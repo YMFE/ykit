@@ -880,15 +880,7 @@ babel-plugin-transform-strict-mode@^6.18.0:
     babel-runtime "^6.0.0"
     babel-types "^6.18.0"
 
-babel-polyfill@^6.16.0:
-  version "6.16.0"
-  resolved "http://registry.npm.corp.qunar.com/babel-polyfill/download/babel-polyfill-6.16.0.tgz#2d45021df87e26a374b6d4d1a9c65964d17f2422"
-  dependencies:
-    babel-runtime "^6.9.1"
-    core-js "^2.4.0"
-    regenerator-runtime "^0.9.5"
-
-babel-polyfill@^6.20.0:
+babel-polyfill@^6.16.0, babel-polyfill@^6.20.0:
   version "6.22.0"
   resolved "http://registry.npm.corp.qunar.com/babel-polyfill/download/babel-polyfill-6.22.0.tgz#1ac99ebdcc6ba4db1e2618c387b2084a82154a3b"
   dependencies:
@@ -984,14 +976,7 @@ babel-register@^6.22.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@^6.0.0, babel-runtime@^6.11.6, babel-runtime@^6.9.0, babel-runtime@^6.9.1:
-  version "6.18.0"
-  resolved "http://registry.npm.corp.qunar.com/babel-runtime/download/babel-runtime-6.18.0.tgz#0f4177ffd98492ef13b9f823e9994a02584c9078"
-  dependencies:
-    core-js "^2.4.0"
-    regenerator-runtime "^0.9.5"
-
-babel-runtime@^6.2.0, babel-runtime@^6.22.0:
+babel-runtime@^6.0.0, babel-runtime@^6.11.6, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.9.0:
   version "6.22.0"
   resolved "http://registry.npm.corp.qunar.com/babel-runtime/download/babel-runtime-6.22.0.tgz#1cf8b4ac67c77a4ddb0db2ae1f74de52ac4ca611"
   dependencies:
@@ -1305,14 +1290,6 @@ cli-spinners@^0.3.0:
 cli-width@^2.0.0:
   version "2.1.0"
   resolved "http://registry.npm.corp.qunar.com/cli-width/download/cli-width-2.1.0.tgz#b234ca209b29ef66fc518d9b98d5847b00edf00a"
-
-clipboard@^1.5.5:
-  version "1.5.16"
-  resolved "http://registry.npm.corp.qunar.com/clipboard/download/clipboard-1.5.16.tgz#916d5e739b0064be61b0b48a535731ecaef3d367"
-  dependencies:
-    good-listener "^1.2.0"
-    select "^1.0.6"
-    tiny-emitter "^1.0.0"
 
 cliui@^2.1.0:
   version "2.1.0"
@@ -1936,10 +1913,6 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.corp.qunar.com/delayed-stream/download/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
 
-delegate@^3.1.1:
-  version "3.1.1"
-  resolved "http://registry.npm.corp.qunar.com/delegate/download/delegate-3.1.1.tgz#22a0e3ea8776c7f89e02d5950942ef9cdfd019cf"
-
 delegates@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.corp.qunar.com/delegates/download/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
@@ -2275,13 +2248,13 @@ espree@^3.4.0:
     acorn "4.0.4"
     acorn-jsx "^3.0.0"
 
-esprima@*, esprima@^2.6.0, esprima@^2.7.1:
-  version "2.7.3"
-  resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
-
-esprima@~3.1.0:
+esprima@*, esprima@~3.1.0:
   version "3.1.2"
   resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-3.1.2.tgz#954b5d19321ca436092fa90f06d6798531fe8184"
+
+esprima@^2.6.0, esprima@^2.7.1:
+  version "2.7.3"
+  resolved "http://registry.npm.corp.qunar.com/esprima/download/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
 
 esrecurse@^4.1.0:
   version "4.1.0"
@@ -2911,12 +2884,6 @@ glogg@^1.0.0:
   resolved "http://registry.npm.corp.qunar.com/glogg/download/glogg-1.0.0.tgz#7fe0f199f57ac906cf512feead8f90ee4a284fc5"
   dependencies:
     sparkles "^1.0.0"
-
-good-listener@^1.2.0:
-  version "1.2.1"
-  resolved "http://registry.npm.corp.qunar.com/good-listener/download/good-listener-1.2.1.tgz#4c5b4681a3e8c91b00f1cb12d89a23b32473547b"
-  dependencies:
-    delegate "^3.1.1"
 
 graceful-fs@^3.0.0:
   version "3.0.11"
@@ -3898,11 +3865,7 @@ lodash.words@^3.0.0:
   dependencies:
     lodash._root "^3.0.0"
 
-lodash@^4.0.0, lodash@^4.1.0, lodash@^4.15.0, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
-  version "4.17.2"
-  resolved "http://registry.npm.corp.qunar.com/lodash/download/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
-
-lodash@^4.17.4:
+lodash@^4.0.0, lodash@^4.1.0, lodash@^4.15.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.4"
   resolved "http://registry.npm.corp.qunar.com/lodash/download/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4849,12 +4812,6 @@ pretty-hrtime@^1.0.0:
   version "1.0.3"
   resolved "http://registry.npm.corp.qunar.com/pretty-hrtime/download/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
 
-prismjs@^1.6.0:
-  version "1.6.0"
-  resolved "http://registry.npm.corp.qunar.com/prismjs/download/prismjs-1.6.0.tgz#118d95fb7a66dba2272e343b345f5236659db365"
-  optionalDependencies:
-    clipboard "^1.5.5"
-
 private@^0.1.6, private@~0.1.5:
   version "0.1.6"
   resolved "http://registry.npm.corp.qunar.com/private/download/private-0.1.6.tgz#55c6a976d0f9bafb9924851350fe47b9b5fbb7c1"
@@ -5130,10 +5087,6 @@ regenerator-runtime@^0.10.0:
   version "0.10.1"
   resolved "http://registry.npm.corp.qunar.com/regenerator-runtime/download/regenerator-runtime-0.10.1.tgz#257f41961ce44558b18f7814af48c17559f9faeb"
 
-regenerator-runtime@^0.9.5:
-  version "0.9.6"
-  resolved "http://registry.npm.corp.qunar.com/regenerator-runtime/download/regenerator-runtime-0.9.6.tgz#d33eb95d0d2001a4be39659707c51b0cb71ce029"
-
 regex-cache@^0.4.2:
   version "0.4.3"
   resolved "http://registry.npm.corp.qunar.com/regex-cache/download/regex-cache-0.4.3.tgz#9b1a6c35d4d0dfcef5711ae651e8e9d3d7114145"
@@ -5321,10 +5274,6 @@ sass-graph@^2.1.1:
 sax@~1.2.1:
   version "1.2.1"
   resolved "http://registry.npm.corp.qunar.com/sax/download/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
-
-select@^1.0.6:
-  version "1.1.0"
-  resolved "http://registry.npm.corp.qunar.com/select/download/select-1.1.0.tgz#a6c520cd9ab919ad81c7d1a273e0452f504dd7a2"
 
 semver-regex@^1.0.0:
   version "1.0.0"
@@ -5852,10 +5801,6 @@ timers-browserify@^1.0.1:
   dependencies:
     process "~0.11.0"
 
-tiny-emitter@^1.0.0:
-  version "1.1.0"
-  resolved "http://registry.npm.corp.qunar.com/tiny-emitter/download/tiny-emitter-1.1.0.tgz#ab405a21ffed814a76c19739648093d70654fecb"
-
 to-array@0.1.4:
   version "0.1.4"
   resolved "http://registry.npm.corp.qunar.com/to-array/download/to-array-0.1.4.tgz#17e6c11f73dd4f3d74cda7a4ff3238e9ad9bf890"
@@ -6300,13 +6245,9 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
-ydoc-theme-ocean@0.0.1:
-  version "0.0.1"
-  resolved "http://registry.npm.corp.qunar.com/ydoc-theme-ocean/download/ydoc-theme-ocean-0.0.1.tgz#bd7b3de6e88c94f5185f43b1562ef9a99a87f13d"
-
-ydoc@latest:
-  version "3.0.0-beta3"
-  resolved "http://registry.npm.corp.qunar.com/ydoc/download/ydoc-3.0.0-beta3.tgz#eefb7386129e45fca12ee542ed068e3e95c254c7"
+ydoc@2.2.1:
+  version "2.2.1"
+  resolved "http://registry.npm.corp.qunar.com/ydoc/download/ydoc-2.2.1.tgz#47d268a537e64b0e9e161d9d3924001cc72171b4"
   dependencies:
     art-template "^3.0.3"
     atropa-jsformatter "^0.1.2"
@@ -6318,10 +6259,8 @@ ydoc@latest:
     marked "^0.3.5"
     mkdirp "^0.5.1"
     optimist "^0.6.1"
-    prismjs "^1.6.0"
     through2 "^2.0.1"
     watch "^0.17.1"
-    ydoc-theme-ocean "0.0.1"
 
 yeast@0.1.2:
   version "0.1.2"

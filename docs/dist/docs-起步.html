@@ -10,9 +10,8 @@
   <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/main.css"/>
   
-  
     
-        <link rel="stylesheet" href="./theme/ydoc.css"/>
+<link rel="stylesheet" href="./theme/ydoc.css"/>
     
   
 </head>
@@ -177,22 +176,23 @@
 <h2 style="font-weight: normal"> 配置 ykit.{type}.js </h2>
 
 <p>项目中的配置文件。其中 type 指的是当前项目环境的名称。比如 <code>ykit.js</code>（基础环境）、<code>ykit.yo.js</code> 或者 <code>ykit.qunar.js</code>。配置文件样例：</p>
-<pre><code class="lang-js">exports<span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 在本地服务请求时，会实现 /src -> /prd 目录的对应(类似 fekit)</span>
-        <span class="token comment" spellcheck="true">// 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果</span>
-        <span class="token keyword">export</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/index.js'</span><span class="token punctuation">,</span> <span class="token string">'./styles/index.scss'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<pre><code class="lang-js">exports.config = function() {
+    return {
+        // 在本地服务请求时，会实现 /src -&gt; /prd 目录的对应(类似 fekit)
+        // 比如请求 /prd/script/index.js，则会编译 /src/script/index.js 并返回编译结果
+        export: [&#39;./scripts/index.js&#39;, &#39;./styles/index.scss&#39;],
 
-        <span class="token comment" spellcheck="true">// 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改</span>
-        modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">return</span> baseConfig
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+        // 通过 modifyWebpackConfig 可以获取 ykit 基础的 webpack 配置（baseConfig）并进行修改
+        modifyWebpackConfig: function(baseConfig) {
+            // ...
+            return baseConfig
+        }
+    }
+};
 </code></pre>
 
               </div>
+              <div class="open-panel"></div>
           </div>
           
         
@@ -207,11 +207,6 @@
       </footer>
     </div>
 
-    
-       <div class="open-panel"></div>
-    
-    
-
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -219,7 +214,6 @@
 
     
 
-    
     
 
 </body>

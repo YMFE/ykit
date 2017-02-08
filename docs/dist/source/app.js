@@ -5,7 +5,7 @@ $(document).ready(function() {
     // 移动端导航
     var $openPanel = $('.open-panel');
     var $contentLeft = $('.content-left');
-    var $contentLeftWidth = $contentLeft.width() - 1;
+    var $body = $('body');
     var $ydoc = $('.ydoc');
     var isPanelHide = true;
     var winWidth = $(window).width();
@@ -42,25 +42,25 @@ $(document).ready(function() {
     }
     titles.sort(sortAsOffset('offsetTop'));
 
-    $openPanel.on('tap',function(){
+    $openPanel.on('click',function(event){
         if(isPanelHide){    // 点击弹出panel
             isPanelHide = false;
             $ydoc.addClass('hidden');
-            $openPanel.css({
-                 'transform':'translateX(-'+$contentLeftWidth+'px)'
-            })
-            $contentLeft.css({
-                 'transform':'translateX(-'+$contentLeftWidth+'px)'
-            })
+            $openPanel.animate({
+                right: '80%'
+            }, 400);
+            $contentLeft.animate({
+                right: '-1px'
+            }, 400);
         }else {     // 点击隐藏panel
             isPanelHide = true;
             $ydoc.removeClass('hidden');
-            $openPanel.css({
-                 'transform':'translateX(0px)'
-            })
-            $contentLeft.css({
-                 'transform':'translateX(0px)'
-            })
+            $openPanel.animate({
+                right: '5%'
+            }, 400);
+            $contentLeft.animate({
+                right: '-75%'
+            }, 400);
         }
         var scrollTop = $ydoc.scrollTop();
         // 遍历主页面的标题，找到当前窗口顶部的标题
@@ -79,10 +79,6 @@ $(document).ready(function() {
             }
         }
     });
-    $openPanel.on('touchstart',function(event){
-        event.preventDefault();
-        $openPanel.trigger('tap');
-    })
 
     $ydoc.removeClass('hidden');
     $ydoc.on('scroll', function(){
@@ -93,9 +89,9 @@ $(document).ready(function() {
         $ydoc.scrollTop(sessionStorage.offsetTop);
     }
     // $openPanel.trigger('click');
-    $('.content-right').on('touchstart',function(){
+    $('.content-right').on('click',function(){
         if(!isPanelHide){
-            $openPanel.trigger('tap');
+            $openPanel.trigger('click');
         }
     });
 
@@ -124,21 +120,21 @@ $(document).ready(function() {
         $(item).addClass('ydoc-example');
     });
 
-    // $('code').each(function(i, block) {
-    //     if (block.innerHTML.indexOf('\n') != -1) {
-    //         var pn = block.parentNode;
-    //         if (pn.tagName.toUpperCase() == 'PRE') {
-    //             try {
-    //                 hljs.highlightBlock(block);
-    //             } catch(e) {}
-    //         } else {
-    //             pn.innerHTML = '<pre><code>' + block.innerHTML + '</code></pre>';
-    //             try {
-    //                 hljs.highlightBlock(pn.childNodes[0].childNodes[0]);
-    //             } catch(e) {}
-    //         }
-    //     }
-    // });
+    $('code').each(function(i, block) {
+        if (block.innerHTML.indexOf('\n') != -1) {
+            var pn = block.parentNode;
+            if (pn.tagName.toUpperCase() == 'PRE') {
+                try {
+                    hljs.highlightBlock(block);
+                } catch(e) {}
+            } else {
+                pn.innerHTML = '<pre><code>' + block.innerHTML + '</code></pre>';
+                try {
+                    hljs.highlightBlock(pn.childNodes[0].childNodes[0]);
+                } catch(e) {}
+            }
+        }
+    });
 
 
     var winHeight = $(window).height() - 44,
@@ -195,7 +191,6 @@ $(document).ready(function() {
     // 退出全屏浏览器窗口大小改变，不触发resize
     $(window).on('resize', function(e){
         resizeSidebar();
-        $contentLeftWidth = $contentLeft.width() - 1;
     });
     function resizeSidebar(){
         var winHeight = $(window).height() - 44,
