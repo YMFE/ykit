@@ -19,6 +19,11 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = function (options) {
+    // 权限降级
+    if (process.env['SUDO_UID']) {
+        process.setuid(parseInt(process.env['SUDO_UID']));
+    }
+
     let min = options.m || options.min || false,
         lint = options.l || options.lint || false,
         clean = options.c || options.clean || true,

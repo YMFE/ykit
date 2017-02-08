@@ -32,6 +32,11 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = (options) => {
+    // 权限降级
+    if (process.env['SUDO_UID']) {
+        process.setuid(parseInt(process.env['SUDO_UID']));
+    }
+
     let app = connect(),
         cwd = options.cwd,
         verbose = options.v || options.verbose,
