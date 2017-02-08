@@ -25,6 +25,7 @@ class Project {
         this.config = new Config(cwd);
         this.commands = Manager.getCommands();
         this.middlewares = [];
+        this.beforePackCallbacks = [];
         this.packCallbacks = [];
         this.eslintConfig = require('../config/eslint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
@@ -85,7 +86,8 @@ class Project {
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
-                    applyBeforePack: this.config.applyBeforePack.bind(this.config),
+                    applyBeforePack: this.applyBeforePack.bind(this),
+                    beforePackCallbacks: this.beforePackCallbacks,
                     packCallbacks: this.packCallbacks,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
@@ -291,16 +293,18 @@ class Project {
         callback(null, !report.errorCount);
     }
 
+    applyBeforePack(nextBeforePackCB) {
+        if (typeof nextBeforePackCB === 'function') {
+            this.beforePackCallbacks.push(nextBeforePackCB)
+        } else if (Array.isArray(nextBeforePackCB)) {
+            this.beforePackCallbacks.concat(nextBeforePackCB)
+        }
+    }
+
     pack(opt, callback) {
         let self = this, packStartTime = Date.now(), config = this.config.getConfig();
 
         UtilFs.deleteFolderRecursive(this.cachePath);
-
-        if (!config.beforePack) {
-            config.beforePack = function(done) {
-                done();
-            };
-        }
 
         const compilerProcess = () => {
             // 打包前设置
@@ -471,23 +475,16 @@ class Project {
             });
         };
 
-        config.beforePack(
-            () => {
-                if (opt.lint) {
-                    async.series([callback => this.lint(callback)], (err, results) => {
-                        if (!err) {
-                            if (results[0] && results[1]) {
-                                compilerProcess();
-                            }
-                        } else {
-                            error(err.stack);
-                        }
-                    });
-                } else {
-                    compilerProcess();
-                }
-            },
-            opt
+        async.series(
+            this.beforePackCallbacks.map((beforePackItem) => {
+                return function(callback) {
+                    beforePackItem();
+                    callback(null);
+                };
+            }),
+            err => {
+                compilerProcess();
+            }
         );
 
         return this;
