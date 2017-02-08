@@ -35,12 +35,12 @@ module.exports = {
         content: {
             sidebar: true,
             multi: true,
-            index: './docs/getting_started.md',
+            index: './docs/getting-started.md',
             compile: 'markdown',
             menuLevel: 2,
             pages: [{
                 name: '起步',
-                content: './docs/getting_started.md'
+                content: './docs/getting-started.md'
             },{
                 name: '配置',
                 content: './docs/config.md'

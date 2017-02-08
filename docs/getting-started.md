@@ -2,8 +2,14 @@
 
 <h2 style="font-weight: normal"> 安装 Ykit </h2>
 
+```bash
+$ (sudo) npm install ykit -g
 ```
-(sudo) npm install ykit -g
+
+如果想体验最新的特性，也可以安装 rc 版本
+
+```bash
+$ (sudo) npm install ykit@rc -g
 ```
 
 <h2 style="font-weight: normal"> 初始化一个项目 </h2>
