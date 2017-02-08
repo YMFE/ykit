@@ -2,11 +2,13 @@
 
 <h2 style="font-weight: normal"> 安装 Ykit </h2>
 
+通过 npm 安装 ykit。
+
 ```bash
 $ (sudo) npm install ykit -g
 ```
 
-如果想体验最新的特性，也可以安装 rc 版本
+如果想体验最新的特性，也可以在安装时添加 rc tag 来获取提前预览版。
 
 ```bash
 $ (sudo) npm install ykit@rc -g
