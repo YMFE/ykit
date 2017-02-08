@@ -1,6 +1,7 @@
 module.exports = {
     name: 'Ykit',
     dest: './docs/dist',
+    "defaultGrammer": "bash",
     common: { // 通用配置，包括主页配置等
         title: 'YKit',
         footer: '&copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>',

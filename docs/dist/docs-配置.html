@@ -10,8 +10,9 @@
   <title>YKit 使用手册</title>
   <link rel="stylesheet" href="source/main.css"/>
   
+  
     
-<link rel="stylesheet" href="./theme/ydoc.css"/>
+        <link rel="stylesheet" href="./theme/ydoc.css"/>
     
   
 </head>
@@ -148,42 +149,42 @@
 
 <h2 style="font-weight: normal"> ykit.{type}.js 文件示例 </h2>
 
-<pre><code class="lang-js">exports.config = function() {
-    return {
-        export: [
-            // 项目资源入口
-            &#39;./scripts/index.js&#39;,
-            &#39;./styles/index.scss&#39;,
+<pre><code class="lang-js">exports<span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token keyword">export</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+            <span class="token comment" spellcheck="true">// 项目资源入口</span>
+            <span class="token string">'./scripts/index.js'</span><span class="token punctuation">,</span>
+            <span class="token string">'./styles/index.scss'</span><span class="token punctuation">,</span>
 
-            // 项目资源分组
-            {
-                name: &#39;common&#39;,
-                export: [
-                    &#39;./common_dir/util.js&#39;,
-                    &#39;./common_dir/common.css&#39;
-                ]
-            }
-        ],
-        modifyWebpackConfig: function(baseConfig) {
-            // 修改 webpack 编译配置
-            // ...
+            <span class="token comment" spellcheck="true">// 项目资源分组</span>
+            <span class="token punctuation">{</span>
+                name<span class="token punctuation">:</span> <span class="token string">'common'</span><span class="token punctuation">,</span>
+                <span class="token keyword">export</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+                    <span class="token string">'./common_dir/util.js'</span><span class="token punctuation">,</span>
+                    <span class="token string">'./common_dir/common.css'</span>
+                <span class="token punctuation">]</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 修改 webpack 编译配置</span>
+            <span class="token comment" spellcheck="true">// ...</span>
 
-            return baseConfig
-        },
-        sync: {
-            // sync到开发机配置
-            host: &quot;192.168.237.71&quot;,
-            path: &quot;/home/q/www/qunarzz.com/#_name&quot;
-        },
-        command: [{
-            name: &#39;#_name_cmd&#39;,
-            module: {
-                usage: &#39;项目自定义命令&#39;,
-                run: function() {}
-            }
-        }]
-    }
-};
+            <span class="token keyword">return</span> baseConfig
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        sync<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// sync到开发机配置</span>
+            host<span class="token punctuation">:</span> <span class="token string">"192.168.237.71"</span><span class="token punctuation">,</span>
+            path<span class="token punctuation">:</span> <span class="token string">"/home/q/www/qunarzz.com/#_name"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        command<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+            name<span class="token punctuation">:</span> <span class="token string">'#_name_cmd'</span><span class="token punctuation">,</span>
+            module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                usage<span class="token punctuation">:</span> <span class="token string">'项目自定义命令'</span><span class="token punctuation">,</span>
+                run<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <h2 style="font-weight: normal"> 配置项 </h2>
 
@@ -199,41 +200,41 @@
 <ul>
 <li>示例 - 添加 plugins：</li>
 </ul>
-<pre><code class="lang-js">var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack;
-        var newPlugin = new webpack.DefinePlugin({
-            &quot;process.env&quot;: {
-                NODE_ENV: JSON.stringify(&quot;production&quot;)
-            }
-        })
+<pre><code class="lang-js"><span class="token keyword">var</span> self <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token punctuation">,</span>
+    modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> webpack <span class="token operator">=</span> self<span class="token punctuation">.</span>webpack<span class="token punctuation">;</span>
+        <span class="token keyword">var</span> newPlugin <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">webpack<span class="token punctuation">.</span>DefinePlugin</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token string">"process.env"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                NODE_ENV<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token string">"production"</span><span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-        baseConfig.plugins.push(newPlugin);
-        return baseConfig;
-    }
-}
+        baseConfig<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>newPlugin<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> baseConfig<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <ul>
 <li>示例 - 修改 output：</li>
 </ul>
-<pre><code class="lang-js">modifyWebpackConfig: function(baseConfig) {
-    baseConfig.output: {
-        /**
+<pre><code class="lang-js">modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    baseConfig<span class="token punctuation">.</span>output<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
          * output 是 webpack 中对于编译结果的配置
          * 在 ykit 中，根据每个环境(local / dev / prd)有特定的编译结果配置
          * 可以对特定环境下的 output 进行修改或重置
-         */
+         */</span>
 
-        local: {
-            // 重置本地 server 环境下配置
-        },
-        dev: baseConfig.output.dev, // 沿用 dev 环境下配置
-        prd: baseConfig.output.prd  // 沿用 prd 环境下配置
-    }
-    return baseConfig;
-}
+        local<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 重置本地 server 环境下配置</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        dev<span class="token punctuation">:</span> baseConfig<span class="token punctuation">.</span>output<span class="token punctuation">.</span>dev<span class="token punctuation">,</span> <span class="token comment" spellcheck="true">// 沿用 dev 环境下配置</span>
+        prd<span class="token punctuation">:</span> baseConfig<span class="token punctuation">.</span>output<span class="token punctuation">.</span>prd  <span class="token comment" spellcheck="true">// 沿用 prd 环境下配置</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> baseConfig<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h2 style="font-weight: normal"> 配置函数上下文 </h2>
 
@@ -241,43 +242,42 @@ return {
 <ul>
 <li>env: 当前 ykit 的执行环境，分为 <code>local / dev / prd</code>，示例：</li>
 </ul>
-<pre><code class="lang-js">var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        switch (self.env) {
-            case &#39;local&#39;:
-                // 修改本地环境配置，在 ykit server 中访问项目会生效
-                break;
-            case &#39;dev&#39;:
-                // 修改开发环境配置，在 ykit pack 时生效
-                break;
-            case &#39;prd&#39;:
-                // 修改生产环境配置，在 ykit pack -m 时生效
-                break;
-            default:
-        }
+<pre><code class="lang-js"><span class="token keyword">var</span> self <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token punctuation">,</span>
+    modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span>env<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">case</span> <span class="token string">'local'</span><span class="token punctuation">:</span>
+                <span class="token comment" spellcheck="true">// 修改本地环境配置，在 ykit server 中访问项目会生效</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'dev'</span><span class="token punctuation">:</span>
+                <span class="token comment" spellcheck="true">// 修改开发环境配置，在 ykit pack 时生效</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'prd'</span><span class="token punctuation">:</span>
+                <span class="token comment" spellcheck="true">// 修改生产环境配置，在 ykit pack -m 时生效</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token punctuation">:</span>
+        <span class="token punctuation">}</span>
 
-        return baseConfig;
-    }
-}
+        <span class="token keyword">return</span> baseConfig<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <ul>
 <li>webpack: 当前 ykit 内部 webapck，示例：</li>
 </ul>
-<pre><code class="lang-js">var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack;
-        // 调用 webpack 内部插件等
-        return baseConfig;
-    }
-}
+<pre><code class="lang-js"><span class="token keyword">var</span> self <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token punctuation">,</span>
+    modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> webpack <span class="token operator">=</span> self<span class="token punctuation">.</span>webpack<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 调用 webpack 内部插件等</span>
+        <span class="token keyword">return</span> baseConfig<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 
               </div>
-              <div class="open-panel"></div>
           </div>
           
         
@@ -292,6 +292,11 @@ return {
       </footer>
     </div>
 
+    
+       <div class="open-panel"></div>
+    
+    
+
     <script src="source/main.js"></script>
     <script src="source/app.js"></script>
     
@@ -299,6 +304,7 @@ return {
 
     
 
+    
     
 
 </body>
