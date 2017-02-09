@@ -1,3 +1,21 @@
+<a name="0.2.6-rc3"></a>
+## [0.2.6-rc3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc2...0.2.6-rc3) (2017-02-09)
+
+
+### Bug Fixes
+
+* **pack:** 检查是否存在 ExtractTextPlugin，防止重复设置 ([c3b9ab5](http://gitlab.corp.qunar.com/mfe/ykit/commit/c3b9ab5))
+* **server:** 修复无法更改 output.path 为非 prd 的形式 ([371fd62](http://gitlab.corp.qunar.com/mfe/ykit/commit/371fd62))
+
+
+### Features
+
+* **config:** 支持 module.exports 形式配置文件 ([9cebc62](http://gitlab.corp.qunar.com/mfe/ykit/commit/9cebc62))
+* **config:** 支持传入一个配置对象 ([0fb9888](http://gitlab.corp.qunar.com/mfe/ykit/commit/0fb9888))
+* **config:** 支持通过数组传入 plugin ([4d825b3](http://gitlab.corp.qunar.com/mfe/ykit/commit/4d825b3))
+
+
+
 <a name="0.2.6-rc2"></a>
 ## [0.2.6-rc2](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc1...0.2.6-rc2) (2017-02-08)
 
