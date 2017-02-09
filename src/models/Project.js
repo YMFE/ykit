@@ -148,37 +148,16 @@ class Project {
             this.ignores.push(Manager.loadIgnoreFile(this.cwd));
 
             if (configMethod) {
+                // 如果传入的是一个简单数组
                 if (Array.isArray(configMethod)) {
                     this.config.setExports(configMethod);
                 }
-                if (typeof configMethod.config == 'function') {
-                    const userConfigObj = configMethod.config.call(userConfig, options, this.cwd);
 
-                    if (userConfigObj) {
-                        let exports = null;
-                        if (Array.isArray(userConfigObj.export)) {
-                            exports = userConfigObj.export;
-                        } else if (Array.isArray(userConfigObj.exports)) {
-                            exports = userConfigObj.exports;
-                        }
-
-                        if (exports) {
-                            exports = exports.filter(item => {
-                                if (typeof item === 'object') {
-                                    this.config.setGroupExports(item.name, item.export);
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            });
-                        }
-
-                        extend(true, this.config, userConfigObj);
-                        this.config.setExports(exports);
-                        this.config.setCompiler(userConfigObj.modifyWebpackConfig);
-                        this.config.setSync(userConfigObj.sync);
-                        this.setCommands(userConfigObj.command);
-                    }
+                // 如果传入的是一个处理配置方法或对象
+                if (typeof configMethod.config === 'function') {
+                    handleConfigObj.bind(this)(configMethod.config.call(userConfig, options, this.cwd));
+                } else if(typeof configMethod.config === 'object') {
+                    handleConfigObj.bind(this)(configMethod.config)
                 } else {
                     error(
                         this.configFile +
@@ -186,6 +165,36 @@ class Project {
                             'http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html'.underline
                     );
                     return this;
+                }
+
+                function handleConfigObj(userConfigObj) {
+                    if(!userConfigObj) {
+                        return
+                    }
+
+                    let exports = null;
+                    if (Array.isArray(userConfigObj.export)) {
+                        exports = userConfigObj.export;
+                    } else if (Array.isArray(userConfigObj.exports)) {
+                        exports = userConfigObj.exports;
+                    }
+
+                    if (exports) {
+                        exports = exports.filter(item => {
+                            if (typeof item === 'object') {
+                                this.config.setGroupExports(item.name, item.export);
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        });
+                    }
+
+                    extend(true, this.config, userConfigObj);
+                    this.config.setExports(exports);
+                    this.config.setCompiler(userConfigObj.modifyWebpackConfig);
+                    this.config.setSync(userConfigObj.sync);
+                    this.setCommands(userConfigObj.command);
                 }
             }
 
