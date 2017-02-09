@@ -256,7 +256,14 @@ class Project {
                 fps.push(cacheFilePath);
             }
         }
-        config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
+
+        // 如果没有 ExtractTextPlugin 则添加进 Plugins
+        const isExtractTextPluginExists = config.plugins.some((plugin) => {
+            return plugin instanceof ExtractTextPlugin
+        })
+        if(!isExtractTextPluginExists) {
+            config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
+        }
     }
 
     lint(dir, callback) {
