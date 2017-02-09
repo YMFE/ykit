@@ -157,7 +157,7 @@ class Project {
                 if (typeof configMethod.config === 'function') {
                     handleConfigObj.bind(this)(configMethod.config.call(userConfig, options, this.cwd));
                 } else if(typeof configMethod.config === 'object') {
-                    handleConfigObj.bind(this)(configMethod.config)
+                    handleConfigObj.bind(this)(configMethod.config);
                 } else {
                     error(
                         this.configFile +
@@ -169,7 +169,7 @@ class Project {
 
                 function handleConfigObj(userConfigObj) {
                     if(!userConfigObj) {
-                        return
+                        return;
                     }
 
                     let exports = null;
@@ -269,7 +269,7 @@ class Project {
         // 如果没有 ExtractTextPlugin 则添加进 Plugins
         const isExtractTextPluginExists = config.plugins.some((plugin) => {
             return plugin instanceof ExtractTextPlugin;
-        })
+        });
         if(!isExtractTextPluginExists) {
             config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
         }
@@ -311,9 +311,9 @@ class Project {
 
     applyBeforePack(nextBeforePackCB) {
         if (typeof nextBeforePackCB === 'function') {
-            this.beforePackCallbacks.push(nextBeforePackCB)
+            this.beforePackCallbacks.push(nextBeforePackCB);
         } else if (Array.isArray(nextBeforePackCB)) {
-            this.beforePackCallbacks.concat(nextBeforePackCB)
+            this.beforePackCallbacks.concat(nextBeforePackCB);
         }
     }
 
