@@ -82,7 +82,7 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "node node_modules/ykit-config-yo/shrinkwrap/checker.js",
+      "pre-commit": "eslint ./src",
       "commit-msg": "node ./tasks/validate-commit-msg.js"
     },
     "validate-commit-msg": {
