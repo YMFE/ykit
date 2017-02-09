@@ -159,9 +159,11 @@ exports.run = (options) => {
         const projectInfo = getProjectInfo(req);
         const projectName = projectInfo.projectName;
         const projectCwd = projectInfo.projectCwd;
-        const outputDir = 'prd';
+        const project = Manager.getProject(projectCwd, { cache: false });
+        const outputDir = project.config._config.output.local.path || 'prd';
 
-        if(keys[2] !== outputDir) { // 非prd资源不做处理
+        // 非 output.path 下的资源不做处理
+        if(keys[2] !== sysPath.relative(projectCwd, outputDir)) {
             next();
             return;
         }
@@ -192,7 +194,6 @@ exports.run = (options) => {
             return;
         }
 
-        let project = Manager.getProject(projectCwd, { cache: false });
         let nextConfig;
         compiler = project.getServerCompiler(function (config) {
             nextConfig = extend({}, config);
