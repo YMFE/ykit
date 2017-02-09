@@ -102,13 +102,14 @@ class Project {
 
             // 获取项目配置中的插件
             const configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
+            const ykitConfigStartWith = 'ykit-config-';
             if(Array.isArray(configMethod.plugins)) {
                 this.plugins = configMethod.plugins;
             }
 
             // 通配置文件名获取插件
             if (this.extendConfig && this.extendConfig !== 'config') {
-                const pluginName = 'ykit-config-' + this.extendConfig;
+                const pluginName = ykitConfigStartWith + this.extendConfig;
                 if(this.plugins.indexOf(pluginName) === -1 && this.plugins.indexOf('@qnpm/' + pluginName) === -1) {
                     this.plugins.push(pluginName);
                 }
@@ -116,6 +117,10 @@ class Project {
 
             // 通过插件扩展配置
             this.plugins.map((pluginName) => {
+                if(pluginName.indexOf(ykitConfigStartWith) === -1) {
+                    pluginName = ykitConfigStartWith + pluginName;
+                }
+
                 const localSearchPath = sysPath.join(this.cwd, 'node_modules/', pluginName);
                 const localSearchPathQnpm = sysPath.join(
                     this.cwd,
@@ -154,9 +159,7 @@ class Project {
                             module.config.call(userConfig, options, this.cwd);
                         }
                     } else {
-                        if (this.extendConfig) {
-                            warn('没有找到 ykit-config-' + this.extendConfig + ' 配置插件.');
-                        }
+                        warn('没有找到 ' + pluginName + ' 配置插件.');
                     }
                 }
             });
@@ -211,7 +214,7 @@ class Project {
                     this.config.setExports(exports);
                     this.config.setCompiler(userConfigObj.modifyWebpackConfig);
                     this.config.setSync(userConfigObj.sync);
-                    this.setCommands(userConfigObj.command);
+                    this.setCommands(configMethod.commands || userConfigObj.command); // 后者兼容以前形式
                 }
             }
 
