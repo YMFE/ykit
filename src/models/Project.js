@@ -22,6 +22,7 @@ const ENVS = {
 class Project {
     constructor(cwd) {
         this.cwd = cwd;
+        this.plugins = [];
         this.config = new Config(cwd);
         this.commands = Manager.getCommands();
         this.middlewares = [];
@@ -95,37 +96,54 @@ class Project {
                     webpack: webpack
                 };
 
+            // 从基础配置往下传给 plugins 和项目配置的 options
             this.options = options = options || {};
             options.ExtractTextPlugin = ExtractTextPlugin;
 
-            if (this.extendConfig != 'config') {
-                let moduleName = 'ykit-config-' + this.extendConfig, modulePath = '';
+            // 获取项目配置中的插件
+            const configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
+            if(Array.isArray(configMethod.plugins)) {
+                this.plugins = configMethod.plugins;
+            }
 
-                const localSearchPath = sysPath.join(this.cwd, 'node_modules/', moduleName);
+            // 通配置文件名获取插件
+            if (this.extendConfig && this.extendConfig !== 'config') {
+                const pluginName = 'ykit-config-' + this.extendConfig;
+                if(this.plugins.indexOf(pluginName) === -1 && this.plugins.indexOf('@qnpm/' + pluginName) === -1) {
+                    this.plugins.push(pluginName);
+                }
+            }
+
+            // 通过插件扩展配置
+            this.plugins.map((pluginName) => {
+                const localSearchPath = sysPath.join(this.cwd, 'node_modules/', pluginName);
                 const localSearchPathQnpm = sysPath.join(
                     this.cwd,
                     'node_modules/',
-                    '@qnpm/' + moduleName
+                    '@qnpm/' + pluginName
                 );
+                let pluginPath = '';
 
                 if (requireg.resolve(localSearchPath)) {
-                    modulePath = localSearchPath;
+                    pluginPath = localSearchPath;
                 } else if (requireg.resolve(localSearchPathQnpm)) {
-                    modulePath = localSearchPathQnpm;
-                    moduleName = '@qnpm/' + moduleName;
+                    pluginPath = localSearchPathQnpm;
+                    pluginName = '@qnpm/' + pluginName;
                 }
 
-                extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(modulePath));
-                this.ignores.push(Manager.loadIgnoreFile(modulePath));
-
-                if (fs.existsSync(modulePath)) {
-                    let module = require(modulePath);
+                if (fs.existsSync(pluginPath)) {
+                    let module = require(pluginPath);
 
                     if (module && module.config) {
                         module.config.call(userConfig, options, this.cwd);
                     }
+
+                    // 扩展 eslint 配置
+                    extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
+                    this.ignores.push(Manager.loadIgnoreFile(pluginPath));
                 } else {
-                    let item = globalConfigs.filter(item => item.name == moduleName)[0];
+                    // 寻找全局插件
+                    let item = globalConfigs.filter(item => item.name == pluginName)[0];
                     if (item) {
                         let module = require(item.path);
 
@@ -137,13 +155,12 @@ class Project {
                         }
                     } else {
                         if (this.extendConfig) {
-                            warn('没有找到 ykit-config-' + this.extendConfig + ' 配置模块！');
+                            warn('没有找到 ykit-config-' + this.extendConfig + ' 配置插件.');
                         }
                     }
                 }
-            }
+            });
 
-            let configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
             extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
             this.ignores.push(Manager.loadIgnoreFile(this.cwd));
 
