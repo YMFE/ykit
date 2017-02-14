@@ -461,8 +461,19 @@ class Project {
                     async.series(
                         self.packCallbacks.map(packCallback => {
                             return function(callback) {
-                                packCallback(opt, stats);
-                                callback(null);
+                                let isAsync = false;
+
+                                // 支持异步调用
+                                packCallback.bind({
+                                    async: function(){
+                                        isAsync = true;
+                                        return callback;
+                                    }
+                                })(opt, stats);
+
+                                if(!isAsync) {
+                                    callback(null);
+                                }
                             };
                         }),
                         err => {
@@ -516,8 +527,23 @@ class Project {
         async.series(
             this.beforePackCallbacks.map((beforePackItem) => {
                 return function(callback) {
-                    beforePackItem();
-                    callback(null);
+                    // 支持异步调用
+                    if(beforePackItem.length === 2) {
+                        // 支持旧的 beforePackCallbacks 形式
+                        beforePackItem(callback, opt);
+                    } else {
+                        let isAsync = false;
+                        beforePackItem.bind({
+                            async: function(){
+                                isAsync = true;
+                                return callback;
+                            }
+                        })(opt);
+
+                        if(!isAsync) {
+                            callback(null);
+                        }
+                    }
                 };
             }),
             err => {

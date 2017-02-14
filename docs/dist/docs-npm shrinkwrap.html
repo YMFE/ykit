@@ -16,7 +16,7 @@
     
   
 </head>
-<body class=docs >
+<body class=docs-npm shrinkwrap >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -140,8 +140,8 @@
                         
                         
                         
-                        <!-- <li  > -->
-                        <li >
+                        <!-- <li  class="active"   class="active" > -->
+                        <li  class="active" >
                             
                             <a href="docs-npm shrinkwrap.html">npm shrinkwrap</a>
                             
@@ -154,38 +154,37 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 id="起步">起步</h1><h2 id="安装 Ykit">安装 Ykit</h2><pre><code class="lang-bash">$ <span class="token punctuation">(</span>sudo<span class="token punctuation">)</span> <span class="token function">npm</span> <span class="token function">install</span> ykit -g
-</code></pre>
-<p>如果想体验最新的特性，也可以在安装时添加 rc tag 来获取提前预览版。</p>
-<pre><code class="lang-bash">$ <span class="token punctuation">(</span>sudo<span class="token punctuation">)</span> <span class="token function">npm</span> <span class="token function">install</span> ykit@rc -g
-</code></pre>
-<h2 id="初始化一个项目">初始化一个项目</h2><h3 id="Init">Init</h3><p>通过 init 命令可以快速搭建一个项目脚手架：</p>
-<ol>
-<li>创建一个项目目录。</li>
-<li>进入目录执行 <code>ykit init qunar</code> (这里以初始化 qunar 项目为例)。</li>
-</ol>
-<h3 id="Server">Server</h3><p>在项目目录外执行命令：</p>
-<pre><code>(sudo) ykit server // 或者使用缩写 ykit s
-</code></pre><p>访问 <code>localhost/&lt;项目目录&gt;/index.html</code> 即可。</p>
-<h2 id="配置">配置</h2><p>初始化完成后会在项目中生成一个 <code>ykit.js</code>，有类似下面的配置：</p>
-<pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-        <span class="token keyword">export</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/index.js'</span><span class="token punctuation">,</span> <span class="token string">'./styles/index.scss'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> baseConfig<span class="token punctuation">;</span>
+                <h1 id="npm shrinkwrap">npm shrinkwrap</h1><h2 id="什么是 npm shrinkwrap？">什么是 npm shrinkwrap？</h2><p>npm shrinkwrap 是 npm 包管理器的一项功能。可以按照当前项目 node_modules 目录内的安装包情况生成稳定的版本号描述。shrinkwrap 文件的结构类似以下这种形式：</p>
+<pre><code class="lang-json"><span class="token punctuation">{</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"A"</span><span class="token punctuation">,</span>
+  <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.1.0"</span><span class="token punctuation">,</span>
+  <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"B"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"B@^1.0.0"</span><span class="token punctuation">,</span>
+      <span class="token property">"resolved"</span><span class="token operator">:</span> <span class="token string">"https://registry.npmjs.org/B/-/B-1.0.1.tgz"</span><span class="token punctuation">,</span>
+      <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"C"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.1"</span><span class="token punctuation">,</span>
+          <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"org/C#v1.0.1"</span><span class="token punctuation">,</span>
+          <span class="token property">"resolved"</span><span class="token operator">:</span> <span class="token string">"git://github.com/org/C.git#v1.0.1"</span>
         <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
-<ul>
-<li><code>&quot;plugins&quot;</code> - 当前引入的插件。因为我们初始化的是 qunar 项目，所以会自动引入相应插件。根据需求还可以安装和引入更多插件。</li>
-<li><code>&quot;config&quot;</code> - 配置对象。主要包含两部分：<ul>
-<li><code>&quot;exports&quot;</code> - 资源的入口路径。在 Ykit 中，会实现 <code>output</code> 目录至 <code>source</code> 目录的对应（类似 FEkit）。比如当 Ykit 本地 server 接收到 <code>/prd/script/index.js</code> 的请求，则会编译 <code>/src/script/index.js</code> 并返回编译结果。</li>
-<li><code>&quot;modifyWebpackConfig&quot;</code> - 通过该函数可以对当前 Webpack 配置（<code>baseConfig</code>）进行修改。</li>
-</ul>
-</li>
-</ul>
+<h2 id="为什么需要它？">为什么需要它？</h2><p>在没有 shrinkwrap 的项目中，任意一个依赖包都可能在开发者不知情的情况下发生改动，进而引发线上故障。</p>
+<p>在一个 JavaScript 项目中，每次执行 <code>npm install</code>，最后生成的结果可能是不一样的。譬如说现在某个项目依赖了模块 A, 虽然我们可以为它指定一个固定的版本号，然而 A 所依赖的其它模块版本使用的是 npm semver 规则（semantic version，npm 模块依赖默认遵循的规则）。它并不严格规定版本，而是选择符合当前 semver 规则的最新版本进行安装。</p>
+<p>一个简单的例子：假如模块 A 中依赖了 B，并且在 A 的 package.json 中指定 B 的 semver 为 ~1.2.3，那么所有形式为 1.2.x 的版本都是符合规则的。当模块 B 更新了一个 1.2.x 的小版本后，项目在下次构建中就会获取到它。</p>
+<p>semver 这样设计的初衷是使模块的开发者可以将 bugfix 等微小的改动能更便捷地到达使用方。但它的负面影响却是使每次 npm install 构建过程之间，项目内的模块内容随时可能发生改变。我们没法确定在每个模块内部，每一次小版本更新时究竟是加入了 bugfix，还是改变了 API，亦或是注入了恶意代码。</p>
+<p>为了保证线上构建的稳定性，我们决定强制在每个 Ykit 的项目中添加 shrinkwrap。</p>
+<h2 style="font-weight: normal"> 业务需要做什么？ </h2>
+
+<p>Ykit 会在一个项目 commit 之前检查并更新 <code>npm-shrinkwrap.json</code>（如果没有则会生成一个），业务需要做的只是将这个文件提交，保持它是最新的即可。当然也可以执行<code>npm shrinkwrap</code> 来进行手动更新。</p>
+<h2 id="错误处理">错误处理</h2><p>生成 <code>npm-shrinkwrap.json</code> 过程的中报错，大多是因为 package.json 和 node_modules 中模块版本不一致（其实是不应该出现的），按照提示的错误改正即可。</p>
+<p><img src="http://ww1.sinaimg.cn/large/6af705b8gw1fabnozkuojj20iw09g41u.jpg" alt="shrinkwrap 报错"></p>
+<p>如果还有问题请 qtalk 联系 <code>yuhao.ju</code>。</p>
 
               </div>
           </div>
