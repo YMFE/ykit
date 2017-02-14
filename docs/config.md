@@ -1,6 +1,8 @@
-<h1 style="font-weight: normal"> 配置 </h1>
+# 配置
 
-<h2 style="font-weight: normal"> ykit.{type}.js 文件示例 </h2>
+Ykit 在每一个项目中只有一个单一的配置文件 `ykit.js`。通过该文件可以灵活地扩展和配置你的项目。
+
+## ykit.js 文件示例
 
 ```js
 exports.config = function() {
@@ -42,13 +44,13 @@ exports.config = function() {
 
 ```
 
-<h2 style="font-weight: normal"> 配置项 </h2>
+## 配置项
 
 - export - 设置资源入口。与 Fekit 相同，其中所有路径均默认相对于`src`目录，在**本地请求 / 打包阶段**，将会导出至 **prd / dev** 目录。同时也支持设置入口分组，打包时可针对分组进行打包。
 - sync - 设置同步开发机的配置，需要设置开发机的 IP，以及项目要存储的路径。
 - command - 设置项目自定义命令，在项目目录下执行`ykit {cmd}`即可运行。
 
-<h3 style="font-weight: normal"> modifyWebpackConfig </h3>
+### modifyWebpackConfig
 
 `modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 **[webpack-merge][2]**。
 
@@ -95,7 +97,7 @@ modifyWebpackConfig: function(baseConfig) {
 }
 ```
 
-<h2 style="font-weight: normal"> 配置函数上下文 </h2>
+## 配置函数上下文
 
 业务在 ykit.{type}.js 中的配置函数上下文可以获取到当前的环境信息。
 
