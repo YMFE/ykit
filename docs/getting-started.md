@@ -47,7 +47,7 @@ module.exports = {
 };
 ```
 
-- `"plugins"` - 当前引入的插件。因为我们初始化的是 qunar 项目，所以会自动引入相应插件。根据需求还可以安装和引入更多插件。
-- `"config"` - 配置对象。主要包含两部分：
-    - `"exports"` - 资源的入口路径。在 Ykit 中，会实现 `output` 目录至 `source` 目录的对应（类似 FEkit）。比如当 Ykit 本地 server 接收到 `/prd/script/index.js` 的请求，则会编译 `/src/script/index.js` 并返回编译结果。
-    - `"modifyWebpackConfig"` - 通过该函数可以对当前 Webpack 配置（`baseConfig`）进行修改。
+- **plugins** - 当前引入的插件。因为我们初始化的是 qunar 项目，所以会自动引入相应插件。根据需求还可以安装和引入更多插件。
+- **config** - 配置对象。主要包含两部分：
+    - **exports** - 资源的入口路径。
+    - **modifyWebpackConfig** - 通过该函数可以对当前 Webpack 配置（`baseConfig`）进行修改。

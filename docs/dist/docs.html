@@ -179,10 +179,10 @@
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <ul>
-<li><code>&quot;plugins&quot;</code> - 当前引入的插件。因为我们初始化的是 qunar 项目，所以会自动引入相应插件。根据需求还可以安装和引入更多插件。</li>
-<li><code>&quot;config&quot;</code> - 配置对象。主要包含两部分：<ul>
-<li><code>&quot;exports&quot;</code> - 资源的入口路径。在 Ykit 中，会实现 <code>output</code> 目录至 <code>source</code> 目录的对应（类似 FEkit）。比如当 Ykit 本地 server 接收到 <code>/prd/script/index.js</code> 的请求，则会编译 <code>/src/script/index.js</code> 并返回编译结果。</li>
-<li><code>&quot;modifyWebpackConfig&quot;</code> - 通过该函数可以对当前 Webpack 配置（<code>baseConfig</code>）进行修改。</li>
+<li><strong>plugins</strong> - 当前引入的插件。因为我们初始化的是 qunar 项目，所以会自动引入相应插件。根据需求还可以安装和引入更多插件。</li>
+<li><strong>config</strong> - 配置对象。主要包含两部分：<ul>
+<li><strong>exports</strong> - 资源的入口路径。</li>
+<li><strong>modifyWebpackConfig</strong> - 通过该函数可以对当前 Webpack 配置（<code>baseConfig</code>）进行修改。</li>
 </ul>
 </li>
 </ul>

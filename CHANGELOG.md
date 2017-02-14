@@ -1,3 +1,23 @@
+<a name="0.2.6-rc5"></a>
+## [0.2.6-rc5](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc4...0.2.6-rc5) (2017-02-14)
+
+
+### Features
+
+* **pack:**  pack 钩子支持同步和异步两种形式 ([043841b](http://gitlab.corp.qunar.com/mfe/ykit/commit/043841b))
+
+
+
+<a name="0.2.6-rc4"></a>
+## [0.2.6-rc4](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc3...0.2.6-rc4) (2017-02-10)
+
+
+### Bug Fixes
+
+* **server:** 修复因为权限降级无法使用 sudo ([d983ae9](http://gitlab.corp.qunar.com/mfe/ykit/commit/d983ae9))
+
+
+
 <a name="0.2.6-rc3"></a>
 ## [0.2.6-rc3](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc2...0.2.6-rc3) (2017-02-09)
 

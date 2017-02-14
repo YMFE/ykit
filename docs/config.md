@@ -1,144 +1,166 @@
 # 配置
 
-Ykit 在每一个项目中只有一个单一的配置文件 `ykit.js`。通过该文件可以灵活地扩展和配置你的项目。
+Ykit 在每一个项目中都有一个单一的配置文件 `ykit.js`。通过该文件可以灵活地扩展和配置你的项目。对于一般项目而言，有这些需要进行配置：
 
-## ykit.js 文件示例
+- **plugins** - 指定引入的插件列表。插件会扩展项目的配置、命令等，可以帮助快速搭建特定的开发环境。
+- **config** - 项目的配置对象，通过它可以操作资源入口和 Webpack 配置。
+- **commands** - 自定义命令，如构建、测试脚本等。
 
-```js
-exports.config = function() {
-    return {
-        export: [
-            // 项目资源入口
-            './scripts/index.js',
-            './styles/index.scss',
+## plugins 详述
 
-            // 项目资源分组
-            {
-                name: 'common',
-                export: [
-                    './common_dir/util.js',
-                    './common_dir/common.css'
-                ]
-            }
-        ],
-        modifyWebpackConfig: function(baseConfig) {
-            // 修改 webpack 编译配置
-            // ...
+Ykit 插件是对一类配置和功能的封装。每一个插件都是一个 NPM 模块，命名规则为 `ykit-config-<name>`，比如 `ykit-config-yo`。
 
-            return baseConfig
-        },
-        sync: {
-            // sync到开发机配置
-            host: "192.168.237.71",
-            path: "/home/q/www/qunarzz.com/#_name"
-        },
-        command: [{
-            name: '#_name_cmd',
-            module: {
-                usage: '项目自定义命令',
-                run: function() {}
-            }
-        }]
-    }
-};
+首先通过 NPM 安装相应插件：
 
 ```
+$ npm install --save ykit-config-yo
+```
 
-## 配置项
+之后配置 `ykit.js`，传入一个插件名的数组来引入插件。这些插件将在 Ykit 执行前加载进来。如果有相同的配置，后面的插件会覆盖前面的。
 
-- export - 设置资源入口。与 Fekit 相同，其中所有路径均默认相对于`src`目录，在**本地请求 / 打包阶段**，将会导出至 **prd / dev** 目录。同时也支持设置入口分组，打包时可针对分组进行打包。
-- sync - 设置同步开发机的配置，需要设置开发机的 IP，以及项目要存储的路径。
-- command - 设置项目自定义命令，在项目目录下执行`ykit {cmd}`即可运行。
+```javascript
+module.exports = {
+    plugins: ['yo', 'react']
+    // ...
+};
+```
+
+更多信息和插件列表详见 [Ykit 文档-插件][3]。
+
+## config 详述
+
+### exports
+
+通过该配置项可指定资源入口路径。
+
+```javascript
+module.exports = {
+    config: {
+        // 基于当前源代码目录，默认为 "src"
+        exports: [
+            './scripts/index.js', // 引入 <project_path>/src/scripts/index.js
+            './styles/index.scss' // 引入 <project_path>/src/styles/index.scss
+        ],
+    }
+    // ...
+};
+```
+
+在 Ykit 中，会实现打包目录（默认为 `prd`）至源目录（默认为 `src`）的对应。比如当 Ykit 本地 server 接收到 `/prd/script/index.js` 的请求，则会编译 `/src/script/index.js` 并返回编译结果。
 
 ### modifyWebpackConfig
 
-`modifyWebpackConfig`是一个可选的配置方法，来修改当前默认的 webpack 配置。比如添加新的 webpack 插件，修改某种类型文件的 loader 等等。如果涉及比较复杂的操作（如替换 loader），可使用 **[webpack-merge][2]**。
+通过该配置项，你可以传入一个函数对当前的 Webpack 配置（`baseConfig`）进行修改。
 
-*老版本的 ykit 项目中可能会有 setCompiler 方法，和 modifyWebpackConfig 功能是一样的*
+- 示例 - 添加 loaders：
+
+```javascript
+module.exports = {
+    config: {
+        modifyWebpackConfig: function(baseConfig) {
+            // 注意使用进行追加方法，而不要覆盖掉之前的
+            baseConfig.module.loaders = baseConfig.module.loaders.concat([
+                // 自定义 plugins...
+                {
+                    test: /\.mustache$/,
+                    loader: 'mustache'
+                }
+            ])
+            return baseConfig;
+        }
+    }
+};
+```
+
+- 示例 - 替换 loaders：
+
+如果是当前配置中已经存在 loader，则要进行替换操作：
+
+```javascript
+module.exports = {
+    config: {
+        modifyWebpackConfig: function(baseConfig) {
+            // 替换处理 scss 原有的 loader
+            baseConfig.module.loaders = baseConfig.module.loaders
+                .map(function (loader) {
+                    if (loader.test.toString().match(/scss/)) {
+                        return {
+                            test: /\.(sass|scss)$/,
+                            loader: 'style-loader!css-loader!sass-loader'
+                        };
+                    }
+                    return loader;
+                })
+
+            return baseConfig;
+        }
+    }
+};
+```
 
 - 示例 - 添加 plugins：
 
-```js
-var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack;
-        var newPlugin = new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify("production")
-            }
-        })
-
-        baseConfig.plugins.push(newPlugin);
-        return baseConfig;
-    }
-}
-```
-
-- 示例 - 修改 output：
-
-```js
-modifyWebpackConfig: function(baseConfig) {
-    baseConfig.output: {
-        /**
-         * output 是 webpack 中对于编译结果的配置
-         * 在 ykit 中，根据每个环境(local / dev / prd)有特定的编译结果配置
-         * 可以对特定环境下的 output 进行修改或重置
-         */
-
-        local: {
-            // 重置本地 server 环境下配置
-        },
-        dev: baseConfig.output.dev, // 沿用 dev 环境下配置
-        prd: baseConfig.output.prd  // 沿用 prd 环境下配置
-    }
-    return baseConfig;
-}
-```
-
-## 配置函数上下文
-
-业务在 ykit.{type}.js 中的配置函数上下文可以获取到当前的环境信息。
-
-- env: 当前 ykit 的执行环境，分为 `local / dev / prd`，示例：
-
-```js
-var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        switch (self.env) {
-            case 'local':
-                // 修改本地环境配置，在 ykit server 中访问项目会生效
-                break;
-            case 'dev':
-                // 修改开发环境配置，在 ykit pack 时生效
-                break;
-            case 'prd':
-                // 修改生产环境配置，在 ykit pack -m 时生效
-                break;
-            default:
+```javascript
+var myPlugin = require('myPlugin');
+module.exports = {
+    config: {
+        modifyWebpackConfig: function(baseConfig) {
+            baseConfig.plugins = baseConfig.plugins.concat([
+                myPlugin
+            ])
+            return baseConfig;
         }
-
-        return baseConfig;
     }
-}
+};
 ```
 
-- webpack: 当前 ykit 内部 webapck，示例：
+### modifyWebpackConfig 上下文
 
-```js
-var self = this;
-return {
-    ...,
-    modifyWebpackConfig: function(baseConfig) {
-        var webpack = self.webpack;
-        // 调用 webpack 内部插件等
-        return baseConfig;
+在 `modifyWebpackConfig` 函数中从 this 可以获取到以下属性。
+
+- webpack: 当前 ykit 内部 webapck 实例。
+
+```javascript
+module.exports = {
+    config: {
+        modifyWebpackConfig: function(baseConfig) {
+            baseConfig.plugins = baseConfig.plugins.concat([
+                // 通过 this.webpack 可获取到 Webpack 实例
+                new this.webpack.optimize.DedupePlugin()
+            ])
+            return baseConfig;
+        }
     }
-}
+};
+```
+
+- env: 当前 ykit 的执行环境，可用的环境有：
+
+    - local - 本地环境配置，在 ykit server 中访问项目会生效
+    - dev - 开发环境配置，在 ykit pack 时生效
+    - prd - 生产环境配置，在 ykit pack -m 时生效
+
+```javascript
+module.exports = {
+    config: {
+        modifyWebpackConfig: function(baseConfig) {
+            // 根据环境修改配置
+            switch (this.env) {
+                case 'local':
+                    break;
+                case 'dev':
+                    break;
+                case 'prd':
+                    break;
+                default:
+            }
+
+            return baseConfig;
+        }
+    }
+};
 ```
 
 [1]: https://webpack.github.io/docs/configuration.html
 [2]: https://github.com/survivejs/webpack-merge
+[3]: ./plugins.html
