@@ -105,12 +105,14 @@ class Project {
             const ykitConfigStartWith = 'ykit-config-';
             if(Array.isArray(configMethod.plugins)) {
                 this.plugins = configMethod.plugins;
+            } else if(typeof configMethod.plugins === 'string'){
+                this.plugins = [configMethod.plugins];
             }
 
-            // 通配置文件名获取插件
+            // 通过配置文件名获取插件
             if (this.extendConfig && this.extendConfig !== 'config') {
                 const pluginName = ykitConfigStartWith + this.extendConfig;
-                if(this.plugins.indexOf(pluginName) === -1 && this.plugins.indexOf('@qnpm/' + pluginName) === -1) {
+                if(this.plugins.indexOf(this.extendConfig) === -1) {
                     this.plugins.push(pluginName);
                 }
             }
