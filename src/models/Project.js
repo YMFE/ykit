@@ -214,7 +214,7 @@ class Project {
 
                     extend(true, this.config, userConfigObj);
                     this.config.setExports(exports);
-                    this.config.setCompiler(userConfigObj.modifyWebpackConfig);
+                    this.config.setCompiler(userConfigObj.modifyWebpackConfig, userConfig);
                     this.config.setSync(userConfigObj.sync);
                     this.setCommands(configMethod.commands || userConfigObj.command); // 后者兼容以前形式
                 }

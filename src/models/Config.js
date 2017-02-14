@@ -115,7 +115,7 @@ class Config {
         }
     }
 
-    setCompiler(compileConfig) {
+    setCompiler(compileConfig, userConfig) {
         if (compileConfig) {
             let nextConfig = {};
 
@@ -123,7 +123,7 @@ class Config {
             if (typeof compileConfig === 'object') {
                 nextConfig = compileConfig;
             } else if (typeof compileConfig === 'function') {
-                nextConfig = compileConfig(extend({}, this._config)) || {};
+                nextConfig = compileConfig.bind(userConfig)(extend({}, this._config)) || {};
             }
 
             // 处理 context
