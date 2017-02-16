@@ -6,7 +6,7 @@ Ykit 在每一个项目中都有一个单一的配置文件 `ykit.js`。通过�
 - **config** - 项目的配置对象，通过它可以操作资源入口和 Webpack 配置。
 - **commands** - 自定义命令，如构建、测试脚本等。
 
-## plugins 详述
+## plugins
 
 Ykit 插件是对一类配置和功能的封装。每一个插件都是一个 NPM 模块，命名规则为 `ykit-config-<name>`，比如 `ykit-config-yo`。
 
@@ -27,7 +27,7 @@ module.exports = {
 
 更多信息和插件列表详见 [Ykit 文档-插件][3]。
 
-## config 详述
+## config
 
 ### exports
 
@@ -35,6 +35,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
+    plugins: ['qunar'],
     config: {
         // 基于当前源代码目录，默认为 "src"
         exports: [
@@ -56,7 +57,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
+    plugins: ['qunar'],
     config: {
+        exports: ['./scripts/app.js'],
         modifyWebpackConfig: function(baseConfig) {
             // 注意使用进行追加方法，而不要覆盖掉之前的
             baseConfig.module.loaders = baseConfig.module.loaders.concat([
@@ -78,7 +81,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
+    plugins: ['qunar'],
     config: {
+        exports: ['./scripts/app.js'],
         modifyWebpackConfig: function(baseConfig) {
             // 替换处理 scss 原有的 loader
             baseConfig.module.loaders = baseConfig.module.loaders
@@ -103,7 +108,9 @@ module.exports = {
 ```javascript
 var myPlugin = require('myPlugin');
 module.exports = {
+    plugins: ['qunar'],
     config: {
+        exports: ['./scripts/app.js'],
         modifyWebpackConfig: function(baseConfig) {
             baseConfig.plugins = baseConfig.plugins.concat([
                 myPlugin
@@ -122,7 +129,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
+    plugins: ['qunar'],
     config: {
+        exports: ['./scripts/app.js'],
         modifyWebpackConfig: function(baseConfig) {
             baseConfig.plugins = baseConfig.plugins.concat([
                 // 通过 this.webpack 可获取到 Webpack 实例
@@ -142,7 +151,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
+    plugins: ['qunar'],
     config: {
+        exports: ['./scripts/app.js'],
         modifyWebpackConfig: function(baseConfig) {
             // 根据环境修改配置
             switch (this.env) {
@@ -159,6 +170,37 @@ module.exports = {
         }
     }
 };
+```
+
+## commands
+
+Ykit 允许你添加自定义命令，功能类似于 `npm scripts`，添加形式如下：
+
+```javascript
+module.exports = {
+    plugins: ['qunar'],
+    config: {
+        exports: ['./scripts/app.js'],
+        modifyWebpackConfig: function(baseConfig) {
+            return baseConfig;
+        }
+    },
+    commands: [{
+        name: 'mycmd',
+        module: {
+            usage: '输出 “abcde”',
+            run: function () {
+                console.log('abcde');
+            }
+        }
+    }]
+};
+```
+
+此时你就可以在控制台中执行它。
+
+```
+$ ykit mycmd
 ```
 
 [1]: https://webpack.github.io/docs/configuration.html

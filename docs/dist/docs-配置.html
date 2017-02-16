@@ -160,7 +160,7 @@
 <li><strong>config</strong> - 项目的配置对象，通过它可以操作资源入口和 Webpack 配置。</li>
 <li><strong>commands</strong> - 自定义命令，如构建、测试脚本等。</li>
 </ul>
-<h2 id="plugins 详述">plugins 详述</h2><p>Ykit 插件是对一类配置和功能的封装。每一个插件都是一个 NPM 模块，命名规则为 <code>ykit-config-&lt;name&gt;</code>，比如 <code>ykit-config-yo</code>。</p>
+<h2 id="plugins">plugins</h2><p>Ykit 插件是对一类配置和功能的封装。每一个插件都是一个 NPM 模块，命名规则为 <code>ykit-config-&lt;name&gt;</code>，比如 <code>ykit-config-yo</code>。</p>
 <p>首先通过 NPM 安装相应插件：</p>
 <pre><code>$ npm install --save ykit-config-yo
 </code></pre><p>之后配置 <code>ykit.js</code>，传入一个插件名的数组来引入插件。这些插件将在 Ykit 执行前加载进来。如果有相同的配置，后面的插件会覆盖前面的。</p>
@@ -170,8 +170,9 @@
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>更多信息和插件列表详见 <a href="./plugins.html">Ykit 文档-插件</a>。</p>
-<h2 id="config 详述">config 详述</h2><h3 id="exports">exports</h3><p>通过该配置项可指定资源入口路径。</p>
+<h2 id="config">config</h2><h3 id="exports">exports</h3><p>通过该配置项可指定资源入口路径。</p>
 <pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 基于当前源代码目录，默认为 "src"</span>
         exports<span class="token punctuation">:</span> <span class="token punctuation">[</span>
@@ -188,7 +189,9 @@
 <li>示例 - 添加 loaders：</li>
 </ul>
 <pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        exports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/app.js'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
         modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 注意使用进行追加方法，而不要覆盖掉之前的</span>
             baseConfig<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders <span class="token operator">=</span> baseConfig<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
@@ -208,7 +211,9 @@
 </ul>
 <p>如果是当前配置中已经存在 loader，则要进行替换操作：</p>
 <pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        exports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/app.js'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
         modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 替换处理 scss 原有的 loader</span>
             baseConfig<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders <span class="token operator">=</span> baseConfig<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders
@@ -232,7 +237,9 @@
 </ul>
 <pre><code class="lang-javascript"><span class="token keyword">var</span> myPlugin <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'myPlugin'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        exports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/app.js'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
         modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             baseConfig<span class="token punctuation">.</span>plugins <span class="token operator">=</span> baseConfig<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
                 myPlugin
@@ -247,7 +254,9 @@ module<span class="token punctuation">.</span>exports <span class="token operato
 <li>webpack: 当前 ykit 内部 webapck 实例。</li>
 </ul>
 <pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        exports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/app.js'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
         modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             baseConfig<span class="token punctuation">.</span>plugins <span class="token operator">=</span> baseConfig<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
                 <span class="token comment" spellcheck="true">// 通过 this.webpack 可获取到 Webpack 实例</span>
@@ -268,7 +277,9 @@ module<span class="token punctuation">.</span>exports <span class="token operato
 </li>
 </ul>
 <pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        exports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/app.js'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
         modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 根据环境修改配置</span>
             <span class="token keyword">switch</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>env<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -286,7 +297,29 @@ module<span class="token punctuation">.</span>exports <span class="token operato
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
-
+<h2 id="commands">commands</h2><p>Ykit 允许你添加自定义命令，功能类似于 <code>npm scripts</code>，添加形式如下：</p>
+<pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        exports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./scripts/app.js'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        modifyWebpackConfig<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>baseConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> baseConfig<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    commands<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+        name<span class="token punctuation">:</span> <span class="token string">'mycmd'</span><span class="token punctuation">,</span>
+        module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            usage<span class="token punctuation">:</span> <span class="token string">'输出 “abcde”'</span><span class="token punctuation">,</span>
+            run<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'abcde'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>此时你就可以在控制台中执行它。</p>
+<pre><code>$ ykit mycmd
+</code></pre>
               </div>
           </div>
           
