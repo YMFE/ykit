@@ -1,3 +1,13 @@
+<a name="0.2.6-rc6"></a>
+## [0.2.6-rc6](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc5...v0.2.6-rc6) (2017-02-16)
+
+
+### Features
+
+* **pack:** 支持 beforePack 和 afterPack ([fd00cb2](http://gitlab.corp.qunar.com/mfe/ykit/commit/fd00cb2))
+
+
+
 <a name="0.2.6-rc5"></a>
 ## [0.2.6-rc5](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc4...0.2.6-rc5) (2017-02-14)
 
