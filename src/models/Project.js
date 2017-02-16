@@ -28,6 +28,8 @@ class Project {
         this.middlewares = [];
         this.beforePackCallbacks = [];
         this.packCallbacks = [];
+        this.beforePack = [];
+        this.afterPack = [];
         this.eslintConfig = require('../config/eslint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
         this.extendConfig = this.configFile &&
@@ -87,9 +89,12 @@ class Project {
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
+                    // 兼容 ykit-config-yo 的 beforePackCallbacks 和 packCallbacks
                     applyBeforePack: this.applyBeforePack.bind(this),
                     beforePackCallbacks: this.beforePackCallbacks,
                     packCallbacks: this.packCallbacks,
+                    beforePack: this.beforePack,
+                    afterPack: this.afterPack,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
                     env: this._getCurrentEnv(), // 默认为本地环境,
@@ -105,12 +110,14 @@ class Project {
             const ykitConfigStartWith = 'ykit-config-';
             if(Array.isArray(configMethod.plugins)) {
                 this.plugins = configMethod.plugins;
+            } else if(typeof configMethod.plugins === 'string'){
+                this.plugins = [configMethod.plugins];
             }
 
-            // 通配置文件名获取插件
+            // 通过配置文件名获取插件
             if (this.extendConfig && this.extendConfig !== 'config') {
                 const pluginName = ykitConfigStartWith + this.extendConfig;
-                if(this.plugins.indexOf(pluginName) === -1 && this.plugins.indexOf('@qnpm/' + pluginName) === -1) {
+                if(this.plugins.indexOf(this.extendConfig) === -1) {
                     this.plugins.push(pluginName);
                 }
             }
@@ -212,7 +219,7 @@ class Project {
 
                     extend(true, this.config, userConfigObj);
                     this.config.setExports(exports);
-                    this.config.setCompiler(userConfigObj.modifyWebpackConfig);
+                    this.config.setCompiler(userConfigObj.modifyWebpackConfig, userConfig);
                     this.config.setSync(userConfigObj.sync);
                     this.setCommands(configMethod.commands || userConfigObj.command); // 后者兼容以前形式
                 }
@@ -446,18 +453,18 @@ class Project {
                                         ? nextAssets
                                         : originAssets;
 
-                                    afterPack();
+                                    handleAfterPack();
                                 }
                             }
                         );
                     });
                 } else {
-                    afterPack();
+                    handleAfterPack();
                 }
 
-                function afterPack() {
+                function handleAfterPack() {
                     async.series(
-                        self.packCallbacks.map(packCallback => {
+                        self.packCallbacks.concat(self.afterPack).map(packCallback => {
                             return function(callback) {
                                 let isAsync = false;
 
@@ -525,25 +532,25 @@ class Project {
         async.series(
             this.beforePackCallbacks.map((beforePackItem) => {
                 return function(callback) {
+                    // 支持旧的 beforePackCallbacks 形式
+                    beforePackItem(callback, opt);
+                };
+            }).concat(this.beforePack.map((beforePackItem) => {
+                return function(callback) {
                     // 支持异步调用
-                    if(beforePackItem.length === 2) {
-                        // 支持旧的 beforePackCallbacks 形式
-                        beforePackItem(callback, opt);
-                    } else {
-                        let isAsync = false;
-                        beforePackItem.bind({
-                            async: function(){
-                                isAsync = true;
-                                return callback;
-                            }
-                        })(opt);
-
-                        if(!isAsync) {
-                            callback(null);
+                    let isAsync = false;
+                    beforePackItem.bind({
+                        async: function(){
+                            isAsync = true;
+                            return callback;
                         }
+                    })(opt);
+
+                    if(!isAsync) {
+                        callback(null);
                     }
                 };
-            }),
+            })),
             err => {
                 compilerProcess();
             }
