@@ -1,11 +1,15 @@
-<h1 style="font-weight: normal"> 命令行工具 </h1>
+<h1 style="font-weight: normal"> 命令行 </h1>
 
-Ykit 命令行工具可以通过运行 `ykit -h` 查看所有基础命令。
+Ykit 运行环境下可以通过 `ykit -h` 查看所有命令。
 
-- init            # 项目初始化
-- server          # 开发服务
-- pack            # 资源编译、打包
-- lint            # 代码质量检测
+```
+$ ykit -h
+
+  init   i        # 项目初始化
+  server s        # 开发服务
+  pack   p        # 资源编译、打包
+  lint   l        # 代码质量检测
+```
 
 **注：以上命令均可以使用缩写，如 `ykit s` 等同于 `ykit server`。**
 
@@ -15,12 +19,11 @@ Ykit 命令行工具可以通过运行 `ykit -h` 查看所有基础命令。
 $ ykit server -h
 
 Options:
-  -p, --port         端口
-  -x, --proxy        启用proxy代理服务
-  -m, --middlewares  加载项目中间件
-  -a, --all          整体编译
-  -s, --https        使用https协议
-  -h, --help         查看帮助
+  -p, --port        # 端口
+  -x, --proxy       # 启用proxy代理服务
+  -m, --middlewares # 加载项目中间件
+  -s, --https       # 使用https协议
+  -h, --help        # 查看帮助
 ```
 
 <h3 style="font-weight: normal"> init </h3>
