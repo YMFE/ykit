@@ -154,9 +154,7 @@
               <div class="content-right markdown-body" role="main">
 
                 
-                <h1 style="font-weight: normal"> 命令行工具 </h1>
-
-<p>Ykit 运行环境下可以通过 <code>ykit -h</code> 查看所有命令。</p>
+                <h1 id="命令行">命令行</h1><p>Ykit 运行环境下可以通过 <code>ykit -h</code> 查看所有命令。</p>
 <pre><code>$ ykit -h
 
   init   i        # 项目初始化
@@ -173,39 +171,88 @@ Options:
   -m, --middlewares # 加载项目中间件
   -s, --https       # 使用https协议
   -h, --help        # 查看帮助
-</code></pre><h3 style="font-weight: normal"> init </h3>
-
-<p>这个命令将会配置初始化向导。用户通过选择项目类型，它就可以帮助用户快速地在当前工作目录下创建 ykit.{type}.js 文件，并安装相应插件。</p>
-<h3 style="font-weight: normal"> server </h3>
-
-<p>这个命令会在本地起静态服务，并对<code>/{project}/prd/</code>路径下的资源进行编译，保持与Fekit一致。</p>
-<p><strong>注意: 只有<code>ykit.{type}.js</code>中设置了export的资源才会编译。</strong></p>
-<p>编译静态资源有两种方式，默认是按请求编译，适合export资源较多的项目。</p>
-<p>当加上-a--all参数后，则在第一次加载时将export资源全部编译，适合单页应用等静态资源入口较少的项目。</p>
-<h3 style="font-weight: normal"> pack </h3>
-
-<p>对项目进行打包。对于Qunar的项目，打包后会生成相应目录，来放置带版本号的资源。</p>
+</code></pre><h2 id="init">init</h2><p>这个命令将会在当前目录初始化 Ykit 工程。</p>
+<pre><code>$ ykit init
+</code></pre><p>另外你可以选择初始化一个特定类型的项目，Ykit 会寻找相应的插件并自动帮你完成。如创建一个 qunar 项目（需要内网）：</p>
+<pre><code>$ ykit init qunar
+</code></pre><h2 id="server">server</h2><p>这个命令会在当前目录下建立静态资源服务。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-p</td>
+<td>设置服务端口</td>
+<td>-p 3000</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>开启 https 服务</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>开启代理工具</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>示例：</p>
+<pre><code>$ ykit server -p 3000
+</code></pre><h2 id="pack">pack</h2><p>这个命令对项目内资源进行打包。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-m</td>
+<td>压缩代码，并生成 prd 输出目录存放资源</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>打包前是否先清空目标路径，默认清空</td>
+<td>-c=false</td>
+</tr>
+</tbody>
+</table>
+<p>示例：</p>
+<pre><code>$ ykit pack -m
+</code></pre><h2 id="lint">lint</h2><p>这个命令会对项目进行 ESLint 检查.</p>
+<p>如果项目中没有 ESLint 配置文件第一次在项目中执行 lint 命令后，会生成相应的 <code>.eslintrc.json</code>，可后续对它进行更改，如添加 lint 规则、忽略目录等。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-d</td>
+<td>指定特定 ESLint 检查目录</td>
+<td>-d ./src</td>
+</tr>
+</tbody>
+</table>
+<p>示例：</p>
+<pre><code>$ ykit lint -d ./src
+</code></pre><h2 id="其它命令">其它命令</h2><p>插件和项目中的自定义命令也可以在 Ykit 环境中执行，可以通过它们对命令进行扩展。参考：</p>
 <ul>
-<li><p><code>ykit pack</code>命令，相当于之前的<code>fekit pack</code>。首先生成<code>dev</code>目录，并按目录结构生成<code>**/{name}@dev.{ext}</code>，另外会生成<code>**/{name}@dev.{ext}.map</code>用于调试。</p>
-</li>
-<li><p><code>ykit pack -m</code>命令，相当于之前的<code>fekit min</code>。首先生成<code>prd</code>和<code>ver</code>目录，并按目录结构生成<code>**/{name}@{version}.{ext}</code>，即打包压缩后的资源。同时在<code>ver</code>目录生成对应<code>{name}.{ext}.ver</code>和<code>versions.mapping</code>。</p>
-</li>
-<li><p><code>ykit pack -g {groupname}</code>命令，可指定分组打包，不影响其它已存在的打包资源。</p>
-</li>
-<li><p><code>ykit pack -c false</code>ykit 在打包之前会清空打包目标目录(dev/prd)，使用这个命令使 ykit 不预先清空。</p>
-</li>
+<li><a href="docs-配置.html">使用手册 - 配置</a></li>
+<li><a href="How-to-write-a-plugin.html">如何编写一个插件</a></li>
 </ul>
-<h3 style="font-weight: normal"> lint </h3>
-
-<p>这个命令会对项目进行 eslint 检查，第一次在项目中执行 ykit lint 后，会生成相应的 .eslintrc.json，可后续对它进行更改，如添加 lint 规则、忽略目录等。</p>
-<p>进入项目目录，执行<code>ykit lint</code>即可，其它参数：</p>
-<p><code>ykit lint -d {dir}</code> 对指定目录或文件执行 lint 。</p>
-<h2 style="font-weight: normal"> 附加命令 </h2>
-
-<p>Ykit 插件会为当前项目添加附加命令。如在一个 Qunar 项目中，可以运行<code>ykit sync</code>命令等。当前项目环境下的命令列表可以使用<code>ykit -h</code>查看。</p>
-<h2 style="font-weight: normal"> 项目自定义命令 </h2>
-
-<p>在<code>ykit.{type}.js</code>中可以配置项目自定义命令，相当于执行一段 Node 脚本。当前项目环境下的命令列表可以使用<code>ykit -h</code>查看。</p>
 
               </div>
           </div>

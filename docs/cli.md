@@ -1,4 +1,4 @@
-<h1 style="font-weight: normal"> 命令行 </h1>
+# 命令行
 
 Ykit 运行环境下可以通过 `ykit -h` 查看所有命令。
 
@@ -26,44 +26,73 @@ Options:
   -h, --help        # 查看帮助
 ```
 
-<h3 style="font-weight: normal"> init </h3>
+## init
 
-这个命令将会配置初始化向导。用户通过选择项目类型，它就可以帮助用户快速地在当前工作目录下创建 ykit.{type}.js 文件，并安装相应插件。
+这个命令将会在当前目录初始化 Ykit 工程。
 
-<h3 style="font-weight: normal"> server </h3>
+```
+$ ykit init
+```
 
-这个命令会在本地起静态服务，并对`/{project}/prd/`路径下的资源进行编译，保持与Fekit一致。
+另外你可以选择初始化一个特定类型的项目，Ykit 会寻找相应的插件并自动帮你完成。如创建一个 qunar 项目（需要内网）：
 
-**注意: 只有`ykit.{type}.js`中设置了export的资源才会编译。**
+```
+$ ykit init qunar
+```
 
-编译静态资源有两种方式，默认是按请求编译，适合export资源较多的项目。
+## server
 
-当加上-a--all参数后，则在第一次加载时将export资源全部编译，适合单页应用等静态资源入口较少的项目。
+这个命令会在当前目录下建立静态资源服务。
 
-<h3 style="font-weight: normal"> pack </h3>
+| 参数       | 说明   |  使用  |
+| --------- | ------ | ----  |
+| -p        | 设置服务端口 | -p 3000 |
+| -s        | 开启 https 服务 | - |
+| -x        | 开启代理工具 | -|
 
-对项目进行打包。对于Qunar的项目，打包后会生成相应目录，来放置带版本号的资源。
+示例：
 
-- `ykit pack`命令，相当于之前的`fekit pack`。首先生成`dev`目录，并按目录结构生成`**/{name}@dev.{ext}`，另外会生成`**/{name}@dev.{ext}.map`用于调试。
+```
+$ ykit server -p 3000
+```
 
-- `ykit pack -m`命令，相当于之前的`fekit min`。首先生成`prd`和`ver`目录，并按目录结构生成`**/{name}@{version}.{ext}`，即打包压缩后的资源。同时在`ver`目录生成对应`{name}.{ext}.ver`和`versions.mapping`。
+## pack
 
-- `ykit pack -g {groupname}`命令，可指定分组打包，不影响其它已存在的打包资源。
+这个命令对项目内资源进行打包。
 
-- `ykit pack -c false`ykit 在打包之前会清空打包目标目录(dev/prd)，使用这个命令使 ykit 不预先清空。
+| 参数       | 说明   |  使用  |
+| --------- | ------ | ----  |
+| -m        | 压缩代码，并生成 prd 输出目录存放资源 | - |
+| -c        | 打包前是否先清空目标路径，默认清空 | -c=false |
 
-<h3 style="font-weight: normal"> lint </h3>
+示例：
 
-这个命令会对项目进行 eslint 检查，第一次在项目中执行 ykit lint 后，会生成相应的 .eslintrc.json，可后续对它进行更改，如添加 lint 规则、忽略目录等。
+```
+$ ykit pack -m
+```
 
-进入项目目录，执行`ykit lint`即可，其它参数：
+## lint
 
-`ykit lint -d {dir}` 对指定目录或文件执行 lint 。
+这个命令会对项目进行 ESLint 检查.
 
-<h2 style="font-weight: normal"> 附加命令 </h2>
+如果项目中没有 ESLint 配置文件第一次在项目中执行 lint 命令后，会生成相应的 `.eslintrc.json`，可后续对它进行更改，如添加 lint 规则、忽略目录等。
 
-Ykit 插件会为当前项目添加附加命令。如在一个 Qunar 项目中，可以运行`ykit sync`命令等。当前项目环境下的命令列表可以使用`ykit -h`查看。
+| 参数       | 说明   |  使用  |
+| --------- | ------ | ----  |
+| -d        | 指定特定 ESLint 检查目录 | -d ./src |
 
-<h2 style="font-weight: normal"> 项目自定义命令 </h2>
+示例：
 
-在`ykit.{type}.js`中可以配置项目自定义命令，相当于执行一段 Node 脚本。当前项目环境下的命令列表可以使用`ykit -h`查看。
+```
+$ ykit lint -d ./src
+```
+
+## 其它命令
+
+插件和项目中的自定义命令也可以在 Ykit 环境中执行，可以通过它们对命令进行扩展。参考：
+
+- [使用手册 - 配置][1]
+- [如何编写一个插件][2]
+
+[1]: docs-配置.html
+[2]: How-to-write-a-plugin.html
