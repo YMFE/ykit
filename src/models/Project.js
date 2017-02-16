@@ -28,6 +28,8 @@ class Project {
         this.middlewares = [];
         this.beforePackCallbacks = [];
         this.packCallbacks = [];
+        this.beforePack = [];
+        this.afterPack = [];
         this.eslintConfig = require('../config/eslint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
         this.extendConfig = this.configFile &&
@@ -87,9 +89,12 @@ class Project {
                     config: this.config.getConfig(),
                     commands: this.commands,
                     middlewares: this.middlewares,
+                    // 兼容 ykit-config-yo 的 beforePackCallbacks 和 packCallbacks
                     applyBeforePack: this.applyBeforePack.bind(this),
                     beforePackCallbacks: this.beforePackCallbacks,
                     packCallbacks: this.packCallbacks,
+                    beforePack: this.beforePack,
+                    afterPack: this.afterPack,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
                     env: this._getCurrentEnv(), // 默认为本地环境,
@@ -448,18 +453,18 @@ class Project {
                                         ? nextAssets
                                         : originAssets;
 
-                                    afterPack();
+                                    handleAfterPack();
                                 }
                             }
                         );
                     });
                 } else {
-                    afterPack();
+                    handleAfterPack();
                 }
 
-                function afterPack() {
+                function handleAfterPack() {
                     async.series(
-                        self.packCallbacks.map(packCallback => {
+                        self.packCallbacks.concat(self.afterPack).map(packCallback => {
                             return function(callback) {
                                 let isAsync = false;
 
@@ -527,25 +532,25 @@ class Project {
         async.series(
             this.beforePackCallbacks.map((beforePackItem) => {
                 return function(callback) {
+                    // 支持旧的 beforePackCallbacks 形式
+                    beforePackItem(callback, opt);
+                };
+            }).concat(this.beforePack.map((beforePackItem) => {
+                return function(callback) {
                     // 支持异步调用
-                    if(beforePackItem.length === 2) {
-                        // 支持旧的 beforePackCallbacks 形式
-                        beforePackItem(callback, opt);
-                    } else {
-                        let isAsync = false;
-                        beforePackItem.bind({
-                            async: function(){
-                                isAsync = true;
-                                return callback;
-                            }
-                        })(opt);
-
-                        if(!isAsync) {
-                            callback(null);
+                    let isAsync = false;
+                    beforePackItem.bind({
+                        async: function(){
+                            isAsync = true;
+                            return callback;
                         }
+                    })(opt);
+
+                    if(!isAsync) {
+                        callback(null);
                     }
                 };
-            }),
+            })),
             err => {
                 compilerProcess();
             }
