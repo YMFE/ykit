@@ -1,7 +1,6 @@
 'use strict';
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
 
 const normalize = require('../utils/path').normalize;
 
@@ -54,8 +53,7 @@ class Config {
                 // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
-                require('../plugins/hashPlaceholderPlugin.js'),
-                new ForceCaseSensitivityPlugin()
+                require('../plugins/hashPlaceholderPlugin.js')
             ],
             resolve: {
                 root: [],
