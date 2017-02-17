@@ -28,8 +28,10 @@ class Project {
         this.middlewares = [];
         this.beforePackCallbacks = [];
         this.packCallbacks = [];
-        this.beforePack = [];
-        this.afterPack = [];
+        this.hooks = {
+            beforePack: [],
+            afterPack: []
+        };
         this.eslintConfig = require('../config/eslint.json');
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
         this.extendConfig = this.configFile &&
@@ -72,6 +74,20 @@ class Project {
         extend(true, this.eslintConfig, projectEslintConfig);
     }
 
+    setHooks(nextHooks) {
+        if(nextHooks) {
+            Object.keys(this.hooks).map((hookName) => {
+                if(nextHooks[hookName]) {
+                    if(Array.isArray(nextHooks[hookName])) {
+                        this.hooks[hookName] = this.hooks[hookName].concat(nextHooks[hookName]);
+                    } else if(typeof nextHooks[hookName] === 'function') {
+                        this.hooks[hookName] = this.hooks[hookName].concat([nextHooks[hookName]]);
+                    }
+                }
+            });
+        }
+    }
+
     readConfig(options) {
         if (this.check()) {
             let globalConfigs = Manager.readRC().configs || [],
@@ -93,8 +109,7 @@ class Project {
                     applyBeforePack: this.applyBeforePack.bind(this),
                     beforePackCallbacks: this.beforePackCallbacks,
                     packCallbacks: this.packCallbacks,
-                    beforePack: this.beforePack,
-                    afterPack: this.afterPack,
+                    hooks: this.hooks,
                     eslintConfig: this.eslintConfig,
                     applyMiddleware: this.config.applyMiddleware.bind(this.config),
                     env: this._getCurrentEnv(), // 默认为本地环境,
@@ -222,6 +237,7 @@ class Project {
                     this.config.setCompiler(userConfigObj.modifyWebpackConfig, userConfig);
                     this.config.setSync(userConfigObj.sync);
                     this.setCommands(configMethod.commands || userConfigObj.command); // 后者兼容以前形式
+                    this.setHooks(configMethod.hooks);
                 }
             }
 
@@ -464,7 +480,7 @@ class Project {
 
                 function handleAfterPack() {
                     async.series(
-                        self.packCallbacks.concat(self.afterPack).map(packCallback => {
+                        self.packCallbacks.concat(self.hooks.afterPack).map((packCallback) => {
                             return function(callback) {
                                 let isAsync = false;
 
@@ -535,7 +551,7 @@ class Project {
                     // 支持旧的 beforePackCallbacks 形式
                     beforePackItem(callback, opt);
                 };
-            }).concat(this.beforePack.map((beforePackItem) => {
+            }).concat(this.hooks.beforePack.map((beforePackItem) => {
                 return function(callback) {
                     // 支持异步调用
                     let isAsync = false;
