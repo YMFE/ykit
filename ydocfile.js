@@ -46,21 +46,28 @@ module.exports = {
                 name: '配置',
                 content: './docs/config.md'
             }, {
+                name: 'hooks',
+                content: './docs/hooks.md'
+            }, {
                 name: '命令行',
                 content: './docs/cli.md'
             }, {
                 name: '代理工具',
                 content: './docs/proxy.md'
             }, {
+                name: "附录"
+            }, {
                 name: '发布',
-                content: './docs/build.md'
+                content: './docs/build.md',
+                sub: true,
             }, {
                 name: '前后端版本号关联',
-                content: './docs/version.md'
+                content: './docs/version.md',
+                sub: true,
             }, {
-
                 name: 'npm shrinkwrap',
-                content: './docs/shrinkwrap.md'
+                content: './docs/shrinkwrap.md',
+                sub: true,
             }]
         }
     }, {

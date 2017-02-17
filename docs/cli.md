@@ -73,7 +73,7 @@ $ ykit pack -m
 
 ## lint
 
-这个命令会对项目进行 ESLint 检查.
+这个命令会对项目进行 ESLint 检查。
 
 如果项目中没有 ESLint 配置文件第一次在项目中执行 lint 命令后，会生成相应的 `.eslintrc.json`，可后续对它进行更改，如添加 lint 规则、忽略目录等。
 
