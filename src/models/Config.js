@@ -1,7 +1,6 @@
 'use strict';
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
 
 const normalize = require('../utils/path').normalize;
 
@@ -54,8 +53,7 @@ class Config {
                 // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
-                require('../plugins/hashPlaceholderPlugin.js'),
-                new ForceCaseSensitivityPlugin()
+                require('../plugins/hashPlaceholderPlugin.js')
             ],
             resolve: {
                 root: [],
@@ -115,7 +113,7 @@ class Config {
         }
     }
 
-    setCompiler(compileConfig) {
+    setCompiler(compileConfig, userConfig) {
         if (compileConfig) {
             let nextConfig = {};
 
@@ -123,7 +121,7 @@ class Config {
             if (typeof compileConfig === 'object') {
                 nextConfig = compileConfig;
             } else if (typeof compileConfig === 'function') {
-                nextConfig = compileConfig(extend({}, this._config)) || {};
+                nextConfig = compileConfig.bind(userConfig)(extend({}, this._config)) || {};
             }
 
             // 处理 context
