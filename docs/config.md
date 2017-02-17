@@ -172,6 +172,37 @@ module.exports = {
 };
 ```
 
+## hooks
+
+Ykit 允许项目在打包过程中添加钩子，可在不同的阶段对资源进行处理。
+
+```javascript
+module.exports = {
+    plugins: ['qunar'],
+    config: {
+        // ...
+    },
+    hooks: {
+        // 传入一个函数
+        beforePack: function() {
+            console.log('Do sth before Ykit Pack!');
+        },
+        // 传入一个函数数组
+        afterPack: [
+            function() {
+                console.log('Do sth after Ykit Pack!');
+            },
+            function() {
+                // 添加异步钩子
+                var callback = this.async();
+                console.log('Do sth async after Ykit Pack!');
+                callback();
+            }
+        ]
+    }
+};
+```
+
 ## commands
 
 Ykit 允许你添加自定义命令，功能类似于 `npm scripts`，添加形式如下：

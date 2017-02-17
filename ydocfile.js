@@ -46,9 +46,6 @@ module.exports = {
                 name: '配置',
                 content: './docs/config.md'
             }, {
-                name: 'hooks',
-                content: './docs/hooks.md'
-            }, {
                 name: '命令行',
                 content: './docs/cli.md'
             }, {
