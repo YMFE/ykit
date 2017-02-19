@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no,email=no" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <meta name="description" content="description of your site">
+  <meta name="author" content="author of the site">
+  <title>YKit 插件</title>
+  <link rel="stylesheet" href="source/main.css"/>
+  
+  
+    
+        <link rel="stylesheet" href="./theme/ydoc.css"/>
+    
+  
+</head>
+<body class=plugins-ykit-config-react >
+    <div class="ydoc">
+      <header class="ydoc-header">
+        <div class="ydoc-header-area">
+            
+            <a href="http://ued.qunar.com/ymfe/" class="navbar-brand">YMFE</a>
+            
+            <button class="ydocIcon navbar-toggle">&#xf020;</button>
+            <nav class="ydoc-nav">
+              <ul class="navbar-left">
+                
+                    
+                    <li class="">
+                        
+                        <a href="index.html">简介</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="docs.html">使用手册</a>
+                        
+                    </li>
+                    
+                    <li class="active">
+                        
+                        <a href="plugins.html">插件</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="migrate.html">项目迁移</a>
+                        
+                    </li>
+                    
+                    <li class="">
+                        
+                        <a href="releases.html">版本记录</a>
+                        
+                    </li>
+                    
+                
+              </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- <header style="height:20px"></header> -->
+    
+      <!-- Docs page layout -->
+      
+      <div class="ydoc-banner-bg">
+          <div class="ydoc-banner">
+              <div class="ydoc-banner-area">
+                  <h1>Ykit</h1>
+                  <p>Plugins</p>
+              </div>
+          </div>
+      
+
+      <div class="ydoc-container">
+        
+          
+          <div class="ydoc-container-content">
+              <div class="content-left" role="complementary">
+                  <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav docs-sidenav">
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="plugins.html">简介</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        <!-- <li   class="active" > -->
+                        <li >
+                            
+                            <a href="javascript:void(0);">插件列表</a>
+                            
+                        </li>
+                        
+                        
+                        
+                        
+                        <ul class="nav docs-sidenav-extend"    style="display:block;" >
+                        
+                            <li >
+                                <a href="plugins-qunar.html">@qnpm/ykit-config-qunar</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-fekit.html">@qnpm/ykit-config-fekit</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-yo.html">ykit-config-yo</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li  class="active" >
+                                <a href="plugins-react.html">ykit-config-react</a>
+                            </li>
+                        
+                        </ul>
+                        
+                        
+                        
+                        
+                        <!-- <li  > -->
+                        <li >
+                            
+                            <a href="How-to-write-a-plugin.html">如何编写一个插件</a>
+                            
+                        </li>
+                        
+                        
+                    </ul>
+                  </nav>
+              </div>
+              <div class="content-right markdown-body" role="main">
+
+                
+                <h1 id="ykit-config-qunar">ykit-config-qunar</h1><h2 id="Features">Features</h2><ul>
+<li>transpile ES6+, JSX 代码</li>
+<li>通过 happypack 提升编译速度</li>
+<li>初始脚手架(TODO)</li>
+<li>hotload modules(TODO)</li>
+</ul>
+<h2 id="安装">安装</h2><p>在项目中执行：</p>
+<pre><code>$ npm install ykit-config-react --save
+</code></pre><p>编辑 <code>ykit.js</code>，引入插件：</p>
+<pre><code>module.exports = {
+    plugins: [&#39;react&#39;]
+    // ...
+};
+</code></pre><h2 id="插件配置详情">插件配置详情</h2><pre><code class="lang-javascript"><span class="token punctuation">{</span>
+    module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        loaders<span class="token punctuation">:</span> baseConfig<span class="token punctuation">.</span>module<span class="token punctuation">.</span>loaders<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
+            test<span class="token punctuation">:</span> <span class="token regex">/\.(js|jsx)$/</span><span class="token punctuation">,</span>
+            exclude<span class="token punctuation">:</span> <span class="token regex">/(node_modules)/</span><span class="token punctuation">,</span>
+            loaders<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'happypack/loader'</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    plugins<span class="token punctuation">:</span> baseConfig<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+        <span class="token keyword">new</span> <span class="token class-name">HappyPack</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            loaders<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+                <span class="token punctuation">{</span>
+                    loader<span class="token punctuation">:</span> require<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'babel-loader'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    test<span class="token punctuation">:</span> <span class="token regex">/\.(js|jsx)$/</span><span class="token punctuation">,</span>
+                    exclude<span class="token punctuation">:</span> <span class="token regex">/node_modules/</span><span class="token punctuation">,</span>
+                    query<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                        cacheDirectory<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+                        presets<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+                            <span class="token string">'es2015'</span><span class="token punctuation">,</span>
+                            <span class="token string">'es2017'</span><span class="token punctuation">,</span>
+                            <span class="token string">'react'</span><span class="token punctuation">,</span>
+                            <span class="token string">'stage-0'</span><span class="token punctuation">,</span>
+                            <span class="token string">'stage-1'</span><span class="token punctuation">,</span>
+                            <span class="token string">'stage-2'</span><span class="token punctuation">,</span>
+                        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+                        plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'transform-runtime'</span><span class="token punctuation">]</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            threads<span class="token punctuation">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+            verbose<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+            cacheContext<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                env<span class="token punctuation">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span>NODE_ENV
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            tempDir<span class="token punctuation">:</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>cwd<span class="token punctuation">,</span> <span class="token string">'node_modules/.happypack'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            cachePath<span class="token punctuation">:</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>cwd<span class="token punctuation">,</span> <span class="token string">'node_modules/.happypack/cache--[id].json'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
+              </div>
+          </div>
+          
+        
+      </div>
+     
+     </div>
+     
+      <footer class="footer">
+        <div class="copyright">
+            &copy; 2016 <a href="http://ued.qunar.com/ymfe/">YMFE Team</a>. Build by <a href="http://github.com/YMFE/ydoc">ydoc</a>
+        </div>
+      </footer>
+    </div>
+
+    
+       <div class="open-panel"></div>
+    
+    
+
+    <script src="source/main.js"></script>
+    <script src="source/app.js"></script>
+    
+    
+
+    
+
+    
+    
+
+</body>
+</html>

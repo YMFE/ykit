@@ -16,7 +16,7 @@
     
   
 </head>
-<body class=plugins-@qnpm/ykit-conifg-qunar >
+<body class=plugins-@qnpm/ykit-config-qunar >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -108,7 +108,7 @@
                         <ul class="nav docs-sidenav-extend"  style="display:block;"    style="display:block;" >
                         
                             <li  class="active" >
-                                <a href="plugins-qunar.html">@qnpm/ykit-conifg-qunar</a>
+                                <a href="plugins-qunar.html">@qnpm/ykit-config-qunar</a>
                             </li>
                         
                         
@@ -116,7 +116,7 @@
                         
                         
                             <li >
-                                <a href="plugins-fekit.html">@qnpm/ykit-conifg-fekit</a>
+                                <a href="plugins-fekit.html">@qnpm/ykit-config-fekit</a>
                             </li>
                         
                         
@@ -124,7 +124,15 @@
                         
                         
                             <li >
-                                <a href="plugins-yo.html">ykit-conifg-yo</a>
+                                <a href="plugins-yo.html">ykit-config-yo</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-react.html">ykit-config-react</a>
                             </li>
                         
                         </ul>
@@ -154,8 +162,12 @@
 </ul>
 <h2 id="安装">安装</h2><p>在项目中执行：</p>
 <pre><code>$ npm install @qnpm/ykit-config-qunar --save --registry http://registry.npm.corp.qunar.com/
-</code></pre><p>为了使该插件生效，需要将 ykit 配置文件的名称改为<code>ykit.qunar.js</code>。</p>
-<h2 id="sync 命令">sync 命令</h2><p>sync 命令可将本地 <code>dev</code> 目录下代码上传至指定开发机，以便于联调测试。</p>
+</code></pre><p>编辑 <code>ykit.js</code>，引入插件：</p>
+<pre><code>module.exports = {
+    plugins: [&#39;qunar&#39;]
+    // ...
+};
+</code></pre><h2 id="sync 命令">sync 命令</h2><p>sync 命令可将本地 <code>dev</code> 目录下代码上传至指定开发机，以便于联调测试。</p>
 <h3 id="前置条件">前置条件</h3><p>执行 sync 命令之前要确保从本机可直连目标开发机，通过 ssh 命令可验证当前是否可直连，如：</p>
 <pre><code>$ ssh yuhao.ju@192.168.237.71
 </code></pre><p>如果没有提示需要密码，而直接登陆至目标开发机，则代表当前已经直连成功。配置直连的方法可以参考<a href="http://qtown.corp.qunar.com/knowledge/detail_knowledge.html?albumId=811">该课程</a>的最后一节。</p>

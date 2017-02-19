@@ -1,3 +1,18 @@
+<a name="0.3.0-rc0"></a>
+# [0.3.0-rc0](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc7...0.3.0-rc0) (2017-02-19)
+
+
+### Bug Fixes
+
+* **source-map:** 使用 webpack-encoding-plugin 修复注释中的中文乱码 ([3b2d8cd](http://gitlab.corp.qunar.com/mfe/ykit/commit/3b2d8cd))
+
+
+### Performance Improvements
+
+* **server:** 去掉检查大小写插件，提升本地编译速度 ([1701d29](http://gitlab.corp.qunar.com/mfe/ykit/commit/1701d29))
+
+
+
 <a name="0.2.6-rc7"></a>
 ## [0.2.6-rc7](http://gitlab.corp.qunar.com/mfe/ykit/compare/0.2.6-rc6...0.2.6-rc7) (2017-02-17)
 

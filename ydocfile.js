@@ -89,19 +89,24 @@ module.exports = {
             }, {
                 name: '插件列表',
             }, {
-                "name": "@qnpm\/ykit-conifg-qunar",
+                "name": "@qnpm\/ykit-config-qunar",
                 "index": "plugins-qunar",
                 "content": "./node_modules/@qnpm/ykit-config-qunar/README.md",
                 "sub": true
             }, {
-                "name": "@qnpm\/ykit-conifg-fekit",
+                "name": "@qnpm\/ykit-config-fekit",
                 "index": "plugins-fekit",
                 "content": "./node_modules/@qnpm/ykit-config-fekit/README.md",
                 "sub": true
             }, {
-                "name": "ykit-conifg-yo",
+                "name": "ykit-config-yo",
                 "index": "plugins-yo",
                 "content": "./node_modules/ykit-config-yo/README.md",
+                "sub": true
+            }, {
+                "name": "ykit-config-react",
+                "index": "plugins-react",
+                "content": "./node_modules/ykit-config-react/README.md",
                 "sub": true
             }, {
                 name: '如何编写一个插件',

@@ -79,7 +79,8 @@
     "ps-tree": "^1.1.0",
     "semver-regex": "^1.0.0",
     "ydoc": "3.0.0-beta3",
-    "ykit-config-yo": "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-yo.git#dev-v1.2.0"
+    "ykit-config-react": "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-react.git",
+    "ykit-config-yo": "git+ssh://git@gitlab.corp.qunar.com/mfe/ykit-config-yo.git#dev"
   },
   "config": {
     "ghooks": {

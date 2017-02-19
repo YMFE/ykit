@@ -16,7 +16,7 @@
     
   
 </head>
-<body class=plugins-ykit-conifg-yo >
+<body class=plugins-ykit-config-yo >
     <div class="ydoc">
       <header class="ydoc-header">
         <div class="ydoc-header-area">
@@ -108,7 +108,7 @@
                         <ul class="nav docs-sidenav-extend"    style="display:block;" >
                         
                             <li >
-                                <a href="plugins-qunar.html">@qnpm/ykit-conifg-qunar</a>
+                                <a href="plugins-qunar.html">@qnpm/ykit-config-qunar</a>
                             </li>
                         
                         
@@ -116,7 +116,7 @@
                         
                         
                             <li >
-                                <a href="plugins-fekit.html">@qnpm/ykit-conifg-fekit</a>
+                                <a href="plugins-fekit.html">@qnpm/ykit-config-fekit</a>
                             </li>
                         
                         
@@ -124,7 +124,15 @@
                         
                         
                             <li  class="active" >
-                                <a href="plugins-yo.html">ykit-conifg-yo</a>
+                                <a href="plugins-yo.html">ykit-config-yo</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-react.html">ykit-config-react</a>
                             </li>
                         
                         </ul>
@@ -157,8 +165,13 @@
 <h2 id="安装">安装</h2><p>根据项目需求可选择不同的安装方式。</p>
 <h3 id="创建项目">创建项目</h3><p>如果要创建新项目，首先创建一个空的项目目录，之后在项目目录下通过 <code>init</code> 命令一键生成脚手架。</p>
 <pre><code>$ ykit init yo
-</code></pre><h3 id="为已有项目添加 yo 插件">为已有项目添加 yo 插件</h3><p>如果是已有项目，则将 ykit 配置文件的名称改为<code>ykit.yo.js</code>，并在项目目录下安装插件。</p>
+</code></pre><h3 id="为已有项目添加 yo 插件">为已有项目添加 yo 插件</h3><p>在项目中执行：</p>
 <pre><code>$ npm install ykit-config-yo --save
+</code></pre><p>编辑 <code>ykit.js</code>，引入插件：</p>
+<pre><code>module.exports = {
+    plugins: [&#39;yo&#39;]
+    // ...
+};
 </code></pre><h2 id="dll 命令">dll 命令</h2><p>dll 命令是对编译流程的一个优化。</p>
 <p>由于 yo 依赖的库和组件很多，为了提升编译性能，我们通过 Webpack 的 DLLPlugin 将这些第三方模块打包成 <code>lib.js</code>，从而提升编译速度并更有效地利用客户端缓存。</p>
 <p>构建和发布时插件都会自动调用该命令生成 <code>lib.js</code>，只有我们手动改了库中包含的模块并希望立即生效时才需要手动调用 <code>ykit dll</code> 命令。具体说明详见 <a href="http://ued.qunar.com/hy2/yo/start-lib.html">Yo 官方文档-关于 lib.js</a>。</p>

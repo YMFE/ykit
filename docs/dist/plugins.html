@@ -108,7 +108,7 @@
                         <ul class="nav docs-sidenav-extend"  >
                         
                             <li >
-                                <a href="plugins-qunar.html">@qnpm/ykit-conifg-qunar</a>
+                                <a href="plugins-qunar.html">@qnpm/ykit-config-qunar</a>
                             </li>
                         
                         
@@ -116,7 +116,7 @@
                         
                         
                             <li >
-                                <a href="plugins-fekit.html">@qnpm/ykit-conifg-fekit</a>
+                                <a href="plugins-fekit.html">@qnpm/ykit-config-fekit</a>
                             </li>
                         
                         
@@ -124,7 +124,15 @@
                         
                         
                             <li >
-                                <a href="plugins-yo.html">ykit-conifg-yo</a>
+                                <a href="plugins-yo.html">ykit-config-yo</a>
+                            </li>
+                        
+                        
+                        
+                        
+                        
+                            <li >
+                                <a href="plugins-react.html">ykit-config-react</a>
                             </li>
                         
                         </ul>
@@ -152,10 +160,12 @@
 <pre><code>$ npm install ykit-config-{插件名} --save
 </code></pre><p>如果是带有<code>@qnpm</code>前缀的插件，则需要指定 qnpm 仓库（只有内网环境下可用），如：</p>
 <pre><code>$ npm install @qnpm/ykit-config-{插件名} --save --registry http://registry.npm.corp.qunar.com/
-</code></pre><h3 id="引入">引入</h3><p>注意安装之后此时插件还未生效，要更改 ykit 配置文件的名称来引入插件，命名规则为 <code>ykit.{插件名}.js</code>。</p>
-<blockquote>
-<p>如安装了插件 <code>@qnpm/ykit-config-qunar</code>，则配置文件命名为<code>ykit.qunar.js</code>。</p>
-</blockquote>
+</code></pre><h3 id="引入">引入</h3><p>在 <code>ykit.js</code> 配置文件中，传入一个插件名的数组来引入插件。这些插件将在 Ykit 执行前加载进来。如果有相同的配置，后面的插件会覆盖前面的。</p>
+<pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    plugins<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'qunar'</span><span class="token punctuation">,</span> <span class="token string">'react'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token comment" spellcheck="true">// ...</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
 
               </div>
           </div>

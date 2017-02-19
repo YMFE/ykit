@@ -22,6 +22,11 @@ $ npm install @qnpm/ykit-config-{插件名} --save --registry http://registry.np
 
 ### 引入
 
-注意安装之后此时插件还未生效，要更改 ykit 配置文件的名称来引入插件，命名规则为 `ykit.{插件名}.js`。
+在 `ykit.js` 配置文件中，传入一个插件名的数组来引入插件。这些插件将在 Ykit 执行前加载进来。如果有相同的配置，后面的插件会覆盖前面的。
 
-> 如安装了插件 `@qnpm/ykit-config-qunar`，则配置文件命名为`ykit.qunar.js`。
+```javascript
+module.exports = {
+    plugins: ['qunar', 'react'],
+    // ...
+};
+```
