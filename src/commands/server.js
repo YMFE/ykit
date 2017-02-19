@@ -14,6 +14,7 @@ const connect = require('connect'),
 const Manager = require('../modules/manager.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
+const EncodingPlugin = require('webpack-encoding-plugin');
 
 exports.usage = '开发服务';
 exports.abbr = 's';
@@ -254,6 +255,7 @@ exports.run = (options) => {
 
             nextConfig.plugins.push(require('../plugins/progressBarPlugin.js'));
             nextConfig.plugins.push(require('../plugins/compileInfoPlugin.js'));
+            nextConfig.plugins.push(new EncodingPlugin({encoding: 'utf-8'}));
 
             return nextConfig;
         });
