@@ -14,7 +14,7 @@ const connect = require('connect'),
 const Manager = require('../modules/manager.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
-const EncodingPlugin = require('webpack-encoding-plugin');
+const EncodingPlugin = require('webpack-encoding-plugin-quiet');
 
 exports.usage = '开发服务';
 exports.abbr = 's';

@@ -57,7 +57,7 @@
     "uglifycss": "0.0.25",
     "webpack": "1.14.0",
     "webpack-dev-middleware": "1.9.0",
-    "webpack-encoding-plugin": "^0.2.1"
+    "webpack-encoding-plugin-quiet": "^0.2.1"
   },
   "repository": {
     "type": "http",
