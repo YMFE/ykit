@@ -17,7 +17,7 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = (options) => {
-    const servicePath = options.s || options.service || 'http://l-uedmobile0.h.dev.cn0.qunar.com:3000/download';
+    const servicePath = options.s || options.service;
     const reloadGlobal = options.g || options.global || false;
 
     if(reloadGlobal) {
