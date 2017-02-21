@@ -38,10 +38,10 @@ jspm_packages
 
 cache
 
-
-## IDEA
-
+# IDEA
 .idea
 .vscode
+
+# Others
 cli-test
 src/config/https
