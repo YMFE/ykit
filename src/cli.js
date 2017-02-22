@@ -78,8 +78,6 @@ let cli = module.exports = {
             }
         });
         info();
-        info(' 可用的全局配置有:', (Manager.readRC().configs || []).map((item) => item.name.substring(12)).join(', '));
-        info();
         info(' 如果需要帮助, 请使用 ykit {命令名} --help\n');
     }
 };
