@@ -44,7 +44,7 @@ class Project {
             'bower_components/**/*',
             'dev/**/*',
             'prd/**/*',
-            '.ykit_cache/**/*'
+            YKIT_CACHE_DIR + '/**/*'
         ];
         this.cachePath = this._isCacheDirExists(cwd) || '';
 
@@ -269,7 +269,7 @@ class Project {
             // 放在cache目录下
             const cachePath = this._isCacheDirExists(this.cwd);
             if (!cachePath) {
-                const newCachePath = sysPath.join(this.cwd, '.ykit_cache');
+                const newCachePath = sysPath.join(this.cwd, YKIT_CACHE_DIR);
 
                 this.cachePath = newCachePath;
                 mkdirp.sync(newCachePath);
@@ -277,7 +277,7 @@ class Project {
 
             if (cssExtNames.indexOf(extName) > -1) {
                 let requireFilePath = entries[key] = './' +
-                    sysPath.join(contextPathRelativeToCwd, '/.ykit_cache', entry + '.js'),
+                    sysPath.join(contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'),
                     cacheFilePath = sysPath.join(config.context, requireFilePath);
 
                 mkdirp.sync(sysPath.dirname(cacheFilePath));
@@ -638,8 +638,8 @@ class Project {
         let isCacheExists;
 
         try {
-            fs.statSync(sysPath.join(cwd, '.ykit_cache'));
-            return sysPath.join(cwd, '.ykit_cache');
+            fs.statSync(sysPath.join(cwd, YKIT_CACHE_DIR));
+            return sysPath.join(cwd, YKIT_CACHE_DIR);
         } catch (e) {
             // do nothing
         }
