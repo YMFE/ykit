@@ -147,6 +147,8 @@ exports.run = (options) => {
     });
 
     // compiler
+    // 记录 project
+    let hasCompiled = false;
     app.use(function (req, res, next) {
         let url = req.url,
             keys = url.split('/'),
@@ -192,6 +194,7 @@ exports.run = (options) => {
 
         let nextConfig;
         compiler = project.getServerCompiler(function (config) {
+            hasCompiled = requestUrl;
             nextConfig = extend({}, config);
 
             // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
@@ -257,11 +260,13 @@ exports.run = (options) => {
             nextConfig.plugins.push(require('../plugins/compileInfoPlugin.js'));
             nextConfig.plugins.push(new EncodingPlugin({encoding: 'utf-8'}));
 
+            // FIXME
+            nextConfig.entry = config.entry;
             return nextConfig;
         });
 
         // 如果没找到该资源，在整个编译过程结束后再返回
-        if (Object.keys(nextConfig.entry).length === 0) {
+        if (Object.keys(nextConfig.entry).length === 0 || hasCompiled !== requestUrl) {
             setTimeout(() => {
                 if (promiseCache[projectName]) {
                     Promise.all(promiseCache[projectName]).then(function () {
@@ -304,6 +309,7 @@ exports.run = (options) => {
                     }
                 }
             );
+            app.use(require('webpack-hot-middleware')(compiler));
             middleware(req, res, next);
         }
 
