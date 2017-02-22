@@ -224,7 +224,7 @@ class Project {
 
                     if (exports) {
                         exports = exports.filter(item => {
-                            if (typeof item === 'object') {
+                            if (typeof item === 'object' && !Array.isArray(item)) {
                                 this.config.setGroupExports(item.name, item.export);
                                 return false;
                             } else {
