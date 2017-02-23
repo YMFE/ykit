@@ -7,6 +7,7 @@ const connect = require('connect'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
+    webpack = require('webpack'),
     child_process = require('child_process'),
     requireg = require('requireg'),
     webpackDevMiddleware = require('webpack-dev-middleware');
@@ -24,12 +25,14 @@ exports.setOptions = (optimist) => {
     optimist.describe('p', '端口');
     optimist.alias('x', 'proxy');
     optimist.describe('x', '开启 proxy 代理服务');
+    optimist.alias('s', 'https');
+    optimist.describe('s', '开启 https 服务');
+    optimist.alias('hot', 'hot');
+    optimist.describe('hot', '开启 hot-reload');
     optimist.alias('v', 'verbose');
     optimist.describe('v', '显示详细编译信息');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
-    optimist.alias('s', 'https');
-    optimist.describe('s', '开启 https 服务');
 };
 
 exports.run = (options) => {
@@ -37,13 +40,17 @@ exports.run = (options) => {
         cwd = options.cwd,
         verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
+        hot = options.hot,
         middlewares = options.m || options.middlewares,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
 
     let middlewareCache = {},
         promiseCache = {},
+        allAssetsEntry = {},
         watchCacheNames = {};
+
+    let usingHotServer = false;
 
     if (middlewares) {
         middlewares.split('|').forEach((proName) => {
@@ -57,10 +64,8 @@ exports.run = (options) => {
     // 预处理
     app.use((req, res, next) => {
         const extName = sysPath.extname(req.url);
-
         extName === '.js' && res.setHeader('Content-Type', 'application/javascript');
         extName === '.css' && res.setHeader('Content-Type', 'text/css; charset=UTF-8');
-
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
     });
@@ -74,7 +79,9 @@ exports.run = (options) => {
             res.end = end;
             res.end(chunk, encoding);
 
-            if(sysPath.extname(req.url) !== '.map') {
+            const isNotMap = sysPath.extname(req.url) !== '.map';
+            const isNotHotUpdate = req.url.indexOf('hot-update') === -1;
+            if(isNotMap && isNotHotUpdate) {
                 const format = '%date %status %method %url (%route%contentLength%time)';
                 const parseResult = parse(req, res, format);
                 return process.nextTick(() => {
@@ -148,7 +155,6 @@ exports.run = (options) => {
 
     // compiler
     // 记录 project
-    let hasCompiled = false;
     app.use(function (req, res, next) {
         let url = req.url,
             keys = url.split('/'),
@@ -158,6 +164,7 @@ exports.run = (options) => {
         const projectName = projectInfo.projectName;
         const projectCwd = projectInfo.projectCwd;
         const project = Manager.getProject(projectCwd, { cache: false });
+        const wpConfig = project.config._config;
         const outputDir = project.config._config.output.local.path || 'prd';
 
         // 非 output.path 下的资源不做处理
@@ -192,85 +199,128 @@ exports.run = (options) => {
             return;
         }
 
-        let nextConfig;
-        compiler = project.getServerCompiler(function (config) {
-            hasCompiled = requestUrl;
-            nextConfig = extend({}, config);
+        // 修改 publicPath 为当前服务
+        const dirs = UtilPath.normalize(outputDir).split(sysPath.sep);
+        const ouputDir = dirs[dirs.length - 1];
+        wpConfig.output.local.publicPath = 'http://' + sysPath.join(
+            '127.0.0.1:' + port, projectName, ouputDir + '/'
+        );
 
-            // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
-            nextConfig.entry = {};
-
-            // 将 webpack entry 设置为当前请求的资源
-            Object.keys(config.entry).map((entryKey) => {
-                const entryItem = config.entry[entryKey];
-
-                let isRequestingEntry = false,
-                    entryPath = '';
-
-                if (Array.isArray(entryItem)) {
-                    entryPath = entryItem[entryItem.length - 1];
-                } else {
-                    entryPath = entryItem;
-                }
-
-                // 应用后缀转换规则
-                const entryExtNames = config.entryExtNames;
-                Object.keys(entryExtNames).map((targetExtName) => {
-                    let exts = entryExtNames[targetExtName];
-
-                    // 如果是 css 要考虑 css.js 的情况
-                    if(targetExtName === 'css') {
-                        exts = exts.concat(
-                            entryExtNames[targetExtName].map((name) => {
-                                return name + '.js';
-                            })
-                        );
+        // hot reload
+        if(hot && !usingHotServer) {
+            usingHotServer = projectName;
+            wpConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+            if(typeof wpConfig.entry === 'object') {
+                Object.keys(wpConfig.entry).map((key) => {
+                    let entryItem = wpConfig.entry[key];
+                    if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
+                        const whmPath = require.resolve('webpack-hot-middleware/client');
+                        entryItem.unshift(whmPath + '?reload=true&name=' );
                     }
-
-                    // 创建正则匹配
-                    exts = exts.map((name) => {
-                        return name + '$';
-                    });
-                    const replaceReg =  new RegExp('\\' + exts.join('|\\'));
-
-                    entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
+                    return entryItem;
                 });
+            }
+        }
 
-                // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
-                if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
-                    entryPath = entryPath.split('.ykit_cache/')[1];
-                }
+        // 如果发现插件中有 HotModuleReplacementPlugin 则需要编译全部入口，否则无法正常运行
+        const shouldCompileAllEntries = wpConfig.plugins.some((plugin, i) => {
+            // 这里不清楚为什么 plugin instanceof webpack.HotModuleReplacementPlugin 返回 false
+            // 所以使用字符串匹配
+            const isHMR = plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
+            return isHMR;
+        });
+        if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
+            hot = true;
+            allAssetsEntry[projectName] = requestUrl;
+        }
 
-                // 判断所请求的资源是否在入口配置中
-                const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
-                const matchingKey = sysPath.normalize(requestUrl) === entryKey + sysPath.extname(requestUrl);
+        let nextConfig;
+        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === requestUrl) {
+            compiler = project.getServerCompiler(function (config) {
 
-                if (matchingPath || matchingKey) {
-                    isRequestingEntry = true;
-                }
+                config.plugins.push(require('../plugins/progressBarPlugin.js'));
+                config.plugins.push(require('../plugins/compileInfoPlugin.js'));
+                config.plugins.push(new EncodingPlugin({encoding: 'utf-8'}));
 
-                if (isRequestingEntry) {
-                    nextConfig.entry = {
-                        [entryKey]: entryItem
-                    };
+                nextConfig = extend({}, config);
+                if(shouldCompileAllEntries) {
+                    return nextConfig;
+                } else {
+                    // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
+                    nextConfig.entry = {};
+
+                    // 将 webpack entry 设置为当前请求的资源
+                    Object.keys(config.entry).map((entryKey) => {
+                        const entryItem = config.entry[entryKey];
+
+                        let isRequestingEntry = false,
+                            entryPath = '';
+
+                        if (Array.isArray(entryItem)) {
+                            entryPath = entryItem[entryItem.length - 1];
+                        } else {
+                            entryPath = entryItem;
+                        }
+
+                        // 应用后缀转换规则
+                        const entryExtNames = config.entryExtNames;
+                        Object.keys(entryExtNames).map((targetExtName) => {
+                            let exts = entryExtNames[targetExtName];
+
+                            // 如果是 css 要考虑 css.js 的情况
+                            if(targetExtName === 'css') {
+                                exts = exts.concat(
+                                    entryExtNames[targetExtName].map((name) => {
+                                        return name + '.js';
+                                    })
+                                );
+                            }
+
+                            // 创建正则匹配
+                            exts = exts.map((name) => {
+                                return name + '$';
+                            });
+                            const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+
+                            entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
+                        });
+
+                        // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
+                        if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
+                            entryPath = entryPath.split('.ykit_cache/')[1];
+                        }
+
+                        // 判断所请求的资源是否在入口配置中
+                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
+                        const matchingKey = sysPath.normalize(requestUrl) === entryKey + sysPath.extname(requestUrl);
+
+                        if (matchingPath || matchingKey) {
+                            isRequestingEntry = true;
+                        }
+
+                        if (isRequestingEntry) {
+                            nextConfig.entry = {
+                                [entryKey]: entryItem
+                            };
+                        }
+                    });
+
+                    return nextConfig;
                 }
             });
-
-            nextConfig.plugins.push(require('../plugins/progressBarPlugin.js'));
-            nextConfig.plugins.push(require('../plugins/compileInfoPlugin.js'));
-            nextConfig.plugins.push(new EncodingPlugin({encoding: 'utf-8'}));
-
-            // FIXME
-            nextConfig.entry = config.entry;
-            return nextConfig;
-        });
+        }
 
         // 如果没找到该资源，在整个编译过程结束后再返回
-        if (Object.keys(nextConfig.entry).length === 0 || hasCompiled !== requestUrl) {
+        if (!nextConfig || Object.keys(nextConfig.entry).length === 0) {
             setTimeout(() => {
                 if (promiseCache[projectName]) {
                     Promise.all(promiseCache[projectName]).then(function () {
-                        next();
+                        const assetKey = sysPath.join(projectName, requestUrl);
+                        if(middlewareCache[assetKey]) {
+                            middlewareCache[assetKey](req, res, next);
+                        } else {
+                            next();
+                        }
                     });
                 } else {
                     res.statusCode = 404;
@@ -309,7 +359,9 @@ exports.run = (options) => {
                     }
                 }
             );
-            app.use(require('webpack-hot-middleware')(compiler));
+            app.use(require('webpack-hot-middleware')(compiler, {
+                log: false
+            }));
             middleware(req, res, next);
         }
 
