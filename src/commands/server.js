@@ -207,18 +207,21 @@ exports.run = (options) => {
         );
 
         // hot reload
-        if(hot && !usingHotServer) {
-            usingHotServer = projectName;
+        if(hot) {
             wpConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
-            if(typeof wpConfig.entry === 'object') {
-                Object.keys(wpConfig.entry).map((key) => {
-                    let entryItem = wpConfig.entry[key];
-                    if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
-                        const whmPath = require.resolve('webpack-hot-middleware/client');
-                        entryItem.unshift(whmPath + '?reload=true&name=' );
-                    }
-                    return entryItem;
-                });
+
+            if(!usingHotServer) {
+                usingHotServer = projectName;
+                if(typeof wpConfig.entry === 'object') {
+                    Object.keys(wpConfig.entry).map((key) => {
+                        let entryItem = wpConfig.entry[key];
+                        if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
+                            const whmPath = require.resolve('webpack-hot-middleware/client');
+                            entryItem.unshift(whmPath + '?reload=true' );
+                        }
+                        return entryItem;
+                    });
+                }
             }
         }
 
