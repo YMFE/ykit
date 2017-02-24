@@ -506,12 +506,12 @@ class Project {
 
                             if (statsInfo.errors.length > 0) {
                                 statsInfo.errors.map(err => {
-                                    error('[Bundler Error]: ' + err.red + '\n');
+                                    error('[Bundle Error]: ' + err.red + '\n');
                                 });
                             }
                             if (statsInfo.warnings.length > 0) {
                                 statsInfo.warnings.map(warning => {
-                                    warn('[Bundler Warninig]: ' +warning.yellow + '\n');
+                                    warn('[Bundle Warninig]: ' +warning.yellow + '\n');
                                 });
                             }
 
