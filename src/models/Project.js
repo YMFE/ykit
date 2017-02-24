@@ -504,20 +504,20 @@ class Project {
                         err => {
                             let statsInfo = stats.toJson({ errorDetails: false });
 
-                            process.stdout.write(
-                                '\n--------------------------  YKIT PACKED ASSETS  --------------------------\n\n'
-                            );
-
                             if (statsInfo.errors.length > 0) {
                                 statsInfo.errors.map(err => {
-                                    error(err.red + '\n');
+                                    error('[Bundler Error]: ' + err.red + '\n');
                                 });
                             }
                             if (statsInfo.warnings.length > 0) {
                                 statsInfo.warnings.map(warning => {
-                                    warn(warning.yellow + '\n');
+                                    warn('[Bundler Warninig]: ' +warning.yellow + '\n');
                                 });
                             }
+
+                            process.stdout.write(
+                                '\n--------------------------  YKIT PACKED ASSETS  --------------------------\n\n'
+                            );
 
                             const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
                             assetsInfo.map(asset => {
