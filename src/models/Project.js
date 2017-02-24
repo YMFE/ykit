@@ -498,6 +498,8 @@ class Project {
                             };
                         }),
                         err => {
+                            spinner.stop();
+
                             let statsInfo = stats.toJson({ errorDetails: false });
 
                             if (statsInfo.errors.length > 0) {

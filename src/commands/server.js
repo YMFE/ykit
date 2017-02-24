@@ -235,9 +235,11 @@ exports.run = (options) => {
         const shouldCompileAllEntries = wpConfig.plugins.some((plugin, i) => {
             // 这里不清楚为什么 plugin instanceof webpack.HotModuleReplacementPlugin 返回 false
             // 所以使用字符串匹配
-            const isCCP = plugin instanceof webpack.optimize.CommonsChunkPlugin;
-            const isHMR = plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
-            return isCCP || isHMR;
+            if(plugin && plugin.constructor) {
+                const isCCP = plugin instanceof webpack.optimize.CommonsChunkPlugin;
+                const isHMR = plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
+                return isCCP || isHMR;
+            }
         });
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
