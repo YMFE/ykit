@@ -10,6 +10,7 @@ const connect = require('connect'),
     webpack = require('webpack'),
     child_process = require('child_process'),
     requireg = require('requireg'),
+    logSymbols = require('log-symbols'),
     webpackDevMiddleware = require('webpack-dev-middleware');
 
 const Manager = require('../modules/manager.js');
@@ -51,6 +52,7 @@ exports.run = (options) => {
         watchCacheNames = {};
 
     let usingHotServer = false;
+    const dateFormat = 'HH:mm:ss';
 
     if (middlewares) {
         middlewares.split('|').forEach((proName) => {
@@ -82,7 +84,13 @@ exports.run = (options) => {
             const isNotMap = sysPath.extname(req.url) !== '.map';
             const isNotHotUpdate = req.url.indexOf('hot-update') === -1;
             if(isNotMap && isNotHotUpdate) {
-                const format = '%date %status %method %url (%route%contentLength%time)';
+                let format = '';
+                if(sysPath.extname(req.url) === '.js' || sysPath.extname(req.url) === '.css'){
+                    format = '%date %status %method %url (%route%contentLength)';
+                } else {
+                    format = '%date %status %method %url';
+                }
+
                 const parseResult = parse(req, res, format);
                 return process.nextTick(() => {
                     spinner.text = parseResult.message;
@@ -93,7 +101,6 @@ exports.run = (options) => {
         };
 
         function parse(req, res, format) {
-            const dateFormat = 'YY.MM.DD HH:mm:ss';
             /* eslint-disable */
             const status = (function () {
                 switch (true) {
@@ -112,8 +119,8 @@ exports.run = (options) => {
             let contentLength = res._contentLength || '';
             if (contentLength) {
                 contentLength = contentLength > 1024
-                    ? (contentLength / 1024).toFixed(2) + 'KB '
-                    : contentLength + 'Bytes ';
+                    ? (contentLength / 1024).toFixed(2) + 'KB'
+                    : contentLength + 'Bytes';
             }
 
             format = format.replace(/%date/g, '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
@@ -122,7 +129,6 @@ exports.run = (options) => {
             format = format.replace(/%status/g, '' + status + res.statusCode + '\x1b[0m');
             format = format.replace(/%route/g, '\x1b[90m' + (req.route ? req.route.path + ' ' : '\x1b[31m') + '\x1b[0m');
             format = format.replace(/%contentLength/g, '\x1b[90m' + contentLength + '\x1b[31m' + '\x1b[0m');
-            format = format.replace(/%(date|time)/g, '\x1b[90m' + (new Date - req._startTime) + 'ms\x1b[0m');
 
             return {
                 message: format,
@@ -350,6 +356,17 @@ exports.run = (options) => {
             const middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler,
                 {
                     quiet: true, reporter: ({state, stats}) => {
+                        // 打印编译完成时间（过小的不展示）
+                        const minDuration = 100;
+                        if(stats.endTime - stats.startTime > minDuration) {
+                            spinner.text = '\x1b[90m' + '[' + moment().format(dateFormat)
+                                         + '] building complete in ' + (stats.endTime - stats.startTime) + 'ms.';
+                            spinner.stopAndPersist(logSymbols.info);
+                        } else {
+                            spinner.stop();
+                        }
+                        spinner.text = '';
+
                         Object.keys(stats.compilation.assets).map((key) => {
                             const keyCacheId = sysPath.join(projectName, key);
                             middlewareCache[keyCacheId] = middleware;

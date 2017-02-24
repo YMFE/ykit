@@ -21,12 +21,6 @@ function ProgressBarPlugin() {
                 if (msg.indexOf('optimize') > -1) {
                     spinner.render();
                 }
-            } else {
-                endTime = Date.now();
-                const dateFormat = 'YY.MM.DD HH:mm:ss';
-                spinner.text = '\x1b[90m' + '[' + moment().format(dateFormat) + '] build complete in ' + (endTime - startTime) + 'ms.';
-                spinner.stopAndPersist(logSymbols.info);
-                spinner.text = '';
             }
         }
     });
