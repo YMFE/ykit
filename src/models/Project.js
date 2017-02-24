@@ -9,7 +9,6 @@ const fs = require('fs');
 const Config = require('./Config.js');
 const Manager = require('../modules/manager.js');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
 
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
@@ -365,9 +364,6 @@ class Project {
         let self = this, packStartTime = Date.now(), config = this.config.getConfig();
 
         UtilFs.deleteFolderRecursive(this.cachePath);
-
-        // 添加检查大小写插件
-        config.plugins.push(new ForceCaseSensitivityPlugin());
 
         const compilerProcess = () => {
             // 打包前设置

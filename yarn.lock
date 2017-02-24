@@ -838,6 +838,10 @@ caniuse-db@^1.0.30000539, caniuse-db@^1.0.30000578:
   version "1.0.30000592"
   resolved "https://registry.npm.taobao.orgcaniuse-db/download/caniuse-db-1.0.30000592.tgz#7b916023941df4063d9d946a1f9ad0d5edaf2bcd"
 
+case-sensitive-paths-webpack-plugin@^1.1.4:
+  version "1.1.4"
+  resolved "http://registry.npm.corp.qunar.com/case-sensitive-paths-webpack-plugin/download/case-sensitive-paths-webpack-plugin-1.1.4.tgz#8aaedd5699a86cac2b34cf40d9b4145758978472"
+
 caseless@~0.11.0:
   version "0.11.0"
   resolved "https://registry.npm.taobao.orgcaseless/download/caseless-0.11.0.tgz#715b96ea9841593cc33067923f5ec60ebda4f7d7"
@@ -2017,12 +2021,6 @@ for-own@^0.1.4:
   resolved "https://registry.npm.taobao.orgfor-own/download/for-own-0.1.4.tgz#0149b41a39088c7515f51ebe1c1386d45f935072"
   dependencies:
     for-in "^0.1.5"
-
-force-case-sensitivity-webpack-plugin@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.npm.taobao.orgforce-case-sensitivity-webpack-plugin/download/force-case-sensitivity-webpack-plugin-0.2.1.tgz#57d6d98998902966d29ed621744697cc47c425d6"
-  dependencies:
-    glob "^7.0.3"
 
 forever-agent@~0.6.1:
   version "0.6.1"
