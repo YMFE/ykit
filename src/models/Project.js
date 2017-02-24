@@ -479,6 +479,7 @@ class Project {
                 }
 
                 function handleAfterPack() {
+                    spinner.stop();
                     async.series(
                         self.packCallbacks.concat(self.hooks.afterPack).map((packCallback) => {
                             return function(callback) {
@@ -498,8 +499,6 @@ class Project {
                             };
                         }),
                         err => {
-                            spinner.stop();
-
                             let statsInfo = stats.toJson({ errorDetails: false });
 
                             if (statsInfo.errors.length > 0) {
