@@ -208,9 +208,9 @@ exports.run = (options) => {
         // 修改 publicPath 为当前服务
         const dirs = UtilPath.normalize(outputDir).split(sysPath.sep);
         const ouputDir = dirs[dirs.length - 1];
-        wpConfig.output.local.publicPath = 'http://' + sysPath.join(
+        wpConfig.output.local.publicPath = 'http://' + UtilPath.normalize(sysPath.join(
             '127.0.0.1:' + port, projectName, ouputDir + '/'
-        );
+        ), false);
 
         // hot reload
         if(hot) {
