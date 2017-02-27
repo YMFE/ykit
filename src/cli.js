@@ -73,7 +73,7 @@ let cli = module.exports = {
         info(helpTitle);
         Manager.getProject(process.cwd()).commands.forEach((command) => {
             if(command.name !== 'build') {
-                const commandStr = rightPad(rightPad(command.name, 8) + (command.abbr || ''), 25);
+                const commandStr = rightPad(rightPad(command.name, 12) + (command.abbr || ''), 25);
                 info(` ${commandStr} # ${command.module.usage || ''}`);
             }
         });
