@@ -155,9 +155,6 @@ class Config {
                 extend(true, this._config.resolve.alias, alias);
             }
 
-            const context = nextConfig.context || this._config.context;
-            this._config.resolve.root.push(context);
-
             extend(true, this._config, nextConfig);
         }
     }
