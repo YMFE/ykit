@@ -44,4 +44,4 @@ cache
 
 # Others
 cli-test
-src/config/https
+*/config/https
