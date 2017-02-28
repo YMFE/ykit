@@ -138,7 +138,19 @@ class Project {
             }
 
             // 通过插件扩展配置
-            this.plugins.map((pluginName) => {
+            this.plugins.map((pluginItem) => {
+                let pluginName = '';
+
+                if(typeof pluginItem === 'string') {
+                    pluginName = pluginItem;
+                } else if(typeof pluginItem === 'object') {
+                    pluginName = pluginItem.plugin ? pluginItem.plugin : '';
+                    typeof pluginItem.options === 'object' && extend(options, pluginItem.options);
+                } else {
+                    error('插件配置有误，请检查 ykit.js');
+                    process.exit(1);
+                }
+
                 if(pluginName.indexOf(ykitConfigStartWith) === -1) {
                     pluginName = ykitConfigStartWith + pluginName;
                 }
