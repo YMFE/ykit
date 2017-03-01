@@ -78,12 +78,23 @@ class Config {
                 if (typeof entry === 'string' || Array.isArray(entry)) {
                     const entryFile = Array.isArray(entry) ? entry[entry.length - 1] : entry;
 
+                    // 抽取 entry 名字
                     var name = entryFile;
                     if (name.indexOf('./') == 0) {
                         name = name.substring(2);
                     } else if (name[0] == '/') {
                         name = name.substring(1);
                     }
+
+                    // 兼容 entry "/scripts/xxx" 和 "scripts/xxx" 的形式
+                    if(typeof entry === 'string') {
+                        if (entry[0] == '/') {
+                            entry = '.' + entry;
+                        } else if(entry[0] !== '.') {
+                            entry = './' + entry;
+                        }
+                    }
+
                     this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
                 } else {
                     this.setGroupExports(entry.name, entry.export);
