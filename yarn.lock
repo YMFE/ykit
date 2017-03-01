@@ -2885,9 +2885,9 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.npm.taobao.orgisstream/download/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-jerryproxy@^1.0.68:
-  version "1.0.73"
-  resolved "https://registry.npm.taobao.orgjerryproxy/download/jerryproxy-1.0.73.tgz#593265428953a06f0a93c54d4e64bdaad17e2568"
+jerryproxy@1.0.91:
+  version "1.0.91"
+  resolved "http://registry.npm.corp.qunar.com/jerryproxy/download/jerryproxy-1.0.91.tgz#f23ff24f03885a9299fd1e4e9abf9818849e1944"
   dependencies:
     babel-polyfill "^6.16.0"
     bluebird "^3.4.0"
