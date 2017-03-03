@@ -470,7 +470,7 @@ class Project {
                                 spinner.text = `[Minify] ${assetsInfo.length -
                                     processToRun}/${assetsInfo.length} assets`;
 
-                                if (processToRun === 0) {
+                                if(processToRun === 0) {
                                     cc.exit();
                                     spinner.stop();
 
@@ -517,6 +517,7 @@ class Project {
                                 statsInfo.errors.map(err => {
                                     error('[Bundle Error]: ' + err.red + '\n');
                                 });
+                                process.exit(1);
                             }
                             if (statsInfo.warnings.length > 0) {
                                 statsInfo.warnings.map(warning => {
