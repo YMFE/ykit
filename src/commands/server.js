@@ -206,11 +206,14 @@ exports.run = (options) => {
         }
 
         // 修改 publicPath 为当前服务
-        const dirs = UtilPath.normalize(outputDir).split(sysPath.sep);
-        const ouputDir = dirs[dirs.length - 1];
-        wpConfig.output.local.publicPath = 'http://' + UtilPath.normalize(sysPath.join(
-            '127.0.0.1:' + port, projectName, ouputDir + '/'
-        ), false);
+        let localPublicPath = wpConfig.output.local.publicPath;
+        const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
+        if(localPublicPath.match(hostReg).length === 4) {
+            localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
+                return [httpStr, splitStr, '127.0.0.1:' + port].join('');
+            });
+            wpConfig.output.local.publicPath = UtilPath.normalize(localPublicPath, false);
+        }
 
         // hot reload
         if(hot) {
