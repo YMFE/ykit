@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
 const child_process = require('child_process');
+const requireg = require('requireg');
 
 const UtilFs = require('../utils/fs.js');
 
@@ -19,7 +20,7 @@ exports.setOptions = (optimist) => {
 
 };
 
-exports.npmInstall = function() {
+exports.npmInstall = function(a) {
     let currentNpm = null;
 
     // 检测是否存在 ykit.*.js
@@ -29,9 +30,18 @@ exports.npmInstall = function() {
         process.exit(1);
     }
 
+    // 检测是否跳过 node_modules
+    let ignoreNpm = false;
+    if(configFile) {
+        const ykitConfig = requireg(sysPath.join(process.cwd(), configFile));
+        if(ykitConfig.build && ykitConfig.build.ignoreNpm) {
+            ignoreNpm = true;
+        }
+    }
+
     // 检测是否存在 node_modules
     const isNodeModulesExists = fs.existsSync(sysPath.join(process.cwd(), 'node_modules'));
-    if(isNodeModulesExists) {
+    if(isNodeModulesExists && !ignoreNpm) {
         log('发现仓库中已存在 node_modules，这会导致由于 npm 包系统版本不兼容而编译失败，请从仓库中删除并重新编译.');
         process.exit(1);
     }
