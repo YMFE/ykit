@@ -37,7 +37,7 @@ describe('Ykit CLI', () => {
         shell.cp('-R', path.join(cwd, 'examples', exampleName), path.join(cwd, 'cli-test'));
         shell.cd(examplePath);
 
-        const output = shell.exec('yarn install --registry https://registry.npm.taobao.org', {silent: true});
+        const output = shell.exec('yarn install --registry https://registry.npmjs.org/', {silent: true});
         if (output.code !== 0) {
             process.exit();
         }
