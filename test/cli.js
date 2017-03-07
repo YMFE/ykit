@@ -18,9 +18,7 @@ describe('Ykit CLI', () => {
         if (shell.test('-d', 'cli-test')) {
             shell.cd('cli-test');
         } else {
-            console.log('making dir');
             shell.mkdir('-p', 'cli-test');
-            console.log('making dir finish');
         }
     });
 
@@ -29,13 +27,14 @@ describe('Ykit CLI', () => {
     });
 
     after(function() {
-        console.log('after test');
         if (shell.test('-d', 'cli-test')) {
             shell.rm('-rf', 'cli-test');
         }
     });
 
+    console.log('test log');
     it('clone example project', () => {
+        console.log('clone example project');
         // install
         shell.cp('-R', path.join(cwd, 'examples', exampleName), path.join(cwd, 'cli-test'));
         shell.cd(examplePath);
