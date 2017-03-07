@@ -15,6 +15,7 @@ const examplePath = path.join(cwd, 'cli-test', exampleName)
 describe('Ykit CLI', () => {
 
     beforeEach(function() {
+        console.log('before test');
         if (shell.test('-d', 'cli-test')) {
             shell.cd('cli-test');
         } else {
@@ -27,6 +28,7 @@ describe('Ykit CLI', () => {
     });
 
     after(function() {
+        console.log('after test');
         if (shell.test('-d', 'cli-test')) {
             shell.rm('-rf', 'cli-test');
         }
