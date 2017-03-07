@@ -30,21 +30,9 @@ exports.npmInstall = function(a) {
         process.exit(1);
     }
 
-    // 检测是否跳过 node_modules
-    let ignoreNpm = false;
-    if(configFile) {
-        let ykitConfig = require(sysPath.join(process.cwd(), configFile));
-        if(typeof ykitConfig.config === 'function') {
-            ykitConfig = ykitConfig.config();
-        }
-        if(ykitConfig.build && ykitConfig.build.ignoreNpm) {
-            ignoreNpm = true;
-        }
-    }
-
     // 检测是否存在 node_modules
     const isNodeModulesExists = fs.existsSync(sysPath.join(process.cwd(), 'node_modules'));
-    if(isNodeModulesExists && !ignoreNpm) {
+    if(isNodeModulesExists) {
         log('发现仓库中已存在 node_modules，这会导致由于 npm 包系统版本不兼容而编译失败，请从仓库中删除并重新编译.');
         process.exit(1);
     }
