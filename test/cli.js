@@ -15,13 +15,12 @@ const examplePath = path.join(cwd, 'cli-test', exampleName)
 describe('Ykit CLI', () => {
 
     beforeEach(function() {
-        console.log('before test');
-        console.log(typeof shell);
-        console.log(shell.test('-d', 'cli-test'));
         if (shell.test('-d', 'cli-test')) {
             shell.cd('cli-test');
         } else {
+            console.log('making dir');
             shell.mkdir('-p', 'cli-test');
+            console.log('making dir finish');
         }
     });
 
