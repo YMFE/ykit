@@ -32,17 +32,19 @@ describe('Ykit CLI', () => {
         }
     });
 
-    console.log('test log');
     it('clone example project', () => {
-        console.log('clone example project');
         // install
         shell.cp('-R', path.join(cwd, 'examples', exampleName), path.join(cwd, 'cli-test'));
+        console.log('cp finish');
         shell.cd(examplePath);
+        console.log('cd finish');
 
         const output = shell.exec('yarn install --registry https://registry.npmjs.org/', {silent: true});
+        console.log('yarn install finish', output.code);
         if (output.code !== 0) {
-            process.exit();
+            process.exit(1);
         }
+        console.log('yarn test');
         expect(shell.test('-d', 'node_modules')).to.be.true;
     })
 
