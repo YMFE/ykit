@@ -39,7 +39,7 @@ describe('Ykit CLI', () => {
         shell.cd(examplePath);
         console.log('cd finish');
 
-        const output = shell.exec('yarn install --registry https://registry.npmjs.org/', {silent: true});
+        const output = shell.exec('npm install --registry https://registry.npmjs.org/', {silent: true});
         console.log('yarn install finish', output.code);
         if (output.code !== 0) {
             process.exit(1);
