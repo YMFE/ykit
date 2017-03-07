@@ -10,7 +10,7 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "test": "mocha --recursive --timeout 0",
+    "test": "mocha test/cli.js --timeout 0",
     "start": "cd .. && sudo node ykit/bin/ykit server",
     "doc": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && ydoc build && node tasks/post-process-doc.js",
     "release": "tasks/release.sh"
