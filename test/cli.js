@@ -16,6 +16,8 @@ describe('Ykit CLI', () => {
 
     beforeEach(function() {
         console.log('before test');
+        console.log(typeof shell);
+        console.log(shell.test('-d', 'cli-test'));
         if (shell.test('-d', 'cli-test')) {
             shell.cd('cli-test');
         } else {
