@@ -193,7 +193,8 @@ class Project {
                             module.config.call(userConfig, options, this.cwd);
                         }
                     } else {
-                        warn('没有找到 ' + pluginName + ' 配置插件.');
+                        logLinefeed();
+                        warn('没有找到 ' + pluginName + ' 配置插件，你可能需要安装相应 NPM 模块。插件文档见: http://ued.qunar.com/ykit/plugins.html');
                     }
                 }
             });
