@@ -187,7 +187,7 @@ exports.run = (options) => {
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
-        const rversion = /@[\d\w]+(?=\.\w+)/;
+        const rversion = /@[^\.]+(?=\.\w+)/;
         req.url = '/' + keys.slice(3).join('/').replace(rversion, '').replace(rquery, '');
 
         // 生成 cacheId
