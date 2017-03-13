@@ -66,7 +66,7 @@ exports.run = (options) => {
     // 预处理
     app.use((req, res, next) => {
         const extName = sysPath.extname(req.url);
-        extName === '.js' && res.setHeader('Content-Type', 'application/javascript');
+        extName === '.js' && res.setHeader('Content-Type', 'text/javascript; charset=UTF-8');
         extName === '.css' && res.setHeader('Content-Type', 'text/css; charset=UTF-8');
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
