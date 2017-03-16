@@ -6,9 +6,18 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const normalize = require('../utils/path').normalize;
 
 class Config {
-    constructor(cwd) {
+    constructor(cwd, configFile) {
         const dir = normalize(cwd).split('/');
         const projectDir = dir[dir.length - 1];
+
+        if(configFile) {
+            // 检查初始环境
+            const modulePath = sysPath.join(cwd, 'node_modules');
+            if(!fs.existsSync(modulePath)) {
+                fs.mkdirSync(modulePath);
+                fs.mkdirSync(sysPath.join(cwd, YKIT_CACHE_DIR));
+            }
+        }
 
         this._config = {
             cwd: cwd,
