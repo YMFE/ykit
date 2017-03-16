@@ -1553,12 +1553,6 @@ encodeurl@~1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.corp.qunar.com/encodeurl/download/encodeurl-1.0.1.tgz#79e3d58655346909fe6f0f45a5de68103b294d20"
 
-encoding@^0.1.11:
-  version "0.1.12"
-  resolved "http://registry.npm.corp.qunar.com/encoding/download/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
-  dependencies:
-    iconv-lite "~0.4.13"
-
 end-of-stream@~0.1.5:
   version "0.1.5"
   resolved "http://registry.npm.corp.qunar.com/end-of-stream/download/end-of-stream-0.1.5.tgz#8e177206c3c80837d85632e8b9359dfe8b2f6eaf"
@@ -2595,10 +2589,6 @@ iconv-lite@0.4.11:
 iconv-lite@0.4.13:
   version "0.4.13"
   resolved "http://registry.npm.corp.qunar.com/iconv-lite/download/iconv-lite-0.4.13.tgz#1f88aba4ab0b1508e8312acc39345f36e992e2f2"
-
-iconv-lite@~0.4.13:
-  version "0.4.15"
-  resolved "http://registry.npm.corp.qunar.com/iconv-lite/download/iconv-lite-0.4.15.tgz#fe265a218ac6a57cfe854927e9d04c19825eddeb"
 
 icss-replace-symbols@^1.0.2:
   version "1.0.2"
@@ -4434,7 +4424,7 @@ replacestream@^4.0.0:
     object-assign "^4.0.1"
     readable-stream "^2.0.2"
 
-request@^2.75.0, request@^2.79.0:
+request@^2.79.0:
   version "2.80.0"
   resolved "http://registry.npm.corp.qunar.com/request/download/request-2.80.0.tgz#8cc162d76d79381cdefdd3505d76b80b60589bd0"
   dependencies:
@@ -5367,14 +5357,6 @@ webpack-dev-middleware@1.9.0:
     path-is-absolute "^1.0.0"
     range-parser "^1.0.3"
 
-webpack-encoding-plugin-quiet@^0.2.1:
-  version "0.2.1"
-  resolved "http://registry.npm.corp.qunar.com/webpack-encoding-plugin-quiet/download/webpack-encoding-plugin-quiet-0.2.1.tgz#d162715765082f748e23deb13c505bdc95b3240f"
-  dependencies:
-    encoding "^0.1.11"
-    webpack "^1.12.4"
-    webpack-sources "^0.1.2"
-
 webpack-hot-middleware@^2.17.0:
   version "2.17.1"
   resolved "http://registry.npm.corp.qunar.com/webpack-hot-middleware/download/webpack-hot-middleware-2.17.1.tgz#0c8fbf6f93ff29c095d684b07ab6d6c0f2f951d7"
@@ -5384,14 +5366,14 @@ webpack-hot-middleware@^2.17.0:
     querystring "^0.2.0"
     strip-ansi "^3.0.0"
 
-webpack-sources@^0.1.0, webpack-sources@^0.1.2:
+webpack-sources@^0.1.0:
   version "0.1.4"
   resolved "http://registry.npm.corp.qunar.com/webpack-sources/download/webpack-sources-0.1.4.tgz#ccc2c817e08e5fa393239412690bb481821393cd"
   dependencies:
     source-list-map "~0.1.7"
     source-map "~0.5.3"
 
-webpack@1.14.0, webpack@^1.12.4:
+webpack@1.14.0:
   version "1.14.0"
   resolved "http://registry.npm.corp.qunar.com/webpack/download/webpack-1.14.0.tgz#54f1ffb92051a328a5b2057d6ae33c289462c823"
   dependencies:
