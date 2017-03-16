@@ -22,8 +22,10 @@ const ENVS = {
 class Project {
     constructor(cwd) {
         this.cwd = cwd;
+        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: cwd })[0] || '';
+
         this.plugins = [];
-        this.config = new Config(cwd);
+        this.config = new Config(cwd, this.configFile);
         this.commands = Manager.getCommands();
         this.middlewares = [];
         this.beforePackCallbacks = [];
@@ -33,7 +35,6 @@ class Project {
             afterPack: []
         };
         this.eslintConfig = require('../config/eslint.json');
-        this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: this.cwd })[0] || '';
         this.extendConfig = this.configFile &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
@@ -653,13 +654,6 @@ class Project {
             return sysPath.join(cwd, YKIT_CACHE_DIR);
         } catch (e) {
             // do nothing
-        }
-
-        try {
-            fs.statSync(sysPath.join(cwd, '.cache'));
-            return sysPath.join(cwd, '.cache');
-        } catch (e) {
-            isCacheExists == false;
         }
 
         return false;
