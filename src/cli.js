@@ -42,6 +42,7 @@ let cli = module.exports = {
             buildCmd.npmInstall();
         }
 
+        // 处理辅助命令
         if (option === '-v' || option === '--version') {
             log(version);
             return;
@@ -50,6 +51,7 @@ let cli = module.exports = {
             return;
         }
 
+        // 处理核心命令
         let project = Manager.getProject(process.cwd());
         let command = project.commands.filter((command) => command.name === option || command.abbr === option)[0];
         if (!command) {
