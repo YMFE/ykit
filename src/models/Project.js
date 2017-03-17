@@ -529,7 +529,7 @@ class Project {
                             }
 
                             process.stdout.write(
-                                '\n--------------------------  YKIT PACKED ASSETS  --------------------------\n\n'
+                                '\n---------------------  YKIT EMITTED ASSETS  ---------------------\n\n'
                             );
 
                             const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
