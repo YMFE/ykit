@@ -145,10 +145,10 @@ class Project {
                 if(typeof pluginItem === 'string') {
                     pluginName = pluginItem;
                 } else if(typeof pluginItem === 'object') {
-                    pluginName = pluginItem.plugin ? pluginItem.plugin : '';
+                    pluginName = pluginItem.name ? pluginItem.name : '';
                     typeof pluginItem.options === 'object' && extend(options, pluginItem.options);
                 } else {
-                    error('插件配置有误，请检查 ykit.js');
+                    error(pluginItem.name + ' 插件配置有误，请检查 ykit.js');
                     process.exit(1);
                 }
 
@@ -194,8 +194,9 @@ class Project {
                             module.config.call(userConfig, options, this.cwd);
                         }
                     } else {
-                        logLinefeed();
-                        warn('没有找到 ' + pluginName + ' 配置插件，你可能需要安装相应 NPM 模块。插件文档见: http://ued.qunar.com/ykit/plugins.html');
+                        error('没有找到 ' + pluginName + ' 配置插件，你可能需要安装相应 NPM 模块。\n'
+                            +'   插件文档见: ' + 'http://ued.qunar.com/ykit/plugins.html'.underline);
+                        process.exit(1);
                     }
                 }
             });
