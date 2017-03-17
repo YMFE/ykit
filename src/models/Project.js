@@ -378,6 +378,11 @@ class Project {
     pack(opt, callback) {
         let self = this, packStartTime = Date.now(), config = this.config.getConfig();
 
+        if(Object.keys(config.entry).length === 0) {
+            warn('没有发现资源入口，也许你需要设置 exports。');
+            process.exit(1);
+        }
+
         UtilFs.deleteFolderRecursive(this.cachePath);
 
         const compilerProcess = () => {
