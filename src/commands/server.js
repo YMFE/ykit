@@ -200,18 +200,20 @@ exports.run = (options) => {
         }
 
         // 修改 publicPath 为当前服务
-        let localPublicPath = wpConfig.output.local.publicPath;
-        const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
-        if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
-            localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
-                httpStr = httpStr || '';
-                return httpStr + splitStr + UtilPath.normalize(['127.0.0.1:' + port].join(''), false);
-            });
-            wpConfig.output.local.publicPath = localPublicPath;
-        } else if(hot){
-            // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
-            const relativePath = sysPath.relative(projectCwd, wpConfig.output.local.path);
-            wpConfig.output.local.publicPath = `/${projectName}/${relativePath}/`;
+        if(project.config.replacingPublicPath !== false) {
+            let localPublicPath = wpConfig.output.local.publicPath;
+            const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
+            if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
+                localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
+                    httpStr = httpStr || '';
+                    return httpStr + splitStr + UtilPath.normalize(['127.0.0.1:' + port].join(''), false);
+                });
+                wpConfig.output.local.publicPath = localPublicPath;
+            } else {
+                // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
+                const relativePath = sysPath.relative(projectCwd, wpConfig.output.local.path);
+                wpConfig.output.local.publicPath = `/${projectName}/${relativePath}/`;
+            }
         }
 
         // hot reload
