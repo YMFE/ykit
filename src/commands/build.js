@@ -22,38 +22,42 @@ exports.setOptions = (optimist) => {
 
 exports.npmInstall = function(a) {
     let currentNpm = null;
+    const cwd = process.cwd();
 
     // 检测是否存在 ykit.*.js
-    const configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: process.cwd() })[0];
+    const configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: cwd })[0];
     if(!configFile) {
-        log('未发现存在 ykit 配置文件，编译退出.');
+        logError('Local ykit.js not found in' + cwd);
         process.exit(1);
     }
 
     // 检测是否存在 node_modules
-    const isNodeModulesExists = fs.existsSync(sysPath.join(process.cwd(), 'node_modules'));
+    const isNodeModulesExists = fs.existsSync(sysPath.join(cwd, 'node_modules'));
     if(isNodeModulesExists) {
-        log('发现仓库中已存在 node_modules，这会导致由于 npm 包系统版本不兼容而编译失败，请从仓库中删除并重新编译.');
+        logError('Find node_modules in the current directory which can cause compilation failure.');
+        logError('Please remove it from your registry.');
+        logInfo('Visit ' + 'http://ued.qunar.com/ykit/docs-%E5%8F%91%E5%B8%83.html'.underline + ' for doc.');
         process.exit(1);
     }
 
     try {
         child_process.execSync('npm_cache_share -h');
 
-        if(UtilFs.fileExists(sysPath.join(process.cwd(), 'yarn.lock'))) {
+        if(UtilFs.fileExists(sysPath.join(cwd, 'yarn.lock'))) {
             currentNpm = 'npm_cache_share';
-            log('将使用 npm_cache_share + yarn 进行模块安装.');
-        } else if(UtilFs.fileExists(sysPath.join(process.cwd(), 'npm-shrinkwrap.json'))) {
+            log('Installing npm modules with npm_cache_share + yarn.');
+        } else if(UtilFs.fileExists(sysPath.join(cwd, 'npm-shrinkwrap.json'))) {
             currentNpm = 'npm_cache_share';
-            log('将使用 npm_cache_share + npm 进行模块安装.');
+            log('Installing npm modules with npm_cache_share + npm.');
         } else {
             currentNpm = 'npm';
-            log('yarn.lock/npm-shrinkwrap.json 不存在，将使用 npm 进行模块安装.');
-            log('建议使用 yarn.lock 或 npm-shrinkwrap.json 固定模块版本，否则构建存在风险。文档请参考：http://ued.qunar.com/ykit/docs-npm%20shrinkwrap.html');
+            log('Installing npm modules with npm.');
+            logWarn('please use yarn or shrinkwrap to lock down the versions of packages.');
+            logInfo('Visit ' + 'http://ued.qunar.com/ykit/docs-npm%20shrinkwrap.html'.underline + ' for doc.');
         }
     } catch (e) {
         currentNpm = 'npm';
-        log('yarn.lock/npm_cache_share 不存在，将使用 npm 进行模块安装.');
+        log('Installing npm modules with npm.');
     }
 
     // cache clean
@@ -70,10 +74,10 @@ exports.run = function(options) {
     execute('ykit -v');
 
     // build
-    log('Build Started.');
+    log('Building Started.');
     execute('ykit pack -m -q');
     clearGitHooks();
-    log('Build Finished.\n');
+    log('Building Finished.\n');
 
     function clearGitHooks() {
         const gitHooksDir = './.git/hooks/';
@@ -103,7 +107,7 @@ function execute(cmd) {
     });
 
     if (child.code !== 0) {
-        log('Building encounted error while executing ' + cmd);
+        logError('Building encounted error while executing ' + cmd);
         process.exit(1);
     }
 

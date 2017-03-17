@@ -127,7 +127,7 @@ exports.run = function (options) {
         if (!UtilFs.fileExists(packageJsonPath)) {
             let writePackageJsonStream = create();
             writePackageJsonStream.on('finish', () => {
-                log('Saved package.json file in ' + cwd);
+                logInfo('Saved package.json file in ' + cwd);
                 callback(null);
             });
         } else {
@@ -156,7 +156,7 @@ exports.run = function (options) {
             const stream = fs.createReadStream(configFilePath).pipe(replaceStream('#_name', projectName)).pipe(writeStream);
 
             stream.on('finish', () => {
-                log('Saved ' + configFileName + ' in ' + cwd);
+                logInfo('Saved ' + configFileName + ' in ' + cwd);
                 callback(null);
             });
         } else {
@@ -167,7 +167,7 @@ exports.run = function (options) {
     function setup(callback) {
         const initParams = process.argv.slice(4) || [];
         const setupCmd = `ykit setup ${initParams.join(' ')}`;
-        log('Running ' + setupCmd);
+        logInfo('Running ' + setupCmd);
         shell.exec(
             setupCmd,
             {silent: false},

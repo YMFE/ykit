@@ -339,7 +339,7 @@ exports.run = (options) => {
                     });
                 } else {
                     res.statusCode = 404;
-                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的ykit配置文件.');
+                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
                 }
             }, 100);
         } else {
@@ -427,9 +427,9 @@ exports.run = (options) => {
     servers.forEach((server) => {
         server.on('error', (e) => {
             if (e.code === 'EACCES') {
-                warn('权限不足, 请使用sudo/管理员模式执行');
+                logError('Permission denied. Please try running again as root/Administrator.');
             } else if (e.code === 'EADDRINUSE') {
-                warn('端口 ' + server._port + ' 已经被占用, 请关闭占用该端口的程序或者使用其它端口.');
+                logError('Port ' + server._port + ' has been opened by another application.');
             }
             process.exit(1);
         });
@@ -439,7 +439,7 @@ exports.run = (options) => {
                 + server._port;
 
             !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
-            log('Available on: ' + serverUrl.underline);
+            logInfo('Available on: ' + serverUrl.underline);
         });
     });
 

@@ -63,7 +63,7 @@ class Project {
             });
             nextCommands.forEach((cmd) => {
                 if(existCommands.indexOf(cmd.name) > -1) {
-                    warn(`命令 ${cmd.name} 已经存在，可能会造成冲突。\n`);
+                    logWarn(`Command ${cmd.name} exists. It may cause collision.`);
                 }
             });
 
@@ -148,7 +148,8 @@ class Project {
                     pluginName = pluginItem.name ? pluginItem.name : '';
                     typeof pluginItem.options === 'object' && extend(options, pluginItem.options);
                 } else {
-                    error(pluginItem.name + ' 插件配置有误，请检查 ykit.js');
+                    logError(pluginItem.name || 'Unknown' + ' plugin config error，please check local ykit.js.');
+                    logDoc('http://ued.qunar.com/ykit/plugins.html');
                     process.exit(1);
                 }
 
@@ -194,8 +195,8 @@ class Project {
                             module.config.call(userConfig, options, this.cwd);
                         }
                     } else {
-                        error('没有找到 ' + pluginName + ' 配置插件，你可能需要安装相应 NPM 模块。\n'
-                            +'   插件文档见: ' + 'http://ued.qunar.com/ykit/plugins.html'.underline);
+                        logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
+                        logDoc('http://ued.qunar.com/ykit/plugins.html');
                         process.exit(1);
                     }
                 }
@@ -216,11 +217,8 @@ class Project {
                 } else if(typeof configMethod.config === 'object') {
                     handleConfigObj.bind(this)(configMethod.config);
                 } else {
-                    error(
-                        this.configFile +
-                            ' 缺少 config 配置项，请参考文档 ' +
-                            'http://ued.qunar.com/ykit/docs-配置.html'.underline
-                    );
+                    logError('Local ' + this.configFile + ' config not found.');
+                    logDoc('http://ued.qunar.com/ykit/docs-配置.html');
                     process.exit(1);
                 }
 
@@ -379,7 +377,8 @@ class Project {
         let self = this, packStartTime = Date.now(), config = this.config.getConfig();
 
         if(Object.keys(config.entry).length === 0) {
-            warn('没有发现资源入口，也许你需要设置 exports。');
+            logWarn('Local config exports aseets not found.');
+            logDoc('http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html');
             process.exit(1);
         }
 
@@ -482,8 +481,6 @@ class Project {
                                     cc.exit();
                                     spinner.stop();
 
-                                    logTime('minify complete!');
-
                                     // 更新 stats
                                     stats.compilation.assets = Object.keys(nextAssets).length > 0
                                         ? nextAssets
@@ -558,7 +555,7 @@ class Project {
                             const packDuration = Date.now() - packStartTime > 1000
                                 ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
                                 : Date.now() - packStartTime + 'ms';
-                            log('Packing Finished in ' + packDuration + '.\n');
+                            logInfo('Bundling Finishes in ' + packDuration + '.\n');
 
                             callback(err, stats);
                         }

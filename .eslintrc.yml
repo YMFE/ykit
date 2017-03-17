@@ -47,6 +47,10 @@ globals:
   spinner: true
   logTime: true
   mkdirp: true
+  logError: true
+  logWarn: true
+  logInfo: true
+  logDoc: true
   JSON5: true
   YKIT_COMMANDS_PATH: true
   YKIT_RC: true
