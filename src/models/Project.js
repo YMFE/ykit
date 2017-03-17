@@ -220,7 +220,7 @@ class Project {
                             ' 设置有误，请参考文档 ' +
                             'http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html'.underline
                     );
-                    return this;
+                    process.exit(1);
                 }
 
                 function handleConfigObj(userConfigObj) {
