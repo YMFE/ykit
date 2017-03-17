@@ -217,8 +217,8 @@ class Project {
                 } else {
                     error(
                         this.configFile +
-                            ' 设置有误，请参考文档 ' +
-                            'http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html'.underline
+                            ' 缺少 config 配置项，请参考文档 ' +
+                            'http://ued.qunar.com/ykit/docs-配置.html'.underline
                     );
                     process.exit(1);
                 }
