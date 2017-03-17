@@ -1,5 +1,6 @@
-exports.config = function() {
-    return {
+module.exports = {
+    plugins: [],
+    config: {
         export: [
             './scripts/index.js',
             './styles/index.css'
@@ -16,5 +17,7 @@ exports.config = function() {
                 run: function() {}
             }
         }]
-    };
+    },
+    hooks: {},
+    commands: []
 };
