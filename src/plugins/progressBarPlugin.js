@@ -17,10 +17,6 @@ function ProgressBarPlugin() {
         if (msg) {
             if (msg !== 'emit') {
                 spinner.text = '[Bundler] ' + msg;
-
-                if (msg.indexOf('optimize') > -1) {
-                    spinner.render();
-                }
             }
         }
     });
