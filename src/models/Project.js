@@ -518,16 +518,17 @@ class Project {
                         err => {
                             let statsInfo = stats.toJson({ errorDetails: false });
 
-                            if (statsInfo.errors.length > 0) {
-                                statsInfo.errors.map(err => {
-                                    error('[Bundle Error]: ' + err.red + '\n');
-                                });
-                                process.exit(1);
-                            }
                             if (statsInfo.warnings.length > 0) {
                                 statsInfo.warnings.map(warning => {
-                                    warn('[Bundle Warninig]: ' +warning.yellow + '\n');
+                                    logWarn(warning + '\n');
                                 });
+                            }
+
+                            if (statsInfo.errors.length > 0) {
+                                statsInfo.errors.map(err => {
+                                    logError(err + '\n');
+                                });
+                                process.exit(1);
                             }
 
                             process.stdout.write(
