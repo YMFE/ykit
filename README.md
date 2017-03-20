@@ -1,6 +1,6 @@
 # Ykit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
 
-It's a pain to set webpack configs for various apps. Using plugins, ykit offers reliable encapsulated configuration and help you manage it. You can set up an app easily and customize your project through ykit's flexable config.
+It's a pain to set webpack configs for various apps. Using plugins, ykit offers reliable encapsulated configuration and help you manage it. You can set up an app easily and customize your project through ykit's flexable config options.
 
 ## Quick Start
 
