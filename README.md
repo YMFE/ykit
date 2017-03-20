@@ -32,10 +32,10 @@ module.exports = {
 - **plugins** - To configure plugins inside of a configuration file, use the plugins key, which contains a list of plugin names. Every plugin encapsulates respective webpack configs.
 - **config** - Config object:
     - **exports** - Asset entries.
-    - **modifyWebpackConfig** - Callback function for editing kyt's Webpack configs.
+    - **modifyWebpackConfig** - Callback function for editing ykit's Webpack configs.
 
 ## Document
 
-Visit [http://ued.qunar.com/ykit/][1] For more doc.
+Visit [http://ued.qunar.com/ykit/][1] for more doc.
 
 [1]: http://ued.qunar.com/ykit/index.html
