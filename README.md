@@ -1,11 +1,41 @@
-# Ykit
+# Ykit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
 
-[![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
+It's a pain to set webpack configs for various apps. Ykit offers reliable encapsulated configuration and help you manage it. You can start to run an app easily and customize your project through ykit's flexable config.
 
-Ykit 是一套可配置和可扩展的前端开发工具集，核心功能包括资源打包、静态资源服务、代码质量检测。Ykit 基于 webpack，支持 CommonJs, AMD, ES6 modules, Coffeescript, CSS, SASS, LESS 等模块类型的打包。
+## Quick Start
 
-Ykit 的初衷在于快速搭建不同的开发环境。它提供一个可靠的基础配置，通过可插拔的插件来进行扩展（编译插件、服务中间件、工具和命令...），并让开发者可以灵活地根据不同项目来修改配置。
+1. `npm install ykit -g`
+2. `mkdir ykit-app && cd ykit-app`
+3. `ykit init`
+4. `cd .. && ykit server`
+5. Check out `localhost/ykit-app/index.html`
 
-更多信息请查看[文档站][1]。
+After setting up your project, there will be the config file called `ykit.js` in your project root directory：
+
+```javascript
+module.exports = {
+    plugins: [],
+    config: {
+        export: ['./scripts/index.js', './styles/index.css'],
+        modifyWebpackConfig: function modifyWebpackConfig(baseConfig) {
+            // edit webpack configs
+            return baseConfig;
+        }
+    },
+    hooks: {},
+    commands: []
+};
+```
+
+## Config Options
+
+- **plugins** - To configure plugins inside of a configuration file, use the plugins key, which contains a list of plugin names. Every plugin encapsulates respective webpack configs.
+- **config** - Config object:
+    - **exports** - Asset entries.
+    - **modifyWebpackConfig** - Callback function for editing kyt's Webpack configs.
+
+## Document
+
+Visit [http://ued.qunar.com/ykit/][1] For more doc.
 
 [1]: http://ued.qunar.com/ykit/index.html
