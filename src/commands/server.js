@@ -204,10 +204,12 @@ exports.run = (options) => {
             let localPublicPath = wpConfig.output.local.publicPath;
             const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
             if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
+                localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);
                 localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
                     httpStr = httpStr || '';
-                    return httpStr + splitStr + UtilPath.normalize(['127.0.0.1:' + port].join(''), false);
+                    return httpStr + '//' + '127.0.0.1:' + port;
                 });
+
                 wpConfig.output.local.publicPath = localPublicPath;
             } else {
                 // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
