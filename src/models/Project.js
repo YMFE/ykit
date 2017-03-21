@@ -528,7 +528,7 @@ class Project {
                                     }
 
                                     if (!/\.cache$/.test(asset.name)) {
-                                        log('- '.gray + asset.name + ' - ' + fileSize);
+                                        log('- '.gray + asset.name.bold + ' - ' + fileSize);
                                     }
                                 }
                             });

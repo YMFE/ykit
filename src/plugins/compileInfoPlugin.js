@@ -3,6 +3,7 @@
 const webpack = require('webpack');
 const moment = require('moment');
 const formatOutput = require('./tools/formatOutput.js');
+const logSymbols = require('log-symbols');
 
 function DashboardPlugin() {
 
@@ -61,10 +62,21 @@ DashboardPlugin.prototype.apply = function(compiler) {
                         }
                     };
 
-                    const dateFormat = 'YY.MM.DD HH:mm:ss';
+                    const statsInfo = stats.toJson({ errorDetails: false });
+                    const dateFormat = 'HH:mm:ss';
+                    const dateLog = '[' + moment().format(dateFormat) + ']';
+
                     if (stats.hasErrors()) {
-                        spinner.text = '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m' + ' Compile Failed.';
+                        const logMsg = 'Failed to compile with ' + statsInfo.errors.length + ' errors.';
+                        spinner.text = dateLog.grey + ' ' + logMsg.red;
                         spinner.fail();
+                        spinner.text = '';
+                    }
+
+                    if (stats.hasWarnings()) {
+                        const logMsg = 'Compile with ' + statsInfo.warnings.length + ' warnings.';
+                        spinner.text = dateLog.grey + ' ' + logMsg.yellow;
+                        spinner.stopAndPersist(logSymbols.warning);
                         spinner.text = '';
                     }
 
@@ -128,7 +140,7 @@ DashboardPlugin.prototype.apply = function(compiler) {
             value: {
                 errors: stats.hasErrors(),
                 warnings: stats.hasWarnings(),
-                data: stats.toJson()
+                data: stats.toJson({errorDetails: false})
             }
         }]);
     });

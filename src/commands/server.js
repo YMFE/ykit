@@ -360,18 +360,21 @@ exports.run = (options) => {
                 promiseCache[projectName].push(requestPromise);
             }
 
-            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler,
+            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
+                compiler,
                 {
                     quiet: true, reporter: ({state, stats}) => {
-                        // 打印编译完成时间（过小的不展示）
-                        const minDuration = 100;
-                        if(stats.endTime - stats.startTime > minDuration) {
-                            spinner.text = '\x1b[90m' + '[' + moment().format(dateFormat)
-                                         + '] building complete in ' + (stats.endTime - stats.startTime) + 'ms.';
-                            spinner.stopAndPersist(logSymbols.info);
-                        } else {
-                            spinner.stop();
+                        if(!stats.hasErrors() && !stats.hasWarnings()) {
+                            // 打印编译完成时间（过小的不展示）
+                            const minDuration = 100;
+                            if(stats.endTime - stats.startTime > minDuration) {
+                                const dateLog = '[' + moment().format(dateFormat) + ']';
+                                const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
+                                spinner.text = dateLog.grey + successText.green;
+                                spinner.succeed();
+                            }
                         }
+                        spinner.stop();
                         spinner.text = '';
 
                         Object.keys(stats.compilation.assets).map((key) => {
