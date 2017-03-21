@@ -490,7 +490,12 @@ class Project {
                                 }
                             };
                         }),
-                        err => {
+                        (err) => {
+                            if(err) {
+                                logError(err);
+                                process.exit(1);
+                            }
+
                             let statsInfo = stats.toJson({ errorDetails: false });
 
                             if (statsInfo.warnings.length > 0) {
@@ -551,7 +556,7 @@ class Project {
                     // 支持异步调用
                     let isAsync = false;
                     beforePackItem.bind({
-                        async: function(){
+                        async: function() {
                             isAsync = true;
                             return callback;
                         }
@@ -562,7 +567,11 @@ class Project {
                     }
                 };
             })),
-            err => {
+            (err) => {
+                if(err) {
+                    logError(err);
+                    process.exit(1);
+                }
                 compilerProcess();
             }
         );
