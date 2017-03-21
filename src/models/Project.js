@@ -51,10 +51,6 @@ class Project {
         this.readConfig();
     }
 
-    check() {
-        return !!this.configFile;
-    }
-
     setCommands(nextCommands) {
         if (Array.isArray(nextCommands)) {
             // 检查是否有重复的命令
@@ -89,180 +85,159 @@ class Project {
         }
     }
 
-    readConfig(options) {
-        if (this.check()) {
-            let globalConfigs = Manager.readRC().configs || [],
-                userConfig = {
-                    cwd: this.cwd,
-                    _manager: Manager,
-                    setConfig: this.config.setCompiler.bind(this.config), // 兼容旧api
-                    setCompile: this.config.setCompiler.bind(this.config), // 兼容旧api
-                    setCompiler: this.config.setCompiler.bind(this.config),
-                    setExports: this.config.setExports.bind(this.config),
-                    setGroupExports: this.config.setGroupExports.bind(this.config),
-                    setSync: this.config.setSync.bind(this.config),
-                    setCommands: this.setCommands.bind(this),
-                    setEslintConfig: this.setEslintConfig.bind(this),
-                    config: this.config.getConfig(),
-                    commands: this.commands,
-                    middlewares: this.middlewares,
-                    // 兼容 ykit-config-yo 的 beforePackCallbacks 和 packCallbacks
-                    applyBeforePack: this.applyBeforePack.bind(this),
-                    beforePackCallbacks: this.beforePackCallbacks,
-                    packCallbacks: this.packCallbacks,
-                    hooks: this.hooks,
-                    eslintConfig: this.eslintConfig,
-                    applyMiddleware: this.config.applyMiddleware.bind(this.config),
-                    env: this._getCurrentEnv(), // 默认为本地环境,
-                    webpack: webpack
-                };
+    readConfig() {
+        if(!this.configFile) {
+            // no local config, i.e., server command)
+            return;
+        }
 
-            // 从基础配置往下传给 plugins 和项目配置的 options
-            this.options = options = options || {};
-            options.ExtractTextPlugin = ExtractTextPlugin;
+        let globalConfigs = Manager.readRC().configs || [],
+            localConfig = {
+                cwd: this.cwd,
+                _manager: Manager,
+                setConfig: this.config.setCompiler.bind(this.config), // 兼容旧 api
+                setCompile: this.config.setCompiler.bind(this.config), // 兼容旧 api
+                setCompiler: this.config.setCompiler.bind(this.config),
+                setExports: this.config.setExports.bind(this.config),
+                setSync: this.config.setSync.bind(this.config),
+                setCommands: this.setCommands.bind(this),
+                setEslintConfig: this.setEslintConfig.bind(this),
+                config: this.config.getConfig(),
+                commands: this.commands,
+                middlewares: this.middlewares,
+                applyBeforePack: this.applyBeforePack.bind(this),
+                beforePackCallbacks: this.beforePackCallbacks, // 兼容 ykit-config-yo 的 beforePackCallbacks
+                packCallbacks: this.packCallbacks, // 兼容 ykit-config-yo 的 packCallbacks
+                hooks: this.hooks,
+                eslintConfig: this.eslintConfig,
+                applyMiddleware: this.config.applyMiddleware.bind(this.config),
+                env: this._getCurrentEnv(), // 默认为本地环境,
+                webpack: webpack
+            };
 
-            // 获取项目配置中的插件
-            const configMethod = this._requireUncached(sysPath.join(this.cwd, this.configFile));
-            const ykitConfigStartWith = 'ykit-config-';
-            if(Array.isArray(configMethod.plugins)) {
-                this.plugins = configMethod.plugins;
-            } else if(typeof configMethod.plugins === 'string'){
-                this.plugins = [configMethod.plugins];
-            }
+        // 获取项目配置
+        const ykitConfigFile = this._requireUncached(sysPath.join(this.cwd, this.configFile));
 
-            // 通过配置文件名获取插件
-            if (this.extendConfig && this.extendConfig !== 'config') {
-                const pluginName = ykitConfigStartWith + this.extendConfig;
-                if(this.plugins.indexOf(this.extendConfig) === -1) {
-                    this.plugins.push(pluginName);
-                }
-            }
-
-            // 通过插件扩展配置
-            this.plugins.map((pluginItem) => {
-                let pluginName = '';
-
-                if(typeof pluginItem === 'string') {
-                    pluginName = pluginItem;
-                } else if(typeof pluginItem === 'object') {
-                    pluginName = pluginItem.name ? pluginItem.name : '';
-                    typeof pluginItem.options === 'object' && extend(options, pluginItem.options);
-                } else {
-                    logError(pluginItem.name || 'Unknown' + ' plugin config error，please check local ykit.js.');
-                    logDoc('http://ued.qunar.com/ykit/plugins.html');
-                    process.exit(1);
-                }
-
-                if(pluginName.indexOf(ykitConfigStartWith) === -1) {
-                    pluginName = ykitConfigStartWith + pluginName;
-                }
-
-                const localSearchPath = sysPath.join(this.cwd, 'node_modules/', pluginName);
-                const localSearchPathQnpm = sysPath.join(
-                    this.cwd,
-                    'node_modules/',
-                    '@qnpm/' + pluginName
-                );
-                let pluginPath = '';
-
-                if (requireg.resolve(localSearchPath)) {
-                    pluginPath = localSearchPath;
-                } else if (requireg.resolve(localSearchPathQnpm)) {
-                    pluginPath = localSearchPathQnpm;
-                    pluginName = '@qnpm/' + pluginName;
-                }
-
-                if (fs.existsSync(pluginPath)) {
-                    let module = require(pluginPath);
-
-                    if (module && module.config) {
-                        module.config.call(userConfig, options, this.cwd);
-                    }
-
-                    // 扩展 eslint 配置
-                    extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
-                    this.ignores.push(Manager.loadIgnoreFile(pluginPath));
-                } else {
-                    // 寻找全局插件
-                    let item = globalConfigs.filter(item => item.name == pluginName)[0];
-                    if (item) {
-                        let module = require(item.path);
-
-                        extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(item.path));
-                        this.ignores.push(Manager.loadIgnoreFile(item.path));
-
-                        if (module && module.config) {
-                            module.config.call(userConfig, options, this.cwd);
-                        }
-                    } else {
-                        logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
-                        logDoc('http://ued.qunar.com/ykit/plugins.html');
-                        process.exit(1);
-                    }
-                }
-            });
-
-            extend(true, userConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
-            this.ignores.push(Manager.loadIgnoreFile(this.cwd));
-
-            if (configMethod) {
-                // 如果传入的是一个简单数组
-                if (Array.isArray(configMethod)) {
-                    this.config.setExports(configMethod);
-                }
-
-                // 如果传入的是一个处理配置方法或对象
-                if (typeof configMethod.config === 'function') {
-                    handleConfigObj.bind(this)(configMethod.config.call(userConfig, options, this.cwd));
-                } else if(typeof configMethod.config === 'object') {
-                    handleConfigObj.bind(this)(configMethod.config);
-                } else {
-                    logError('Local ' + this.configFile + ' config not found.');
-                    logDoc('http://ued.qunar.com/ykit/docs-配置.html');
-                    process.exit(1);
-                }
-
-                function handleConfigObj(userConfigObj) {
-                    if(!userConfigObj) {
-                        return;
-                    }
-
-                    let exports = null;
-                    if (Array.isArray(userConfigObj.export)) {
-                        exports = userConfigObj.export;
-                    } else if (Array.isArray(userConfigObj.exports)) {
-                        exports = userConfigObj.exports;
-                    }
-
-                    if (exports) {
-                        exports = exports.filter(item => {
-                            if (typeof item === 'object' && !Array.isArray(item)) {
-                                this.config.setGroupExports(item.name, item.export);
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        });
-                    }
-
-                    extend(true, this.config, userConfigObj);
-                    this.config.setExports(exports);
-                    this.config.setCompiler(userConfigObj.modifyWebpackConfig, userConfig);
-                    this.config.setSync(userConfigObj.sync);
-                    this.setCommands(configMethod.commands || userConfigObj.command); // 后者兼容以前形式
-                    this.setHooks(configMethod.hooks);
-                }
-            }
-
-            let output = this.config.getConfig().output;
-            for (let key in output) {
-                var op = output[key];
-                if (op.path && !sysPath.isAbsolute(op.path)) {
-                    op.path = sysPath.join(this.cwd, op.path);
-                }
+        // 获取插件
+        const ykitConfigStartWith = 'ykit-config-';
+        if(Array.isArray(ykitConfigFile.plugins)) {
+            this.plugins = ykitConfigFile.plugins;
+        } else if(typeof ykitConfigFile.plugins === 'string'){
+            this.plugins = [ykitConfigFile.plugins];
+        }
+        if (this.extendConfig && this.extendConfig !== 'config') {
+            const pluginName = ykitConfigStartWith + this.extendConfig;
+            if(this.plugins.indexOf(this.extendConfig) === -1) {
+                this.plugins.push(pluginName);
             }
         }
-        return this;
+
+        // 通过插件扩展配置
+        this.plugins.map((pluginItem) => {
+            let pluginName = '';
+
+            // 获取插件信息
+            if(typeof pluginItem === 'string') {
+                pluginName = pluginItem;
+            } else if(typeof pluginItem === 'object') {
+                pluginName = pluginItem.name ? pluginItem.name : '';
+                // 兼容以前从 options 传进去 ExtractTextPlugin
+                if(typeof pluginItem.options === 'object') {
+                    pluginItem.options.ExtractTextPlugin = ExtractTextPlugin;
+                }
+            } else {
+                logError(pluginItem.name || 'Unknown' + ' plugin config error，please check local ykit.js.');
+                logDoc('http://ued.qunar.com/ykit/plugins.html');
+                process.exit(1);
+            }
+
+            if(pluginName.indexOf(ykitConfigStartWith) === -1) {
+                pluginName = ykitConfigStartWith + pluginName;
+            }
+
+            // 寻找插件模块位置
+            const localSearchPath = sysPath.join(this.cwd, 'node_modules/', pluginName);
+            const localSearchPathQnpm = sysPath.join(
+                this.cwd,
+                'node_modules/',
+                '@qnpm/' + pluginName
+            );
+            let pluginPath = '';
+            if (requireg.resolve(localSearchPath)) {
+                pluginPath = localSearchPath;
+            } else if (requireg.resolve(localSearchPathQnpm)) {
+                pluginPath = localSearchPathQnpm;
+                pluginName = '@qnpm/' + pluginName;
+            }
+
+            if (fs.existsSync(pluginPath)) {
+                let module = require(pluginPath);
+
+                // 运行插件模块
+                if (module && module.config) {
+                    handleExportsConfig.bind(this)(module.config, pluginItem.options);
+                    this.setCommands(module.commands || ykitConfigFile.config.command); // 后者兼容以前形式
+                    this.setHooks(module.hooks);
+                }
+
+                // 扩展 eslint 配置
+                extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
+                this.ignores.push(Manager.loadIgnoreFile(pluginPath));
+            } else {
+                logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
+                logDoc('http://ued.qunar.com/ykit/plugins.html');
+                process.exit(1);
+            }
+        });
+
+        if (ykitConfigFile && ykitConfigFile.config) {
+            extend(true, this.config, ykitConfigFile.config);
+            handleExportsConfig.bind(this)(ykitConfigFile.config);
+            this.setCommands(ykitConfigFile.commands || ykitConfigFile.config.command); // 后者兼容以前形式
+            this.setHooks(ykitConfigFile.hooks);
+        } else {
+            logError('Local ' + this.configFile + ' config not found.');
+            logDoc('http://ued.qunar.com/ykit/docs-配置.html');
+            process.exit(1);
+        }
+
+        // 处理 eslint
+        extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
+        this.ignores.push(Manager.loadIgnoreFile(this.cwd));
+
+        // 处理 output
+        let output = this.config.getConfig().output;
+        for (let key in output) {
+            var op = output[key];
+            if (op.path && !sysPath.isAbsolute(op.path)) {
+                op.path = sysPath.join(this.cwd, op.path);
+            }
+        }
+
+        // 处理 exports.config
+        function handleExportsConfig(exportsConfig, options) {
+
+            if (typeof exportsConfig === 'function') {
+                options = options ? options : {};
+                options.ExtractTextPlugin = ExtractTextPlugin; // 兼容以前从 options 传进去 ExtractTextPlugin
+
+                const configFunResult = exportsConfig.call(localConfig, options, this.cwd);
+                exportsConfig = configFunResult ? configFunResult : exportsConfig;
+            }
+
+            if(exportsConfig.export || exportsConfig.exports) {
+                let exports = null;
+                if (Array.isArray(exportsConfig.export)) {
+                    exports = exportsConfig.export;
+                } else if (Array.isArray(exportsConfig.exports)) {
+                    exports = exportsConfig.exports;
+                }
+                this.config.setExports(exports);
+            }
+
+            this.config.setCompiler(exportsConfig.modifyWebpackConfig, localConfig);
+            this.config.setSync(exportsConfig.sync);
+        }
     }
 
     fixCss() {
