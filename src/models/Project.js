@@ -150,7 +150,6 @@ class Project {
                 } else {
                     logError(pluginItem.name || 'Unknown' + ' plugin config error，please check local ykit.js.');
                     logDoc('http://ued.qunar.com/ykit/plugins.html');
-                    process.exit(1);
                 }
 
                 if(pluginName.indexOf(ykitConfigStartWith) === -1) {
@@ -197,7 +196,6 @@ class Project {
                     } else {
                         logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
                         logDoc('http://ued.qunar.com/ykit/plugins.html');
-                        process.exit(1);
                     }
                 }
             });
@@ -219,7 +217,6 @@ class Project {
                 } else {
                     logError('Local ' + this.configFile + ' config not found.');
                     logDoc('http://ued.qunar.com/ykit/docs-配置.html');
-                    process.exit(1);
                 }
 
                 function handleConfigObj(userConfigObj) {
@@ -630,7 +627,6 @@ class Project {
                     : lintPath = sysPath.relative(context, dir);
             } catch (e) {
                 error(e);
-                process.exit(1);
             }
         }
 
