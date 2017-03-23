@@ -4,6 +4,7 @@ const connect = require('connect'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
+    socketIO = require('socket.io'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
@@ -49,6 +50,9 @@ exports.run = (options) => {
         promiseCache = {},
         allAssetsEntry = {},
         watchCacheNames = {};
+
+    let io = null,
+        assetEntrys = {};
 
     let usingHotServer = false;
     const dateFormat = 'HH:mm:ss';
@@ -260,6 +264,13 @@ exports.run = (options) => {
                 config.plugins.push(require('../plugins/compileInfoPlugin.js'));
 
                 nextConfig = extend({}, config);
+
+                // 注入 sockitIO
+                nextConfig.module.postLoaders.push({
+                    test: /\.(js)$/,
+                    loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
+                });
+
                 if(shouldCompileAllEntries) {
                     return nextConfig;
                 } else {
@@ -364,8 +375,8 @@ exports.run = (options) => {
                 compiler,
                 {
                     quiet: true, reporter: ({state, stats}) => {
+                        // 打印编译完成时间（小于 100ms 不展示）
                         if(!stats.hasErrors() && !stats.hasWarnings()) {
-                            // 打印编译完成时间（过小的不展示）
                             const minDuration = 100;
                             if(stats.endTime - stats.startTime > minDuration) {
                                 const dateLog = '[' + moment().format(dateFormat) + ']';
@@ -376,6 +387,13 @@ exports.run = (options) => {
                         }
                         spinner.stop();
                         spinner.text = '';
+
+                        // emit compile info by socket
+                        const statsInfo = stats.toJson({errorDetails: false});
+                        assetEntrys[cacheId] = {
+                            compilationId: statsInfo.hash,
+                            errors: statsInfo.errors
+                        };
 
                         Object.keys(stats.compilation.assets).map((key) => {
                             const keyCacheId = sysPath.join(projectName, key);
@@ -390,11 +408,13 @@ exports.run = (options) => {
                     }
                 }
             );
+
             if(hot) {
                 app.use(require('webpack-hot-middleware')(compiler, {
                     log: false
                 }));
             }
+
             middleware(req, res, next);
         }
 
@@ -429,6 +449,7 @@ exports.run = (options) => {
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
+    // setup server
     servers.forEach((server) => {
         server.on('error', (e) => {
             if (e.code === 'EACCES') {
@@ -438,6 +459,7 @@ exports.run = (options) => {
             }
             process.exit(1);
         });
+
         server.listen(server._port, () => {
             const serverUrl = (server._isHttps ? 'https' : 'http')
                 + '://127.0.0.1:'
@@ -445,10 +467,20 @@ exports.run = (options) => {
 
             !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
             logInfo('Available on: ' + serverUrl.underline);
+
+            // socket
+            if(!server._isHttps) {
+                io = socketIO(server);
+                io.on('connection', function(socket) {
+                    setInterval(function() {
+                        io && io.volatile.emit('testAppID', assetEntrys);
+                    }, 500);
+                });
+            }
         });
     });
 
-    // 代理
+    // proxy
     var proxyProcess;
     if (proxy) {
         const proxyPath = sysPath.join(requireg.resolve('jerryproxy'), '../bin/jerry.js');

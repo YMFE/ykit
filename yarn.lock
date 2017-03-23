@@ -4728,7 +4728,7 @@ socket.io-parser@2.3.1:
     isarray "0.0.1"
     json3 "3.3.2"
 
-socket.io@^1.4.6:
+socket.io@1.7.3, socket.io@^1.4.6:
   version "1.7.3"
   resolved "http://registry.npm.corp.qunar.com/socket.io/download/socket.io-1.7.3.tgz#b8af9caba00949e568e369f1327ea9be9ea2461b"
   dependencies:
