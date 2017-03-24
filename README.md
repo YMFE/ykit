@@ -1,6 +1,6 @@
 # Ykit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
 
-It's a pain to set webpack configs for various apps. Using plugins, ykit offers reliable encapsulated configuration and help you manage it. You can set up an app easily and customize your project through ykit's flexable config options.
+Ykit is a toolkit to simply set up webpack configs for various apps. It offers reliable encapsulated configuration and helps you manage it by using plugins. Ykit helps you easily set up apps and customize project through flexible config options.
 
 ## Quick Start
 
@@ -30,9 +30,10 @@ module.exports = {
 ## Config Options
 
 - **plugins** - To configure plugins inside of a configuration file, use the plugins key, which contains a list of plugin names. Every plugin encapsulates respective webpack configs.
-- **config** - Config object:
-    - **exports** - Asset entries.
-    - **modifyWebpackConfig** - Callback function for editing ykit's webpack configs.
+- **config.exports** - Asset entries.
+- **config.modifyWebpackConfig** - Callback function for editing ykit's webpack configs.
+- **hooks** - Bundler hooks.
+- **commands** - Custom commands to do things you like.
 
 ## Document
 
