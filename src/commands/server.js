@@ -390,10 +390,12 @@ exports.run = (options) => {
 
                         // emit compile info by socket
                         const statsInfo = stats.toJson({errorDetails: false});
-                        assetEntrys[cacheId] = {
+                        const assetName = cacheId;
+                        assetEntrys[assetName] = {
                             compilationId: statsInfo.hash,
                             errors: statsInfo.errors
                         };
+                        io.emit('testAppID', assetEntrys);
 
                         Object.keys(stats.compilation.assets).map((key) => {
                             const keyCacheId = sysPath.join(projectName, key);
@@ -472,9 +474,7 @@ exports.run = (options) => {
             if(!server._isHttps) {
                 io = socketIO(server);
                 io.on('connection', function(socket) {
-                    setInterval(function() {
-                        io && io.volatile.emit('testAppID', assetEntrys);
-                    }, 500);
+                    io.emit('testAppID', assetEntrys);
                 });
             }
         });
