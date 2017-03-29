@@ -206,8 +206,8 @@ exports.run = (options) => {
         // hot reload
         if(hot) {
             // 修改 publicPath 为当前服务
+            let localPublicPath = wpConfig.output.local.publicPath;
             if(project.config.replacingPublicPath !== false) {
-                let localPublicPath = wpConfig.output.local.publicPath;
                 const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
                 if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
                     localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);
@@ -233,7 +233,7 @@ exports.run = (options) => {
                         let entryItem = wpConfig.entry[key];
                         if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                             const whmPath = require.resolve('webpack-hot-middleware/client');
-                            entryItem.unshift(whmPath + '?reload=true' );
+                            entryItem.unshift(whmPath + '?reload=true&path=' + localPublicPath + '__webpack_hmr' );
                         }
                         return entryItem;
                     });
