@@ -80,9 +80,7 @@ DashboardPlugin.prototype.apply = function(compiler) {
                         spinner.text = '';
                     }
 
-                    if(formatOutput(stats)) {
-                        console.log(formatOutput(stats)); // eslint-disable-line
-                    }
+                    formatOutput(stats);
 
                     break;
                 }
