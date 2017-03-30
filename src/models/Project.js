@@ -194,7 +194,7 @@ class Project {
                             module.config.call(userConfig, options, this.cwd);
                         }
                     } else {
-                        logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
+                        logError('Local ' + pluginName + ' plugin not found，you may need to install it first.');
                         logDoc('http://ued.qunar.com/ykit/plugins.html');
                     }
                 }
