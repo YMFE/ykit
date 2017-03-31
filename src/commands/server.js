@@ -67,7 +67,7 @@ exports.run = (options) => {
         });
     }
 
-    app.use(favicon(sysPath.join(__dirname, '../../static/favicon.ico')))
+    app.use(favicon(sysPath.join(__dirname, '../../static/favicon.ico')));
 
     // 预处理
     app.use((req, res, next) => {
