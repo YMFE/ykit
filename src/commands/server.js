@@ -12,6 +12,7 @@ const connect = require('connect'),
     child_process = require('child_process'),
     requireg = require('requireg'),
     logSymbols = require('log-symbols'),
+    favicon = require('serve-favicon'),
     webpackDevMiddleware = require('webpack-dev-middleware');
 
 const Manager = require('../modules/manager.js');
@@ -65,6 +66,8 @@ exports.run = (options) => {
             }
         });
     }
+
+    app.use(favicon(sysPath.join(__dirname, '../../static/favicon.ico')))
 
     // 预处理
     app.use((req, res, next) => {

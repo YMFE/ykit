@@ -3472,6 +3472,10 @@ ms@0.7.2:
   version "0.7.2"
   resolved "http://registry.npm.corp.qunar.com/ms/download/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
 
+ms@1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.corp.qunar.com/ms/download/ms-1.0.0.tgz#59adcd22edc543f7b5381862d31387b1f4bc9473"
+
 multipipe@^0.1.2:
   version "0.1.2"
   resolved "http://registry.npm.corp.qunar.com/multipipe/download/multipipe-0.1.2.tgz#2a8f2ddf70eed564dff2d57f1e1a137d9f05078b"
@@ -4599,6 +4603,15 @@ send@0.15.1:
 sequencify@~0.0.7:
   version "0.0.7"
   resolved "http://registry.npm.corp.qunar.com/sequencify/download/sequencify-0.0.7.tgz#90cff19d02e07027fd767f5ead3e7b95d1e7380c"
+
+serve-favicon@^2.4.2:
+  version "2.4.2"
+  resolved "http://registry.npm.corp.qunar.com/serve-favicon/download/serve-favicon-2.4.2.tgz#aed1d8de67d5b83192cf31fdf53d2ea29464363e"
+  dependencies:
+    etag "~1.8.0"
+    fresh "0.5.0"
+    ms "1.0.0"
+    parseurl "~1.3.1"
 
 serve-favicon@~2.3.0:
   version "2.3.2"
