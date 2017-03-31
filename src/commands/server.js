@@ -67,7 +67,7 @@ exports.run = (options) => {
         });
     }
 
-    app.use(favicon(sysPath.join(__dirname, '../../static/favicon.ico')));
+    app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
 
     // 预处理
     app.use((req, res, next) => {
@@ -441,12 +441,12 @@ exports.run = (options) => {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
         if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
-            warn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
-            !globalConfig['https-key'] && warn('ykit config set https-key <path-to-your-key>');
-            !globalConfig['https-crt'] && warn('ykit config set https-crt <path-to-your-crt>');
+            logWarn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
+            !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
+            !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
         }
 
-        const defaultHttpsConfigPath = sysPath.join(__dirname, '../config/https/');
+        const defaultHttpsConfigPath = sysPath.join(__dirname, '../../static/https/');
         const httpsOpts = {
             key: fs.readFileSync(globalConfig['https-key'] || defaultHttpsConfigPath + 'server.key'),
             cert: fs.readFileSync(globalConfig['https-crt'] || defaultHttpsConfigPath + 'server.crt')

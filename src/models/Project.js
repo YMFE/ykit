@@ -34,7 +34,7 @@ class Project {
             beforePack: [],
             afterPack: []
         };
-        this.eslintConfig = require('../config/eslint.json');
+        this.eslintConfig = require('../../static/eslint/eslint.json');
         this.extendConfig = this.configFile &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&

@@ -136,7 +136,7 @@ exports.run = function(options) {
 	}
 
 	function createConfigFile(callback, configPkgName) {
-        const pluginName = configPkgName.match(/ykit-config-([^\-]+)/)[1];
+        const pluginName = configPkgName ? configPkgName.match(/ykit-config-([^\-]+)/)[1] : '';
 		const configFileName = 'ykit.js';
 
 		if (!UtilFs.fileExists('./' + configFileName)) {
@@ -144,7 +144,7 @@ exports.run = function(options) {
 			const configFilePath = sysPath.resolve(initTmplPath, 'ykit.js');
 			const stream = fs.createReadStream(configFilePath)
                 .pipe(replaceStream('@PROJECT_NAME', projectName))
-                .pipe(replaceStream('@PLUGIN_NAME', pluginName))
+                .pipe(replaceStream('@PLUGIN_NAME', pluginName ? '[\'' + pluginName  + '\']' : '[]'))
                 .pipe(writeStream);
 
 			stream.on('finish', () => {

@@ -11,8 +11,8 @@ module.exports = function (content) {
         const isNotPkg = this.resourcePath.indexOf('node_modules') === -1;
 
         if(sysPath.extname(this.resourcePath) === '.js' && sysPath.extname(basename).length === 0 && isNotPkg) {
-            const socketScript = fs.readFileSync(sysPath.join(__dirname, '../../static/SocketEmbedment.js'), {encoding: 'utf-8'});
-            let overlayScript = fs.readFileSync(sysPath.join(__dirname, '../../static/SocketOverlay.js'), {encoding: 'utf-8'});
+            const socketScript = fs.readFileSync(sysPath.join(__dirname, '../../static/socket/Embedment.js'), {encoding: 'utf-8'});
+            let overlayScript = fs.readFileSync(sysPath.join(__dirname, '../../static/socket/Overlay.js'), {encoding: 'utf-8'});
             overlayScript = UglifyJS.minify(overlayScript, {
                 fromString: true,
                 mangle: true

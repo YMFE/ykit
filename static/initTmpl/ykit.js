@@ -1,5 +1,5 @@
 module.exports = {
-    plugins: ['@PLUGIN_NAME'],
+    plugins: @PLUGIN_NAME,
     config: {
         exports: [
             './scripts/index.js',
