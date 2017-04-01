@@ -52,8 +52,8 @@ exports.npmInstall = function(a) {
         } else {
             currentNpm = 'npm';
             log('Installing npm modules with npm.');
-            logWarn('please use yarn or shrinkwrap to lock down the versions of packages.');
-            logInfo('Visit ' + 'http://ued.qunar.com/ykit/docs-npm%20shrinkwrap.html'.underline + ' for doc.');
+            logWarn('Please use yarn or shrinkwrap to lock down the versions of packages.');
+            logDoc('http://ued.qunar.com/ykit/docs-npm%20shrinkwrap.html');
         }
     } catch (e) {
         currentNpm = 'npm';
@@ -74,10 +74,11 @@ exports.run = function(options) {
     execute('ykit -v');
 
     // build
-    log('Building Started.');
+    log('Start building.');
     execute('ykit pack -m -q');
     clearGitHooks();
-    log('Building Finished.\n');
+    clearNodeModules();
+    log('Finish building.\n');
 
     function clearGitHooks() {
         const gitHooksDir = './.git/hooks/';
@@ -87,8 +88,13 @@ exports.run = function(options) {
                 const currentPath = path.join(gitHooksDir, file);
                 fs.writeFileSync(currentPath, '');
             });
-            log('Git hooks have been cleared.');
+            log('Local git hooks have been cleared.');
         }
+    }
+
+    function clearNodeModules() {
+        shell.rm('-rf', 'node_modules');
+        log('Local node_modules directory has been cleared.');
     }
 };
 
