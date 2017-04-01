@@ -173,6 +173,10 @@ class Config {
         return this._config;
     }
 
+    getWebpackConfig() {
+        return this.getConfig();
+    }
+
     applyMiddleware(mw) {
         if (typeof mw === 'function') {
             this._config.middleware.push(mw);
