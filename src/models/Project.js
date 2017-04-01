@@ -51,13 +51,17 @@ class Project {
         this.readConfig();
     }
 
-    setCommands(nextCommands) {
+    setCommands(nextCommands, pluginName) {
         if (Array.isArray(nextCommands)) {
-            // 检查是否有重复的命令
             const existCommands = this.commands.map((cmd) => {
                 return cmd.name;
             });
             nextCommands.forEach((cmd) => {
+                if(pluginName) {
+                    cmd.pluginName = pluginName;
+                }
+
+                // 检查是否有重复的命令
                 if(existCommands.indexOf(cmd.name) > -1) {
                     logWarn(`Command ${cmd.name} exists. It may cause collision.`);
                 }
@@ -175,7 +179,7 @@ class Project {
                 // 运行插件模块
                 if (module && module.config) {
                     handleExportsConfig.bind(this)(module.config, pluginItem.options);
-                    this.setCommands(module.commands || ykitConfigFile.config.command); // 后者兼容以前形式
+                    this.setCommands(module.commands || ykitConfigFile.config.command, pluginName); // 后者兼容以前形式
                     this.setHooks(module.hooks);
                 }
 

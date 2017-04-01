@@ -68,7 +68,20 @@ let cli = module.exports = {
             optimist.showHelp();
             info(' 如果需要帮助, 请使用 ykit {命令名} --help ');
         } else {
-            module.run.call({project}, options);
+            let cmdPlugin = '';
+            project.plugins.map((plugin) => {
+                const isCmdBelongToPlugin = typeof plugin === 'string'
+                                            ? plugin === command.pluginName
+                                            : plugin.name === command.pluginName
+                                                || 'ykit-config-' + plugin.name === command.pluginName
+                                                || '@qnpm/ykit-config-' + plugin.name === command.pluginName;
+                cmdPlugin = plugin;
+            });
+
+            module.run.call({
+                project,
+                plugin: cmdPlugin
+            }, options);
         }
     },
     help: () => {
