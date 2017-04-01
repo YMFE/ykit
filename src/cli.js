@@ -39,7 +39,13 @@ let cli = module.exports = {
 
         // build 命令提前 npm install
         if(process.argv[2] === 'build') {
-            buildCmd.npmInstall();
+            const ykitOptions = require(sysPath.join(process.cwd(), 'package.json')).ykit || {};
+            if(ykitOptions.skipBuilding) {
+                logInfo('Skip building.');
+                return;
+            } else {
+                buildCmd.npmInstall();
+            }
         }
 
         // 处理辅助命令
