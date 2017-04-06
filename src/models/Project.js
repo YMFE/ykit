@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const requireg = require('requireg');
+const colors = require('colors');
 
 const path = require('path');
 const fs = require('fs');
@@ -414,6 +415,7 @@ class Project {
 
                     const originAssets = stats.compilation.assets;
                     const nextAssets = {};
+
                     assetsInfo.forEach(asset => {
                         cc.enqueue(
                             {
@@ -529,7 +531,7 @@ class Project {
                                     }
 
                                     if (!/\.cache$/.test(asset.name)) {
-                                        log('- '.gray + asset.name.bold.green + ' - ' + fileSize);
+                                        log('- '.gray + colors.bold(colors.green(asset.name)) + ' - ' + fileSize);
                                     }
                                 }
                             });
