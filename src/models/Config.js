@@ -2,8 +2,8 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-
 const normalize = require('../utils/path').normalize;
+const Manager = require('../modules/manager');
 
 class Config {
     constructor(cwd, configFile) {
@@ -23,7 +23,6 @@ class Config {
             cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
-            entryGroup: {},
             output: {
                 local: {
                     path: './prd/',
@@ -53,7 +52,6 @@ class Config {
                 }, {
                     test: /\.css$/,
                     loader: ExtractTextPlugin.extract(
-                        require.resolve('style-loader'),
                         require.resolve('css-loader')
                     )
                 }],
@@ -67,18 +65,35 @@ class Config {
                 new CaseSensitivePathsPlugin()
             ],
             resolve: {
-                root: [],
-                extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
+                extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
+            devtool: 'cheap-source-map',
             entryExtNames: {
-                css: ['.css'],
+                css: ['.css', '.less', '.sass', '.scss'],
                 js: ['.js', '.jsx']
             },
-            requireRules: [],
-            devtool: 'cheap-source-map',
-            middleware: []
+            requireRules: []
         };
+
+        Manager.setYkitOptions(this._config, {
+            cwd: cwd,
+            entryExtNames: {
+                css: ['.css', '.less', '.sass', '.scss'],
+                js: ['.js', '.jsx']
+            },
+            requireRules: [
+                'fekit_modules|fekit.config:main|./src/index.js'
+            ],
+            middleware: []
+
+            // entryExtNames: {
+            //     css: this.config.entryExtNames.css.concat(['.less', '.sass', '.scss'])
+            // },
+            // requireRules: this.config.requireRules.concat([
+            //     'fekit_modules|fekit.config:main|./src/index.js'
+            // ])
+        });
     }
 
     setExports(entries) {
@@ -105,19 +120,10 @@ class Config {
                     }
 
                     this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
-                } else {
-                    this.setGroupExports(entry.name, entry.export);
                 }
             });
             return this;
         }
-    }
-
-    setGroupExports(group, exportsArr) {
-        let exportGroup = this._config.entryGroup;
-        exportGroup[group] = exportGroup[group] ? exportGroup[group].concat(exportsArr) : exportsArr;
-
-        this.setExports(exportsArr);
     }
 
     setOutput(output) {
@@ -150,7 +156,6 @@ class Config {
             if (nextConfig.context && !sysPath.isAbsolute(nextConfig.context)) {
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context);
             }
-
             // 处理 loaders => loader
             if (nextConfig.module && nextConfig.module.loaders) {
                 nextConfig.module.loaders.map((loader) => {
@@ -183,9 +188,15 @@ class Config {
         return this._config;
     }
 
+    getWebpackConfig() {
+        return this.getConfig();
+    }
+
     applyMiddleware(mw) {
         if (typeof mw === 'function') {
-            this._config.middleware.push(mw);
+            Manager.setYkitOptions(this._config, {
+                middleware: [mw]
+            });
         }
     }
 

@@ -39,7 +39,13 @@ let cli = module.exports = {
 
         // build 命令提前 npm install
         if(process.argv[2] === 'build') {
-            buildCmd.npmInstall();
+            const ykitOptions = require(sysPath.join(process.cwd(), 'package.json')).ykit || {};
+            if(ykitOptions.skipBuilding) {
+                logInfo('Skip building.');
+                return;
+            } else {
+                buildCmd.npmInstall();
+            }
         }
 
         // 处理辅助命令
@@ -68,7 +74,20 @@ let cli = module.exports = {
             optimist.showHelp();
             info(' 如果需要帮助, 请使用 ykit {命令名} --help ');
         } else {
-            module.run.call({project}, options);
+            let cmdPlugin = '';
+            project.plugins.map((plugin) => {
+                const isCmdBelongToPlugin = typeof plugin === 'string'
+                                            ? plugin === command.pluginName
+                                            : plugin.name === command.pluginName
+                                                || 'ykit-config-' + plugin.name === command.pluginName
+                                                || '@qnpm/ykit-config-' + plugin.name === command.pluginName;
+                cmdPlugin = plugin;
+            });
+
+            module.run.call({
+                project,
+                plugin: cmdPlugin
+            }, options);
         }
     },
     help: () => {

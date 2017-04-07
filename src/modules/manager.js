@@ -1,5 +1,7 @@
 'use strict';
 
+const extend = require('extend');
+
 let Project = require('../models/Project.js'),
     ykitModuleReg = /^(@[^\/]+\/)?(ykit\-(\w+)\-[\w\-]+)$/,
     loadYAMLConfigFile = (filePath) => {
@@ -162,4 +164,14 @@ exports.loadEslintConfig = (path) => {
 exports.loadIgnoreFile = (path) => {
     let ignoreFile = sysPath.join(path, '.lintignore');
     return fs.existsSync(ignoreFile) ? fs.readFileSync(ignoreFile, 'UTF-8') : '';
+};
+
+exports.setYkitOptions = (webpackConfigObj, options) => {
+    webpackConfigObj.plugins.ykit = webpackConfigObj.plugins.ykit ? webpackConfigObj.plugins.ykit : {};
+    extend(true, webpackConfigObj.plugins.ykit, options);
+};
+
+exports.getYkitOptions = (webpackConfigObj, name) => {
+    webpackConfigObj.plugins.ykit = webpackConfigObj.plugins.ykit ? webpackConfigObj.plugins.ykit : {};
+    return webpackConfigObj.plugins.ykit[name];
 };

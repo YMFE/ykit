@@ -4,6 +4,7 @@ const connect = require('connect'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
+    socketIO = require('socket.io'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
@@ -11,9 +12,11 @@ const connect = require('connect'),
     child_process = require('child_process'),
     requireg = require('requireg'),
     logSymbols = require('log-symbols'),
+    favicon = require('serve-favicon'),
     webpackDevMiddleware = require('webpack-dev-middleware');
 
 const Manager = require('../modules/manager.js');
+const ConfigConverter = require('../modules/ConfigConverter.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
 
@@ -50,6 +53,9 @@ exports.run = (options) => {
         allAssetsEntry = {},
         watchCacheNames = {};
 
+    let io = null,
+        assetEntrys = {};
+
     let usingHotServer = false;
     const dateFormat = 'HH:mm:ss';
 
@@ -61,6 +67,8 @@ exports.run = (options) => {
             }
         });
     }
+
+    app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
 
     // 预处理
     app.use((req, res, next) => {
@@ -202,8 +210,8 @@ exports.run = (options) => {
         // hot reload
         if(hot) {
             // 修改 publicPath 为当前服务
+            let localPublicPath = wpConfig.output.local.publicPath;
             if(project.config.replacingPublicPath !== false) {
-                let localPublicPath = wpConfig.output.local.publicPath;
                 const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
                 if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
                     localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);
@@ -229,7 +237,7 @@ exports.run = (options) => {
                         let entryItem = wpConfig.entry[key];
                         if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                             const whmPath = require.resolve('webpack-hot-middleware/client');
-                            entryItem.unshift(whmPath + '?reload=true' );
+                            entryItem.unshift(whmPath + '?reload=true&path=' + localPublicPath + '__webpack_hmr' );
                         }
                         return entryItem;
                     });
@@ -260,6 +268,13 @@ exports.run = (options) => {
                 config.plugins.push(require('../plugins/compileInfoPlugin.js'));
 
                 nextConfig = extend({}, config);
+
+                // 注入 sockitIO
+                nextConfig.module.postLoaders.push({
+                    test: /\.(js)$/,
+                    loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
+                });
+
                 if(shouldCompileAllEntries) {
                     return nextConfig;
                 } else {
@@ -322,6 +337,7 @@ exports.run = (options) => {
                         }
                     });
 
+                    nextConfig = ConfigConverter(nextConfig);
                     return nextConfig;
                 }
             });
@@ -360,19 +376,31 @@ exports.run = (options) => {
                 promiseCache[projectName].push(requestPromise);
             }
 
-            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(compiler,
+            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
+                compiler,
                 {
                     quiet: true, reporter: ({state, stats}) => {
-                        // 打印编译完成时间（过小的不展示）
-                        const minDuration = 100;
-                        if(stats.endTime - stats.startTime > minDuration) {
-                            spinner.text = '\x1b[90m' + '[' + moment().format(dateFormat)
-                                         + '] building complete in ' + (stats.endTime - stats.startTime) + 'ms.';
-                            spinner.stopAndPersist(logSymbols.info);
-                        } else {
-                            spinner.stop();
+                        // 打印编译完成时间（小于 100ms 不展示）
+                        if(!stats.hasErrors() && !stats.hasWarnings()) {
+                            const minDuration = 100;
+                            if(stats.endTime - stats.startTime > minDuration) {
+                                const dateLog = '[' + moment().format(dateFormat) + ']';
+                                const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
+                                spinner.text = dateLog.grey + successText.green;
+                                spinner.succeed();
+                            }
                         }
+                        spinner.stop();
                         spinner.text = '';
+
+                        // emit compile info by socket
+                        const statsInfo = stats.toJson({errorDetails: false});
+                        const assetName = cacheId;
+                        assetEntrys[assetName] = {
+                            compilationId: statsInfo.hash,
+                            errors: statsInfo.errors
+                        };
+                        io.emit('testAppID', assetEntrys);
 
                         Object.keys(stats.compilation.assets).map((key) => {
                             const keyCacheId = sysPath.join(projectName, key);
@@ -387,11 +415,13 @@ exports.run = (options) => {
                     }
                 }
             );
+
             if(hot) {
                 app.use(require('webpack-hot-middleware')(compiler, {
                     log: false
                 }));
             }
+
             middleware(req, res, next);
         }
 
@@ -413,12 +443,12 @@ exports.run = (options) => {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
         if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
-            warn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
-            !globalConfig['https-key'] && warn('ykit config set https-key <path-to-your-key>');
-            !globalConfig['https-crt'] && warn('ykit config set https-crt <path-to-your-crt>');
+            logWarn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
+            !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
+            !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
         }
 
-        const defaultHttpsConfigPath = sysPath.join(__dirname, '../config/https/');
+        const defaultHttpsConfigPath = sysPath.join(__dirname, '../../static/https/');
         const httpsOpts = {
             key: fs.readFileSync(globalConfig['https-key'] || defaultHttpsConfigPath + 'server.key'),
             cert: fs.readFileSync(globalConfig['https-crt'] || defaultHttpsConfigPath + 'server.crt')
@@ -426,6 +456,7 @@ exports.run = (options) => {
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
+    // setup server
     servers.forEach((server) => {
         server.on('error', (e) => {
             if (e.code === 'EACCES') {
@@ -435,6 +466,7 @@ exports.run = (options) => {
             }
             process.exit(1);
         });
+
         server.listen(server._port, () => {
             const serverUrl = (server._isHttps ? 'https' : 'http')
                 + '://127.0.0.1:'
@@ -442,10 +474,18 @@ exports.run = (options) => {
 
             !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
             logInfo('Available on: ' + serverUrl.underline);
+
+            // socket
+            if(!server._isHttps) {
+                io = socketIO(server);
+                io.on('connection', function(socket) {
+                    io.emit('testAppID', assetEntrys);
+                });
+            }
         });
     });
 
-    // 代理
+    // proxy
     var proxyProcess;
     if (proxy) {
         const proxyPath = sysPath.join(requireg.resolve('jerryproxy'), '../bin/jerry.js');

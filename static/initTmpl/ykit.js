@@ -1,7 +1,7 @@
 module.exports = {
-    plugins: [],
+    plugins: @PLUGIN_NAME,
     config: {
-        export: [
+        exports: [
             './scripts/index.js',
             './styles/index.css'
         ],
