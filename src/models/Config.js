@@ -55,7 +55,8 @@ class Config {
                         require.resolve('css-loader')
                     )
                 }],
-                postLoaders: []
+                postLoaders: [],
+                rules: []
             },
             plugins: [
                 // local plugin
