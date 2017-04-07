@@ -1,6 +1,7 @@
 'use strict';
 
 const webpack = require('webpack');
+const extend = require('extend');
 
 module.exports = function(config) {
 
@@ -56,6 +57,12 @@ function handleLoaders(config) {
 }
 
 function handleMigrationConfig(config) {
+    if(config.resolve && config.resolve.root) {
+        config.resolve.modules = config.resolve.root;
+        extend(true, config.resolve.modules || [], config.resolve.root);
+        delete config.resolve.root
+    }
+
     return config;
 }
 

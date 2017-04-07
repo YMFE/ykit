@@ -65,6 +65,8 @@ class Config {
                 new CaseSensitivePathsPlugin()
             ],
             resolve: {
+                root: [],
+                modules: [],
                 extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
