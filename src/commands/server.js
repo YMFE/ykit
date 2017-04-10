@@ -218,7 +218,6 @@ exports.run = (options) => {
                         httpStr = httpStr || '';
                         return httpStr + '//' + '127.0.0.1:' + port;
                     });
-
                     wpConfig.output.local.publicPath = localPublicPath;
                 } else {
                     // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
@@ -236,7 +235,7 @@ exports.run = (options) => {
                         let entryItem = wpConfig.entry[key];
                         if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                             const whmPath = require.resolve('webpack-hot-middleware/client');
-                            entryItem.unshift(whmPath + '?reload=true&path=' + localPublicPath + '__webpack_hmr' );
+                            entryItem.unshift(whmPath + '?reload=true&path=/__webpack_hmr&timeout=9999999');
                         }
                         return entryItem;
                     });
@@ -416,8 +415,10 @@ exports.run = (options) => {
 
             if(hot) {
                 app.use(require('webpack-hot-middleware')(compiler, {
-                    log: false
+                    log: false,
+                    path: '/__webpack_hmr'
                 }));
+                logInfo('Start hot reloader server.');
             }
 
             middleware(req, res, next);
