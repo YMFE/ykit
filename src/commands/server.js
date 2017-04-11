@@ -13,7 +13,8 @@ const connect = require('connect'),
     requireg = require('requireg'),
     logSymbols = require('log-symbols'),
     favicon = require('serve-favicon'),
-    webpackDevMiddleware = require('webpack-dev-middleware');
+    webpackDevMiddleware = require('webpack-dev-middleware'),
+    httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
 const UtilFs = require('../utils/fs.js');
@@ -67,6 +68,40 @@ exports.run = (options) => {
         });
     }
 
+    // proxy
+    let currentProxy = [];
+    app.use(function (req, res, next) {
+        try {
+            const projectInfo = getProjectInfo(req);
+            const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
+
+            if(project.proxy && project.proxy.length !== currentProxy.length && project.proxy[0] !== currentProxy[0]) {
+                currentProxy = project.proxy;
+                currentProxy.map((proxyItem) => {
+                    // hacky way to add middleware
+                    if(typeof proxyItem === 'string') {
+                        app.stack.unshift({
+                            route: '', handle: httpProxy(proxyItem)
+                        });
+                    } else  {
+                        if(typeof proxyItem !== 'object' || !proxyItem.route || !proxyItem.options) {
+                            logWarn('Not valid proxy: ' + JSON.stringify(proxyItem));
+                        } else {
+                            app.stack.unshift({
+                                route: proxyItem.route, handle: httpProxy(proxyItem.options)
+                            });
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            logError(e);
+        }
+
+        next();
+    });
+
+    // a simple middleware
     app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
 
     // 预处理
@@ -432,8 +467,7 @@ exports.run = (options) => {
         redirect: false,
         index: false
     }));
-
-    app.use(serveIndex(cwd));
+    app.use(serveIndex(cwd, {icons: true}));
 
     // 启动 http server 和 https server(如果有)
     let servers = [];

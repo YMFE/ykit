@@ -90,6 +90,10 @@ class Project {
         }
     }
 
+    setProxy(proxy) {
+        this.proxy = proxy || [];
+    }
+
     readConfig() {
         if(!this.configFile) {
             // no local config, i.e., server command)
@@ -198,6 +202,7 @@ class Project {
             handleExportsConfig.bind(this)(ykitConfigFile.config);
             this.setCommands(ykitConfigFile.commands || ykitConfigFile.config.command); // 后者兼容以前形式
             this.setHooks(ykitConfigFile.hooks);
+            this.setProxy(ykitConfigFile.proxy);
         } else {
             logError('Local ' + this.configFile + ' config not found.');
             logDoc('http://ued.qunar.com/ykit/docs-配置.html');
