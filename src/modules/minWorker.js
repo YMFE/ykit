@@ -35,7 +35,13 @@ process.on('message', function(m) {
                 ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
                 minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
             } catch(e) {
-                response.error = extend(true, e, {assetName: assetName});
+                if(e.line) {
+                    response.error = extend(true, e, {assetName: assetName});
+                } else {
+                    /* eslint-disable no-console */
+                    console.error(e);
+                    /* eslint-enable no-console */
+                }
             }
 
         } else if (path.extname(assetName) === '.css') {
