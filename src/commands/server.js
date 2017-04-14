@@ -530,6 +530,11 @@ exports.run = (options) => {
         process.setuid(parseInt(process.env['SUDO_UID']));
     }
 
+    process.on('uncaughtException', (err) => {
+        logError(err.stack);
+        process.exit(1);
+    });
+
     // exitHandler && catches ctrl+c event
     process.on('exit', exitHandler.bind(null));
     process.on('SIGINT', exitHandler.bind(null));
