@@ -84,12 +84,12 @@ function handleMigrationConfig(config) {
     }
 
     function loaderSuffixWrapper(loader) {
-        const simpleLoaderReg = /\w+/;
+        const simpleLoaderReg = /^\w+$/;
 
         if(Array.isArray(loader)) {
             loader.map((loaderItem) => {
-                if(simpleLoaderReg.test(loaderItem)) {
-                    // console.log('loaderItem', loaderItem);
+                if(simpleLoaderReg.test(loaderItem.loader)) {
+                    loaderItem.loader += '-loader';
                 }
             });
         }
