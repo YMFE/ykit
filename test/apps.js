@@ -81,7 +81,7 @@ describe(`Start testing apps`, () => {
                     if(env === 'local') {
                         output = shell.exec('yarn', {silent: true});
                     } else {
-                        output = shell.exec('npm install --registry https://registry.npmjs.org/', {silent: true});
+                        output = shell.exec('yarn', {silent: false});
                     }
 
                     if (output.code !== 0) {
