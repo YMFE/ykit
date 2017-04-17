@@ -6,7 +6,7 @@ const extend = require('extend');
 module.exports = function(config) {
 
     config = handleLoaders(config);
-	config = handleMigrationConfig(config);
+    config = handleMigrationConfig(config);
     config = handleNotAllowedConfig(config);
 
     return config;
@@ -57,14 +57,44 @@ function handleLoaders(config) {
 }
 
 function handleMigrationConfig(config) {
-    if(config.resolve && config.resolve.root) {
+    if (config.resolve && config.resolve.root) {
         extend(true, config.resolve.modules || [], config.resolve.root);
-        delete config.resolve.root
+        delete config.resolve.root;
     }
 
-    if(config.module && config.module.loaders) {
+    if (config.module && config.module.loaders) {
         extend(true, config.module.rules || [], config.module.loaders);
         delete config.module.loaders;
+
+        config.module.rules = config.module.rules.map((rule) => {
+            if (rule.loaders) {
+                rule.use = rule.loaders;
+                delete rule.loaders;
+            } else if (rule.loader) {
+                if (Array.isArray(rule.loader)) {
+                    rule.use = loaderSuffixWrapper(rule.loader);
+                } else {
+                    rule.use = rule.loader.split('!');
+                }
+                delete rule.loader;
+            }
+
+            return rule;
+        });
+    }
+
+    function loaderSuffixWrapper(loader) {
+        const simpleLoaderReg = /\w+/;
+
+        if(Array.isArray(loader)) {
+            loader.map((loaderItem) => {
+                if(simpleLoaderReg.test(loaderItem)) {
+                    // console.log('loaderItem', loaderItem);
+                }
+            });
+        }
+
+        return loader;
     }
 
     return config;

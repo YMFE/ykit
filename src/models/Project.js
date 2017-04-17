@@ -225,9 +225,9 @@ class Project {
                 const originExtract = ExtractTextPlugin.extract;
                 ExtractTextPlugin.extract = function() {
                     if(arguments.length > 1) {
-                        if(typeof arguments[0] === 'string' && arguments[0].indexOf('-loader') === -1) {
-                            arguments[0] += '-loader';
-                        }
+                        // if(typeof arguments[0] === 'string' && arguments[0].indexOf('-loader') === -1) {
+                        //     arguments[0] += '-loader';
+                        // }
                         return originExtract({
                             fallback: arguments[0],
                             use: arguments[1]
