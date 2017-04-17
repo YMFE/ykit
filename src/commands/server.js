@@ -303,10 +303,12 @@ exports.run = (options) => {
                 nextConfig = extend({}, config);
 
                 // 注入 sockitIO
-                nextConfig.module.postLoaders.push({
-                    test: /\.(js)$/,
-                    loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
-                });
+                if(project.server && project.server.overlay) {
+                    nextConfig.module.postLoaders.push({
+                        test: /\.(js)$/,
+                        loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
+                    });
+                }
 
                 if(shouldCompileAllEntries) {
                     return nextConfig;
