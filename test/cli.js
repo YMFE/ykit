@@ -77,7 +77,7 @@ describe('Start testing terminal client', () => {
     it('runs pack command', () => {
         shell.cd(examplePath);
 
-        shell.exec(ykitPath + ' pack -m', {silent: true});
+        shell.exec(ykitPath + ' pack -m', {silent: false});
         expect(shell.test('-d', path.join(examplePath, 'prd'))).to.be.true;
     })
 

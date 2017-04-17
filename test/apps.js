@@ -95,7 +95,7 @@ describe(`Start testing apps`, () => {
             it('runs pack command', () => {
                 shell.cd(appPath);
                 if(!shell.test('-d', path.join(appPath, 'prd'))) {
-                    shell.exec(ykitPath + ' pack -m', {silent: true});
+                    shell.exec(ykitPath + ' pack -m', {silent: false});
                 }
                 expect(shell.test('-d', path.join(appPath, 'prd'))).to.be.true;
             });
