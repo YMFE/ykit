@@ -98,6 +98,10 @@ class Project {
         this.server = server || {};
     }
 
+    setBuild(build) {
+        this.build = extend(true, this.build, build);
+    }
+
     readConfig() {
         if(!this.configFile) {
             // no local config, i.e., server command)
@@ -190,6 +194,7 @@ class Project {
                     handleExportsConfig.bind(this)(module.config, pluginItem.options);
                     this.setCommands(module.commands || ykitConfigFile.config.command, pluginName); // 后者兼容以前形式
                     this.setHooks(module.hooks);
+                    this.setBuild(module.build);
                 }
 
                 // 扩展 eslint 配置
@@ -208,6 +213,7 @@ class Project {
             this.setHooks(ykitConfigFile.hooks);
             this.setProxy(ykitConfigFile.proxy);
             this.setServer(ykitConfigFile.server);
+            this.setBuild(ykitConfigFile.build);
         } else {
             logError('Local ' + this.configFile + ' config not found.');
             logDoc('http://ued.qunar.com/ykit/docs-配置.html');
@@ -431,7 +437,7 @@ class Project {
                             {
                                 opt: opt,
                                 cwd: cwd,
-                                buildOpts: this.config.build || {},
+                                buildOpts: this.build || this.config.build || {},
                                 assetName: asset.name
                             },
                             (err, response) => {
