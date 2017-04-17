@@ -4,15 +4,15 @@ const path = require('path');
 const shell = require('shelljs');
 const expect = require('chai').expect;
 
-const pkgJsonPath = path.join(__dirname, './pkg.json');
 const ykitPath = path.join(__dirname, '../bin/ykit');
 const kill = require('../src/utils/psKill');
 
 const cwd = process.cwd();
-const exampleName = 'ykit-seed-react'
-const examplePath = path.join(cwd, 'cli-test', exampleName)
+const exampleName = 'ykit-seed-react';
+const examplePath = path.join(cwd, 'cli-test', exampleName);
 
-describe('Ykit CLI', () => {
+describe('Start testing terminal client', () => {
+    const env = process.env.ENV;
 
     beforeEach(function() {
         if (shell.test('-d', 'cli-test')) {
@@ -32,12 +32,20 @@ describe('Ykit CLI', () => {
         }
     });
 
-    it('clone example project', () => {
+    it('clone example project & install dependencies', () => {
         // install
-        shell.cp('-R', path.join(cwd, 'examples', exampleName), path.join(cwd, 'cli-test'));
+        const gitUrl = 'https://github.com/roscoe054/ykit-starter-react.git';
+        shell.cd('cli-test');
+        shell.exec('git clone ' + gitUrl + ' ykit-seed-react');
         shell.cd(examplePath);
 
-        const output = shell.exec('npm install --registry https://registry.npmjs.org/', {silent: true});
+        let output;
+        if(env === 'local') {
+            output = shell.exec('yarn', {silent: true});
+        } else {
+            output = shell.exec('npm install --registry https://registry.npmjs.org/', {silent: true});
+        }
+
         if (output.code !== 0) {
             process.exit(1);
         }
@@ -70,7 +78,6 @@ describe('Ykit CLI', () => {
         shell.cd(examplePath);
 
         shell.exec(ykitPath + ' pack -m', {silent: true});
-
         expect(shell.test('-d', path.join(examplePath, 'prd'))).to.be.true;
     })
 
@@ -78,7 +85,7 @@ describe('Ykit CLI', () => {
         shell.cd(examplePath);
 
         const output = shell.exec(ykitPath + ' lint', {silent: true});
-        expect(output.stdout.includes('1 error, 0 warnings')).to.be.true;
+        expect(output.stdout.includes('2 errors, 0 warnings')).to.be.true;
     })
 
 })
