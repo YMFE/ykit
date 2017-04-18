@@ -15,20 +15,16 @@ describe('Start testing terminal client', () => {
     const env = process.env.ENV;
 
     beforeEach(function() {
-        if (shell.test('-d', 'cli-test')) {
-            shell.cd('cli-test');
-        } else {
+        shell.cd(cwd);
+        if (!shell.test('-d', 'cli-test')) {
             shell.mkdir('-p', 'cli-test');
         }
-    });
-
-    afterEach(function() {
-        shell.cd(cwd);
+        shell.cd('cli-test');
     });
 
     after(function() {
-        if (shell.test('-d', 'cli-test')) {
-            shell.rm('-rf', 'cli-test');
+        if (shell.test('-d', path.join(cwd, 'cli-test'))) {
+            shell.rm('-rf', path.join(cwd, 'cli-test'));
         }
     });
 

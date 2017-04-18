@@ -37,7 +37,7 @@ describe(`Start testing apps`, () => {
         shell.cd(cwd);
 
         if (shell.test('-d', 'cli-test')) {
-            if(env !== 'local') {
+            if(env !== 'browser') {
                 shell.rm('-rf', 'cli-test');
             } else if(process.platform !== 'win32') {
                 shell.cd(path.join(cwd, 'cli-test'));
