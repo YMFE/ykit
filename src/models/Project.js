@@ -414,9 +414,29 @@ class Project {
                     });
 
                 if(err) {
+                    spinner.text = '';
+                    spinner.stop();
                     logError(err);
-                } else {
-                    logInfo('no packing error');
+                    process.exit(1);
+                }
+
+                const statsInfo = stats.toJson({ errorDetails: false });
+                if (statsInfo.warnings.length > 0) {
+                    spinner.text = '';
+                    spinner.stop();
+                    logLinefeed();
+                    statsInfo.warnings.map(warning => {
+                        logWarn(warning + '\n');
+                    });
+                }
+
+                if (statsInfo.errors.length > 0) {
+                    spinner.text = '';
+                    spinner.stop();
+                    statsInfo.errors.map(err => {
+                        logError(err + '\n');
+                    });
+                    process.exit(1);
                 }
 
                 // 压缩
@@ -453,7 +473,7 @@ class Project {
                                     spinner.text = '';
                                     spinner.stop();
                                     info('\n');
-                                    spinner.text = `error occured while minifying ${resErr.assetName}`;
+                                    spinner.text = `Error occured while minifying ${resErr.assetName}`;
                                     spinner.fail();
                                     info(
                                         `line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red
@@ -520,25 +540,12 @@ class Project {
                                 process.exit(1);
                             }
 
-                            let statsInfo = stats.toJson({ errorDetails: false });
-
-                            if (statsInfo.warnings.length > 0) {
-                                statsInfo.warnings.map(warning => {
-                                    logWarn(warning + '\n');
-                                });
-                            }
-
-                            if (statsInfo.errors.length > 0) {
-                                statsInfo.errors.map(err => {
-                                    logError(err + '\n');
-                                });
-                                process.exit(1);
-                            }
 
                             process.stdout.write(
                                 '\n---------------------  YKIT EMITTED ASSETS  ---------------------\n\n'
                             );
 
+                            const statsInfo = stats.toJson({ errorDetails: false });
                             const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
                             assetsInfo.map(asset => {
                                 if (sysPath.extname(asset.name) !== '.cache') {
