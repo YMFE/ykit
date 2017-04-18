@@ -841,9 +841,9 @@ caniuse-db@^1.0.30000346, caniuse-db@^1.0.30000628, caniuse-db@^1.0.30000631:
   version "1.0.30000632"
   resolved "http://registry.npm.corp.qunar.com/caniuse-db/download/caniuse-db-1.0.30000632.tgz#12e3f5c114d19de58e74dec478a327fb2eeb6bcb"
 
-case-sensitive-paths-webpack-plugin@^1.1.4:
-  version "1.1.4"
-  resolved "http://registry.npm.corp.qunar.com/case-sensitive-paths-webpack-plugin/download/case-sensitive-paths-webpack-plugin-1.1.4.tgz#8aaedd5699a86cac2b34cf40d9b4145758978472"
+case-sensitive-paths-webpack-plugin@^2.0.0:
+  version "2.0.0"
+  resolved "http://registry.npm.corp.qunar.com/case-sensitive-paths-webpack-plugin/download/case-sensitive-paths-webpack-plugin-2.0.0.tgz#60142d7d0beabdb35676ef0aeace3027da0578ba"
 
 caseless@~0.12.0:
   version "0.12.0"
