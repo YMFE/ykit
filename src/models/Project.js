@@ -413,6 +413,12 @@ class Project {
                         fs.unlinkSync(fp);
                     });
 
+                if(err) {
+                    logError(err);
+                } else {
+                    logInfo('no packing error');
+                }
+
                 // 压缩
                 if (opt.min) {
                     const computecluster = require('compute-cluster');
