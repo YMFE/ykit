@@ -453,8 +453,7 @@ class Project {
                                         `line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red
                                     );
 
-                                    // continue
-                                    spinner.start();
+                                    process.exit(1);
                                 }
 
                                 // 将替换版本号的资源名取代原有名字

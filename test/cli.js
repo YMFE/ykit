@@ -16,10 +16,10 @@ describe('Start testing terminal client', () => {
 
     beforeEach(function() {
         shell.cd(cwd);
-        if (!shell.test('-d', 'cli-test')) {
-            shell.mkdir('-p', 'cli-test');
+        if (!shell.test('-d', path.join(cwd, 'cli-test'))) {
+            shell.mkdir('-p', path.join(cwd, 'cli-test'));
         }
-        shell.cd('cli-test');
+        shell.cd(path.join(cwd, 'cli-test'));
     });
 
     after(function() {
@@ -31,7 +31,7 @@ describe('Start testing terminal client', () => {
     it('clone example project & install dependencies', () => {
         // install
         const gitUrl = 'https://github.com/roscoe054/ykit-starter-react.git';
-        shell.cd('cli-test');
+        shell.cd(path.join(cwd, 'cli-test'));
         shell.exec('git clone ' + gitUrl + ' ykit-seed-react');
         shell.cd(examplePath);
 
