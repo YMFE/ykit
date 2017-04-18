@@ -8,7 +8,7 @@ const ykitPath = path.join(__dirname, '../bin/ykit');
 const kill = require('../src/utils/psKill');
 
 const cwd = process.cwd();
-const exampleName = 'ykit-seed-react';
+const exampleName = 'ykit-starter-react';
 const examplePath = path.join(cwd, 'cli-test', exampleName);
 
 describe('Start testing terminal client', () => {
@@ -30,9 +30,9 @@ describe('Start testing terminal client', () => {
 
     it('clone example project & install dependencies', () => {
         // install
-        const gitUrl = 'https://github.com/roscoe054/ykit-starter-react.git';
+        const gitUrl = 'https://github.com/roscoe054/' + exampleName + '.git';
         shell.cd(path.join(cwd, 'cli-test'));
-        shell.exec('git clone ' + gitUrl + ' ykit-seed-react');
+        shell.exec('git clone ' + gitUrl + ' ' + exampleName);
         shell.cd(examplePath);
 
         let output;
