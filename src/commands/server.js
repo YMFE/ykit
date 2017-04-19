@@ -242,7 +242,8 @@ exports.run = (options) => {
         }
 
         // hot reload
-        if(hot) {
+        const hotEnabled = (project.server && project.server.hot) || hot;
+        if(hotEnabled) {
             // 修改 publicPath 为当前服务
             let localPublicPath = wpConfig.output.local.publicPath;
             if(project.config.replacingPublicPath !== false) {
@@ -257,7 +258,7 @@ exports.run = (options) => {
                 } else {
                     // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
                     const relativePath = sysPath.relative(projectCwd, wpConfig.output.local.path);
-                    wpConfig.output.local.publicPath = `/${projectName}/${relativePath}/`;
+                    wpConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
                 }
             }
 
@@ -270,7 +271,8 @@ exports.run = (options) => {
                         let entryItem = wpConfig.entry[key];
                         if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                             const whmPath = require.resolve('webpack-hot-middleware/client');
-                            entryItem.unshift(whmPath + '?reload=true&path=/__webpack_hmr&timeout=9999999');
+                            const hotPath = `http://127.0.0.1:${port}/__webpack_hmr`;
+                            entryItem.unshift(whmPath + '?reload=true&path=' + hotPath + '&timeout=9999999&overlay=false');
                         }
                         return entryItem;
                     });
@@ -450,11 +452,12 @@ exports.run = (options) => {
                 }
             );
 
-            if(hot) {
+            if(hotEnabled) {
                 app.use(require('webpack-hot-middleware')(compiler, {
                     log: false,
                     path: '/__webpack_hmr'
                 }));
+
                 logInfo('Start hot reloader server.');
             }
 
