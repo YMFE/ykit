@@ -42,7 +42,7 @@ process.on('message', function(m) {
                     let errorSource = '';
                     for(var lineIndex = e.line - lineRange, lineMax = e.line + lineRange; lineIndex < lineMax; lineIndex++){
                         get_line(filePath, lineIndex, function(err, line) {
-                            errorSource += `line: ${lineIndex}`.grey +  `${line}\n`.red;
+                            errorSource += `line: ${lineIndex}    `.grey +  `${line}\n`.red;
                         });
                     }
 
