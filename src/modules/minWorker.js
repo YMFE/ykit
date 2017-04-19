@@ -5,6 +5,7 @@ const jsParser = require('uglify-js').parser;
 const jsUglify = require('uglify-js').uglify;
 const cssUglify = require('uglifycss');
 const extend = require('extend');
+const colors = require('colors');
 
 const HASH_PLACEHOLDER = '[hashPlaceholder]';
 
@@ -16,7 +17,8 @@ process.on('message', function(m) {
     let response = {};
 
     if(/\.js$/.test(assetName) || /\.css$/.test(assetName)) {
-        const content = fs.readFileSync(path.resolve(cwd, assetName), {encoding: 'utf8'});
+        const filePath = path.resolve(cwd, assetName);
+        const content = fs.readFileSync(filePath, {encoding: 'utf8'});
         let minifiedCode = null;
 
         if(path.extname(assetName) === '.js') {
@@ -36,7 +38,18 @@ process.on('message', function(m) {
                 minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
             } catch(e) {
                 if(e.line) {
-                    response.error = extend(true, e, {assetName: assetName});
+                    const lineRange = 5;
+                    let errorSource = '';
+                    for(var lineIndex = e.line - lineRange, lineMax = e.line + lineRange; lineIndex < lineMax; lineIndex++){
+                        get_line(filePath, lineIndex, function(err, line) {
+                            errorSource += `line: ${lineIndex}`.grey +  `${line}\n`.red;
+                        });
+                    }
+
+                    response.error = extend(true, e, {
+                        assetName: assetName,
+                        errorSource: errorSource
+                    });
                 } else {
                     /* eslint-disable no-console */
                     console.error(e);
@@ -66,6 +79,17 @@ process.on('message', function(m) {
 
     process.send(response);
 });
+
+function get_line(filename, line_no, callback) {
+    var data = fs.readFileSync(filename, 'utf8');
+    var lines = data.split('\n');
+
+    if(+line_no > lines.length) {
+        throw new Error('File end reached without finding line');
+    }
+
+    callback(null, lines[+line_no]);
+}
 
 function md5(content) {
     return crypto.createHash('md5').update(content).digest('hex');

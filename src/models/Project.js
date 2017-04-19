@@ -472,12 +472,7 @@ class Project {
                                     const resErr = response.error;
                                     spinner.text = '';
                                     spinner.stop();
-                                    info('\n');
-                                    spinner.text = `Error occured while minifying ${resErr.assetName}`;
-                                    spinner.fail();
-                                    info(
-                                        `line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red
-                                    );
+                                    logError(`Error occured while minifying ${resErr.assetName}\n${resErr.errorSource}`);
 
                                     process.exit(1);
                                 }
