@@ -36,7 +36,7 @@ module.exports = {
 
 ## 配置文件选项
 
-- **plugins** - 插件是对一类配置和功能的封装，通过安装插件可以快速搭建开发环境。
+- **plugins** - 插件是对一类配置和功能的封装，通过安装插件可以快速搭建开发环境
 - **config.exports** - 资源入口
 - **config.modifyWebpackConfig** - 用来更改 Webpack 现有配置的函数
 - **hooks** - 打包过程钩子
