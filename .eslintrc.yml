@@ -1,3 +1,4 @@
+parser: 'babel-eslint'
 env:
   node: true
   commonjs: true
