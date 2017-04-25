@@ -33,6 +33,7 @@ class Project {
         this.packCallbacks = [];
         this.hooks = {
             beforePack: [],
+            beforeCompiling: [],
             afterPack: []
         };
         this.eslintConfig = require('../../static/eslint/eslint.json');

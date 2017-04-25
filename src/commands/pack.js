@@ -55,62 +55,108 @@ exports.run = function (options) {
 
         UtilFs.deleteFolderRecursive(this.cachePath);
 
-        const beforePackCallbackTasks = this.beforePackCallback || [];
-        for (let i = 0, len = beforePackCallbackTasks.length; i < len; i++) {
-            await new Promise((resolve, reject) => {
-                beforePackCallbackTasks[i](resolve, opt);
-            });
-        }
-
-        const beforeTasks = this.hooks.beforePack;
-        for (let i = 0, len = beforeTasks.length; i < len; i++) {
-            await new Promise((resolve, reject) => {
-                let isAsync = false;
-                beforeTasks[i].bind({
-                    async: function(){
-                        isAsync = true;
-                        return resolve;
-                    }
-                })(opt);
-
-                if(!isAsync) {
-                    resolve();
-                }
-            });
-        }
-
+        await handleBeforePack.bind(this)();
+        await prepareConfig.bind(this)();
+        await handlebeforeCompiling.bind(this)();
         await compilingProcess.bind(this)();
         await handleAfterPack.bind(this)();
         await printStats.bind(this)();
     }
 
+    function handlebeforeCompiling() {
+        return new Promise ((resolve, reject) => {
+            async.series(
+                this.hooks.beforeCompiling.map((beforeTask) => {
+                    return (callback) => {
+                        let isAsync = false;
+                        beforeTask.bind({
+                            async: () => {
+                                isAsync = true;
+                                return callback;
+                            }
+                        })(opt, config);
+
+                        if(!isAsync) {
+                            callback(null);
+                        }
+                    };
+                }),
+                (err) => {
+                    if(err) {
+                        logError(err);
+                        process.exit(1);
+                    }
+                    resolve();
+                }
+            );
+        });
+    }
+
+    function handleBeforePack() {
+        return new Promise ((resolve, reject) => {
+            async.series(
+                this.beforePackCallbacks.map((beforePackItem) => {
+                    return function(callback) {
+                        // 支持旧的 beforePackCallbacks 形式
+                        beforePackItem(callback, opt);
+                    };
+                }).concat(this.hooks.beforePack.map((beforeTask) => {
+                    return (callback) => {
+                        let isAsync = false;
+                        beforeTask.bind({
+                            async: () => {
+                                isAsync = true;
+                                return callback;
+                            }
+                        })(opt);
+
+                        if(!isAsync) {
+                            callback(null);
+                        }
+                    };
+                })),
+                (err) => {
+                    if(err) {
+                        logError(err);
+                        process.exit(1);
+                    }
+                    resolve();
+                }
+            );
+        });
+    }
+
+    function prepareConfig() {
+        if (opt.sourcemap) {
+            config.devtool = opt.sourcemap;
+        }
+
+        if (!opt.quiet) {
+            config.plugins.push(require('../plugins/progressBarPlugin.js'));
+        }
+
+        if (opt.min) {
+            config.output = config.output.prd;
+            config.devtool = '';
+        } else {
+            config.output = config.output.dev;
+        }
+
+        if (opt.clean) {
+            try {
+                UtilFs.deleteFolderRecursive(config.output.path);
+            } catch (e) {
+                error(e);
+            }
+        }
+
+        this.fixCss();
+
+        return config;
+    }
+
     function compilingProcess() {
         return new Promise ((resolve, reject) => {
-            if (opt.sourcemap) {
-                config.devtool = opt.sourcemap;
-            }
-
-            if (!opt.quiet) {
-                config.plugins.push(require('../plugins/progressBarPlugin.js'));
-            }
-
-            if (opt.min) {
-                config.output = config.output.prd;
-                config.devtool = '';
-            } else {
-                config.output = config.output.dev;
-            }
-
-            if (opt.clean) {
-                try {
-                    UtilFs.deleteFolderRecursive(config.output.path);
-                } catch (e) {
-                    error(e);
-                }
-            }
-
-            this.fixCss();
-
             webpack(config, (err, stats) => {
                 compilerStats = stats;
                 dist = config.output.path;
