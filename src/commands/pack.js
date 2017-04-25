@@ -255,13 +255,14 @@ exports.run = function (options) {
                                         ? nextAssets
                                         : originAssets;
                                     compilerStats = stats;
+                                    resolve();
                                 }
                             }
                         );
                     });
+                } else {
+                    resolve();
                 }
-
-                resolve();
             });
         });
     }
