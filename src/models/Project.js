@@ -435,7 +435,7 @@ class Project {
     }
 
     _getCurrentEnv() {
-        if (process.argv[2] === 'pack') {
+        if (process.argv[2] === 'pack' || process.argv[2] === 'p' ) {
             if (process.argv.indexOf('-m') > -1) {
                 return ENVS.PRD;
             } else {
