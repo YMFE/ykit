@@ -6,6 +6,7 @@ const jsUglify = require('uglify-js').uglify;
 const cssUglify = require('uglifycss');
 const extend = require('extend');
 const colors = require('colors');
+const beautify = require('js-beautify').js_beautify;
 
 const HASH_PLACEHOLDER = '[hashPlaceholder]';
 
@@ -40,11 +41,16 @@ process.on('message', function(m) {
                 if(e.line) {
                     const lineRange = 5;
                     let errorSource = '';
-                    for(var lineIndex = e.line - lineRange, lineMax = e.line + lineRange; lineIndex < lineMax; lineIndex++){
+                    for(let lineIndex = e.line - lineRange, lineMax = e.line + lineRange; lineIndex < lineMax; lineIndex++){
                         get_line(filePath, lineIndex, function(err, line) {
-                            errorSource += `line: ${lineIndex}    `.grey +  `${line}\n`.red;
+                            errorSource += line.trim() + '\n';
                         });
                     }
+
+                    errorSource = beautify(errorSource, {indent_size: 4});
+                    errorSource = errorSource.split('\n').map((codeLine, index) => {
+                        return codeLine = `line: ${e.line + index}    `.grey + codeLine.red + '\n';
+                    }).join('');
 
                     response.error = extend(true, e, {
                         assetName: assetName,
