@@ -49,6 +49,7 @@ module.exports = {
 - [ykit-starter-yo][2]
 - [ykit-starter-react][3]
 - [ykit-starter-vue][4]
+- [ykit-starter-antd][5]
 
 ## 文档
 
@@ -58,3 +59,4 @@ module.exports = {
 [2]: https://github.com/roscoe054/ykit-starter-yo
 [3]: https://github.com/roscoe054/ykit-starter-react
 [4]: https://github.com/roscoe054/ykit-starter-vue
+[5]: https://github.com/roscoe054/ykit-starter-antd
