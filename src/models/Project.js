@@ -208,9 +208,13 @@ class Project {
         });
 
         if (ykitConfigFile && ykitConfigFile.config) {
-            extend(true, this.config, ykitConfigFile.config);
-            handleExportsConfig.bind(this)(ykitConfigFile.config);
-            this.setCommands(ykitConfigFile.commands || ykitConfigFile.config.command); // 后者兼容以前形式
+            const configFileConfig = typeof ykitConfigFile.config === 'function'
+                                    ? ykitConfigFile.config()
+                                    : ykitConfigFile.config;
+
+            extend(true, this.config, configFileConfig);
+            handleExportsConfig.bind(this)(configFileConfig);
+            this.setCommands(ykitConfigFile.commands || configFileConfig.command); // 后者兼容以前形式
             this.setHooks(ykitConfigFile.hooks);
             this.setProxy(ykitConfigFile.proxy);
             this.setServer(ykitConfigFile.server);
