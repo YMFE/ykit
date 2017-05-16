@@ -152,8 +152,8 @@ exports.run = (options) => {
     app.use(function (req, res, next) {
         const projectInfo = getProjectInfo(req);
         const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-        const cwd = projectInfo.projectCwd;
-        const shouldMock = mock || (project.server && project.server.mock)
+        const cwd = process.cwd();
+        const shouldMock = mock || (project.server && project.server.mock);
 
         if(!shouldMock) {
             next();
@@ -166,8 +166,8 @@ exports.run = (options) => {
                 // get mock file
                 let mockFile = '';
                 if(typeof mock === 'string') {
-                    if(UtilFs.fileExists(mock)) {
-                        mockFile = mock;
+                    if(UtilFs.fileExists(sysPath.join(cwd, mock))) {
+                        mockFile = sysPath.join(cwd, mock);
                     } else {
                         logError(`Mock file ${mock.bold} not found in ${cwd.bold}`);
                     }
@@ -182,23 +182,23 @@ exports.run = (options) => {
                 if(mockFile) {
                     const ext = sysPath.extname(mockFile);
                     if(ext === '.js') {
-                        let appMockRules = require(sysPath.join(cwd, mockFile));
+                        let appMockRules = require(mockFile);
                         let formattedRules = [];
                         if(typeof appMockRules === 'object') {
-                            log(`Start using ${mockFile} for simulation.`.cyan)
+                            log(`Start using ${mockFile} for simulation.`.cyan);
                             Object.keys(appMockRules).map((itemKey) => {
                                 if(itemKey === 'rules') {
-                                    formattedRules = formattedRules.concat(appMockRules[itemKey])
+                                    formattedRules = formattedRules.concat(appMockRules[itemKey]);
                                 } else {
                                     formattedRules.push({
                                         pattern: itemKey,
                                         respondwith: appMockRules[itemKey]
-                                    })
+                                    });
                                 }
                             });
                             mockRules[projectInfo.projectName] = formattedRules.map(r => extend(r, {cwd}));
                         } else {
-                            logError(`Invalid mock rules, please check your mock config.`);
+                            logError('Invalid mock rules, please check your mock config.');
                         }
                     }
                 }
@@ -211,7 +211,7 @@ exports.run = (options) => {
                 const rw = rule.respondwith;
                 const cwd = rule.cwd; // different from current req cwd
 
-                let resObj = {}
+                let resObj = {};
 
                 // TODO handle object
 
@@ -224,21 +224,21 @@ exports.run = (options) => {
                         try {
                             resObj = Mock.mock(JSON.parse(fs.readFileSync(mockPath, 'utf-8')));
                         } catch(e) {
-                            logError(`Parse error in ${mockPath.bold} \n${e}`)
+                            logError(`Parse error in ${mockPath.bold} \n${e}`);
                         }
                     }
-                } else {
-                    logError(`Not found ${mockPath.bold}`);
-                }
 
-                req.mock = true;
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify(resObj));
+                    req.mock = true;
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify(resObj));
+                } else {
+                    logError(`${'[Mock]'.cyan} Not found ${mockPath.bold}`);
+                }
             };
 
             Object.keys(mockRules).map((mockApp) => {
                 mockRules[mockApp].map((rule) => {
-                    const isReg = Object.prototype.toString.call(rule.pattern).indexOf('RegExp') > -1
+                    const isReg = Object.prototype.toString.call(rule.pattern).indexOf('RegExp') > -1;
                     let result;
 
                     if (isReg) {
@@ -250,7 +250,7 @@ exports.run = (options) => {
                     if (result) {
                         mockResult = mockAction(rule, req, res);
                     }
-                })
+                });
             });
 
             if(!mockResult) {
@@ -259,7 +259,6 @@ exports.run = (options) => {
         }
 
         function getMockFiles(names = [], searchPath = '') {
-            console.log();
             return globby.sync(['mock.js', 'mock.json'], { cwd: sysPath.join(cwd, searchPath) });
         }
     });
