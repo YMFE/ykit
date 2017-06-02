@@ -14,7 +14,6 @@ const connect = require('connect'),
     logSymbols = require('log-symbols'),
     favicon = require('serve-favicon'),
     webpackDevMiddleware = require('webpack-dev-middleware'),
-    Mock = require('mockjs'),
     httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
@@ -35,10 +34,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('hot', '开启 hot-reload');
     optimist.alias('v', 'verbose');
     optimist.describe('v', '显示详细编译信息');
-    optimist.alias('mw', 'middlewares');
-    optimist.describe('mw', '加载项目中间件');
-    optimist.alias('m', 'mock');
-    optimist.describe('m', '启用 mock 服务');
+    optimist.alias('m', 'middlewares');
+    optimist.describe('m', '加载项目中间件');
 };
 
 exports.run = (options) => {
@@ -48,16 +45,17 @@ exports.run = (options) => {
         proxy = options.x || options.proxy,
         hot = options.hot,
         middlewares = options.mw || options.middlewares,
-        mock = options.m || options.mock,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
 
     let middlewareCache = {},
         promiseCache = {},
-        mockCache = {},
-        mockRules = {},
         allAssetsEntry = {},
-        watchCacheNames = {};
+        watchCacheNames = {},
+        customMiddlewareCache = {
+            apps: [],
+            middlewares: []
+        };
 
     let io = null,
         assetEntrys = {};
@@ -148,143 +146,32 @@ exports.run = (options) => {
         return next();
     });
 
-    // mock
-    app.use(function (req, res, next) {
-        const projectInfo = getProjectInfo(req);
-        const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-        const cwd = process.cwd();
-        const shouldMock = mock || (project.server && project.server.mock);
-
-        if(!shouldMock) {
-            next();
-        }
-
-        if (req.headers['x-requested-with'] !== 'XMLHttpRequest') {
-            if(!mockCache[projectInfo.projectName]) {
-                mockCache[projectInfo.projectName] = true;
-
-                // get mock file
-                let mockFile = '';
-                if(typeof mock === 'string') {
-                    if(UtilFs.fileExists(sysPath.join(cwd, mock))) {
-                        mockFile = sysPath.join(cwd, mock);
-                    } else {
-                        logError(`Mock file ${mock.bold} not found in ${cwd.bold}`);
-                    }
-                } else {
-                    const localConfigFiles = getMockFiles(['mock.js', 'mock.json']);
-                    if(localConfigFiles.length > 0) {
-                        mockFile = localConfigFiles[0];
-                    }
-                }
-
-                // get mock rules
-                if(mockFile) {
-                    const ext = sysPath.extname(mockFile);
-                    if(ext === '.js') {
-                        let appMockRules = require(mockFile);
-                        let formattedRules = [];
-                        if(typeof appMockRules === 'object') {
-                            log(`Start using ${mockFile} for simulation.`.cyan);
-                            Object.keys(appMockRules).map((itemKey) => {
-                                if(itemKey === 'rules') {
-                                    formattedRules = formattedRules.concat(appMockRules[itemKey]);
-                                } else {
-                                    formattedRules.push({
-                                        pattern: itemKey,
-                                        respondwith: appMockRules[itemKey]
-                                    });
-                                }
-                            });
-                            mockRules[projectInfo.projectName] = formattedRules.map(r => extend(r, {cwd}));
-                        } else {
-                            logError('Invalid mock rules, please check your mock config.');
-                        }
-                    }
-                }
-            }
-
-            next();
-        } else {
-            let mockResult;
-            const mockAction = function (rule, req, res) {
-                const rw = rule.respondwith;
-                const cwd = rule.cwd; // different from current req cwd
-
-                let resObj = {};
-
-                // TODO handle object
-
-                // handle file
-                const mockPath = sysPath.join(cwd, rw);
-                if(UtilFs.fileExists(mockPath)) {
-                    if(sysPath.extname(rw) === '.js' || sysPath.extname(rw) === '.json') {
-                        resObj = Mock.mock(require(mockPath));
-                    } else if(sysPath.extname(rw)) {
-                        try {
-                            resObj = Mock.mock(JSON.parse(fs.readFileSync(mockPath, 'utf-8')));
-                        } catch(e) {
-                            logError(`Parse error in ${mockPath.bold} \n${e}`);
-                        }
-                    }
-
-                    req.mock = true;
-                    res.writeHead(200, {'Content-Type': 'application/json'});
-                    res.end(JSON.stringify(resObj));
-                } else {
-                    logError(`${'[Mock]'.cyan} Not found ${mockPath.bold}`);
-                }
-            };
-
-            Object.keys(mockRules).map((mockApp) => {
-                mockRules[mockApp].map((rule) => {
-                    const isReg = Object.prototype.toString.call(rule.pattern).indexOf('RegExp') > -1;
-                    let result;
-
-                    if (isReg) {
-                        result = req.url.match(rule.pattern);
-                    } else {
-                        result = req.url.indexOf(rule.pattern) === 0;
-                    }
-
-                    if (result) {
-                        mockResult = mockAction(rule, req, res);
-                    }
-                });
-            });
-
-            if(!mockResult) {
-                next();
-            }
-        }
-
-        function getMockFiles(names = [], searchPath = '') {
-            return globby.sync(['mock.js', 'mock.json'], { cwd: sysPath.join(cwd, searchPath) });
-        }
-    });
-
+    // custom middlewares
     app.use(function (req, res, next) {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-            const customMiddlewares = project.config.getMiddlewares();
-            const _next = () => {
-                if (customMiddlewares.length === 0) {
-                    next();
-                } else {
-                    const nextMw = customMiddlewares.shift();
-                    nextMw(req, res, _next);
-                }
-            };
+            const cache = customMiddlewareCache;
 
-            _next();
+            if(cache.apps.indexOf(projectInfo.projectName) === -1) {
+                cache.apps.push(projectInfo.projectName);
+                cache.middlewares = cache.middlewares.concat(project.config.getMiddlewares() || []);
+            }
+
+            if (cache.middlewares.length > 0) {
+                cache.middlewares.map((middleware) => {
+                    middleware(req, res, next);
+                });
+            } else {
+                next();
+            }
         } catch (e) {
+            logError(e);
             next();
         }
     });
 
     // compiler
-    // 记录 project
     app.use(function (req, res, next) {
         let url = req.url,
             keys = url.split('/'),
@@ -503,7 +390,11 @@ exports.run = (options) => {
             const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
                 compiler,
                 {
-                    quiet: true, reporter: ({state, stats}) => {
+                    quiet: !verbose, reporter: ({state, stats}) => {
+                        if(!stats) {
+                            return resolve();
+                        }
+
                         // 打印编译完成时间（小于 100ms 不展示）
                         if(!stats.hasErrors() && !stats.hasWarnings()) {
                             const minDuration = 100;

@@ -1,6 +1,6 @@
 {
-  "name": "ykit",
-  "version": "0.4.0",
+  "name": "@qnpm/ykit",
+  "version": "0.5.0-rc0",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
@@ -43,7 +43,6 @@
     "loader-utils": "^0.2.15",
     "log-symbols": "^1.0.2",
     "mkdirp": "^0.5.1",
-    "mockjs": "^1.0.1-beta3",
     "moment": "^2.14.1",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",

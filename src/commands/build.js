@@ -20,7 +20,7 @@ exports.setOptions = (optimist) => {
 
 };
 
-exports.npmInstall = function(a) {
+exports.npmInstall = function() {
     let currentNpm = null;
     const cwd = process.cwd();
 
