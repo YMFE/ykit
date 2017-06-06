@@ -158,13 +158,17 @@ exports.run = (options) => {
                 cache.middlewares = cache.middlewares.concat(project.config.getMiddlewares() || []);
             }
 
-            if (cache.middlewares.length > 0) {
-                cache.middlewares.map((middleware) => {
-                    middleware(req, res, next);
-                });
-            } else {
-                next();
-            }
+            const currentMiddlewres = cache.middlewares.slice(0);
+            const _next = () => {
+                if (currentMiddlewres.length === 0) {
+                    next();
+                } else {
+                    const nextMw = currentMiddlewres.shift();
+                    nextMw(req, res, _next);
+                }
+            };
+
+            _next();
         } catch (e) {
             logError(e);
             next();
@@ -324,7 +328,7 @@ exports.run = (options) => {
                             exts = exts.map((name) => {
                                 return name + '$';
                             });
-                            const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+                            const replaceReg = new RegExp('\\' + exts.join('|\\'));
 
                             entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
                         });
