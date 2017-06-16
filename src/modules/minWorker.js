@@ -38,12 +38,14 @@ process.on('message', function(m) {
                 ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
                 minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
             } catch(e) {
+                var type = typeof e.line;
+                
                 if(e.line) {
                     const lineRange = 5;
                     let errorSource = '';
                     for(let lineIndex = e.line - lineRange, lineMax = e.line + lineRange; lineIndex < lineMax; lineIndex++){
                         get_line(filePath, lineIndex, function(err, line) {
-                            errorSource += line.trim() + '\n';
+                            if(line != null)errorSource += line.trim() + '\n';
                         });
                     }
 
@@ -87,9 +89,9 @@ process.on('message', function(m) {
 });
 
 function get_line(filename, line_no, callback) {
+
     var data = fs.readFileSync(filename, 'utf8');
     var lines = data.split('\n');
-
     if(+line_no > lines.length) {
         throw new Error('File end reached without finding line');
     }
