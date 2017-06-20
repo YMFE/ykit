@@ -151,7 +151,7 @@ exports.run = (options) => {
     app.use(function (req, res, next) {
         try {
             const projectInfo = getProjectInfo(req);
-            const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
+            const project = Manager.getProject(projectInfo.projectDir, { cache: false });
             const cache = customMiddlewareCache;
 
             if(cache.apps.indexOf(projectInfo.projectName) === -1) {
@@ -176,25 +176,27 @@ exports.run = (options) => {
         }
     });
 
-    app.use(hostReplaceMiddleware);
+    // app.use(hostReplaceMiddleware);
 
     // compiler
     app.use(function (req, res, next) {
         let url = req.url,
-            keys = url.split('/'),
             compiler = null;
 
         const projectInfo = getProjectInfo(req);
         const projectName = projectInfo.projectName;
-        const projectCwd = projectInfo.projectCwd;
-        const project = Manager.getProject(projectCwd, { cache: false });
+        const projectDir = projectInfo.projectDir;
+        const project = Manager.getProject(projectDir, { cache: false });
         const wpConfig = project.config._config;
-        const outputDir = project.config._config.output.local.path || 'prd';
+        const outputConfigDir = project.config._config.output.local.path || 'prd';
+        const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
+                            ? outputConfigDir
+                            : sysPath.join(projectDir, outputConfigDir);
 
         // 非 output.path 下的资源不做处理
-        if(keys[2] !== sysPath.relative(projectCwd, outputDir)) {
-            next();
-            return;
+        url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
+        if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
+            return next();
         }
 
         // 清除 YKIT_CACHE_DIR 资源
@@ -205,17 +207,20 @@ exports.run = (options) => {
             }
         });
         if(isFirstCompileDir) {
-            UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
+            UtilFs.deleteFolderRecursive(sysPath.join(projectDir, YKIT_CACHE_DIR), true);
         }
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
         const rversion = /@[^\.]+(?=\.\w+)/;
-        req.url = '/' + keys.slice(3).join('/').replace(rversion, '').replace(rquery, '');
+        req.url = url = '/' + sysPath.relative(outputAbsDir, sysPath.join(projectDir, url))
+                    .replace(rversion, '')
+                    .replace(rquery, '');
 
         // 生成 cacheId
-        const requestUrl = req.url.replace('.map', '').slice(1);
-        const cacheId = sysPath.join(projectName, requestUrl);
+        url = url.replace('.map', '').slice(1);
+        const cacheId = sysPath.join(projectName, url);
+
 
         // 寻找已有的 middlewareCache
         if(middlewareCache[cacheId]) {
@@ -239,7 +244,7 @@ exports.run = (options) => {
                     wpConfig.output.local.publicPath = localPublicPath;
                 } else {
                     // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
-                    const relativePath = sysPath.relative(projectCwd, wpConfig.output.local.path);
+                    const relativePath = sysPath.relative(projectDir, wpConfig.output.local.path);
                     wpConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
                 }
             }
@@ -274,11 +279,11 @@ exports.run = (options) => {
         });
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
-            allAssetsEntry[projectName] = requestUrl;
+            allAssetsEntry[projectName] = url;
         }
 
         let nextConfig;
-        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === requestUrl) {
+        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
             compiler = project.getServerCompiler(function (config) {
 
                 config.plugins.push(require('../plugins/progressBarPlugin.js'));
@@ -342,8 +347,8 @@ exports.run = (options) => {
                         }
 
                         // 判断所请求的资源是否在入口配置中
-                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
-                        const matchingKey = sysPath.normalize(requestUrl) === entryKey + sysPath.extname(requestUrl);
+                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(url);
+                        const matchingKey = sysPath.normalize(url) === entryKey + sysPath.extname(url);
 
                         if (matchingPath || matchingKey) {
                             isRequestingEntry = true;
@@ -366,7 +371,7 @@ exports.run = (options) => {
             setTimeout(() => {
                 if (promiseCache[projectName]) {
                     Promise.all(promiseCache[projectName]).then(function () {
-                        const assetKey = sysPath.join(projectName, requestUrl);
+                        const assetKey = sysPath.join(projectName, url);
                         if(middlewareCache[assetKey]) {
                             middlewareCache[assetKey](req, res, next);
                         } else {
@@ -556,14 +561,26 @@ exports.run = (options) => {
     }
 
     function getProjectInfo(req) {
-        var url = req.url,
-            keys = url.split('/'),
-            projectName = keys[1],
-            projectCwd = sysPath.join(cwd, projectName);
+        const dirSections = req.url.split('/');
+        let dirLevel = '',
+            projectDir = '',
+            projectName = '';
 
+        for(let i = 0, len = dirSections.length; i < len; i++) {
+            dirLevel += dirSections[i] + '/';
+
+            const searchDir = sysPath.join(cwd, dirLevel, '');
+            const ykitConf = globby.sync(['ykit.*.js', 'ykit.js'], {cwd: searchDir})[0];
+
+            if(ykitConf) {
+                projectDir = searchDir;
+                projectName = sysPath.basename(searchDir);
+                break;
+            }
+        }
         return {
             projectName: projectName,
-            projectCwd: projectCwd
+            projectDir: projectDir
         };
     }
 };
