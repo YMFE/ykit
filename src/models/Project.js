@@ -193,7 +193,7 @@ class Project {
                 // 运行插件模块
                 if (module && module.config) {
                     handleExportsConfig.bind(this)(module.config, pluginItem.options);
-                    this.setCommands(module.commands || ykitConfigFile.config.command, pluginName); // 后者兼容以前形式
+                    this.setCommands(module.commands, pluginName); // 后者兼容以前形式
                     this.setHooks(module.hooks);
                     this.setBuild(module.build);
                 }
@@ -208,15 +208,16 @@ class Project {
         });
 
         if (ykitConfigFile && ykitConfigFile.config) {
-            const configFileConfig = typeof ykitConfigFile.config === 'function'
+            const ykitJSConfig = typeof ykitConfigFile.config === 'function'
                                    ? ykitConfigFile.config()
                                    : ykitConfigFile.config;
 
-            extend(true, this.config, configFileConfig);
+            extend(true, this.config, ykitJSConfig);
             handleCommonsChunk.bind(this)(this.config);
-            handleExportsConfig.bind(this)(configFileConfig);
+            handleExportsConfig.bind(this)(ykitJSConfig);
 
-            this.setCommands(ykitConfigFile.commands || configFileConfig.command); // 后者兼容以前形式
+            const cmds = ykitConfigFile.commands || ykitJSConfig.command || ykitJSConfig.commands;  // 后者兼容以前形式
+            this.setCommands(cmds);
             this.setHooks(ykitConfigFile.hooks);
             this.setProxy(ykitConfigFile.proxy);
             this.setServer(ykitConfigFile.server);
