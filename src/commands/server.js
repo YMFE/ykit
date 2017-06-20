@@ -567,7 +567,7 @@ exports.run = (options) => {
             projectName = '';
 
         for(let i = 0, len = dirSections.length; i < len; i++) {
-            dirLevel += dirSections[i] + '/';
+            dirLevel += i === 0 ? dirSections[i] : '/' + dirSections[i] ;
 
             const searchDir = sysPath.join(cwd, dirLevel, '');
             const ykitConf = globby.sync(['ykit.*.js', 'ykit.js'], {cwd: searchDir})[0];
@@ -578,6 +578,7 @@ exports.run = (options) => {
                 break;
             }
         }
+
         return {
             projectName: projectName,
             projectDir: projectDir
