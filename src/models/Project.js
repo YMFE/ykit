@@ -268,23 +268,31 @@ class Project {
                 }
                 vendors = commonsChunk.vendors;
                 if (typeof vendors === 'object' && vendors !== undefined) {
+                    var i=0;
                     for (var name in vendors) {
                         if (vendors.hasOwnProperty(name) && vendors[name]) {
+                            i++;
                             chunks.push(name);
                             webpackConfig.entry[name] = Array.isArray(vendors[name]) ? vendors[name] : [vendors[name]];
                         }
                     }
+                    if(i > 0){
+                        chunks.push('manifest');
+                    }
+                    
                 }
                 newfilename = commonsChunk.filename ? commonsChunk.filename : '[name].js';
 
                 if (chunks.length > 0) {
+                    
                     webpackConfig.plugins.push(
                         new webpack.optimize.CommonsChunkPlugin({
                             name: chunks,
                             filename: handleFilename(newfilename, filenameTpl.filename),
                             minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
                         })
-                    );
+                    );  
+
                 }
             }
         }
