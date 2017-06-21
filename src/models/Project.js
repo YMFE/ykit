@@ -202,8 +202,16 @@ class Project {
                 extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
                 this.ignores.push(Manager.loadIgnoreFile(pluginPath));
             } else {
-                logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
-                logDoc('http://ued.qunar.com/ykit/plugins.html');
+                // 添加到 process 中，防止重复多次报错
+                const errorInfo = `Local ${pluginName} plugin not found，you may need to install it first.`;
+                if(!(process.ykitError && process.ykitError[this.cwd + errorInfo])) {
+                    logError(errorInfo);
+                    logDoc('http://ued.qunar.com/ykit/plugins.html');
+                }
+                process.ykitError = Object.assign(process.ykitError || {}, {[this.cwd + errorInfo]: true});
+
+                // 如果是打包阶段，直接中断
+                this._getCurrentEnv() !== 'local' && process.exit(1);
             }
         });
 
