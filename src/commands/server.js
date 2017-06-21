@@ -14,6 +14,7 @@ const connect = require('connect'),
     logSymbols = require('log-symbols'),
     favicon = require('serve-favicon'),
     webpackDevMiddleware = require('webpack-dev-middleware'),
+    hostReplaceMiddleware = require('../modules/HostReplaceMiddleware'),
     httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
@@ -44,14 +45,18 @@ exports.run = (options) => {
         verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
         hot = options.hot,
-        middlewares = options.m || options.middlewares,
+        middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
 
     let middlewareCache = {},
         promiseCache = {},
         allAssetsEntry = {},
-        watchCacheNames = {};
+        watchCacheNames = {},
+        customMiddlewareCache = {
+            apps: [],
+            middlewares: []
+        };
 
     let io = null,
         assetEntrys = {};
@@ -67,39 +72,6 @@ exports.run = (options) => {
             }
         });
     }
-
-    // proxy
-    let currentProxy = [];
-    app.use(function (req, res, next) {
-        try {
-            const projectInfo = getProjectInfo(req);
-            const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-
-            if(project.proxy && project.proxy.length !== currentProxy.length && project.proxy[0] !== currentProxy[0]) {
-                currentProxy = project.proxy;
-                currentProxy.map((proxyItem) => {
-                    // hacky way to add middleware
-                    if(typeof proxyItem === 'string') {
-                        app.stack.unshift({
-                            route: '', handle: httpProxy(proxyItem)
-                        });
-                    } else  {
-                        if(typeof proxyItem !== 'object' || !proxyItem.route || !proxyItem.options) {
-                            logWarn('Not valid proxy: ' + JSON.stringify(proxyItem));
-                        } else {
-                            app.stack.unshift({
-                                route: proxyItem.route, handle: httpProxy(proxyItem.options)
-                            });
-                        }
-                    }
-                });
-            }
-        } catch (e) {
-            logError(e);
-        }
-
-        next();
-    });
 
     // a simple middleware
     app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
@@ -138,16 +110,16 @@ exports.run = (options) => {
 
         function parse(req, res, format) {
             /* eslint-disable */
-            const status = (function () {
+            const statusColor = (function () {
                 switch (true) {
                     case 500 <= res.statusCode:
-                        return '\x1b[31m';
+                        return 'red';
                     case 400 <= res.statusCode:
-                        return '\x1b[33m';
+                        return 'yellow';
                     case 300 <= res.statusCode:
-                        return '\x1b[36m';
+                        return 'cyan';
                     case 200 <= res.statusCode:
-                        return '\x1b[32m';
+                        return 'green';
                 }
             })();
             /* eslint-enable */
@@ -160,11 +132,11 @@ exports.run = (options) => {
                 contentLength = '( ' + contentLength + ' )';
             }
 
-            format = format.replace(/%date/g, '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
-            format = format.replace(/%method/g, '\x1b[35m' + (req.method.toUpperCase()) + '\x1b[0m');
+            format = format.replace(/%date/g, `[${moment().format(dateFormat)}]`.grey);
+            format = format.replace(/%method/g, `${req.method.toUpperCase().magenta}${req.mock ? '(mock)'.cyan : ''}`);
             format = format.replace(/%url/g, decodeURI(req.originalUrl));
-            format = format.replace(/%status/g, '' + status + res.statusCode + '\x1b[0m');
-            format = format.replace(/%contentLength/g, '\x1b[90m' + contentLength + '\x1b[31m' + '\x1b[0m');
+            format = format.replace(/%status/g, String(res.statusCode)[statusColor]);
+            format = format.replace(/%contentLength/g, contentLength.grey);
 
             return {
                 message: format,
@@ -175,44 +147,56 @@ exports.run = (options) => {
         return next();
     });
 
+    // custom middlewares
     app.use(function (req, res, next) {
         try {
             const projectInfo = getProjectInfo(req);
-            const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-            const customMiddlewares = project.config.getMiddlewares();
+            const project = Manager.getProject(projectInfo.projectDir, { cache: false });
+            const cache = customMiddlewareCache;
+
+            if(cache.apps.indexOf(projectInfo.projectName) === -1) {
+                cache.apps.push(projectInfo.projectName);
+                cache.middlewares = cache.middlewares.concat(project.config.getMiddlewares() || []);
+            }
+
+            const currentMiddlewres = cache.middlewares.slice(0);
             const _next = () => {
-                if (customMiddlewares.length === 0) {
+                if (currentMiddlewres.length === 0) {
                     next();
                 } else {
-                    const nextMw = customMiddlewares.shift();
+                    const nextMw = currentMiddlewres.shift();
                     nextMw(req, res, _next);
                 }
             };
 
             _next();
         } catch (e) {
+            logError(e);
             next();
         }
     });
 
+    // app.use(hostReplaceMiddleware);
+
     // compiler
-    // 记录 project
     app.use(function (req, res, next) {
         let url = req.url,
-            keys = url.split('/'),
             compiler = null;
 
         const projectInfo = getProjectInfo(req);
         const projectName = projectInfo.projectName;
-        const projectCwd = projectInfo.projectCwd;
-        const project = Manager.getProject(projectCwd, { cache: false });
+        const projectDir = projectInfo.projectDir;
+        const project = Manager.getProject(projectDir, { cache: false });
         const wpConfig = project.config._config;
-        const outputDir = project.config._config.output.local.path || 'prd';
+        const outputConfigDir = project.config._config.output.local.path || 'prd';
+        const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
+                            ? outputConfigDir
+                            : sysPath.join(projectDir, outputConfigDir);
 
         // 非 output.path 下的资源不做处理
-        if(keys[2] !== sysPath.relative(projectCwd, outputDir)) {
-            next();
-            return;
+        url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
+        if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
+            return next();
         }
 
         // 清除 YKIT_CACHE_DIR 资源
@@ -223,17 +207,20 @@ exports.run = (options) => {
             }
         });
         if(isFirstCompileDir) {
-            UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
+            UtilFs.deleteFolderRecursive(sysPath.join(projectDir, YKIT_CACHE_DIR), true);
         }
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
         const rversion = /@[^\.]+(?=\.\w+)/;
-        req.url = '/' + keys.slice(3).join('/').replace(rversion, '').replace(rquery, '');
+        req.url = url = '/' + sysPath.relative(outputAbsDir, sysPath.join(projectDir, url))
+                    .replace(rversion, '')
+                    .replace(rquery, '');
 
         // 生成 cacheId
-        const requestUrl = req.url.replace('.map', '').slice(1);
-        const cacheId = sysPath.join(projectName, requestUrl);
+        url = url.replace('.map', '').slice(1);
+        const cacheId = sysPath.join(projectName, url);
+
 
         // 寻找已有的 middlewareCache
         if(middlewareCache[cacheId]) {
@@ -257,7 +244,7 @@ exports.run = (options) => {
                     wpConfig.output.local.publicPath = localPublicPath;
                 } else {
                     // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
-                    const relativePath = sysPath.relative(projectCwd, wpConfig.output.local.path);
+                    const relativePath = sysPath.relative(projectDir, wpConfig.output.local.path);
                     wpConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
                 }
             }
@@ -292,11 +279,11 @@ exports.run = (options) => {
         });
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
-            allAssetsEntry[projectName] = requestUrl;
+            allAssetsEntry[projectName] = url;
         }
 
         let nextConfig;
-        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === requestUrl) {
+        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
             compiler = project.getServerCompiler(function (config) {
 
                 config.plugins.push(require('../plugins/progressBarPlugin.js'));
@@ -349,7 +336,7 @@ exports.run = (options) => {
                             exts = exts.map((name) => {
                                 return name + '$';
                             });
-                            const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+                            const replaceReg = new RegExp('\\' + exts.join('|\\'));
 
                             entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
                         });
@@ -360,8 +347,8 @@ exports.run = (options) => {
                         }
 
                         // 判断所请求的资源是否在入口配置中
-                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
-                        const matchingKey = sysPath.normalize(requestUrl) === entryKey + sysPath.extname(requestUrl);
+                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(url);
+                        const matchingKey = sysPath.normalize(url) === entryKey + sysPath.extname(url);
 
                         if (matchingPath || matchingKey) {
                             isRequestingEntry = true;
@@ -384,7 +371,7 @@ exports.run = (options) => {
             setTimeout(() => {
                 if (promiseCache[projectName]) {
                     Promise.all(promiseCache[projectName]).then(function () {
-                        const assetKey = sysPath.join(projectName, requestUrl);
+                        const assetKey = sysPath.join(projectName, url);
                         if(middlewareCache[assetKey]) {
                             middlewareCache[assetKey](req, res, next);
                         } else {
@@ -415,7 +402,11 @@ exports.run = (options) => {
             const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
                 compiler,
                 {
-                    quiet: true, reporter: ({state, stats}) => {
+                    quiet: !verbose, reporter: ({state, stats}) => {
+                        if(!stats) {
+                            return resolve();
+                        }
+
                         // 打印编译完成时间（小于 100ms 不展示）
                         if(!stats.hasErrors() && !stats.hasWarnings()) {
                             const minDuration = 100;
@@ -570,14 +561,27 @@ exports.run = (options) => {
     }
 
     function getProjectInfo(req) {
-        var url = req.url,
-            keys = url.split('/'),
-            projectName = keys[1],
-            projectCwd = sysPath.join(cwd, projectName);
+        const dirSections = req.url.split('/');
+        let dirLevel = '',
+            projectDir = '',
+            projectName = '';
+
+        for(let i = 0, len = dirSections.length; i < len; i++) {
+            dirLevel += i === 0 ? dirSections[i] : '/' + dirSections[i] ;
+
+            const searchDir = sysPath.join(cwd, dirLevel, '');
+            const ykitConf = globby.sync(['ykit.*.js', 'ykit.js'], {cwd: searchDir})[0];
+
+            if(ykitConf) {
+                projectDir = searchDir;
+                projectName = sysPath.basename(searchDir);
+                break;
+            }
+        }
 
         return {
             projectName: projectName,
-            projectCwd: projectCwd
+            projectDir: projectDir
         };
     }
 };

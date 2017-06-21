@@ -209,14 +209,13 @@ class Project {
 
         if (ykitConfigFile && ykitConfigFile.config) {
             const configFileConfig = typeof ykitConfigFile.config === 'function'
-                                    ? ykitConfigFile.config()
-                                    : ykitConfigFile.config;
+                                   ? ykitConfigFile.config()
+                                   : ykitConfigFile.config;
 
             extend(true, this.config, configFileConfig);
             handleCommonsChunk.bind(this)(this.config);
             handleExportsConfig.bind(this)(configFileConfig);
-            
-            
+
             this.setCommands(ykitConfigFile.commands || configFileConfig.command); // 后者兼容以前形式
             this.setHooks(ykitConfigFile.hooks);
             this.setProxy(ykitConfigFile.proxy);
@@ -246,7 +245,7 @@ class Project {
                 name: 'common',    //name是生成公共模块的chunkname
                 filename: 'scripts/[name].js', //filename是生成文件名，默认是 [name].js
                 minChunks: 2,      //公共模块被使用的最小次数。比如配置为3，也就是同一个模块只有被3个以外的页面同时引用时才会被提取出来作为common chunks,默认为2
-                vendors: {    //vendors是一个处理第三方库的配置项，结构是一个key,value数组,key是chunkname，value是第三方类库数组，生成的文件是{chunkname}.js     
+                vendors: {    //vendors是一个处理第三方库的配置项，结构是一个key,value数组,key是chunkname，value是第三方类库数组，生成的文件是{chunkname}.js
                     lib: ['jquery', 'underscore', 'moment'], //会生成一个scripts/lib.js文件，包含 jquery,underscore,moment类库
                     charts: ['highcharts', 'echarts'] //会生成一个scripts/charts.js文件，包含 highcharts,echarts类库
                 }
@@ -256,12 +255,12 @@ class Project {
         function handleCommonsChunk(config) {
             var commonsChunk = config.commonsChunk,
                 webpackConfig = config._config,
-                chunks = [], 
+                chunks = [],
                 newfilename,
                 filenameTpl = webpackConfig.output[this._getCurrentEnv()],
                 vendors;
-           
-                
+
+
             if (typeof commonsChunk === 'object' && commonsChunk !== undefined) {
                 if (typeof commonsChunk.name === 'string' && commonsChunk) {
                     chunks.push(commonsChunk.name);
@@ -304,8 +303,6 @@ class Project {
             newtpl = tpl.replace('[ext]', filepaths.ext);
             return path.join(filepaths.dir, newtpl);
         }
-
-
 
         // 处理 exports.config
         function handleExportsConfig(exportsConfig, options) {
