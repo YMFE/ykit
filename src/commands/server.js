@@ -208,6 +208,7 @@ exports.run = (options) => {
         const project = Manager.getProject(projectCwd, { cache: false });
         const wpConfig = project.config._config;
         const outputDir = project.config._config.output.local.path || 'prd';
+        const maxMiddleware = project.config._config.maxMiddleware || 3;
 
         // 非 output.path 下的资源不做处理
         if(keys[2] !== sysPath.relative(projectCwd, outputDir)) {
@@ -235,9 +236,40 @@ exports.run = (options) => {
         const requestUrl = req.url.replace('.map', '').slice(1);
         const cacheId = sysPath.join(projectName, requestUrl);
 
+        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
+        const now = +new Date();
+        const middlewareList = Object.keys(middlewareCache)
+            .map(key => {
+                const middleware = middlewareCache[key];
+                return {
+                    key,
+                    middleware: middleware,
+                    weight: middleware._visit / (now - middleware._timestamp) * 1000
+                };
+            })
+            .sort((a, b) =>  b.weight - a.weight);
+        
+        log(middlewareList.map(v => `${v.key} ${v.weight}`));
+
+        let removeLen = middlewareList.length - maxMiddleware;
+        let index = middlewareList.length - 1;
+
+        while (removeLen > 0) {
+            const key = middlewareList[index].key;
+            if (key !== cacheId) {
+                const md = middlewareCache[key];
+                delete middlewareCache[key];
+                md.close();
+            }
+
+            removeLen -= 1;
+            index -= 1;
+        }
+
         // 寻找已有的 middlewareCache
-        if(middlewareCache[cacheId]) {
+        if (middlewareCache[cacheId]) {
             middlewareCache[cacheId](req, res, next);
+            middlewareCache[cacheId]._visit += 1;
             return;
         }
 
@@ -439,7 +471,7 @@ exports.run = (options) => {
                         io.emit('testAppID', assetEntrys);
 
                         Object.keys(stats.compilation.assets).map((key) => {
-                            const keyCacheId = sysPath.join(projectName, key);
+                            const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
                             middlewareCache[keyCacheId] = middleware;
 
                             if(verbose) {
@@ -451,6 +483,9 @@ exports.run = (options) => {
                     }
                 }
             );
+
+            middleware._timestamp = +new Date();
+            middleware._visit = 1;
 
             if(hotEnabled) {
                 app.use(require('webpack-hot-middleware')(compiler, {
