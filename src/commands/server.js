@@ -241,12 +241,13 @@ exports.run = (options) => {
         const middlewareList = Object.keys(middlewareCache)
             .map(key => {
                 const middleware = middlewareCache[key];
-                return {
+                return middleware ? {
                     key,
                     middleware: middleware,
                     weight: middleware._visit / (now - middleware._timestamp) * 1000
-                };
+                } : null;
             })
+            .filter(v => v)
             .sort((a, b) =>  b.weight - a.weight);
         
         log(middlewareList.map(v => `${v.key} ${v.weight}`));
