@@ -551,7 +551,7 @@ exports.run = (options) => {
     // proxy
     var proxyProcess;
     if (proxy) {
-        const proxyPath = sysPath.join(requireg.resolve('jerryproxy'), '../bin/jerry.js');
+        const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js');
         proxyProcess = child_process.fork(proxyPath);
     }
 
