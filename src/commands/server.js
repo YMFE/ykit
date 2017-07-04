@@ -192,7 +192,7 @@ exports.run = (options) => {
         const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
-        const maxMiddleware = project.config._config.maxMiddleware || 3;
+        const maxMiddleware = (project.server && project.server.maxMiddleware) || 3;
 
         // 非 output.path 下的资源不做处理
         url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
@@ -236,8 +236,6 @@ exports.run = (options) => {
             })
             .filter(v => v)
             .sort((a, b) =>  b.weight - a.weight);
-
-        log(middlewareList.map(v => `${v.key} ${v.weight}`));
 
         let removeLen = middlewareList.length - maxMiddleware;
         let index = middlewareList.length - 1;
