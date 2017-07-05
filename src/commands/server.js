@@ -152,14 +152,22 @@ exports.run = (options) => {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectDir, { cache: false });
-            const cache = customMiddlewareCache;
 
+            // 当前配置中的 middleware
+            const customMiddlewares = project.config.getMiddlewares() || [];
+
+            // 获取哪些是全局 middleware，并加到 customMiddlewareCache 中
+            const globalMiddlewares = customMiddlewares.filter((mw) => mw.global);
+            const cache = customMiddlewareCache;
             if(cache.apps.indexOf(projectInfo.projectName) === -1) {
                 cache.apps.push(projectInfo.projectName);
-                cache.middlewares = cache.middlewares.concat(project.config.getMiddlewares() || []);
+                cache.middlewares = cache.middlewares.concat(globalMiddlewares);
             }
 
-            const currentMiddlewres = cache.middlewares.slice(0);
+            // 获取当前要走的 middleware
+            const currentMiddlewres = cache.middlewares.slice(0).concat(
+                    customMiddlewares.filter((mw) => !mw.global)
+                );
             const _next = () => {
                 if (currentMiddlewres.length === 0) {
                     next();

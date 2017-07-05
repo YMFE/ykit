@@ -178,8 +178,11 @@ class Config {
         return this.getConfig();
     }
 
-    applyMiddleware(mw) {
+    applyMiddleware(mw, options = {}) {
         if (typeof mw === 'function') {
+            if(options.global) {
+                mw.global = true;
+            }
             this._config.middleware.push(mw);
         }
     }
