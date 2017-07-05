@@ -222,7 +222,6 @@ exports.run = (options) => {
         url = url.replace('.map', '').slice(1);
         const cacheId = sysPath.join(projectName, url);
 
-
         // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
         const now = +new Date();
         const middlewareList = Object.keys(middlewareCache)
