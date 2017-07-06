@@ -217,8 +217,9 @@ class Project {
 
         if (ykitConfigFile && ykitConfigFile.config) {
             const ykitJSConfig = typeof ykitConfigFile.config === 'function'
-                                   ? ykitConfigFile.config()
-                                   : ykitConfigFile.config;
+                                // 兼容以前从 options 传进去 ExtractTextPlugin
+                                ? ykitConfigFile.config({ExtractTextPlugin}, this.cwd)
+                                : ykitConfigFile.config;
 
             extend(true, this.config, ykitJSConfig);
             handleCommonsChunk.bind(this)(this.config);
@@ -287,19 +288,19 @@ class Project {
                     if(i > 0){
                         chunks.push('manifest');
                     }
-                    
+
                 }
                 newfilename = commonsChunk.filename ? commonsChunk.filename : '[name].js';
 
                 if (chunks.length > 0) {
-                    
+
                     webpackConfig.plugins.push(
                         new webpack.optimize.CommonsChunkPlugin({
                             name: chunks,
                             filename: handleFilename(newfilename, filenameTpl.filename),
                             minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
                         })
-                    );  
+                    );
 
                 }
             }
@@ -313,17 +314,8 @@ class Project {
             return path.join(filepaths.dir, newtpl);
         }
 
-        // 处理 exports.config
+        // 处理 exports.config 中 export 和旧接口
         function handleExportsConfig(exportsConfig, options) {
-
-            if (typeof exportsConfig === 'function') {
-                options = options ? options : {};
-                options.ExtractTextPlugin = ExtractTextPlugin; // 兼容以前从 options 传进去 ExtractTextPlugin
-
-                const configFunResult = exportsConfig.call(localConfig, options, this.cwd);
-                exportsConfig = configFunResult ? configFunResult : exportsConfig;
-            }
-
             if(exportsConfig.export || exportsConfig.exports) {
                 let exports = null;
                 if (Array.isArray(exportsConfig.export)) {
