@@ -512,17 +512,33 @@ exports.run = (options) => {
     if (isHttps) {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
-        if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
+        const defaultHttpsConfigPath = sysPath.join(__dirname, '../../static/https/');
+
+        let httpsOpts;
+
+        if (!globalConfig['https-key'] || !globalConfig['https-crt'] ) {
             logWarn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
             !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
             !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
+            httpsOpts = {
+                key: fs.readFileSync(defaultHttpsConfigPath + 'server.key'),
+                cert: fs.readFileSync(defaultHttpsConfigPath + 'server.crt')
+            };
+        }else if(!UtilFs.fileExists(globalConfig['https-key']) || !UtilFs.fileExists(globalConfig['https-crt'])){
+            logWarn('https 证书/秘钥配置文件有误，将使用默认，或执行以下命令重新设置:');
+            !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
+            !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
+            httpsOpts = {
+                key: fs.readFileSync(defaultHttpsConfigPath + 'server.key'),
+                cert: fs.readFileSync(defaultHttpsConfigPath + 'server.crt')
+            };
+        }else{
+            httpsOpts = {
+                key: fs.readFileSync(globalConfig['https-key']),
+                cert: fs.readFileSync(globalConfig['https-crt'])
+            };
         }
-
-        const defaultHttpsConfigPath = sysPath.join(__dirname, '../../static/https/');
-        const httpsOpts = {
-            key: fs.readFileSync(globalConfig['https-key'] || defaultHttpsConfigPath + 'server.key'),
-            cert: fs.readFileSync(globalConfig['https-crt'] || defaultHttpsConfigPath + 'server.crt')
-        };
+        
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
