@@ -155,7 +155,8 @@ class Config {
             if (nextConfig.resolve && nextConfig.resolve.alias) {
                 let alias = nextConfig.resolve.alias;
                 Object.keys(alias).map((key) => {
-                    const isRelativePath = alias[key].indexOf(USER_HOME) === -1;
+                    const isRelativePath = alias[key].indexOf(USER_HOME) === -1
+                                        && alias[key].indexOf(process.cwd()) === -1;
                     if (key.indexOf('$') !== key.length - 1
                         && /^\/.+/.test(alias[key])
                         && isRelativePath
