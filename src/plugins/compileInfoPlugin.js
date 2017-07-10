@@ -67,14 +67,16 @@ DashboardPlugin.prototype.apply = function(compiler) {
                     const dateLog = '[' + moment().format(dateFormat) + ']';
 
                     if (stats.hasErrors()) {
-                        const logMsg = 'Failed to compile with ' + statsInfo.errors.length + ' errors.';
+                        const errLen = statsInfo.errors.length;
+                        const logMsg = `${errLen} error${errLen > 1 ? 's' : ''} in compiling process.`;
                         spinner.text = dateLog.grey + ' ' + logMsg.red;
                         spinner.fail();
                         spinner.text = '';
                     }
 
                     if (stats.hasWarnings()) {
-                        const logMsg = 'Compile with ' + statsInfo.warnings.length + ' warnings.';
+                        const warnLen = statsInfo.warnings.length;
+                        const logMsg = `${warnLen} warning${warnLen > 1 ? 's' : ''} in compiling process.`;
                         spinner.text = dateLog.grey + ' ' + logMsg.yellow;
                         spinner.stopAndPersist(logSymbols.warning);
                         spinner.text = '';

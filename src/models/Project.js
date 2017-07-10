@@ -193,7 +193,7 @@ class Project {
                 // 运行插件模块
                 if (module && module.config) {
                     handleExportsConfig.bind(this)(module.config, pluginItem.options);
-                    this.setCommands(module.commands || ykitConfigFile.config.command, pluginName); // 后者兼容以前形式
+                    this.setCommands(module.commands, pluginName); // 后者兼容以前形式
                     this.setHooks(module.hooks);
                     this.setBuild(module.build);
                 }
@@ -202,15 +202,31 @@ class Project {
                 extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
                 this.ignores.push(Manager.loadIgnoreFile(pluginPath));
             } else {
-                logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
-                logDoc('http://ued.qunar.com/ykit/plugins.html');
+                // 添加到 process 中，防止重复多次报错
+                const errorInfo = `Local ${pluginName} plugin not found，you may need to install it first.`;
+                if(!(process.ykitError && process.ykitError[this.cwd + errorInfo])) {
+                    logError(errorInfo);
+                    logDoc('http://ued.qunar.com/ykit/plugins.html');
+                }
+                process.ykitError = Object.assign(process.ykitError || {}, {[this.cwd + errorInfo]: true});
+
+                // 如果是打包阶段，直接中断
+                this._getCurrentEnv() !== 'local' && process.exit(1);
             }
         });
 
         if (ykitConfigFile && ykitConfigFile.config) {
-            extend(true, this.config, ykitConfigFile.config);
-            handleExportsConfig.bind(this)(ykitConfigFile.config);
-            this.setCommands(ykitConfigFile.commands || ykitConfigFile.config.command); // 后者兼容以前形式
+            const ykitJSConfig = typeof ykitConfigFile.config === 'function'
+                                // 兼容以前从 options 传进去 ExtractTextPlugin
+                                ? ykitConfigFile.config.bind(localConfig)({ExtractTextPlugin}, this.cwd) || {}
+                                : ykitConfigFile.config || {};
+
+            extend(true, this.config, ykitJSConfig);
+            handleCommonsChunk.bind(this)(this.config);
+            handleExportsConfig.bind(this)(ykitJSConfig);
+
+            const cmds = ykitConfigFile.commands || ykitJSConfig.command || ykitJSConfig.commands;  // 后者兼容以前形式
+            this.setCommands(cmds);
             this.setHooks(ykitConfigFile.hooks);
             this.setProxy(ykitConfigFile.proxy);
             this.setServer(ykitConfigFile.server);
@@ -233,9 +249,73 @@ class Project {
             }
         }
 
-        // 处理 exports.config
-        function handleExportsConfig(exportsConfig, options) {
+        /**
+         * 处理config.commonsChunk配置项，基于CommonsChunkPlugin插件封装
+         * commonsChunk: {
+                name: 'common',    //name是生成公共模块的chunkname
+                filename: 'scripts/[name].js', //filename是生成文件名，默认是 [name].js
+                minChunks: 2,      //公共模块被使用的最小次数。比如配置为3，也就是同一个模块只有被3个以外的页面同时引用时才会被提取出来作为common chunks,默认为2
+                vendors: {    //vendors是一个处理第三方库的配置项，结构是一个key,value数组,key是chunkname，value是第三方类库数组，生成的文件是{chunkname}.js
+                    lib: ['jquery', 'underscore', 'moment'], //会生成一个scripts/lib.js文件，包含 jquery,underscore,moment类库
+                    charts: ['highcharts', 'echarts'] //会生成一个scripts/charts.js文件，包含 highcharts,echarts类库
+                }
+            }
+        * @param {*} config
+        */
+        function handleCommonsChunk(config) {
+            var commonsChunk = config.commonsChunk,
+                webpackConfig = config._config,
+                chunks = [],
+                newfilename,
+                filenameTpl = webpackConfig.output[this._getCurrentEnv()],
+                vendors;
 
+
+            if (typeof commonsChunk === 'object' && commonsChunk !== undefined) {
+                if (typeof commonsChunk.name === 'string' && commonsChunk) {
+                    chunks.push(commonsChunk.name);
+                }
+                vendors = commonsChunk.vendors;
+                if (typeof vendors === 'object' && vendors !== undefined) {
+                    var i=0;
+                    for (var name in vendors) {
+                        if (vendors.hasOwnProperty(name) && vendors[name]) {
+                            i++;
+                            chunks.push(name);
+                            webpackConfig.entry[name] = Array.isArray(vendors[name]) ? vendors[name] : [vendors[name]];
+                        }
+                    }
+                    if(i > 0){
+                        chunks.push('manifest');
+                    }
+
+                }
+                newfilename = commonsChunk.filename ? commonsChunk.filename : '[name].js';
+
+                if (chunks.length > 0) {
+
+                    webpackConfig.plugins.push(
+                        new webpack.optimize.CommonsChunkPlugin({
+                            name: chunks,
+                            filename: handleFilename(newfilename, filenameTpl.filename),
+                            minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
+                        })
+                    );
+
+                }
+            }
+        }
+
+        function handleFilename(filename, tpl){
+            if (filename == null || tpl == null) return filename;
+            var filepaths = path.parse(filename), newtpl;
+            newtpl = tpl.replace('[name]', filepaths.name);
+            newtpl = tpl.replace('[ext]', filepaths.ext);
+            return path.join(filepaths.dir, newtpl);
+        }
+
+        // 处理 exports.config 中 export 和旧接口
+        function handleExportsConfig(exportsConfig, options) {
             if (typeof exportsConfig === 'function') {
                 options = options ? options : {};
                 options.ExtractTextPlugin = ExtractTextPlugin; // 兼容以前从 options 传进去 ExtractTextPlugin

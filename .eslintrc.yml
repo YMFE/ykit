@@ -49,6 +49,8 @@ globals:
   logWarn: true
   logInfo: true
   logDoc: true
+  logMock: true
+  logPlain: true
   JSON5: true
   YKIT_COMMANDS_PATH: true
   YKIT_RC: true

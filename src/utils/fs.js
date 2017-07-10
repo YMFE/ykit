@@ -40,6 +40,14 @@ exports.fileExists = function(filePath) {
     }
 };
 
+exports.dirExists = function(dirPath) {
+    try {
+        return fs.statSync(dirPath).isDirectory();
+    } catch (err) {
+        return false;
+    }
+};
+
 /**
  * @function readFile
  * @param {string} loc 需要读取的文件的完整路径
