@@ -161,7 +161,7 @@ class Config {
                         && /^\/.+/.test(alias[key])
                         && isRelativePath
                     ) {
-                        alias[key] = sysPath.join(this._config.cwd, alias[key]);
+                        alias[key] = normalize(sysPath.join(this._config.cwd, alias[key]));
                     }
                 });
                 extend(true, this._config.resolve.alias, alias);
