@@ -34,7 +34,7 @@
     "globby": "^5.0.0",
     "html-loader": "^0.4.3",
     "http-proxy-middleware": "^0.17.4",
-    "jerryproxy-ykit": "1.1.0",
+    "jerryproxy-ykit": "^1.1.1",
     "js-beautify": "^1.6.12",
     "js-yaml": "^3.6.1",
     "json-loader": "^0.5.4",
