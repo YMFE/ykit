@@ -73,7 +73,9 @@ exports.npmInstall = function() {
     }
 
     // install
-    execute(currentNpm + ' install --registry http://registry.npm.corp.qunar.com/');
+    const installCmd = `${currentNpm} install --registry http://registry.npm.corp.qunar.com/`
+                + (currentNpm === 'npm_cache_share' ? ' -d' : '');
+    execute(installCmd);
 };
 
 exports.run = function(options) {

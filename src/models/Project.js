@@ -209,9 +209,6 @@ class Project {
                     logDoc('http://ued.qunar.com/ykit/plugins.html');
                 }
                 process.ykitError = Object.assign(process.ykitError || {}, {[this.cwd + errorInfo]: true});
-
-                // 如果是打包阶段，直接中断
-                this._getCurrentEnv() !== 'local' && process.exit(1);
             }
         });
 
