@@ -230,42 +230,6 @@ exports.run = (options) => {
         url = url.replace('.map', '').slice(1);
         const cacheId = sysPath.join(projectName, url);
 
-        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
-        const now = +new Date();
-        const middlewareList = Object.keys(middlewareCache)
-            .map(key => {
-                const middleware = middlewareCache[key];
-                return middleware ? {
-                    key,
-                    middleware: middleware,
-                    weight: middleware._visit / (now - middleware._timestamp) * 1000
-                } : null;
-            })
-            .filter(v => v)
-            .sort((a, b) =>  b.weight - a.weight);
-
-        let removeLen = middlewareList.length - maxMiddleware;
-        let index = middlewareList.length - 1;
-
-        while (removeLen > 0) {
-            const key = middlewareList[index].key;
-            if (key !== cacheId) {
-                const md = middlewareCache[key];
-                delete middlewareCache[key];
-                md.close();
-            }
-
-            removeLen -= 1;
-            index -= 1;
-        }
-
-        // 寻找已有的 middlewareCache
-        if (middlewareCache[cacheId]) {
-            middlewareCache[cacheId](req, res, next);
-            middlewareCache[cacheId]._visit += 1;
-            return;
-        }
-
         // hot reload
         const hotEnabled = (project.server && project.server.hot) || hot;
         if(hotEnabled) {
@@ -318,6 +282,42 @@ exports.run = (options) => {
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
             allAssetsEntry[projectName] = url;
+        }
+
+        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
+        if(!shouldCompileAllEntries) {
+            const now = +new Date();
+            const middlewareList = Object.keys(middlewareCache)
+                .map(key => {
+                    const middleware = middlewareCache[key];
+                    return middleware ? {
+                        key,
+                        middleware: middleware,
+                        weight: middleware._visit / (now - middleware._timestamp) * 1000
+                    } : null;
+                })
+                .filter(v => v)
+                .sort((a, b) =>  b.weight - a.weight);
+
+            let removeLen = middlewareList.length - maxMiddleware;
+            let index = middlewareList.length - 1;
+
+            while (removeLen > 0) {
+                const key = middlewareList[index].key;
+                if (key !== cacheId) {
+                    delete middlewareCache[key];
+                }
+
+                removeLen -= 1;
+                index -= 1;
+            }
+        }
+
+        // 寻找已有的 middlewareCache
+        if (middlewareCache[cacheId]) {
+            middlewareCache[cacheId](req, res, next);
+            middlewareCache[cacheId]._visit += 1;
+            return;
         }
 
         let nextConfig;
@@ -538,7 +538,7 @@ exports.run = (options) => {
                 cert: fs.readFileSync(globalConfig['https-crt'])
             };
         }
-        
+
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
