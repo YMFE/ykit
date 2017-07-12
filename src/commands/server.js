@@ -200,7 +200,7 @@ exports.run = (options) => {
         const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
-        const maxMiddleware = (project.server && project.server.maxMiddleware) || 3;
+        const maxMiddleware = project.server && project.server.maxMiddleware;
 
         // 非 output.path 下的资源不做处理
         url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
@@ -285,7 +285,7 @@ exports.run = (options) => {
         }
 
         // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
-        if(!shouldCompileAllEntries) {
+        if(maxMiddleware) {
             const now = +new Date();
             const middlewareList = Object.keys(middlewareCache)
                 .map(key => {
@@ -305,7 +305,9 @@ exports.run = (options) => {
             while (removeLen > 0) {
                 const key = middlewareList[index].key;
                 if (key !== cacheId) {
+                    var md = middlewareCache[key];
                     delete middlewareCache[key];
+                    md.close();
                 }
 
                 removeLen -= 1;
