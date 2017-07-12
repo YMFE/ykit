@@ -29,7 +29,7 @@
     "css-loader": "^0.23.1",
     "eslint": "2.13.1",
     "extend": "^3.0.0",
-    "extract-text-webpack-plugin": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.0",
     "fs-extra": "^1.0.0",
     "globby": "^5.0.0",
     "html-loader": "^0.4.3",
