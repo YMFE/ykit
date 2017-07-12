@@ -32,8 +32,8 @@ module.exports = {
                         }
 
                         // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
-                        module.mapChunks(chunk => {
-                            if(chunk.id === 0 && chunk.name) {
+                        module.forEachChunk(chunk => {
+                            if(chunk.name) {
                                 path = path.replace(/\[name\]/g, chunk.name.replace(/\.\w+$/g, ''));
                             }
                         });
@@ -42,11 +42,7 @@ module.exports = {
                     logError(e);
                 }
 
-                if(path.indexOf('[name]') > -1) {
-                    return path.replace(/\[ext\]/, '');
-                } else {
-                    return path.replace(/\[ext\]/, extName);
-                }
+                return path.replace(/\[ext\]/, extName);
             });
         });
     }
