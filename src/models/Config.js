@@ -164,6 +164,7 @@ class Config {
                 nextConfig.module.loaders.map((loader) => {
                     if (loader.loaders && !loader.loader) {
                         loader.loader = loader.loaders.join('!');
+                        delete loader.loaders;
                     }
                     return loader;
                 });
