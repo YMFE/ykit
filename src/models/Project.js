@@ -130,7 +130,7 @@ class Project {
                 eslintConfig: this.eslintConfig,
                 applyMiddleware: this.config.applyMiddleware.bind(this.config),
                 env: this._getCurrentEnv(), // 默认为本地环境,
-                webpack: webpack
+                webpack: extend(webpack, {version: 3})
             };
 
         // 获取项目配置
