@@ -9,7 +9,6 @@ const fs = require('fs');
 
 const Config = require('./Config.js');
 const Manager = require('../modules/manager.js');
-const ConfigConverter = require('../modules/ConfigConverter.js');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const UtilFs = require('../utils/fs.js');

@@ -3,6 +3,7 @@
 const webpack = require('webpack');
 const colors = require('colors');
 
+const ConfigConverter = require('../modules/ConfigConverter.js');
 const UtilFs = require('../utils/fs.js');
 
 exports.usage = '资源编译、打包';
@@ -157,7 +158,7 @@ exports.run = function (options) {
 
     function compilingProcess() {
         return new Promise ((resolve, reject) => {
-            webpack(config, (err, stats) => {
+            webpack(ConfigConverter(config), (err, stats) => {
                 compilerStats = stats;
                 dist = config.output.path;
                 globby
