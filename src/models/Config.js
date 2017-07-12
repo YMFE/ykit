@@ -59,7 +59,6 @@ class Config {
                 rules: []
             },
             plugins: [
-                // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
@@ -89,13 +88,6 @@ class Config {
                 'fekit_modules|fekit.config:main|./src/index.js'
             ],
             middleware: []
-
-            // entryExtNames: {
-            //     css: this.config.entryExtNames.css.concat(['.less', '.sass', '.scss'])
-            // },
-            // requireRules: this.config.requireRules.concat([
-            //     'fekit_modules|fekit.config:main|./src/index.js'
-            // ])
         });
     }
 

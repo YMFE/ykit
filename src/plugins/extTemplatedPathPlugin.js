@@ -38,11 +38,15 @@ module.exports = {
                             }
                         });
                     }
-                } catch (e){
+                } catch (e) {
                     logError(e);
                 }
 
-                return path.replace(/\[ext\]/g, extName);
+                if(path.indexOf('[name]') > -1) {
+                    return path.replace(/\[ext\]/, '');
+                } else {
+                    return path.replace(/\[ext\]/, extName);
+                }
             });
         });
     }
