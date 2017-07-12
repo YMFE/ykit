@@ -13,7 +13,9 @@ const connect = require('connect'),
     requireg = require('requireg'),
     logSymbols = require('log-symbols'),
     favicon = require('serve-favicon'),
-    webpackDevMiddleware = require('webpack-dev-middleware');
+    webpackDevMiddleware = require('webpack-dev-middleware'),
+    hostReplaceMiddleware = require('../modules/HostReplaceMiddleware'),
+    httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
 const ConfigConverter = require('../modules/ConfigConverter.js');
@@ -44,14 +46,18 @@ exports.run = (options) => {
         verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
         hot = options.hot,
-        middlewares = options.m || options.middlewares,
+        middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
 
     let middlewareCache = {},
         promiseCache = {},
         allAssetsEntry = {},
-        watchCacheNames = {};
+        watchCacheNames = {},
+        customMiddlewareCache = {
+            apps: [],
+            middlewares: []
+        };
 
     let io = null,
         assetEntrys = {};
@@ -104,16 +110,16 @@ exports.run = (options) => {
 
         function parse(req, res, format) {
             /* eslint-disable */
-            const status = (function () {
+            const statusColor = (function () {
                 switch (true) {
                     case 500 <= res.statusCode:
-                        return '\x1b[31m';
+                        return 'red';
                     case 400 <= res.statusCode:
-                        return '\x1b[33m';
+                        return 'yellow';
                     case 300 <= res.statusCode:
-                        return '\x1b[36m';
+                        return 'cyan';
                     case 200 <= res.statusCode:
-                        return '\x1b[32m';
+                        return 'green';
                 }
             })();
             /* eslint-enable */
@@ -126,11 +132,11 @@ exports.run = (options) => {
                 contentLength = '( ' + contentLength + ' )';
             }
 
-            format = format.replace(/%date/g, '\x1b[90m' + '[' + (moment().format(dateFormat)) + ']' + '\x1b[0m');
-            format = format.replace(/%method/g, '\x1b[35m' + (req.method.toUpperCase()) + '\x1b[0m');
+            format = format.replace(/%date/g, `[${moment().format(dateFormat)}]`.grey);
+            format = format.replace(/%method/g, `${req.method.toUpperCase().magenta}${req.mock ? '(mock)'.cyan : ''}`);
             format = format.replace(/%url/g, decodeURI(req.originalUrl));
-            format = format.replace(/%status/g, '' + status + res.statusCode + '\x1b[0m');
-            format = format.replace(/%contentLength/g, '\x1b[90m' + contentLength + '\x1b[31m' + '\x1b[0m');
+            format = format.replace(/%status/g, String(res.statusCode)[statusColor]);
+            format = format.replace(/%contentLength/g, contentLength.grey);
 
             return {
                 message: format,
@@ -141,44 +147,65 @@ exports.run = (options) => {
         return next();
     });
 
+    // custom middlewares
     app.use(function (req, res, next) {
         try {
             const projectInfo = getProjectInfo(req);
-            const project = Manager.getProject(projectInfo.projectCwd, { cache: false });
-            const customMiddlewares = project.config.getMiddlewares();
+            const project = Manager.getProject(projectInfo.projectDir, { cache: false });
+
+            // 当前配置中的 middleware
+            const customMiddlewares = project.config.getMiddlewares() || [];
+
+            // 获取哪些是全局 middleware，并加到 customMiddlewareCache 中
+            const globalMiddlewares = customMiddlewares.filter((mw) => mw.global);
+            const cache = customMiddlewareCache;
+            if(cache.apps.indexOf(projectInfo.projectName) === -1) {
+                cache.apps.push(projectInfo.projectName);
+                cache.middlewares = cache.middlewares.concat(globalMiddlewares);
+            }
+
+            // 获取当前要走的 middleware
+            const currentMiddlewres = cache.middlewares.slice(0).concat(
+                    customMiddlewares.filter((mw) => !mw.global)
+                );
             const _next = () => {
-                if (customMiddlewares.length === 0) {
+                if (currentMiddlewres.length === 0) {
                     next();
                 } else {
-                    const nextMw = customMiddlewares.shift();
+                    const nextMw = currentMiddlewres.shift();
                     nextMw(req, res, _next);
                 }
             };
 
             _next();
         } catch (e) {
+            logError(e);
             next();
         }
     });
 
+    // app.use(hostReplaceMiddleware);
+
     // compiler
-    // 记录 project
     app.use(function (req, res, next) {
         let url = req.url,
-            keys = url.split('/'),
             compiler = null;
 
         const projectInfo = getProjectInfo(req);
         const projectName = projectInfo.projectName;
-        const projectCwd = projectInfo.projectCwd;
-        const project = Manager.getProject(projectCwd, { cache: false });
+        const projectDir = projectInfo.projectDir;
+        const project = Manager.getProject(projectDir, { cache: false });
         const wpConfig = project.config._config;
-        const outputDir = project.config._config.output.local.path || 'prd';
+        const outputConfigDir = project.config._config.output.local.path || 'prd';
+        const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
+                            ? outputConfigDir
+                            : sysPath.join(projectDir, outputConfigDir);
+        const maxMiddleware = (project.server && project.server.maxMiddleware) || 3;
 
         // 非 output.path 下的资源不做处理
-        if(keys[2] !== sysPath.relative(projectCwd, outputDir)) {
-            next();
-            return;
+        url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
+        if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
+            return next();
         }
 
         // 清除 YKIT_CACHE_DIR 资源
@@ -189,26 +216,23 @@ exports.run = (options) => {
             }
         });
         if(isFirstCompileDir) {
-            UtilFs.deleteFolderRecursive(sysPath.join(projectCwd, YKIT_CACHE_DIR), true);
+            UtilFs.deleteFolderRecursive(sysPath.join(projectDir, YKIT_CACHE_DIR), true);
         }
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
         const rversion = /@[^\.]+(?=\.\w+)/;
-        req.url = '/' + keys.slice(3).join('/').replace(rversion, '').replace(rquery, '');
+        req.url = url = '/' + sysPath.relative(outputAbsDir, sysPath.join(projectDir, url))
+                    .replace(rversion, '')
+                    .replace(rquery, '');
 
         // 生成 cacheId
-        const requestUrl = req.url.replace('.map', '').slice(1);
-        const cacheId = sysPath.join(projectName, requestUrl);
-
-        // 寻找已有的 middlewareCache
-        if(middlewareCache[cacheId]) {
-            middlewareCache[cacheId](req, res, next);
-            return;
-        }
+        url = url.replace('.map', '').slice(1);
+        const cacheId = sysPath.join(projectName, url);
 
         // hot reload
-        if(hot) {
+        const hotEnabled = (project.server && project.server.hot) || hot;
+        if(hotEnabled) {
             // 修改 publicPath 为当前服务
             let localPublicPath = wpConfig.output.local.publicPath;
             if(project.config.replacingPublicPath !== false) {
@@ -219,12 +243,11 @@ exports.run = (options) => {
                         httpStr = httpStr || '';
                         return httpStr + '//' + '127.0.0.1:' + port;
                     });
-
                     wpConfig.output.local.publicPath = localPublicPath;
                 } else {
                     // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
-                    const relativePath = sysPath.relative(projectCwd, wpConfig.output.local.path);
-                    wpConfig.output.local.publicPath = `/${projectName}/${relativePath}/`;
+                    const relativePath = sysPath.relative(projectDir, wpConfig.output.local.path);
+                    wpConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
                 }
             }
 
@@ -237,7 +260,8 @@ exports.run = (options) => {
                         let entryItem = wpConfig.entry[key];
                         if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                             const whmPath = require.resolve('webpack-hot-middleware/client');
-                            entryItem.unshift(whmPath + '?reload=true&path=' + localPublicPath + '__webpack_hmr' );
+                            const hotPath = `http://127.0.0.1:${port}/__webpack_hmr`;
+                            entryItem.unshift(whmPath + '?reload=true&path=' + hotPath + '&timeout=9999999&overlay=false');
                         }
                         return entryItem;
                     });
@@ -257,11 +281,47 @@ exports.run = (options) => {
         });
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
-            allAssetsEntry[projectName] = requestUrl;
+            allAssetsEntry[projectName] = url;
+        }
+
+        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
+        if(!shouldCompileAllEntries) {
+            const now = +new Date();
+            const middlewareList = Object.keys(middlewareCache)
+                .map(key => {
+                    const middleware = middlewareCache[key];
+                    return middleware ? {
+                        key,
+                        middleware: middleware,
+                        weight: middleware._visit / (now - middleware._timestamp) * 1000
+                    } : null;
+                })
+                .filter(v => v)
+                .sort((a, b) =>  b.weight - a.weight);
+
+            let removeLen = middlewareList.length - maxMiddleware;
+            let index = middlewareList.length - 1;
+
+            while (removeLen > 0) {
+                const key = middlewareList[index].key;
+                if (key !== cacheId) {
+                    delete middlewareCache[key];
+                }
+
+                removeLen -= 1;
+                index -= 1;
+            }
+        }
+
+        // 寻找已有的 middlewareCache
+        if (middlewareCache[cacheId]) {
+            middlewareCache[cacheId](req, res, next);
+            middlewareCache[cacheId]._visit += 1;
+            return;
         }
 
         let nextConfig;
-        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === requestUrl) {
+        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
             compiler = project.getServerCompiler(function (config) {
 
                 config.plugins.push(require('../plugins/progressBarPlugin.js'));
@@ -270,10 +330,12 @@ exports.run = (options) => {
                 nextConfig = extend({}, config);
 
                 // 注入 sockitIO
-                nextConfig.module.postLoaders.push({
-                    test: /\.(js)$/,
-                    loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
-                });
+                if(project.server && project.server.overlay) {
+                    nextConfig.module.postLoaders.push({
+                        test: /\.(js)$/,
+                        loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
+                    });
+                }
 
                 if(shouldCompileAllEntries) {
                     return nextConfig;
@@ -312,7 +374,7 @@ exports.run = (options) => {
                             exts = exts.map((name) => {
                                 return name + '$';
                             });
-                            const replaceReg =  new RegExp('\\' + exts.join('|\\'));
+                            const replaceReg = new RegExp('\\' + exts.join('|\\'));
 
                             entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
                         });
@@ -323,8 +385,8 @@ exports.run = (options) => {
                         }
 
                         // 判断所请求的资源是否在入口配置中
-                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(requestUrl);
-                        const matchingKey = sysPath.normalize(requestUrl) === entryKey + sysPath.extname(requestUrl);
+                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(url);
+                        const matchingKey = sysPath.normalize(url) === entryKey + sysPath.extname(url);
 
                         if (matchingPath || matchingKey) {
                             isRequestingEntry = true;
@@ -348,7 +410,7 @@ exports.run = (options) => {
             setTimeout(() => {
                 if (promiseCache[projectName]) {
                     Promise.all(promiseCache[projectName]).then(function () {
-                        const assetKey = sysPath.join(projectName, requestUrl);
+                        const assetKey = sysPath.join(projectName, url);
                         if(middlewareCache[assetKey]) {
                             middlewareCache[assetKey](req, res, next);
                         } else {
@@ -379,7 +441,11 @@ exports.run = (options) => {
             const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
                 compiler,
                 {
-                    quiet: true, reporter: ({state, stats}) => {
+                    quiet: !verbose, reporter: ({state, stats}) => {
+                        if(!stats) {
+                            return resolve();
+                        }
+
                         // 打印编译完成时间（小于 100ms 不展示）
                         if(!stats.hasErrors() && !stats.hasWarnings()) {
                             const minDuration = 100;
@@ -403,7 +469,7 @@ exports.run = (options) => {
                         io.emit('testAppID', assetEntrys);
 
                         Object.keys(stats.compilation.assets).map((key) => {
-                            const keyCacheId = sysPath.join(projectName, key);
+                            const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
                             middlewareCache[keyCacheId] = middleware;
 
                             if(verbose) {
@@ -416,10 +482,16 @@ exports.run = (options) => {
                 }
             );
 
-            if(hot) {
+            middleware._timestamp = +new Date();
+            middleware._visit = 1;
+
+            if(hotEnabled) {
                 app.use(require('webpack-hot-middleware')(compiler, {
-                    log: false
+                    log: false,
+                    path: '/__webpack_hmr'
                 }));
+
+                logInfo('Start hot reloader server.');
             }
 
             middleware(req, res, next);
@@ -433,8 +505,7 @@ exports.run = (options) => {
         redirect: false,
         index: false
     }));
-
-    app.use(serveIndex(cwd));
+    app.use(serveIndex(cwd, {icons: true}));
 
     // 启动 http server 和 https server(如果有)
     let servers = [];
@@ -442,17 +513,33 @@ exports.run = (options) => {
     if (isHttps) {
         const globalConfig = JSON.parse(fs.readFileSync(YKIT_RC, { encoding: 'utf8' }));
 
-        if (!globalConfig['https-key'] || !globalConfig['https-crt']) {
+        const defaultHttpsConfigPath = sysPath.join(__dirname, '../../static/https/');
+
+        let httpsOpts;
+
+        if (!globalConfig['https-key'] || !globalConfig['https-crt'] ) {
             logWarn('缺少 https 证书/秘钥配置，将使用默认，或执行以下命令设置:');
             !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
             !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
+            httpsOpts = {
+                key: fs.readFileSync(defaultHttpsConfigPath + 'server.key'),
+                cert: fs.readFileSync(defaultHttpsConfigPath + 'server.crt')
+            };
+        } else if(!UtilFs.fileExists(globalConfig['https-key']) || !UtilFs.fileExists(globalConfig['https-crt'])) {
+            logWarn('https 证书/秘钥配置文件有误，将使用默认，或执行以下命令重新设置:');
+            !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
+            !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
+            httpsOpts = {
+                key: fs.readFileSync(defaultHttpsConfigPath + 'server.key'),
+                cert: fs.readFileSync(defaultHttpsConfigPath + 'server.crt')
+            };
+        } else {
+            httpsOpts = {
+                key: fs.readFileSync(globalConfig['https-key']),
+                cert: fs.readFileSync(globalConfig['https-crt'])
+            };
         }
 
-        const defaultHttpsConfigPath = sysPath.join(__dirname, '../../static/https/');
-        const httpsOpts = {
-            key: fs.readFileSync(globalConfig['https-key'] || defaultHttpsConfigPath + 'server.key'),
-            cert: fs.readFileSync(globalConfig['https-crt'] || defaultHttpsConfigPath + 'server.crt')
-        };
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
@@ -488,7 +575,7 @@ exports.run = (options) => {
     // proxy
     var proxyProcess;
     if (proxy) {
-        const proxyPath = sysPath.join(requireg.resolve('jerryproxy'), '../bin/jerry.js');
+        const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js');
         proxyProcess = child_process.fork(proxyPath);
     }
 
@@ -496,6 +583,11 @@ exports.run = (options) => {
     if (process.env['SUDO_UID']) {
         process.setuid(parseInt(process.env['SUDO_UID']));
     }
+
+    process.on('uncaughtException', (err) => {
+        logError(err.stack);
+        process.exit(1);
+    });
 
     // exitHandler && catches ctrl+c event
     process.on('exit', exitHandler.bind(null));
@@ -527,14 +619,27 @@ exports.run = (options) => {
     }
 
     function getProjectInfo(req) {
-        var url = req.url,
-            keys = url.split('/'),
-            projectName = keys[1],
-            projectCwd = sysPath.join(cwd, projectName);
+        const dirSections = req.url.split('/');
+        let dirLevel = '',
+            projectDir = '',
+            projectName = '';
+
+        for(let i = 0, len = dirSections.length; i < len; i++) {
+            dirLevel += i === 0 ? dirSections[i] : '/' + dirSections[i] ;
+
+            const searchDir = sysPath.join(cwd, dirLevel, '');
+            const ykitConf = globby.sync(['ykit.*.js', 'ykit.js'], {cwd: searchDir})[0];
+
+            if(ykitConf) {
+                projectDir = searchDir;
+                projectName = sysPath.basename(searchDir);
+                break;
+            }
+        }
 
         return {
             projectName: projectName,
-            projectCwd: projectCwd
+            projectDir: projectDir
         };
     }
 };

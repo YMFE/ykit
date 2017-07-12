@@ -1,4 +1,8 @@
 ;(function(global){
+    if(!global) {
+        return;
+    }
+
     var compilingAsset = '@COMPILING_ASSET';
 
     if(global._ykit_assets) {

@@ -173,11 +173,13 @@ class Config {
             if (nextConfig.resolve && nextConfig.resolve.alias) {
                 let alias = nextConfig.resolve.alias;
                 Object.keys(alias).map((key) => {
+                    const isRelativePath = alias[key].indexOf(USER_HOME) === -1
+                                        && alias[key].indexOf(process.cwd()) === -1;
                     if (key.indexOf('$') !== key.length - 1
                         && /^\/.+/.test(alias[key])
-                        && alias[key].indexOf(this._config.cwd) === -1
+                        && isRelativePath
                     ) {
-                        alias[key] = sysPath.join(this._config.cwd, alias[key]);
+                        alias[key] = normalize(sysPath.join(this._config.cwd, alias[key]));
                     }
                 });
                 extend(true, this._config.resolve.alias, alias);
@@ -195,11 +197,12 @@ class Config {
         return this.getConfig();
     }
 
-    applyMiddleware(mw) {
+    applyMiddleware(mw, options = {}) {
         if (typeof mw === 'function') {
-            Manager.setYkitOptions(this._config, {
-                middleware: [mw]
-            });
+            if(options.global) {
+                mw.global = true;
+            }
+            this._config.middleware.push(mw);
         }
     }
 

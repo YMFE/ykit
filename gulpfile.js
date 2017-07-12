@@ -10,7 +10,11 @@ gulp.task('clearLib', [], function() {
 });
 
 gulp.task('compileJS', [], function() {
-	var babelProcess = babel({presets: ['es2015']})
+	var babelProcess = babel({
+        presets: ['es2015', 'es2017'],
+        plugins: ['transform-runtime']
+    })
+
     babelProcess.on('error', function(e) {
         console.log(e);
         process.exit(1);

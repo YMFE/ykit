@@ -34,6 +34,7 @@ class Project {
         this.packCallbacks = [];
         this.hooks = {
             beforePack: [],
+            beforeCompiling: [],
             afterPack: []
         };
         this.eslintConfig = require('../../static/eslint/eslint.json');
@@ -89,6 +90,18 @@ class Project {
                 }
             });
         }
+    }
+
+    setProxy(proxy) {
+        this.proxy = proxy || [];
+    }
+
+    setServer(server) {
+        this.server = server || {};
+    }
+
+    setBuild(build) {
+        this.build = extend(true, this.build, build);
     }
 
     readConfig() {
@@ -181,24 +194,41 @@ class Project {
                 // 运行插件模块
                 if (module && module.config) {
                     handleExportsConfig.bind(this)(module.config, pluginItem.options);
-                    this.setCommands(module.commands || ykitConfigFile.config.command, pluginName); // 后者兼容以前形式
+                    this.setCommands(module.commands, pluginName); // 后者兼容以前形式
                     this.setHooks(module.hooks);
+                    this.setBuild(module.build);
                 }
 
                 // 扩展 eslint 配置
                 extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
                 this.ignores.push(Manager.loadIgnoreFile(pluginPath));
             } else {
-                logError('Local ' + pluginName + ' plugin not found，you may need to intall it first.');
-                logDoc('http://ued.qunar.com/ykit/plugins.html');
+                // 添加到 process 中，防止重复多次报错
+                const errorInfo = `Local ${pluginName} plugin not found，you may need to install it first.`;
+                if(!(process.ykitError && process.ykitError[this.cwd + errorInfo])) {
+                    logError(errorInfo);
+                    logDoc('http://ued.qunar.com/ykit/plugins.html');
+                }
+                process.ykitError = Object.assign(process.ykitError || {}, {[this.cwd + errorInfo]: true});
             }
         });
 
         if (ykitConfigFile && ykitConfigFile.config) {
-            extend(true, this.config, ykitConfigFile.config);
-            handleExportsConfig.bind(this)(ykitConfigFile.config);
-            this.setCommands(ykitConfigFile.commands || ykitConfigFile.config.command); // 后者兼容以前形式
+            const ykitJSConfig = typeof ykitConfigFile.config === 'function'
+                                // 兼容以前从 options 传进去 ExtractTextPlugin
+                                ? ykitConfigFile.config.bind(localConfig)({ExtractTextPlugin}, this.cwd) || {}
+                                : ykitConfigFile.config || {};
+
+            extend(true, this.config, ykitJSConfig);
+            handleCommonsChunk.bind(this)(this.config);
+            handleExportsConfig.bind(this)(ykitJSConfig);
+
+            const cmds = ykitConfigFile.commands || ykitJSConfig.command || ykitJSConfig.commands;  // 后者兼容以前形式
+            this.setCommands(cmds);
             this.setHooks(ykitConfigFile.hooks);
+            this.setProxy(ykitConfigFile.proxy);
+            this.setServer(ykitConfigFile.server);
+            this.setBuild(ykitConfigFile.build);
         } else {
             logError('Local ' + this.configFile + ' config not found.');
             logDoc('http://ued.qunar.com/ykit/docs-配置.html');
@@ -217,25 +247,75 @@ class Project {
             }
         }
 
-        // 处理 exports.config
+        /**
+         * 处理config.commonsChunk配置项，基于CommonsChunkPlugin插件封装
+         * commonsChunk: {
+                name: 'common',    //name是生成公共模块的chunkname
+                filename: 'scripts/[name].js', //filename是生成文件名，默认是 [name].js
+                minChunks: 2,      //公共模块被使用的最小次数。比如配置为3，也就是同一个模块只有被3个以外的页面同时引用时才会被提取出来作为common chunks,默认为2
+                vendors: {    //vendors是一个处理第三方库的配置项，结构是一个key,value数组,key是chunkname，value是第三方类库数组，生成的文件是{chunkname}.js
+                    lib: ['jquery', 'underscore', 'moment'], //会生成一个scripts/lib.js文件，包含 jquery,underscore,moment类库
+                    charts: ['highcharts', 'echarts'] //会生成一个scripts/charts.js文件，包含 highcharts,echarts类库
+                }
+            }
+        * @param {*} config
+        */
+        function handleCommonsChunk(config) {
+            var commonsChunk = config.commonsChunk,
+                webpackConfig = config._config,
+                chunks = [],
+                newfilename,
+                filenameTpl = webpackConfig.output[this._getCurrentEnv()],
+                vendors;
+
+
+            if (typeof commonsChunk === 'object' && commonsChunk !== undefined) {
+                if (typeof commonsChunk.name === 'string' && commonsChunk) {
+                    chunks.push(commonsChunk.name);
+                }
+                vendors = commonsChunk.vendors;
+                if (typeof vendors === 'object' && vendors !== undefined) {
+                    var i=0;
+                    for (var name in vendors) {
+                        if (vendors.hasOwnProperty(name) && vendors[name]) {
+                            i++;
+                            chunks.push(name);
+                            webpackConfig.entry[name] = Array.isArray(vendors[name]) ? vendors[name] : [vendors[name]];
+                        }
+                    }
+                    if(i > 0){
+                        chunks.push('manifest');
+                    }
+
+                }
+                newfilename = commonsChunk.filename ? commonsChunk.filename : '[name].js';
+
+                if (chunks.length > 0) {
+
+                    webpackConfig.plugins.push(
+                        new webpack.optimize.CommonsChunkPlugin({
+                            name: chunks,
+                            filename: handleFilename(newfilename, filenameTpl.filename),
+                            minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
+                        })
+                    );
+
+                }
+            }
+        }
+
+        function handleFilename(filename, tpl){
+            if (filename == null || tpl == null) return filename;
+            var filepaths = path.parse(filename), newtpl;
+            newtpl = tpl.replace('[name]', filepaths.name);
+            newtpl = tpl.replace('[ext]', filepaths.ext);
+            return path.join(filepaths.dir, newtpl);
+        }
+
+        // 处理 exports.config 中 export 和旧接口
         function handleExportsConfig(exportsConfig, options) {
             if (typeof exportsConfig === 'function') {
                 options = options ? options : {};
-
-                const originExtract = ExtractTextPlugin.extract;
-                ExtractTextPlugin.extract = function() {
-                    if(arguments.length > 1) {
-                        // if(typeof arguments[0] === 'string' && arguments[0].indexOf('-loader') === -1) {
-                        //     arguments[0] += '-loader';
-                        // }
-                        return originExtract({
-                            fallback: arguments[0],
-                            use: arguments[1]
-                        });
-                    } else {
-                        return originExtract(arguments[0]);
-                    }
-                };
                 options.ExtractTextPlugin = ExtractTextPlugin; // 兼容以前从 options 传进去 ExtractTextPlugin
 
                 const configFunResult = exportsConfig.call(localConfig, options, this.cwd);
@@ -364,238 +444,6 @@ class Project {
         }
     }
 
-    pack(opt, callback) {
-        let self = this, packStartTime = Date.now(), config = this.config.getConfig();
-
-        if(Object.keys(config.entry).length === 0) {
-            logWarn('Local config exports aseets not found.');
-            logDoc('http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html');
-            process.exit(1);
-        }
-
-        UtilFs.deleteFolderRecursive(this.cachePath);
-
-        const compilerProcess = () => {
-            // 打包前设置
-            if (opt.sourcemap) {
-                config.devtool = opt.sourcemap;
-            }
-            if (!opt.quiet) {
-                config.plugins.push(require('../plugins/progressBarPlugin.js'));
-            }
-            if (opt.min) {
-                config.output = config.output.prd;
-                config.devtool = '';
-            } else {
-                config.output = config.output.dev;
-            }
-            if (opt.clean) {
-                try {
-                    UtilFs.deleteFolderRecursive(config.output.path);
-                } catch (e) {
-                    error(e);
-                }
-            }
-
-            this.fixCss();
-
-            const c = ConfigConverter(config);
-            webpack(config, (err, stats) => {
-                const cwd = config.output.path;
-
-                globby
-                    .sync('**/*.cache', { cwd: cwd })
-                    .map(p => {
-                        return sysPath.join(config.output.path, p);
-                    })
-                    .forEach(fp => {
-                        fs.unlinkSync(fp);
-                    });
-
-                // 压缩
-                if (opt.min) {
-                    const computecluster = require('compute-cluster');
-                    const cc = new computecluster({
-                        module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
-                        max_backlog: -1,
-                        max_processes: 5
-                    });
-
-                    spinner.start();
-
-                    const assetsInfo = stats.toJson({
-                        errorDetails: false
-                    }).assets;
-                    let processToRun = assetsInfo.length;
-
-                    const originAssets = stats.compilation.assets;
-                    const nextAssets = {};
-                    assetsInfo.forEach(asset => {
-                        cc.enqueue(
-                            {
-                                opt: opt,
-                                cwd: cwd,
-                                buildOpts: this.config.build || {},
-                                assetName: asset.name
-                            },
-                            (err, response) => {
-                                if (response.error) {
-                                    // err log
-                                    const resErr = response.error;
-                                    spinner.text = '';
-                                    spinner.stop();
-                                    info('\n');
-                                    spinner.text = `error occured while minifying ${resErr.assetName}`;
-                                    spinner.fail();
-                                    info(
-                                        `line: ${resErr.line}, col: ${resErr.col} ${resErr.message} \n`.red
-                                    );
-
-                                    // continue
-                                    spinner.start();
-                                }
-
-                                // 将替换版本号的资源名取代原有名字
-                                const replacedAssets = response.replacedAssets;
-                                if (replacedAssets && replacedAssets.length > 0) {
-                                    const originAssetName = replacedAssets[0];
-                                    const nextAssetName = replacedAssets[1];
-                                    if (originAssets[originAssetName]) {
-                                        nextAssets[nextAssetName] = originAssets[originAssetName];
-                                    }
-                                }
-
-                                processToRun -= 1;
-                                spinner.text = `[Minify] ${assetsInfo.length -
-                                    processToRun}/${assetsInfo.length} assets`;
-
-                                if(processToRun === 0) {
-                                    cc.exit();
-                                    spinner.stop();
-
-                                    // 更新 stats
-                                    stats.compilation.assets = Object.keys(nextAssets).length > 0
-                                        ? nextAssets
-                                        : originAssets;
-
-                                    handleAfterPack();
-                                }
-                            }
-                        );
-                    });
-                } else {
-                    handleAfterPack();
-                }
-
-                function handleAfterPack() {
-                    spinner.stop();
-                    async.series(
-                        self.packCallbacks.concat(self.hooks.afterPack).map((packCallback) => {
-                            return function(callback) {
-                                let isAsync = false;
-
-                                // 支持异步调用
-                                packCallback.bind({
-                                    async: function(){
-                                        isAsync = true;
-                                        return callback;
-                                    }
-                                })(opt, stats);
-
-                                if(!isAsync) {
-                                    callback(null);
-                                }
-                            };
-                        }),
-                        (err) => {
-                            if(err) {
-                                logError(err);
-                                process.exit(1);
-                            }
-
-                            let statsInfo = stats.toJson({ errorDetails: false });
-
-                            if (statsInfo.warnings.length > 0) {
-                                statsInfo.warnings.map(warning => {
-                                    logWarn(warning + '\n');
-                                });
-                            }
-
-                            if (statsInfo.errors.length > 0) {
-                                statsInfo.errors.map(err => {
-                                    logError(err + '\n');
-                                });
-                                process.exit(1);
-                            }
-
-                            process.stdout.write(
-                                '\n---------------------  YKIT EMITTED ASSETS  ---------------------\n\n'
-                            );
-
-                            const assetsInfo = self.config._config.assetsInfo || statsInfo.assets;
-                            assetsInfo.map(asset => {
-                                if (sysPath.extname(asset.name) !== '.cache') {
-                                    let fileSize = UtilFs.getFileSize(
-                                        path.resolve(cwd, asset.name)
-                                    );
-                                    if (!fileSize) {
-                                        fileSize = asset.size > 1024
-                                            ? (asset.size / 1024).toFixed(2) + ' KB'
-                                            : asset.size + ' Bytes';
-                                    }
-
-                                    if (!/\.cache$/.test(asset.name)) {
-                                        log('- '.gray + colors.bold(colors.green(asset.name)) + ' - ' + fileSize);
-                                    }
-                                }
-                            });
-
-                            const packDuration = Date.now() - packStartTime > 1000
-                                ? Math.floor((Date.now() - packStartTime) / 1000) + 's'
-                                : Date.now() - packStartTime + 'ms';
-                            logInfo('Bundling Finishes in ' + packDuration + '.\n');
-
-                            callback(err, stats);
-                        }
-                    );
-                }
-            });
-        };
-
-        async.series(
-            this.beforePackCallbacks.map((beforePackItem) => {
-                return function(callback) {
-                    // 支持旧的 beforePackCallbacks 形式
-                    beforePackItem(callback, opt);
-                };
-            }).concat(this.hooks.beforePack.map((beforePackItem) => {
-                return function(callback) {
-                    // 支持异步调用
-                    let isAsync = false;
-                    beforePackItem.bind({
-                        async: function() {
-                            isAsync = true;
-                            return callback;
-                        }
-                    })(opt);
-
-                    if(!isAsync) {
-                        callback(null);
-                    }
-                };
-            })),
-            (err) => {
-                if(err) {
-                    logError(err);
-                    process.exit(1);
-                }
-                compilerProcess();
-            }
-        );
-
-        return this;
-    }
-
     getServerCompiler(handler) {
         let config = this.config.getConfig();
         config.output = extend(
@@ -664,7 +512,7 @@ class Project {
     }
 
     _getCurrentEnv() {
-        if (process.argv[2] === 'pack') {
+        if (process.argv[2] === 'pack' || process.argv[2] === 'p' ) {
             if (process.argv.indexOf('-m') > -1) {
                 return ENVS.PRD;
             } else {

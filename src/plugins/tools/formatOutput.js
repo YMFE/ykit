@@ -41,6 +41,16 @@ function formatOutput(stats) {
         return 'in ' + formatMessage(message);
     });
 
+    if (hasErrors) {
+        if (formattedErrors.some(isLikelyASyntaxError)) {
+            formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
+        }
+        formattedErrors.forEach(function(message) {
+            logError(message + '\n');
+        });
+        lineJoin(output);
+    }
+
     if (hasWarnings) {
         formattedWarnings.forEach(function(message) {
             logWarn(message + '\n');
@@ -50,17 +60,7 @@ function formatOutput(stats) {
         output.push('Use eslint-disable-next-line to ignore the next line.');
         output.push('Use  eslint-disable  to ignore all warnings in a file.');
 
-        return lineJoin(output);
-    }
-
-    if (hasErrors) {
-        if (formattedErrors.some(isLikelyASyntaxError)) {
-            formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
-        }
-        formattedErrors.forEach(function(message) {
-            logError(message + '\n');
-        });
-        return lineJoin(output);
+        lineJoin(output);
     }
 }
 

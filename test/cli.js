@@ -4,40 +4,44 @@ const path = require('path');
 const shell = require('shelljs');
 const expect = require('chai').expect;
 
-const pkgJsonPath = path.join(__dirname, './pkg.json');
 const ykitPath = path.join(__dirname, '../bin/ykit');
 const kill = require('../src/utils/psKill');
 
 const cwd = process.cwd();
-const exampleName = 'ykit-seed-react'
-const examplePath = path.join(cwd, 'cli-test', exampleName)
+const exampleName = 'ykit-starter-react';
+const examplePath = path.join(cwd, 'cli-test', exampleName);
 
-describe('Ykit CLI', () => {
+describe('Start testing terminal client', () => {
+    const env = process.env.ENV;
 
     beforeEach(function() {
-        if (shell.test('-d', 'cli-test')) {
-            shell.cd('cli-test');
-        } else {
-            shell.mkdir('-p', 'cli-test');
-        }
-    });
-
-    afterEach(function() {
         shell.cd(cwd);
+        if (!shell.test('-d', path.join(cwd, 'cli-test'))) {
+            shell.mkdir('-p', path.join(cwd, 'cli-test'));
+        }
+        shell.cd(path.join(cwd, 'cli-test'));
     });
 
     after(function() {
-        if (shell.test('-d', 'cli-test')) {
-            shell.rm('-rf', 'cli-test');
+        if (shell.test('-d', path.join(cwd, 'cli-test'))) {
+            shell.rm('-rf', path.join(cwd, 'cli-test'));
         }
     });
 
-    it('clone example project', () => {
+    it('clone example project & install dependencies', () => {
         // install
-        shell.cp('-R', path.join(cwd, 'examples', exampleName), path.join(cwd, 'cli-test'));
+        const gitUrl = 'https://github.com/roscoe054/' + exampleName + '.git';
+        shell.cd(path.join(cwd, 'cli-test'));
+        shell.exec('git clone ' + gitUrl + ' ' + exampleName);
         shell.cd(examplePath);
 
-        const output = shell.exec('npm install --registry https://registry.npmjs.org/', {silent: true});
+        let output;
+        if(env === 'local') {
+            output = shell.exec('yarn', {silent: true});
+        } else {
+            output = shell.exec('yarn', {silent: false});
+        }
+
         if (output.code !== 0) {
             process.exit(1);
         }
@@ -69,16 +73,15 @@ describe('Ykit CLI', () => {
     it('runs pack command', () => {
         shell.cd(examplePath);
 
-        shell.exec(ykitPath + ' pack -m', {silent: true});
-
+        shell.exec(ykitPath + ' pack -m', {silent: false});
         expect(shell.test('-d', path.join(examplePath, 'prd'))).to.be.true;
     })
 
     it('runs lint command', () => {
         shell.cd(examplePath);
 
-        const output = shell.exec(ykitPath + ' lint', {silent: true});
-        expect(output.stdout.includes('1 error, 0 warnings')).to.be.true;
+        const output = shell.exec(ykitPath + ' lint', {silent: false});
+        expect(output.stdout.includes('warnings')).to.be.true;
     })
 
 })
