@@ -460,7 +460,11 @@ class Project {
             config = handler(config);
         }
 
-        return webpack(config);
+        if(!config || Object.keys(config.entry).length === 0) {
+            return null;
+        } else {
+            return webpack(config);
+        }
     }
 
     _getLintFiles(dir, fileType) {

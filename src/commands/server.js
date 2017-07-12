@@ -322,7 +322,7 @@ exports.run = (options) => {
 
         let nextConfig;
         if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
-            compiler = project.getServerCompiler(function (config) {
+            compiler = project.getServerCompiler((config) => {
 
                 config.plugins.push(require('../plugins/progressBarPlugin.js'));
                 config.plugins.push(require('../plugins/compileInfoPlugin.js'));
