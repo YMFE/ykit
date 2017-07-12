@@ -4,8 +4,8 @@ const Manager = require('../modules/manager');
 
 module.exports = {
     apply: (compiler) => {
-        let cwd = Manager.getYkitOptions(compiler.options, 'cwd'),
-            requireRules = (Manager.getYkitOptions(compiler.options, 'requireRules') || []).map((item) => {
+        let cwd = Manager.getYkitConf('cwd'),
+            requireRules = (Manager.getYkitConf('requireRules') || []).map((item) => {
                 let options = item.split('|'),
                     moduleRoot = options[0],
                     config = options[1].split(':'),

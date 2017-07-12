@@ -166,12 +166,12 @@ exports.loadIgnoreFile = (path) => {
     return fs.existsSync(ignoreFile) ? fs.readFileSync(ignoreFile, 'UTF-8') : '';
 };
 
-exports.setYkitOptions = (webpackConfigObj, options) => {
-    webpackConfigObj.plugins.ykit = webpackConfigObj.plugins.ykit ? webpackConfigObj.plugins.ykit : {};
-    extend(true, webpackConfigObj.plugins.ykit, options);
+let ykitConfig = {};
+
+exports.mixYkitConf = (options) => {
+    extend(true, ykitConfig, options);
 };
 
-exports.getYkitOptions = (webpackConfigObj, name) => {
-    webpackConfigObj.plugins.ykit = webpackConfigObj.plugins.ykit ? webpackConfigObj.plugins.ykit : {};
-    return webpackConfigObj.plugins.ykit[name];
+exports.getYkitConf = (name) => {
+    return ykitConfig[name];
 };

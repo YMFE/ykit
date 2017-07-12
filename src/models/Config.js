@@ -79,7 +79,7 @@ class Config {
             requireRules: []
         };
 
-        Manager.setYkitOptions(this._config, {
+        Manager.mixYkitConf({
             cwd: cwd,
             entryExtNames: {
                 css: ['.css', '.less', '.sass', '.scss'],
@@ -202,12 +202,14 @@ class Config {
             if(options.global) {
                 mw.global = true;
             }
-            this._config.middleware.push(mw);
+            Manager.mixYkitConf({
+                middleware: Manager.getYkitConf('middleware').concat(mw)
+            });
         }
     }
 
     getMiddlewares() {
-        return this._config.middleware;
+        return Manager.getYkitConf('middleware');
     }
 
 }

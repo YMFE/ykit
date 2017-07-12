@@ -339,7 +339,7 @@ class Project {
     fixCss() {
         let config = this.config.getConfig(),
             entries = config.entry,
-            cssExtNames = Manager.getYkitOptions(config, 'entryExtNames').css,
+            cssExtNames = Manager.getYkitConf('entryExtNames').css,
             fps = [];
 
         const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.';
