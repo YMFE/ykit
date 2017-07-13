@@ -275,7 +275,8 @@ exports.run = (options) => {
             // 所以使用字符串匹配
             if(plugin && plugin.constructor) {
                 const isCCP = plugin instanceof webpack.optimize.CommonsChunkPlugin;
-                const isHMR = plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
+                const isHMR = plugin instanceof webpack.HotModuleReplacementPlugin
+                            || plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
                 return isCCP || isHMR;
             }
         });
@@ -340,7 +341,7 @@ exports.run = (options) => {
                 }
 
                 if(shouldCompileAllEntries) {
-                    return nextConfig;
+                    return ConfigConverter(nextConfig);
                 } else {
                     // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
                     nextConfig.entry = {};
