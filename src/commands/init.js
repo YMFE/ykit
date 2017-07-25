@@ -160,7 +160,8 @@ exports.run = function(options) {
 
 	function setup(callback) {
 		const initParams = process.argv.slice(4) || [];
-		const setupCmd = `ykit setup ${initParams.join(' ')}`;
+		const setupCmd = `node ${sysPath.join(__dirname, '../../bin/ykit')} setup ${initParams.join(' ')}`;
+
 		logInfo('Run ' + setupCmd);
 		shell.exec(setupCmd, {
 			silent: false
