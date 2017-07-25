@@ -73,8 +73,10 @@ exports.npmInstall = function() {
     }
 
     // install
-    const installCmd = `${currentNpm} install --registry http://registry.npm.corp.qunar.com/`
-                + (currentNpm === 'npm_cache_share' ? ' -d' : '');
+    const installCmd = (
+        `${currentNpm} install --registry https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar`
+        + (currentNpm === 'npm_cache_share' ? ' -d' : '')
+    );
     execute(installCmd);
 };
 
