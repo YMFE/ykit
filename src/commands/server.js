@@ -152,14 +152,22 @@ exports.run = (options) => {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectDir, { cache: false });
-            const cache = customMiddlewareCache;
 
+            // 当前配置中的 middleware
+            const customMiddlewares = project.config.getMiddlewares() || [];
+
+            // 获取哪些是全局 middleware，并加到 customMiddlewareCache 中
+            const globalMiddlewares = customMiddlewares.filter((mw) => mw.global);
+            const cache = customMiddlewareCache;
             if(cache.apps.indexOf(projectInfo.projectName) === -1) {
                 cache.apps.push(projectInfo.projectName);
-                cache.middlewares = cache.middlewares.concat(project.config.getMiddlewares() || []);
+                cache.middlewares = cache.middlewares.concat(globalMiddlewares);
             }
 
-            const currentMiddlewres = cache.middlewares.slice(0);
+            // 获取当前要走的 middleware
+            const currentMiddlewres = cache.middlewares.slice(0).concat(
+                    customMiddlewares.filter((mw) => !mw.global)
+                );
             const _next = () => {
                 if (currentMiddlewres.length === 0) {
                     next();
@@ -192,6 +200,7 @@ exports.run = (options) => {
         const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
+        const maxMiddleware = project.server && project.server.maxMiddleware;
 
         // 非 output.path 下的资源不做处理
         url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
@@ -220,13 +229,6 @@ exports.run = (options) => {
         // 生成 cacheId
         url = url.replace('.map', '').slice(1);
         const cacheId = sysPath.join(projectName, url);
-
-
-        // 寻找已有的 middlewareCache
-        if(middlewareCache[cacheId]) {
-            middlewareCache[cacheId](req, res, next);
-            return;
-        }
 
         // hot reload
         const hotEnabled = (project.server && project.server.hot) || hot;
@@ -280,6 +282,44 @@ exports.run = (options) => {
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
             allAssetsEntry[projectName] = url;
+        }
+
+        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
+        if(maxMiddleware) {
+            const now = +new Date();
+            const middlewareList = Object.keys(middlewareCache)
+                .map(key => {
+                    const middleware = middlewareCache[key];
+                    return middleware ? {
+                        key,
+                        middleware: middleware,
+                        weight: middleware._visit / (now - middleware._timestamp) * 1000
+                    } : null;
+                })
+                .filter(v => v)
+                .sort((a, b) =>  b.weight - a.weight);
+
+            let removeLen = middlewareList.length - maxMiddleware;
+            let index = middlewareList.length - 1;
+
+            while (removeLen > 0) {
+                const key = middlewareList[index].key;
+                if (key !== cacheId) {
+                    var md = middlewareCache[key];
+                    delete middlewareCache[key];
+                    md.close();
+                }
+
+                removeLen -= 1;
+                index -= 1;
+            }
+        }
+
+        // 寻找已有的 middlewareCache
+        if (middlewareCache[cacheId]) {
+            middlewareCache[cacheId](req, res, next);
+            middlewareCache[cacheId]._visit += 1;
+            return;
         }
 
         let nextConfig;
@@ -430,7 +470,7 @@ exports.run = (options) => {
                         io.emit('testAppID', assetEntrys);
 
                         Object.keys(stats.compilation.assets).map((key) => {
-                            const keyCacheId = sysPath.join(projectName, key);
+                            const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
                             middlewareCache[keyCacheId] = middleware;
 
                             if(verbose) {
@@ -442,6 +482,9 @@ exports.run = (options) => {
                     }
                 }
             );
+
+            middleware._timestamp = +new Date();
+            middleware._visit = 1;
 
             if(hotEnabled) {
                 app.use(require('webpack-hot-middleware')(compiler, {
@@ -497,7 +540,7 @@ exports.run = (options) => {
                 cert: fs.readFileSync(globalConfig['https-crt'])
             };
         }
-        
+
         servers.push(extend(https.createServer(httpsOpts, app), { _port: '443', _isHttps: true }));
     }
 
@@ -533,7 +576,7 @@ exports.run = (options) => {
     // proxy
     var proxyProcess;
     if (proxy) {
-        const proxyPath = sysPath.join(requireg.resolve('jerryproxy'), '../bin/jerry.js');
+        const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js');
         proxyProcess = child_process.fork(proxyPath);
     }
 

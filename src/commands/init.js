@@ -33,6 +33,8 @@ exports.run = function(options) {
 	// 如果初始化时带着初始化类型
 	if (typeof process.argv[3] === 'string') {
 		const initParam = process.argv[3];
+		const qunarRegistry = 'repo.corp.qunar.com/artifactory/api/npm/npm-qunar';
+		const taobaoRegistry = 'registry.npm.taobao.org';
 		let isInitReady = false;
 
 		spinner.start();
@@ -40,15 +42,15 @@ exports.run = function(options) {
 		async.series([
 			// qnpm 寻找是否存在 @qnpm/ykit-config-xxx 的插件
 			(callback) => {
-				checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, 'corp.qunar.com');
+				checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, qunarRegistry);
 			},
 			// qnpm 寻找是否存在 ykit-config-xxx 的插件
 			(callback) => {
-				checkConfigPkg(callback, `ykit-config-${initParam}`, 'corp.qunar.com');
+				checkConfigPkg(callback, `ykit-config-${initParam}`, qunarRegistry);
 			},
 			// cnpm 寻找是否存在 ykit-config-xxx 的插件
 			(callback) => {
-				checkConfigPkg(callback, `ykit-config-${initParam}`, 'taobao.org');
+				checkConfigPkg(callback, `ykit-config-${initParam}`, taobaoRegistry);
 			}
 		], () => {
 			if (isInitReady) {
@@ -62,7 +64,7 @@ exports.run = function(options) {
 		function checkConfigPkg(callback, packageName, registry) {
 			if (!isInitReady) {
 				let timeout;
-				const child = shell.exec(`npm view ${packageName} --registry http://registry.npm.${registry}`, {
+				const child = shell.exec(`npm view ${packageName} --registry https://${registry}`, {
 					silent: true
 				}, (code, stdout, stderr) => {
 					if (stdout) {
@@ -110,7 +112,7 @@ exports.run = function(options) {
 	function installConfigPlugin(callback, configPkgName, registry) {
 		log('Install ' + configPkgName + '...');
 
-		shell.exec(`npm install ${configPkgName} --registry http://registry.npm.${registry} --save`, {
+		shell.exec(`npm install ${configPkgName} --registry https://${registry} --save`, {
 			silent: false
 		}, (code, stdout, stderr) => {
 			callback(null); // npm install 中的警告也会当成 stderr 输出，所以不在这里做错误处理
@@ -158,7 +160,8 @@ exports.run = function(options) {
 
 	function setup(callback) {
 		const initParams = process.argv.slice(4) || [];
-		const setupCmd = `ykit setup ${initParams.join(' ')}`;
+		const setupCmd = `node ${sysPath.join(__dirname, '../../bin/ykit')} setup ${initParams.join(' ')}`;
+
 		logInfo('Run ' + setupCmd);
 		shell.exec(setupCmd, {
 			silent: false

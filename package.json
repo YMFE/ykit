@@ -1,6 +1,6 @@
 {
   "name": "ykit",
-  "version": "0.5.0-rc1",
+  "version": "0.5.4",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
@@ -34,7 +34,7 @@
     "globby": "^5.0.0",
     "html-loader": "^0.4.3",
     "http-proxy-middleware": "^0.17.4",
-    "jerryproxy": "1.0.91",
+    "jerryproxy-ykit": "^1.1.1",
     "js-beautify": "^1.6.12",
     "js-yaml": "^3.6.1",
     "json-loader": "^0.5.4",

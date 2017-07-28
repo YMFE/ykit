@@ -209,16 +209,14 @@ class Project {
                     logDoc('http://ued.qunar.com/ykit/plugins.html');
                 }
                 process.ykitError = Object.assign(process.ykitError || {}, {[this.cwd + errorInfo]: true});
-
-                // 如果是打包阶段，直接中断
-                this._getCurrentEnv() !== 'local' && process.exit(1);
             }
         });
 
         if (ykitConfigFile && ykitConfigFile.config) {
             const ykitJSConfig = typeof ykitConfigFile.config === 'function'
-                                   ? ykitConfigFile.config()
-                                   : ykitConfigFile.config;
+                                // 兼容以前从 options 传进去 ExtractTextPlugin
+                                ? ykitConfigFile.config.bind(localConfig)({ExtractTextPlugin}, this.cwd) || {}
+                                : ykitConfigFile.config || {};
 
             extend(true, this.config, ykitJSConfig);
             
@@ -286,27 +284,27 @@ class Project {
                     if(i > 0){
                         chunks.push('manifest');
                     }
-                    
+
                 }
                
 
                 if (chunks.length > 0) {
-                    
+
                     webpackConfig.plugins.push(
                         new webpack.optimize.CommonsChunkPlugin({
                             name: chunks,
                             filename: filenameTpl.filename,
                             minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
                         })
-                    );  
+                    );
 
                 }
             }
         }
+        
+        // 处理 exports.config 中 export 和旧接口
 
-        // 处理 exports.config
         function handleExportsConfig(exportsConfig, options) {
-
             if (typeof exportsConfig === 'function') {
                 options = options ? options : {};
                 options.ExtractTextPlugin = ExtractTextPlugin; // 兼容以前从 options 传进去 ExtractTextPlugin
