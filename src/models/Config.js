@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const normalize = require('../utils/path').normalize;
@@ -62,6 +63,7 @@ class Config {
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
+                new webpack.HashedModuleIdsPlugin(),
                 new CaseSensitivePathsPlugin()
             ],
             resolve: {
@@ -70,12 +72,7 @@ class Config {
                 extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
-            devtool: 'source-map',
-            entryExtNames: {
-                css: ['.css', '.less', '.sass', '.scss'],
-                js: ['.js', '.jsx']
-            },
-            requireRules: []
+            devtool: 'source-map'
         };
 
         Manager.mixYkitConf({
