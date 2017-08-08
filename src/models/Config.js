@@ -20,8 +20,19 @@ class Config {
             }
         }
 
-        this._config = {
+        const extraConfig = {
             cwd: cwd,
+            entryExtNames: {
+                css: ['.css', '.less', '.sass', '.scss'],
+                js: ['.js', '.jsx']
+            },
+            requireRules: [
+                'fekit_modules|fekit.config:main|./src/index.js'
+            ],
+            middleware: []
+        };
+
+        this._config = extend({
             context: sysPath.join(cwd, 'src'),
             entry: {},
             output: {
@@ -73,19 +84,9 @@ class Config {
                 alias: {}
             },
             devtool: 'source-map'
-        };
+        }, extraConfig);
 
-        Manager.mixYkitConf({
-            cwd: cwd,
-            entryExtNames: {
-                css: ['.css', '.less', '.sass', '.scss'],
-                js: ['.js', '.jsx']
-            },
-            requireRules: [
-                'fekit_modules|fekit.config:main|./src/index.js'
-            ],
-            middleware: []
-        });
+        Manager.mixYkitConf(extraConfig);
     }
 
     setExports(entries) {

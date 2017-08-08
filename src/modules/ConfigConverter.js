@@ -109,7 +109,8 @@ function handleNotAllowedConfig(config) {
         'fekitDomainMappingList',
         'requireRules',
         'entryExtNames',
-        'getVendor'
+        'getVendor',
+        'middleware'
     ];
     removeConfigNames.map((configName) => {
         delete config[configName];
