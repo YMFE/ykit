@@ -70,7 +70,7 @@ class Config {
                 extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
-            devtool: 'cheap-source-map',
+            devtool: 'source-map',
             entryExtNames: {
                 css: ['.css', '.less', '.sass', '.scss'],
                 js: ['.js', '.jsx']
