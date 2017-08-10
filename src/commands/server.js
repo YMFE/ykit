@@ -629,7 +629,7 @@ exports.run = (options) => {
             dirLevel += i === 0 ? dirSections[i] : '/' + dirSections[i] ;
 
             const searchDir = sysPath.join(cwd, dirLevel, '');
-            if (fs.lstatSync(searchDir).isDirectory()) {
+            if (fs.existsSync(searchDir) && fs.lstatSync(searchDir).isDirectory()) {
                 const ykitConf = globby.sync(['ykit.*.js', 'ykit.js'], {cwd: searchDir})[0];
                 if(ykitConf) {
                     projectDir = searchDir;
