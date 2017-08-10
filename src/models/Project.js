@@ -219,8 +219,9 @@ class Project {
                                 : ykitConfigFile.config || {};
 
             extend(true, this.config, ykitJSConfig);
-            handleCommonsChunk.bind(this)(this.config);
+            
             handleExportsConfig.bind(this)(ykitJSConfig);
+            handleCommonsChunk.bind(this)(this.config);
 
             const cmds = ykitConfigFile.commands || ykitJSConfig.command || ykitJSConfig.commands;  // 后者兼容以前形式
             this.setCommands(cmds);
@@ -249,12 +250,11 @@ class Project {
         /**
          * 处理config.commonsChunk配置项，基于CommonsChunkPlugin插件封装
          * commonsChunk: {
-                name: 'common',    //name是生成公共模块的chunkname
-                filename: 'scripts/[name].js', //filename是生成文件名，默认是 [name].js
+                name: 'common',    
                 minChunks: 2,      //公共模块被使用的最小次数。比如配置为3，也就是同一个模块只有被3个以外的页面同时引用时才会被提取出来作为common chunks,默认为2
-                vendors: {    //vendors是一个处理第三方库的配置项，结构是一个key,value数组,key是chunkname，value是第三方类库数组，生成的文件是{chunkname}.js
-                    lib: ['jquery', 'underscore', 'moment'], //会生成一个scripts/lib.js文件，包含 jquery,underscore,moment类库
-                    charts: ['highcharts', 'echarts'] //会生成一个scripts/charts.js文件，包含 highcharts,echarts类库
+                vendors: {   
+                    lib: ['jquery', 'underscore', 'moment'], 
+                    charts: ['highcharts', 'echarts'] 
                 }
             }
         * @param {*} config
@@ -263,7 +263,6 @@ class Project {
             var commonsChunk = config.commonsChunk,
                 webpackConfig = config._config,
                 chunks = [],
-                newfilename,
                 filenameTpl = webpackConfig.output[this._getCurrentEnv()],
                 vendors;
 
@@ -287,14 +286,14 @@ class Project {
                     }
 
                 }
-                newfilename = commonsChunk.filename ? commonsChunk.filename : '[name].js';
+               
 
                 if (chunks.length > 0) {
 
                     webpackConfig.plugins.push(
                         new webpack.optimize.CommonsChunkPlugin({
                             name: chunks,
-                            filename: handleFilename(newfilename, filenameTpl.filename),
+                            filename: filenameTpl.filename,
                             minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
                         })
                     );
@@ -302,16 +301,9 @@ class Project {
                 }
             }
         }
-
-        function handleFilename(filename, tpl){
-            if (filename == null || tpl == null) return filename;
-            var filepaths = path.parse(filename), newtpl;
-            newtpl = tpl.replace('[name]', filepaths.name);
-            newtpl = tpl.replace('[ext]', filepaths.ext);
-            return path.join(filepaths.dir, newtpl);
-        }
-
+        
         // 处理 exports.config 中 export 和旧接口
+
         function handleExportsConfig(exportsConfig, options) {
             if (typeof exportsConfig === 'function') {
                 options = options ? options : {};
