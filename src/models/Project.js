@@ -350,15 +350,15 @@ class Project {
                 mkdirp.sync(newCachePath);
             }
             if (cssExtNames.indexOf(extName) > -1) {
-                let requireFilePath = entries[key] = './' +
-                    sysPath.join(contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'),
+                let requireFilePath =
+                        entries[key] =
+                        sysPath.join(contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'),
                     cacheFilePath = sysPath.join(config.context, requireFilePath);
 
                 mkdirp.sync(sysPath.dirname(cacheFilePath));
 
                 // 将原有entry的css路径写到js中
                 if (Array.isArray(entryItem)) {
-                    // clear
                     fs.writeFileSync(cacheFilePath, '', 'utf-8');
 
                     entryItem.forEach(cssPath => {
@@ -372,6 +372,9 @@ class Project {
                             'utf-8'
                         );
                     });
+
+                    // HACK: 如果文件的 mtime 太近的话会触发 Webpack 多次重复编译，因此这里改为 1970/1/1
+                    fs.futimesSync(fs.openSync(cacheFilePath, 'r+'), 2649600000, 2649600000);
                 } else {
                     const originCssPath = sysPath.join(config.context, entry);
                     const requiredPath = UtilPath.normalize(
