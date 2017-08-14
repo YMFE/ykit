@@ -18,6 +18,7 @@ const connect = require('connect'),
     httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
+const ServerManager = require('../modules/ServerManager.js');
 const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
@@ -187,7 +188,7 @@ exports.run = (options) => {
     // app.use(hostReplaceMiddleware);
 
     // compiler
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         let url = req.url,
             compiler = null;
 
@@ -209,15 +210,7 @@ exports.run = (options) => {
         }
 
         // 清除 YKIT_CACHE_DIR 资源
-        let isFirstCompileDir = true;
-        Object.keys(middlewareCache).map((cacheName) => {
-            if(cacheName.startsWith(projectName)) {
-                isFirstCompileDir = false;
-            }
-        });
-        if(isFirstCompileDir) {
-            UtilFs.deleteFolderRecursive(sysPath.join(projectDir, YKIT_CACHE_DIR), true);
-        }
+        ServerManager.removeCacheDir(middlewareCache, projectName, projectDir);
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
@@ -233,40 +226,7 @@ exports.run = (options) => {
         // hot reload
         const hotEnabled = (project.server && project.server.hot) || hot;
         if(hotEnabled) {
-            // 修改 publicPath 为当前服务
-            let localPublicPath = wpConfig.output.local.publicPath;
-            if(project.config.replacingPublicPath !== false) {
-                const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
-                if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
-                    localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);
-                    localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
-                        httpStr = httpStr || '';
-                        return httpStr + '//' + '127.0.0.1:' + port;
-                    });
-                    wpConfig.output.local.publicPath = localPublicPath;
-                } else {
-                    // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
-                    const relativePath = sysPath.relative(projectDir, wpConfig.output.local.path);
-                    wpConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
-                }
-            }
-
-            wpConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
-
-            if(!usingHotServer) {
-                usingHotServer = projectName;
-                if(typeof wpConfig.entry === 'object') {
-                    Object.keys(wpConfig.entry).map((key) => {
-                        let entryItem = wpConfig.entry[key];
-                        if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
-                            const whmPath = require.resolve('webpack-hot-middleware/client');
-                            const hotPath = `http://127.0.0.1:${port}/__webpack_hmr`;
-                            entryItem.unshift(whmPath + '?reload=true&path=' + hotPath + '&timeout=9999999&overlay=false');
-                        }
-                        return entryItem;
-                    });
-                }
-            }
+            ServerManager.setHotServer(wpConfig, projectDir, projectName, port);
         }
 
         // 如果发现插件中有 HotModuleReplacementPlugin 则需要编译全部入口，否则无法正常运行
