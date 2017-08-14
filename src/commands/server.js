@@ -350,8 +350,7 @@ exports.run = (options) => {
                     Object.keys(config.entry).map((entryKey) => {
                         const entryItem = config.entry[entryKey];
 
-                        let isRequestingEntry = false,
-                            entryPath = '';
+                        let entryPath = '';
 
                         if (Array.isArray(entryItem)) {
                             entryPath = entryItem[entryItem.length - 1];
@@ -379,7 +378,9 @@ exports.run = (options) => {
                             });
                             const replaceReg = new RegExp('\\' + exts.join('|\\'));
 
-                            entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
+                            entryPath = UtilPath.normalize(
+                                entryPath.replace(replaceReg, '.' + targetExtName)
+                            );
                         });
 
                         // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
@@ -392,10 +393,6 @@ exports.run = (options) => {
                         const matchingKey = sysPath.normalize(url) === entryKey + sysPath.extname(url);
 
                         if (matchingPath || matchingKey) {
-                            isRequestingEntry = true;
-                        }
-
-                        if (isRequestingEntry) {
                             nextConfig.entry = {
                                 [entryKey]: entryItem
                             };
