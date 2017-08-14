@@ -219,7 +219,7 @@ class Project {
                                 : ykitConfigFile.config || {};
 
             extend(true, this.config, ykitJSConfig);
-            
+
             handleExportsConfig.bind(this)(ykitJSConfig);
             handleCommonsChunk.bind(this)(this.config);
 
@@ -250,11 +250,11 @@ class Project {
         /**
          * 处理config.commonsChunk配置项，基于CommonsChunkPlugin插件封装
          * commonsChunk: {
-                name: 'common',    
+                name: 'common',
                 minChunks: 2,      //公共模块被使用的最小次数。比如配置为3，也就是同一个模块只有被3个以外的页面同时引用时才会被提取出来作为common chunks,默认为2
-                vendors: {   
-                    lib: ['jquery', 'underscore', 'moment'], 
-                    charts: ['highcharts', 'echarts'] 
+                vendors: {
+                    lib: ['jquery', 'underscore', 'moment'],
+                    charts: ['highcharts', 'echarts']
                 }
             }
         * @param {*} config
@@ -286,7 +286,7 @@ class Project {
                     }
 
                 }
-               
+
 
                 if (chunks.length > 0) {
 
@@ -301,7 +301,7 @@ class Project {
                 }
             }
         }
-        
+
         // 处理 exports.config 中 export 和旧接口
 
         function handleExportsConfig(exportsConfig, options) {

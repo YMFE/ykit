@@ -18,7 +18,7 @@ const connect = require('connect'),
     httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
-const ConfigConverter = require('../modules/ConfigConverter.js');
+const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
 
@@ -341,7 +341,7 @@ exports.run = (options) => {
                 }
 
                 if(shouldCompileAllEntries) {
-                    return ConfigConverter(nextConfig);
+                    return ConfigProcessCircle.runBeforeCompiling(nextConfig);
                 } else {
                     // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
                     nextConfig.entry = {};
@@ -399,7 +399,7 @@ exports.run = (options) => {
                         }
                     });
 
-                    nextConfig = ConfigConverter(nextConfig);
+                    nextConfig = ConfigProcessCircle.runBeforeCompiling(nextConfig);
                     return nextConfig;
                 }
             });

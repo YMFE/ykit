@@ -5,6 +5,7 @@ const colors = require('colors');
 
 const ConfigConverter = require('../modules/ConfigConverter.js');
 const UtilFs = require('../utils/fs.js');
+const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 
 exports.usage = '资源编译、打包';
 exports.abbr = 'p';
@@ -65,6 +66,7 @@ exports.run = function (options) {
     }
 
     function handlebeforeCompiling() {
+        config = ConfigProcessCircle.runBeforeCompiling(config);
         return new Promise ((resolve, reject) => {
             async.series(
                 this.hooks.beforeCompiling.map((beforeTask) => {
@@ -158,7 +160,7 @@ exports.run = function (options) {
 
     function compilingProcess() {
         return new Promise ((resolve, reject) => {
-            webpack(ConfigConverter(config), (err, stats) => {
+            webpack(config, (err, stats) => {
                 compilerStats = stats;
                 dist = config.output.path;
                 globby
