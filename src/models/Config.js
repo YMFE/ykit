@@ -90,10 +90,14 @@ class Config {
                             query: {
                                 cacheDirectory: true,
                                 presets: [
-                                    [require.resolve('babel-preset-es2015'), {"modules": false}],
-                                    require.resolve('babel-preset-es2016'),
-                                    require.resolve('babel-preset-es2017'),
-                                    require.resolve('babel-preset-stage-0')
+                                    [require.resolve('babel-preset-env'), {
+                                        targets: {
+                                            browsers: '> 5%'
+                                        },
+                                        useBuiltIns: true,
+                                        debug: false,
+                                        modules: false
+                                    }]
                                 ],
                                 plugins: []
                             }
