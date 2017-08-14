@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const normalize = require('../utils/path').normalize;
 const Manager = require('../modules/manager');
+const HappyPack = require('happypack');
 
 class Config {
     constructor(cwd, configFile) {
@@ -55,6 +56,10 @@ class Config {
             module: {
                 preLoaders: [],
                 loaders: [{
+                    test: /\.(js|jsx)$/,
+                    exclude: /node_modules/,
+                    loader: require.resolve('happypack/loader')
+                }, {
                     test: /\.json$/,
                     exclude: /node_modules/,
                     loader: require.resolve('json-loader')
@@ -75,7 +80,28 @@ class Config {
                 require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
                 new webpack.HashedModuleIdsPlugin(),
-                new CaseSensitivePathsPlugin()
+                new CaseSensitivePathsPlugin(),
+                new HappyPack({
+                    loaders: [
+                        {
+                            loader: require.resolve('babel-loader'),
+                            test: /\.(js|jsx)$/,
+                            exclude: /node_modules/,
+                            query: {
+                                cacheDirectory: true,
+                                presets: [
+                                    [require.resolve('babel-preset-es2015'), {"modules": false}],
+                                    require.resolve('babel-preset-es2016'),
+                                    require.resolve('babel-preset-es2017'),
+                                    require.resolve('babel-preset-stage-0')
+                                ],
+                                plugins: []
+                            }
+                        }
+                    ],
+                    threads: 4,
+                    verbose: false
+                })
             ],
             resolve: {
                 root: [],
