@@ -10,8 +10,6 @@ exports.usage = '资源编译、打包';
 exports.abbr = 'p';
 
 exports.setOptions = (optimist) => {
-    optimist.alias('l', 'lint');
-    optimist.describe('l', '先进行验证');
     optimist.alias('m', 'min');
     optimist.describe('m', '压缩/混淆项目文件');
     optimist.alias('s', 'sourcemap');
@@ -24,13 +22,11 @@ exports.setOptions = (optimist) => {
 
 exports.run = function (options) {
     const min = options.m || options.min || false,
-        lint = options.l || options.lint || false,
         clean = options.c || options.clean || true,
         quiet = options.q || options.quiet || false,
         sourcemap = options.s || options.sourcemap,
         packStartTime = Date.now(),
         opt = {
-            lint: lint,
             min: min,
             sourcemap: sourcemap,
             clean: clean === 'false' ? false : true,

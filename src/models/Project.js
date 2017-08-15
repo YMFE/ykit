@@ -36,7 +36,6 @@ class Project {
             beforeCompiling: [],
             afterPack: []
         };
-        this.eslintConfig = require('../../static/eslint/eslint.json');
         this.extendConfig = this.configFile &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
             this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
@@ -73,9 +72,6 @@ class Project {
         }
     }
 
-    setEslintConfig(projectEslintConfig) {
-        extend(true, this.eslintConfig, projectEslintConfig);
-    }
 
     setHooks(nextHooks) {
         if(nextHooks) {
@@ -109,8 +105,7 @@ class Project {
             return;
         }
 
-        let globalConfigs = Manager.readRC().configs || [],
-            localConfig = {
+        let localConfig = {
                 cwd: this.cwd,
                 _manager: Manager,
                 setConfig: this.config.setCompiler.bind(this.config), // 兼容旧 api
@@ -119,7 +114,6 @@ class Project {
                 setExports: this.config.setExports.bind(this.config),
                 setSync: this.config.setSync.bind(this.config),
                 setCommands: this.setCommands.bind(this),
-                setEslintConfig: this.setEslintConfig.bind(this),
                 config: this.config.getConfig(),
                 commands: this.commands,
                 middlewares: this.middlewares,
@@ -127,7 +121,6 @@ class Project {
                 beforePackCallbacks: this.beforePackCallbacks, // 兼容 ykit-config-yo 的 beforePackCallbacks
                 packCallbacks: this.packCallbacks, // 兼容 ykit-config-yo 的 packCallbacks
                 hooks: this.hooks,
-                eslintConfig: this.eslintConfig,
                 applyMiddleware: this.config.applyMiddleware.bind(this.config),
                 env: this._getCurrentEnv(), // 默认为本地环境,
                 webpack: extend(webpack, {version: 3})
@@ -197,10 +190,6 @@ class Project {
                     this.setHooks(module.hooks);
                     this.setBuild(module.build);
                 }
-
-                // 扩展 eslint 配置
-                extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(pluginPath));
-                this.ignores.push(Manager.loadIgnoreFile(pluginPath));
             } else {
                 // 添加到 process 中，防止重复多次报错
                 const errorInfo = `Local ${pluginName} plugin not found，you may need to install it first.`;
@@ -233,10 +222,6 @@ class Project {
             logError('Local ' + this.configFile + ' config not found.');
             logDoc('http://ued.qunar.com/ykit/docs-配置.html');
         }
-
-        // 处理 eslint
-        extend(true, localConfig.eslintConfig, Manager.loadEslintConfig(this.cwd));
-        this.ignores.push(Manager.loadIgnoreFile(this.cwd));
 
         // 处理 output
         let output = this.config.getConfig().output;
@@ -396,40 +381,6 @@ class Project {
         }
     }
 
-    lint(dir, callback) {
-        warn('Linting JS Files ...');
-
-        let CLIEngine = require('eslint').CLIEngine;
-
-        // 如果有本地eslint优先使用本地eslint
-        if (requireg.resolve(sysPath.join(this.cwd, 'node_modules/', 'eslint'))) {
-            CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine;
-        }
-
-        let files = ['.js', '.yaml', '.yml', '.json', ''].map(ext => {
-            return path.join(this.cwd, '.eslintrc' + ext);
-        });
-        let config = UtilFs.readFileAny(files);
-
-        // 本地无 lint 配置，创建 .eslintrc.json
-        if (!config) {
-            let configPath = path.join(this.cwd, '.eslintrc.json');
-            fs.writeFileSync(configPath, JSON.stringify(this.eslintConfig, null, 4));
-        } else {
-            this.eslintConfig = config;
-        }
-
-        const cli = new CLIEngine(this.eslintConfig),
-            report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
-            formatter = cli.getFormatter();
-
-        if (report.errorCount > 0) {
-            info(formatter(report.results));
-        }
-
-        callback(null, !report.errorCount);
-    }
-
     applyBeforePack(nextBeforePackCB) {
         if (typeof nextBeforePackCB === 'function') {
             this.beforePackCallbacks.push(nextBeforePackCB);
@@ -460,35 +411,6 @@ class Project {
         } else {
             return webpack(config);
         }
-    }
-
-    _getLintFiles(dir, fileType) {
-        let context = this.config._config.context,
-            extNames = this.config._config.entryExtNames[fileType],
-            lintPath = extNames.map(ext => {
-                return sysPath.join('./**/*' + ext);
-            });
-
-        if (dir) {
-            dir = sysPath.resolve(this.cwd, dir);
-            try {
-                fs.statSync(dir).isDirectory()
-                    ? context = dir
-                    : lintPath = sysPath.relative(context, dir);
-            } catch (e) {
-                error(e);
-            }
-        }
-
-        return globby
-            .sync(lintPath, {
-                cwd: context,
-                root: context,
-                ignore: this.ignores
-            })
-            .map(lintPathItem => {
-                return sysPath.resolve(context, lintPathItem);
-            });
     }
 
     _requireUncached(module) {
