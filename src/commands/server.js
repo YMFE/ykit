@@ -4,7 +4,6 @@ const connect = require('connect'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
-    socketIO = require('socket.io'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
@@ -29,8 +28,6 @@ exports.abbr = 's';
 exports.setOptions = (optimist) => {
     optimist.alias('p', 'port');
     optimist.describe('p', '端口');
-    optimist.alias('x', 'proxy');
-    optimist.describe('x', '开启 proxy 代理服务');
     optimist.alias('s', 'https');
     optimist.describe('s', '开启 https 服务');
     optimist.alias('hot', 'hot');
@@ -45,7 +42,6 @@ exports.run = (options) => {
     let app = connect(),
         cwd = options.cwd,
         verbose = options.v || options.verbose,
-        proxy = options.x || options.proxy,
         hot = options.hot,
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
@@ -59,10 +55,9 @@ exports.run = (options) => {
             middlewares: []
         };
 
-    let io = null,
-        assetEntrys = {};
-
+    let assetEntrys = {};
     let usingHotServer = false;
+
     const dateFormat = 'HH:mm:ss';
 
     if (middlewares) {
@@ -304,15 +299,6 @@ exports.run = (options) => {
                                 spinner.stop();
                                 spinner.text = '';
 
-                                // emit compile info by socket
-                                const statsInfo = stats.toJson({errorDetails: false});
-                                const assetName = cacheId;
-                                assetEntrys[assetName] = {
-                                    compilationId: statsInfo.hash,
-                                    errors: statsInfo.errors
-                                };
-                                io.emit('testAppID', assetEntrys);
-
                                 Object.keys(stats.compilation.assets).map((key) => {
                                     const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
                                     middlewareCache[keyCacheId] = middleware;
@@ -400,23 +386,8 @@ exports.run = (options) => {
 
             !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
             logInfo('Available on: ' + serverUrl.underline);
-
-            // socket
-            if(!server._isHttps) {
-                io = socketIO(server);
-                io.on('connection', function(socket) {
-                    io.emit('testAppID', assetEntrys);
-                });
-            }
         });
     });
-
-    // proxy
-    var proxyProcess;
-    if (proxy) {
-        const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js');
-        proxyProcess = child_process.fork(proxyPath);
-    }
 
     // 权限降级
     if (process.env['SUDO_UID']) {
@@ -433,8 +404,7 @@ exports.run = (options) => {
     process.on('SIGINT', exitHandler.bind(null));
 
     function exitHandler() {
-        // cleanup
-        proxyProcess && proxyProcess.kill('SIGINT');
+        // do cleanup
         process.exit(0);
     }
 
