@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const ConfigProcessCircle = require('./ConfigProcessCircle');
+const ConfigConverter = require('./ConfigConverter.js');
 const UtilFs = require('../utils/fs');
 const UtilPath = require('../utils/path');
 
@@ -57,8 +58,8 @@ module.exports = {
             }
         }
     },
-    getCompiler (projectConfig, shouldCompileAllEntries, reqUrl, callback) {
-        const webpackConfig = extend(true, {}, projectConfig);
+    async getCompiler (shouldCompileAllEntries, reqUrl, callback) {
+        let webpackConfig = extend(true, {}, this.config._config);
         const entries = extend(true, {}, webpackConfig.entry);
 
         webpackConfig.output = extend(
@@ -139,7 +140,8 @@ module.exports = {
         }
 
         // 执行 beforeCompiling
-        ConfigProcessCircle.runBeforeCompiling(webpackConfig);
+        webpackConfig = ConfigConverter(webpackConfig);
+        await ConfigProcessCircle.runBeforeCompiling(this.hooks, webpackConfig);
 
         // 返回 compiler
         const compiler = extend(

@@ -65,34 +65,9 @@ exports.run = function (options) {
         await printStats.bind(this)();
     }
 
-    function handlebeforeCompiling() {
-        config = ConfigProcessCircle.runBeforeCompiling(config);
-        return new Promise ((resolve, reject) => {
-            async.series(
-                this.hooks.beforeCompiling.map((beforeTask) => {
-                    return (callback) => {
-                        let isAsync = false;
-                        beforeTask.bind({
-                            async: () => {
-                                isAsync = true;
-                                return callback;
-                            }
-                        })(opt, config);
-
-                        if(!isAsync) {
-                            callback(null);
-                        }
-                    };
-                }),
-                (err) => {
-                    if(err) {
-                        logError(err);
-                        process.exit(1);
-                    }
-                    resolve();
-                }
-            );
-        });
+    async function handlebeforeCompiling() {
+        config = ConfigConverter(config);
+        await ConfigProcessCircle.runBeforeCompiling(this.hooks, config);
     }
 
     function handleBeforePack() {
