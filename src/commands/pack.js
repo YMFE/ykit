@@ -3,7 +3,6 @@
 const webpack = require('webpack');
 const colors = require('colors');
 
-const ConfigConverter = require('../modules/ConfigConverter.js');
 const UtilFs = require('../utils/fs.js');
 const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 
@@ -66,8 +65,7 @@ exports.run = function (options) {
     }
 
     async function handlebeforeCompiling() {
-        config = ConfigConverter(config);
-        await ConfigProcessCircle.runTasksBeforeCompiling(this.hooks, config);
+        config = await ConfigProcessCircle.runTasksBeforeCompiling(this.hooks, config);
     }
 
     function handleBeforePack() {

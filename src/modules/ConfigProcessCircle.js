@@ -1,30 +1,9 @@
+const ConfigConverter = require('./ConfigConverter.js');
+
 module.exports = {
     runTasksBeforeCompiling(hooks, webpackConfig) {
-        const removeDuplicateBabelLoader = function(rules, plugins) {
-            const babelExists = rules.some((rule) => {
-                const isFromYkit = rule.test.toString().match(/__ykit__/);
 
-                if(isFromYkit) {
-                    return false;
-                } else {
-                    const isRuleForJS = rule.test.toString().match(/js/);
-                    const ruleUse = typeof rule.use === 'string' ? rule.use : rule.use.join();
-                    const isUsingBabel = ruleUse.includes('babel') || ruleUse.includes('happypack');
-                    return isRuleForJS && isUsingBabel;
-                }
-            });
-
-            if(babelExists) {
-                rules = rules.filter((rule) => {
-                    return !rule.test.toString().match(/__ykit__/);
-                });
-                plugins = plugins.filter((plugin) => {
-                    return !plugin.__ykit__;
-                });
-            }
-
-            return {rules, plugins};
-        };
+        webpackConfig = ConfigConverter(webpackConfig);
 
         return new Promise ((resolve, reject) => {
             async.series(
@@ -60,5 +39,31 @@ module.exports = {
                 }
             );
         });
+
+        function removeDuplicateBabelLoader(rules, plugins) {
+            const babelExists = rules.some((rule) => {
+                const isFromYkit = rule.test.toString().match(/__ykit__/);
+
+                if(isFromYkit) {
+                    return false;
+                } else {
+                    const isRuleForJS = rule.test.toString().match(/js/);
+                    const ruleUse = typeof rule.use === 'string' ? rule.use : rule.use.join();
+                    const isUsingBabel = ruleUse.includes('babel') || ruleUse.includes('happypack');
+                    return isRuleForJS && isUsingBabel;
+                }
+            });
+
+            if(babelExists) {
+                rules = rules.filter((rule) => {
+                    return !rule.test.toString().match(/__ykit__/);
+                });
+                plugins = plugins.filter((plugin) => {
+                    return !plugin.__ykit__;
+                });
+            }
+
+            return {rules, plugins};
+        }
     }
 };
