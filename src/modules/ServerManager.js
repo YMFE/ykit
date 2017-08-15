@@ -59,6 +59,7 @@ module.exports = {
         }
     },
     async getCompiler (shouldCompileAllEntries, reqUrl, callback) {
+
         let webpackConfig = extend(true, {}, this.config._config);
         const entries = extend(true, {}, webpackConfig.entry);
 
@@ -144,10 +145,7 @@ module.exports = {
         webpackConfig = await ConfigProcessCircle.runTasksBeforeCompiling(this.hooks, webpackConfig);
 
         // 返回 compiler
-        const compiler = extend(
-            webpack(webpackConfig),
-            {entryNum: Object.keys(webpackConfig.entry).length}
-        );
-        callback(compiler);
+        const entryNum = Object.keys(webpackConfig.entry).length;
+        callback(entryNum > 0 ? webpack(webpackConfig) : null);
     }
 };

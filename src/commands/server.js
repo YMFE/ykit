@@ -251,7 +251,7 @@ exports.run = (options) => {
         if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
             ServerManager.getCompiler.bind(project)(shouldCompileAllEntries, url, (compiler) => {
                 // 如果没找到该资源，在整个编译过程结束后再返回
-                if (!compiler || compiler.entryNum === 0) {
+                if (!compiler) {
                     setTimeout(() => {
                         if (promiseCache[projectName]) {
                             Promise.all(promiseCache[projectName]).then(function () {

@@ -143,7 +143,7 @@ class Config {
                         }
                     }
 
-                    // this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
+                    this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
                 }
             });
             return this;
