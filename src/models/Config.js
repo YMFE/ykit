@@ -92,7 +92,8 @@ class Config {
                                 presets: [
                                     [require.resolve('babel-preset-env'), {
                                         targets: {
-                                            browsers: '> 5%'
+                                            browsers: 'IE 8',
+                                            uglify: true
                                         },
                                         useBuiltIns: true,
                                         debug: false,
