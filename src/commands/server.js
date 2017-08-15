@@ -201,8 +201,6 @@ exports.run = (options) => {
         const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
-        const maxMiddleware = project.server && project.server.maxMiddleware;
-
         // 非 output.path 下的资源不做处理
         url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
         if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
@@ -243,37 +241,6 @@ exports.run = (options) => {
 
         if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
             allAssetsEntry[projectName] = url;
-        }
-
-        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
-        if(maxMiddleware) {
-            const now = +new Date();
-            const middlewareList = Object.keys(middlewareCache)
-                .map(key => {
-                    const middleware = middlewareCache[key];
-                    return middleware ? {
-                        key,
-                        middleware: middleware,
-                        weight: middleware._visit / (now - middleware._timestamp) * 1000
-                    } : null;
-                })
-                .filter(v => v)
-                .sort((a, b) =>  b.weight - a.weight);
-
-            let removeLen = middlewareList.length - maxMiddleware;
-            let index = middlewareList.length - 1;
-
-            while (removeLen > 0) {
-                const key = middlewareList[index].key;
-                if (key !== cacheId) {
-                    var md = middlewareCache[key];
-                    delete middlewareCache[key];
-                    md.close();
-                }
-
-                removeLen -= 1;
-                index -= 1;
-            }
         }
 
         // 寻找已有的 middlewareCache
@@ -441,9 +408,6 @@ exports.run = (options) => {
                     }
                 }
             );
-
-            middleware._timestamp = +new Date();
-            middleware._visit = 1;
 
             if(hotEnabled) {
                 app.use(require('webpack-hot-middleware')(compiler, {
