@@ -210,7 +210,7 @@ exports.run = (options) => {
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
-        const rversion = /@[^\.]+(?=\.\w+)/;
+        const rversion = /@[^.]+(?=\.\w+)/;
         req.url = url = '/' + sysPath.relative(outputAbsDir, sysPath.join(projectDir, url))
                     .replace(rversion, '')
                     .replace(rquery, '');

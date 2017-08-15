@@ -139,7 +139,7 @@ exports.run = function(options) {
 	}
 
 	function createConfigFile(callback, configPkgName) {
-        const pluginName = configPkgName ? configPkgName.match(/ykit-config-([^\-]+)/)[1] : '';
+        const pluginName = configPkgName ? configPkgName.match(/ykit-config-([^-]+)/)[1] : '';
 		const configFileName = 'ykit.js';
 
 		if (!UtilFs.fileExists('./' + configFileName)) {

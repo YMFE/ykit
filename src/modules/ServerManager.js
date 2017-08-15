@@ -25,7 +25,7 @@ module.exports = {
     setHotServer(webpackConfig, projectDir, projectName, port) {
         // 修改 publicPath 为当前服务
         let localPublicPath = webpackConfig.output.local.publicPath;
-        const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
+        const hostReg = /(http:|https:)?(\/\/)([^/]+)/i;
 
         if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
             localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);

@@ -37,9 +37,9 @@ class Project {
             afterPack: []
         };
         this.extendConfig = this.configFile &&
-            this.configFile.match(/ykit\.([\w\.]+)\.js/) &&
-            this.configFile.match(/ykit\.([\w\.]+)\.js/)[1] &&
-            this.configFile.match(/ykit\.([\w\.]+)\.js/)[1].replace(/\./g, '-');
+            this.configFile.match(/ykit\.([\w.]+)\.js/) &&
+            this.configFile.match(/ykit\.([\w.]+)\.js/)[1] &&
+            this.configFile.match(/ykit\.([\w.]+)\.js/)[1].replace(/\./g, '-');
         this.ignores = [
             'node_modules/**/*',
             'bower_components/**/*',

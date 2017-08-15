@@ -43,7 +43,7 @@ module.exports = function(req, res, next) {
         const staticHost = project.server && project.server.staticHost;
         if(staticHost) {
             Object.keys(staticHost).map((hostName) => {
-                const hostReg = new RegExp(`(src|href)=("|')\/\/(${hostName})`, 'g');
+                const hostReg = new RegExp(`(src|href)=("|')//(${hostName})`, 'g');
 
                 let matches;
                 while((matches = hostReg.exec(htmlContent)) !== null) {
