@@ -141,7 +141,7 @@ module.exports = {
 
         // 执行 beforeCompiling
         webpackConfig = ConfigConverter(webpackConfig);
-        await ConfigProcessCircle.runBeforeCompiling(this.hooks, webpackConfig);
+        webpackConfig = await ConfigProcessCircle.runTasksBeforeCompiling(this.hooks, webpackConfig);
 
         // 返回 compiler
         const compiler = extend(

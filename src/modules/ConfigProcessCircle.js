@@ -1,5 +1,9 @@
 module.exports = {
-    runBeforeCompiling(hooks, webpackConfig) {
+    runTasksBeforeCompiling(hooks, webpackConfig) {
+        const removeDuplicateBabelLoader = function(rules) {
+            return rules;
+        };
+
         return new Promise ((resolve, reject) => {
             async.series(
                 hooks.beforeCompiling.map((beforeTask) => {
@@ -22,7 +26,8 @@ module.exports = {
                         logError(err);
                         process.exit(1);
                     }
-                    resolve();
+
+                    resolve(webpackConfig);
                 }
             );
         });

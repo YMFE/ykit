@@ -67,7 +67,7 @@ exports.run = function (options) {
 
     async function handlebeforeCompiling() {
         config = ConfigConverter(config);
-        await ConfigProcessCircle.runBeforeCompiling(this.hooks, config);
+        await ConfigProcessCircle.runTasksBeforeCompiling(this.hooks, config);
     }
 
     function handleBeforePack() {
