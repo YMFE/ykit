@@ -54,7 +54,6 @@ exports.run = (options) => {
     let middlewareCache = {},
         promiseCache = {},
         allAssetsEntry = {},
-        watchCacheNames = {},
         customMiddlewareCache = {
             apps: [],
             middlewares: []
@@ -192,15 +191,14 @@ exports.run = (options) => {
         let url = req.url,
             compiler = null;
 
-        const projectInfo = getProjectInfo(req);
-        const projectName = projectInfo.projectName;
-        const projectDir = projectInfo.projectDir;
+        const {projectName, projectDir} = getProjectInfo(req);
         const project = Manager.getProject(projectDir, { cache: false });
-        const wpConfig = project.config._config;
+        const webpackConfig = project.config._config;
         const outputConfigDir = project.config._config.output.local.path || 'prd';
         const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
+
         // 非 output.path 下的资源不做处理
         url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
         if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
@@ -224,11 +222,11 @@ exports.run = (options) => {
         // hot reload
         const hotEnabled = (project.server && project.server.hot) || hot;
         if(hotEnabled) {
-            ServerManager.setHotServer(wpConfig, projectDir, projectName, port);
+            ServerManager.setHotServer(webpackConfig, projectDir, projectName, port);
         }
 
         // 如果发现插件中有 HotModuleReplacementPlugin 则需要编译全部入口，否则无法正常运行
-        const shouldCompileAllEntries = wpConfig.plugins.some((plugin, i) => {
+        const shouldCompileAllEntries = webpackConfig.plugins.some((plugin, i) => {
             // 这里不清楚为什么 plugin instanceof webpack.HotModuleReplacementPlugin 返回 false
             // 所以使用字符串匹配
             if(plugin && plugin.constructor) {
@@ -250,179 +248,96 @@ exports.run = (options) => {
             return;
         }
 
-        let nextConfig;
         if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
-            compiler = project.getServerCompiler((config) => {
-
-                config.plugins.push(require('../plugins/progressBarPlugin.js'));
-                config.plugins.push(require('../plugins/compileInfoPlugin.js'));
-
-                nextConfig = extend({}, config);
-
-                // 注入 sockitIO
-                if(project.server && project.server.overlay) {
-                    nextConfig.module.postLoaders.push({
-                        test: /\.(js)$/,
-                        loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
-                    });
-                }
-
-                if(shouldCompileAllEntries) {
-                    return ConfigProcessCircle.runBeforeCompiling(nextConfig);
-                } else {
-                    // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
-                    nextConfig.entry = {};
-
-                    // 将 webpack entry 设置为当前请求的资源
-                    Object.keys(config.entry).map((entryKey) => {
-                        const entryItem = config.entry[entryKey];
-
-                        let entryPath = '';
-
-                        if (Array.isArray(entryItem)) {
-                            entryPath = entryItem[entryItem.length - 1];
-                        } else {
-                            entryPath = entryItem;
-                        }
-
-                        // 应用后缀转换规则
-                        const entryExtNames = config.entryExtNames;
-                        Object.keys(entryExtNames).map((targetExtName) => {
-                            let exts = entryExtNames[targetExtName];
-
-                            // 如果是 css 要考虑 css.js 的情况
-                            if(targetExtName === 'css') {
-                                exts = exts.concat(
-                                    entryExtNames[targetExtName].map((name) => {
-                                        return name + '.js';
-                                    })
-                                );
-                            }
-
-                            // 创建正则匹配
-                            exts = exts.map((name) => {
-                                return name + '$';
+            ServerManager.getCompiler(project.config._config, shouldCompileAllEntries, url, (compiler) => {
+                // 如果没找到该资源，在整个编译过程结束后再返回
+                if (!compiler || compiler.entryNum === 0) {
+                    setTimeout(() => {
+                        if (promiseCache[projectName]) {
+                            Promise.all(promiseCache[projectName]).then(function () {
+                                const assetKey = sysPath.join(projectName, url);
+                                if(middlewareCache[assetKey]) {
+                                    middlewareCache[assetKey](req, res, next);
+                                } else {
+                                    next();
+                                }
                             });
-                            const replaceReg = new RegExp('\\' + exts.join('|\\'));
-
-                            entryPath = UtilPath.normalize(
-                                entryPath.replace(replaceReg, '.' + targetExtName)
-                            );
-                        });
-
-                        // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
-                        if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
-                            entryPath = entryPath.split('.ykit_cache/')[1];
-                        }
-
-                        // 判断所请求的资源是否在入口配置中
-                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(url);
-                        const matchingKey = sysPath.normalize(url) === entryKey + sysPath.extname(url);
-
-                        if (matchingPath || matchingKey) {
-                            nextConfig.entry = {
-                                [entryKey]: entryItem
-                            };
-                        }
-                    });
-
-                    nextConfig = ConfigProcessCircle.runBeforeCompiling(nextConfig);
-                    return nextConfig;
-                }
-            });
-        }
-
-        // 如果没找到该资源，在整个编译过程结束后再返回
-        if (!nextConfig || Object.keys(nextConfig.entry).length === 0) {
-            setTimeout(() => {
-                if (promiseCache[projectName]) {
-                    Promise.all(promiseCache[projectName]).then(function () {
-                        const assetKey = sysPath.join(projectName, url);
-                        if(middlewareCache[assetKey]) {
-                            middlewareCache[assetKey](req, res, next);
                         } else {
-                            next();
+                            res.statusCode = 404;
+                            res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
                         }
-                    });
+                    }, 100);
                 } else {
-                    res.statusCode = 404;
-                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
-                }
-            }, 100);
-        } else {
-            // 生成该请求的 promiseCache
-            let resolve = null,
-                reject = null;
+                    // 生成该请求的 promiseCache
+                    let resolve = null,
+                        reject = null;
 
-            const requestPromise = new Promise((res, rej) => {
-                resolve = res;
-                reject = rej;
-            });
+                    const requestPromise = new Promise((res, rej) => {
+                        resolve = res;
+                        reject = rej;
+                    });
 
-            if (!promiseCache[projectName]) {
-                promiseCache[projectName] = [requestPromise];
-            } else {
-                promiseCache[projectName].push(requestPromise);
-            }
-
-            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
-                compiler,
-                {
-                    quiet: !verbose, reporter: ({state, stats}) => {
-                        if(!stats) {
-                            return resolve();
-                        }
-
-                        // 打印编译完成时间（小于 100ms 不展示）
-                        if(!stats.hasErrors() && !stats.hasWarnings()) {
-                            const minDuration = 100;
-                            if(stats.endTime - stats.startTime > minDuration) {
-                                const dateLog = '[' + moment().format(dateFormat) + ']';
-                                const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
-                                spinner.text = dateLog.grey + successText.green;
-                                spinner.succeed();
-                            }
-                        }
-                        spinner.stop();
-                        spinner.text = '';
-
-                        // emit compile info by socket
-                        const statsInfo = stats.toJson({errorDetails: false});
-                        const assetName = cacheId;
-                        assetEntrys[assetName] = {
-                            compilationId: statsInfo.hash,
-                            errors: statsInfo.errors
-                        };
-                        io.emit('testAppID', assetEntrys);
-
-                        Object.keys(stats.compilation.assets).map((key) => {
-                            const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
-                            middlewareCache[keyCacheId] = middleware;
-
-                            if(verbose) {
-                                log('emitted asset:', stats.compilation.assets[key].existsAt);
-                            }
-                        });
-
-                        resolve();
+                    if (!promiseCache[projectName]) {
+                        promiseCache[projectName] = [requestPromise];
+                    } else {
+                        promiseCache[projectName].push(requestPromise);
                     }
+
+                    const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
+                        compiler,
+                        {
+                            quiet: !verbose, reporter: ({state, stats}) => {
+                                if(!stats) {
+                                    return resolve();
+                                }
+
+                                // 打印编译完成时间（小于 100ms 不展示）
+                                if(!stats.hasErrors() && !stats.hasWarnings()) {
+                                    const minDuration = 100;
+                                    if(stats.endTime - stats.startTime > minDuration) {
+                                        const dateLog = '[' + moment().format(dateFormat) + ']';
+                                        const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
+                                        spinner.text = dateLog.grey + successText.green;
+                                        spinner.succeed();
+                                    }
+                                }
+                                spinner.stop();
+                                spinner.text = '';
+
+                                // emit compile info by socket
+                                const statsInfo = stats.toJson({errorDetails: false});
+                                const assetName = cacheId;
+                                assetEntrys[assetName] = {
+                                    compilationId: statsInfo.hash,
+                                    errors: statsInfo.errors
+                                };
+                                io.emit('testAppID', assetEntrys);
+
+                                Object.keys(stats.compilation.assets).map((key) => {
+                                    const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
+                                    middlewareCache[keyCacheId] = middleware;
+
+                                    if(verbose) {
+                                        log('emitted asset:', stats.compilation.assets[key].existsAt);
+                                    }
+                                });
+
+                                resolve();
+                            }
+                        }
+                    );
+
+                    if(hotEnabled) {
+                        app.use(require('webpack-hot-middleware')(compiler, {
+                            log: false,
+                            path: '/__webpack_hmr'
+                        }));
+                    }
+
+                    middleware(req, res, next);
                 }
-            );
-
-            if(hotEnabled) {
-                app.use(require('webpack-hot-middleware')(compiler, {
-                    log: false,
-                    path: '/__webpack_hmr'
-                }));
-
-                logInfo('Start hot reloader server.');
-            }
-
-            middleware(req, res, next);
+            });
         }
-
-        // 检测config文件变化
-        watchConfig(project, cacheId);
     });
 
     app.use(serveStatic(cwd, {
@@ -516,30 +431,11 @@ exports.run = (options) => {
     // exitHandler && catches ctrl+c event
     process.on('exit', exitHandler.bind(null));
     process.on('SIGINT', exitHandler.bind(null));
+
     function exitHandler() {
         // cleanup
         proxyProcess && proxyProcess.kill('SIGINT');
         process.exit(0);
-    }
-
-    // 监测配置文件变化
-    function watchConfig(project, cacheName) {
-        const cwdConfigPath = sysPath.resolve(project.config._config.cwd, project.configFile);
-
-        if (watchCacheNames[cwdConfigPath]) {
-            if (watchCacheNames[cwdConfigPath].indexOf(cacheName) === -1) {
-                watchCacheNames[cwdConfigPath].push(cacheName);
-            }
-        } else {
-            watchCacheNames[cwdConfigPath] = [cacheName];
-
-            fs.watchFile(cwdConfigPath, { interval: 2000 }, () => {
-                watchCacheNames[cwdConfigPath].map((cacheName) => {
-                    middlewareCache[cacheName] = null;
-                });
-                UtilFs.deleteFolderRecursive(project.cachePath, true);
-            });
-        }
     }
 
     function getProjectInfo(req) {
