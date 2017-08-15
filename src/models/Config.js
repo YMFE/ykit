@@ -56,7 +56,7 @@ class Config {
             module: {
                 preLoaders: [],
                 loaders: [{
-                    test: /\.(js|jsx)$/,
+                    test: /\.(js|jsx|__ykit__)$/,
                     exclude: /node_modules/,
                     loader: require.resolve('happypack/loader')
                 }, {
@@ -81,7 +81,7 @@ class Config {
                 require('../plugins/hashPlaceholderPlugin.js'),
                 new webpack.HashedModuleIdsPlugin(),
                 new CaseSensitivePathsPlugin(),
-                new HappyPack({
+                new extend(HappyPack({
                     loaders: [
                         {
                             loader: require.resolve('babel-loader'),
@@ -106,7 +106,7 @@ class Config {
                     ],
                     threads: 4,
                     verbose: false
-                })
+                }), {__ykit__: true})
             ],
             resolve: {
                 root: [],
@@ -143,7 +143,7 @@ class Config {
                         }
                     }
 
-                    this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
+                    // this._config.entry[name] = Array.isArray(entry) ? entry : [entry];
                 }
             });
             return this;
