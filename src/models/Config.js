@@ -79,8 +79,9 @@ class Config {
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
-                new webpack.HashedModuleIdsPlugin(),
                 new CaseSensitivePathsPlugin(),
+                new webpack.HashedModuleIdsPlugin(),
+                new webpack.optimize.ModuleConcatenationPlugin(),
                 new extend(HappyPack({
                     loaders: [
                         {
