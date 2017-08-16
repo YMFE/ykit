@@ -70,6 +70,30 @@ describe('Start testing terminal client', () => {
         });
     })
 
+    it('runs server command without config file', (done) => {
+        shell.cd(path.join(examplePath, 'node_modules'));
+
+        const child = shell.exec(ykitPath + ' server -p 3000', {silent: true}, () => {
+            // do nothing & wait for curl
+        });
+
+        let serverStarted = false
+        child.stdout.on('data', (data) => {
+            if (data.includes('Starting up server')) {
+                serverStarted = true
+                shell.exec('sleep 3');
+
+                const output = shell.exec('curl -I localhost:3000/react/react.js', {silent: true});
+                expect(output.includes('200')).to.be.true;
+
+                kill(child.pid);
+                done(0);
+            } else if(!serverStarted) {
+                done('Server fails to start');
+            }
+        });
+    })
+
     it('runs pack command', () => {
         shell.cd(examplePath);
 
