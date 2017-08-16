@@ -9,6 +9,26 @@ Ykit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各
 3. 通过插件可快速定制开发环境
 4. 内置 eslint 和代理工具
 
+## 和 Webpack 性能对比
+
+本地 server 访问页面资源加载和页面渲染时间：
+
+| 资源数 | Webpack 耗时 | Ykit 耗时 |
+|---------|-------|-------|
+| 3 assets | 9s | 5s |
+| 10 assets | 18s | 5s |
+| 20 assets | 33s | 5s |
+
+build（包含压缩）时间：
+
+| 资源数 | Webpack 耗时 | Ykit 耗时 |
+|---------|-------|-------|
+| 3 assets | 10s | 7s |
+| 10 assets | 20s | 16s |
+| 20 assets | 38s | 32s |
+
+测试工程：[https://github.com/roscoe054/ykit-benchmark](https://github.com/roscoe054/ykit-benchmark)
+
 ## 快速开始
 
 1. `npm install ykit -g`

@@ -274,11 +274,12 @@ class Project {
 
 
                 if (chunks.length > 0) {
-
+                    let chunkFilename = filenameTpl.filename;
+                    chunkFilename = chunkFilename.replace('[ext]', '.js');
                     webpackConfig.plugins.push(
                         new webpack.optimize.CommonsChunkPlugin({
                             name: chunks,
-                            filename: filenameTpl.filename,
+                            filename: chunkFilename,
                             minChunks: commonsChunk.minChunks ? commonsChunk.minChunks : 2
                         })
                     );
