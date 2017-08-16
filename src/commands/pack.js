@@ -99,6 +99,8 @@ exports.run = function (options) {
     }
 
     function prepareConfig() {
+        config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+
         if (opt.sourcemap) {
             config.devtool = opt.sourcemap;
         }

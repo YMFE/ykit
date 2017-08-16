@@ -81,7 +81,6 @@ class Config {
                 require('../plugins/hashPlaceholderPlugin.js'),
                 new CaseSensitivePathsPlugin(),
                 new webpack.HashedModuleIdsPlugin(),
-                new webpack.optimize.ModuleConcatenationPlugin(),
                 new extend(HappyPack({
                     loaders: [
                         {
