@@ -84,11 +84,11 @@ exports.run = function(options) {
     // build process
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
     process.stdout && process.stdout.write('npm version: ') && execute('npm -v');
-    execute('ykit -v');
+    execute('ykit-beta -v');
 
     // build
     log('Start building.');
-    execute('ykit pack -m -q');
+    execute('ykit-beta pack -m -q');
     clearGitHooks();
     clearNodeModules();
     log('Finish building.\n');
