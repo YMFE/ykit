@@ -1,10 +1,10 @@
 {
-  "name": "ykit",
-  "version": "1.0.0-beta.0",
+  "name": "ykit-beta",
+  "version": "1.0.0-beta.1",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
-    "ykit": "bin/ykit"
+    "ykit-beta": "bin/ykit"
   },
   "engines": {
     "node": ">=0.12"
