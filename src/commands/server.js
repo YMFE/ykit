@@ -397,15 +397,6 @@ exports.run = (options) => {
         process.exit(1);
     });
 
-    // exitHandler && catches ctrl+c event
-    process.on('exit', exitHandler.bind(null));
-    process.on('SIGINT', exitHandler.bind(null));
-
-    function exitHandler() {
-        // do cleanup
-        process.exit(0);
-    }
-
     function getProjectInfo(req) {
         const dirSections = req.url.split('/');
         let dirLevel = '',
