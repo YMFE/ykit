@@ -1,7 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const UglifyJS = require('uglify-js');
+const jsParser = require('uglify-js').parser;
+const jsUglify = require('uglify-js').uglify;
 const cssUglify = require('uglifycss');
 const extend = require('extend');
 const colors = require('colors');
@@ -25,25 +26,20 @@ process.on('message', function(m) {
             // variable name mangling
             let willMangle = true;
             const uglifyjsOpts = buildOpts.uglifyjs || {};
+            const isCliArgvCloseMangle = typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle' && opt.min.split('=')[1] === 'false';
             const isBuildOptsCloseMangle = uglifyjsOpts.mangle === false;
-            const isCliArgvCloseMangle = typeof opt.min === 'string' && opt.min.split('=')[0] === 'mangle'
-                                        && opt.min.split('=')[1] === 'false';
-            if (isBuildOptsCloseMangle || isCliArgvCloseMangle) {
+            if (isCliArgvCloseMangle || isBuildOptsCloseMangle) {
                 willMangle = false;
             }
 
             try {
-                const minifyResult = UglifyJS.minify(content, extend(
-                    {
-                        fromString: true,
-                        mangle: willMangle
-                    },
-                    uglifyjsOpts
-                ));
-                minifiedCode = minifyResult.code;
+                let ast = jsParser.parse(content);
+                ast = willMangle ? jsUglify.ast_mangle(ast, uglifyjsOpts.mangle) : ast;
+                ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
+                minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
             } catch(e) {
                 var type = typeof e.line;
-                
+
                 if(e.line) {
                     const lineRange = 5;
                     let errorSource = '';
