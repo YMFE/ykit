@@ -221,7 +221,7 @@ exports.run = (options) => {
         }
 
         // 如果发现插件中有 HotModuleReplacementPlugin 则需要编译全部入口，否则无法正常运行
-        const shouldCompileAllEntries = webpackConfig.plugins.some((plugin, i) => {
+        const shouldCompileAll = webpackConfig.plugins.some((plugin, i) => {
             // 这里不清楚为什么 plugin instanceof webpack.HotModuleReplacementPlugin 返回 false
             // 所以使用字符串匹配
             if(plugin && plugin.constructor) {
@@ -232,98 +232,96 @@ exports.run = (options) => {
             }
         });
 
-        if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
+        // 如果已有 middlewareCache 直接返回
+        if (middlewareCache[cacheId]) {
+            return middlewareCache[cacheId](req, res, next);
+        }
+
+        // 决定是否跳过编译，直接等待最后返回
+        if(shouldCompileAll && !allAssetsEntry[projectName]) {
             allAssetsEntry[projectName] = url;
         }
+        const skipCompile = shouldCompileAll && allAssetsEntry[projectName] !== url;
 
-        // 寻找已有的 middlewareCache
-        if (middlewareCache[cacheId]) {
-            middlewareCache[cacheId](req, res, next);
-            middlewareCache[cacheId]._visit += 1;
-            return;
-        }
+        ServerManager.getCompiler.bind(project)(shouldCompileAll, url, skipCompile, (compiler) => {
+            // 如果没找到该资源，在整个编译过程结束后再返回
+            if (!compiler) {
+                setTimeout(() => {
+                    if (promiseCache[projectName]) {
+                        Promise.all(promiseCache[projectName]).then(function () {
+                            const assetKey = sysPath.join(projectName, url);
+                            if(middlewareCache[assetKey]) {
+                                middlewareCache[assetKey](req, res, next);
+                            } else {
+                                next();
+                            }
+                        });
+                    } else {
+                        res.statusCode = 404;
+                        res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
+                    }
+                }, 100);
+            } else {
+                // 生成该请求的 promiseCache
+                let resolve = null,
+                    reject = null;
 
-        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
-            ServerManager.getCompiler.bind(project)(shouldCompileAllEntries, url, (compiler) => {
-                // 如果没找到该资源，在整个编译过程结束后再返回
-                if (!compiler) {
-                    setTimeout(() => {
-                        if (promiseCache[projectName]) {
-                            Promise.all(promiseCache[projectName]).then(function () {
-                                const assetKey = sysPath.join(projectName, url);
-                                if(middlewareCache[assetKey]) {
-                                    middlewareCache[assetKey](req, res, next);
-                                } else {
-                                    next();
+                const requestPromise = new Promise((res, rej) => {
+                    resolve = res;
+                    reject = rej;
+                });
+
+                if (!promiseCache[projectName]) {
+                    promiseCache[projectName] = [requestPromise];
+                } else {
+                    promiseCache[projectName].push(requestPromise);
+                }
+
+                const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
+                    compiler,
+                    {
+                        quiet: !verbose, reporter: ({state, stats}) => {
+                            if(!stats) {
+                                return resolve();
+                            }
+
+                            // 打印编译完成时间（小于 100ms 不展示）
+                            if(!stats.hasErrors() && !stats.hasWarnings()) {
+                                const minDuration = 100;
+                                if(stats.endTime - stats.startTime > minDuration) {
+                                    const dateLog = '[' + moment().format(dateFormat) + ']';
+                                    const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
+                                    spinner.text = dateLog.grey + successText.green;
+                                    spinner.succeed();
+                                }
+                            }
+                            spinner.stop();
+                            spinner.text = '';
+
+                            Object.keys(stats.compilation.assets).map((key) => {
+                                const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
+                                middlewareCache[keyCacheId] = middleware;
+
+                                if(verbose) {
+                                    log('emitted asset:', stats.compilation.assets[key].existsAt);
                                 }
                             });
-                        } else {
-                            res.statusCode = 404;
-                            res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
+
+                            resolve();
                         }
-                    }, 100);
-                } else {
-                    // 生成该请求的 promiseCache
-                    let resolve = null,
-                        reject = null;
-
-                    const requestPromise = new Promise((res, rej) => {
-                        resolve = res;
-                        reject = rej;
-                    });
-
-                    if (!promiseCache[projectName]) {
-                        promiseCache[projectName] = [requestPromise];
-                    } else {
-                        promiseCache[projectName].push(requestPromise);
                     }
+                );
 
-                    const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
-                        compiler,
-                        {
-                            quiet: !verbose, reporter: ({state, stats}) => {
-                                if(!stats) {
-                                    return resolve();
-                                }
-
-                                // 打印编译完成时间（小于 100ms 不展示）
-                                if(!stats.hasErrors() && !stats.hasWarnings()) {
-                                    const minDuration = 100;
-                                    if(stats.endTime - stats.startTime > minDuration) {
-                                        const dateLog = '[' + moment().format(dateFormat) + ']';
-                                        const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
-                                        spinner.text = dateLog.grey + successText.green;
-                                        spinner.succeed();
-                                    }
-                                }
-                                spinner.stop();
-                                spinner.text = '';
-
-                                Object.keys(stats.compilation.assets).map((key) => {
-                                    const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
-                                    middlewareCache[keyCacheId] = middleware;
-
-                                    if(verbose) {
-                                        log('emitted asset:', stats.compilation.assets[key].existsAt);
-                                    }
-                                });
-
-                                resolve();
-                            }
-                        }
-                    );
-
-                    if(hotEnabled) {
-                        app.use(require('webpack-hot-middleware')(compiler, {
-                            log: false,
-                            path: '/__webpack_hmr'
-                        }));
-                    }
-
-                    middleware(req, res, next);
+                if(hotEnabled) {
+                    app.use(require('webpack-hot-middleware')(compiler, {
+                        log: false,
+                        path: '/__webpack_hmr'
+                    }));
                 }
-            });
-        }
+
+                middleware(req, res, next);
+            }
+        });
     });
 
     app.use(serveStatic(cwd, {

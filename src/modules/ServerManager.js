@@ -57,7 +57,10 @@ module.exports = {
             }
         }
     },
-    async getCompiler (shouldCompileAllEntries, reqUrl, callback) {
+    async getCompiler (shouldCompileAll, reqUrl, skipCompile, callback) {
+        if(skipCompile) {
+            return callback();
+        }
 
         let webpackConfig = extend(true, {}, this.config._config);
         const entries = extend(true, {}, webpackConfig.entry);
@@ -71,7 +74,7 @@ module.exports = {
             webpackConfig.output.local || {}
         );
 
-        if(!shouldCompileAllEntries) {
+        if(!shouldCompileAll) {
             // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
             webpackConfig.entry = {};
 
