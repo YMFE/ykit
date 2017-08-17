@@ -81,10 +81,20 @@ exports.run = (options) => {
     });
 
     // logger
+    const recentLogs = {};
     app.use((req, res, next) => {
-        const end = res.end;
-        req._startTime = new Date;
+        // 太近的 log 不会重复打（chrome 的 bug，总是重复请求两次）
+        const durationThreshold = 200;
+        if(recentLogs[req.url]) {
+            if((Date.now() - recentLogs[req.url]._startTime.getTime()) > durationThreshold) {
+                return next();
+            }
+        }
 
+        req._startTime = new Date;
+        recentLogs[req.url] = req;
+
+        const end = res.end;
         res.end = (chunk, encoding) => {
             res.end = end;
             res.end(chunk, encoding);
