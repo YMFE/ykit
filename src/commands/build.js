@@ -66,12 +66,6 @@ exports.npmInstall = function() {
         logDoc('http://ued.qunar.com/ykit/docs-npm%20shrinkwrap.html');
     }
 
-    try {
-        currentNpm === 'npm' && execute('npm cache clean --force');
-    } catch(e) {
-        logError(e);
-    }
-
     // install
     const installCmd = (
         `${currentNpm} install --registry https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar`
