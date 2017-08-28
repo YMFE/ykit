@@ -17,7 +17,8 @@ if(!process.env.NODE_VER) {
 exports.usage = '线上编译';
 
 exports.setOptions = (optimist) => {
-
+    optimist.alias('m', 'min');
+    optimist.describe('m', '是否压缩资源');
 };
 
 exports.npmInstall = function() {
@@ -75,6 +76,8 @@ exports.npmInstall = function() {
 };
 
 exports.run = function(options) {
+    const min = options.m || options.min || true;
+
     // build process
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
     process.stdout && process.stdout.write('npm version: ') && execute('npm -v');
@@ -82,7 +85,7 @@ exports.run = function(options) {
 
     // build
     log('Start building.');
-    execute('ykit pack -m -q');
+    execute(`ykit pack -q ${min ? '-m' : ''}`);
     clearGitHooks();
     clearNodeModules();
     log('Finish building.\n');
