@@ -55,9 +55,11 @@ exports.npmInstall = function() {
     }
 
     if(UtilFs.fileExists(sysPath.join(cwd, 'yarn.lock'))) {
+        checkModuleResolvePath(sysPath.join(cwd, 'yarn.lock'));
         currentNpm = ncsEnabled ? 'npm_cache_share' : 'yarn';
         log(`Installing npm modules with ${ncsEnabled ? 'npm_cache_share + ' : ''}yarn.`);
     } else if(UtilFs.fileExists(sysPath.join(cwd, 'npm-shrinkwrap.json'))) {
+        checkModuleResolvePath(UtilFs.fileExists(sysPath.join(cwd, 'npm-shrinkwrap.json')));
         currentNpm = ncsEnabled ? 'npm_cache_share' : 'npm';
         log(`Installing npm modules with ${ncsEnabled ? 'npm_cache_share + ' : ''}npm.`);
     } else {
@@ -68,17 +70,23 @@ exports.npmInstall = function() {
     }
 
     // install
+    let installParams = '--registry https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar ';
+    if(currentNpm === 'npm_cache_share') {
+        installParams += '-d';
+    } else if (currentNpm === 'yarn') {
+        installParams += '--non-interactive';
+    }
     const installCmd = (
-        `${currentNpm} install --registry https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar`
-        + (currentNpm === 'npm_cache_share' ? ' -d' : '')
+        `${currentNpm} install ${installParams}`
     );
+
     execute(installCmd);
 };
 
 exports.run = function(options) {
-    const min = options.m || options.min || true;
+    const min = !(options.m === 'false' || options.min === 'false');
 
-    // build process
+    // display version info
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
     process.stdout && process.stdout.write('npm version: ') && execute('npm -v');
     execute('ykit -v');
@@ -89,23 +97,6 @@ exports.run = function(options) {
     clearGitHooks();
     clearNodeModules();
     log('Finish building.\n');
-
-    function clearGitHooks() {
-        const gitHooksDir = './.git/hooks/';
-
-        if (UtilFs.dirExists(gitHooksDir)) {
-            fs.readdirSync(gitHooksDir).forEach(function(file) {
-                const currentPath = path.join(gitHooksDir, file);
-                fs.writeFileSync(currentPath, '');
-            });
-            log('Local git hooks have been cleared.');
-        }
-    }
-
-    function clearNodeModules() {
-        shell.rm('-rf', 'node_modules');
-        log('Local node_modules directory has been cleared.');
-    }
 };
 
 function execute(cmd) {
@@ -128,4 +119,34 @@ function execute(cmd) {
     }
 
     return;
+}
+
+function clearGitHooks() {
+    const gitHooksDir = './.git/hooks/';
+
+    if (UtilFs.dirExists(gitHooksDir)) {
+        fs.readdirSync(gitHooksDir).forEach(function(file) {
+            const currentPath = path.join(gitHooksDir, file);
+            fs.writeFileSync(currentPath, '');
+        });
+        log('Local git hooks have been cleared.');
+    }
+}
+
+function clearNodeModules() {
+    shell.rm('-rf', 'node_modules');
+    log('Local node_modules directory has been cleared.');
+}
+
+function checkModuleResolvePath(filePath) {
+    const lockFileName = path.basename(filePath);
+    const lockFileContent = fs.readFileSync(filePath, 'utf-8');
+    const npmjsPathNum = lockFileContent.match(/registry\.npmjs\.org/g).length;
+    logWarn(
+        `According to ${lockFileName}, `
+        + `there are ${npmjsPathNum} packages installed from official registry`
+        + '(https://registry.npmjs.org/). '
+        + 'This may slow down the build process.'
+    );
+    logDoc('https://ykit.ymfe.org/docs-npm%20shrinkwrap.html');
 }
