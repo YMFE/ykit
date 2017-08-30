@@ -59,7 +59,7 @@ exports.npmInstall = function() {
         currentNpm = ncsEnabled ? 'npm_cache_share' : 'yarn';
         log(`Installing npm modules with ${ncsEnabled ? 'npm_cache_share + ' : ''}yarn.`);
     } else if(UtilFs.fileExists(sysPath.join(cwd, 'npm-shrinkwrap.json'))) {
-        checkModuleResolvePath(UtilFs.fileExists(sysPath.join(cwd, 'npm-shrinkwrap.json')));
+        checkModuleResolvePath(sysPath.join(cwd, 'npm-shrinkwrap.json'));
         currentNpm = ncsEnabled ? 'npm_cache_share' : 'npm';
         log(`Installing npm modules with ${ncsEnabled ? 'npm_cache_share + ' : ''}npm.`);
     } else {
