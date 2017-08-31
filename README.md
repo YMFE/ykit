@@ -73,9 +73,9 @@ module.exports = {
 
 ## 文档
 
-访问 [http://ued.qunar.com/ykit/][1] 来获取更多 ykit 的文档。
+访问 [ykit.ymfe.org/][1] 来获取更多 ykit 的文档。
 
-[1]: http://ued.qunar.com/ykit/index.html
+[1]: https://ykit.ymfe.org/
 [2]: https://github.com/roscoe054/ykit-starter-yo
 [3]: https://github.com/roscoe054/ykit-starter-react
 [4]: https://github.com/roscoe054/ykit-starter-vue
