@@ -141,12 +141,14 @@ function clearNodeModules() {
 function checkModuleResolvePath(filePath) {
     const lockFileName = path.basename(filePath);
     const lockFileContent = fs.readFileSync(filePath, 'utf-8');
-    const npmjsPathNum = lockFileContent.match(/registry\.npmjs\.org/g).length;
-    logWarn(
-        `According to ${lockFileName}, `
-        + `there are ${npmjsPathNum} packages installed from official registry`
-        + '(https://registry.npmjs.org/). '
-        + 'This may slow down the build process.'
-    );
-    logDoc('https://ykit.ymfe.org/docs-npm%20shrinkwrap.html');
+    const npmjsPathMatchResult = lockFileContent.match(/registry\.npmjs\.org/g);
+    if(npmjsPathMatchResult) {
+        logWarn(
+            `According to ${lockFileName}, `
+            + `there are ${npmjsPathMatchResult.length} packages installed from official registry`
+            + '(https://registry.npmjs.org/). '
+            + 'This may slow down the build process.'
+        );
+        logDoc('https://ykit.ymfe.org/docs-npm%20shrinkwrap.html');
+    }
 }
