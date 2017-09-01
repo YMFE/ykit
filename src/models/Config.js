@@ -72,7 +72,7 @@ class Config {
             },
             entryExtNames: {
                 css: ['.css', 'sass', 'scss', 'less'],
-                js: ['.js', '.jsx']
+                js: ['.js', '.jsx', '.ts', '.tsx']
             },
             requireRules: [],
             devtool: 'cheap-source-map',
