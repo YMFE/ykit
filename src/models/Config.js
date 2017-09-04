@@ -1,6 +1,6 @@
 'use strict';
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin-ignore-order');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const normalize = require('../utils/path').normalize;
