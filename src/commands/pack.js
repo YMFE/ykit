@@ -19,6 +19,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('c', '打包前清空输出目录');
     optimist.alias('q', 'quiet');
     optimist.describe('q', '静默模式');
+    optimist.alias('p', 'process');
+    optimist.describe('p', '进程池大小');
 };
 
 exports.run = function (options) {
@@ -27,6 +29,7 @@ exports.run = function (options) {
         clean = options.c || options.clean || true,
         quiet = options.q || options.quiet || false,
         sourcemap = options.s || options.sourcemap,
+        processNum = options.p|| options.process || 4,
         packStartTime = Date.now(),
         opt = {
             lint: lint,
@@ -200,7 +203,7 @@ exports.run = function (options) {
                     const cc = new computecluster({
                         module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
                         max_backlog: -1,
-                        max_processes: 5
+                        max_processes: processNum
                     });
 
                     spinner.start();

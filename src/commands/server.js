@@ -203,7 +203,7 @@ exports.run = (options) => {
         const maxMiddleware = project.server && project.server.maxMiddleware;
 
         // 非 output.path 下的资源不做处理
-        url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
+        url = url.replace(projectName + '/', '/');
         if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
             return next();
         }
