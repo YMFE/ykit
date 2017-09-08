@@ -9,8 +9,7 @@ const fs = require('fs');
 
 const Config = require('./Config.js');
 const Manager = require('../modules/manager.js');
-const ExtractTextPlugin = require('extract-text-webpack-plugin-ignore-order');
-const originExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
@@ -389,7 +388,7 @@ class Project {
 
         // 如果没有 ExtractTextPlugin 则为项目添加一个
         const isExtractTextPluginExists = config.plugins.some((plugin) => {
-            return plugin instanceof originExtractTextPlugin;
+            return plugin instanceof ExtractTextPlugin;
         });
         if(!isExtractTextPluginExists) {
             config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
