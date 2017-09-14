@@ -5,7 +5,12 @@ module.exports = {
         const entryExtNames = compiler.options.entryExtNames;
 
         compiler.plugin('compilation', function(compilation) {
-            compilation.mainTemplate.plugin('asset-path', function(path, data) {
+            compilation.mainTemplate.plugin('asset-path', function(assetPath, data) {
+                // handle ExtractTextPlugin options
+                if(typeof assetPath === 'object' && assetPath.filename) {
+                    assetPath = assetPath.filename;
+                }
+
                 let extName = '.js';
                 if (data.chunk && data.chunk.origins && data.chunk.origins[0]) {
                     let module = data.chunk.origins[0].module,
@@ -27,12 +32,12 @@ module.exports = {
                     });
 
                     // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
-                    if(module.chunks[0] && module.chunks[0].name) {
-                        path = path.replace(/\[name\]/g, module.chunks[0].name.replace(/\.\w+$/g, ''));
+                    if(module.chunks[0] && module.chunks[0].name && typeof assetPath.replace === 'function') {
+                        assetPath = assetPath.replace(/\[name\]/g, module.chunks[0].name.replace(/\.\w+$/g, ''));
                     }
                 }
 
-                return path.replace(/\[ext\]/g, extName);
+                return assetPath.replace(/\[ext\]/g, extName);
             });
         });
     }
