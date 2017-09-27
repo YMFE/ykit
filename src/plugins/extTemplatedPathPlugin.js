@@ -33,7 +33,10 @@ module.exports = {
 
                     // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
                     if(module.chunks[0] && module.chunks[0].name && typeof assetPath.replace === 'function') {
-                        assetPath = assetPath.replace(/\[name\]/g, module.chunks[0].name.replace(/\.\w+$/g, ''));
+                        // 通过 module.blocks 为空数组过滤掉异步加载的 chunk，它们的 [name] 不需要替换
+                        if(module.blocks.length === 0) {
+                            assetPath = assetPath.replace(/\[name\]/g, module.chunks[0].name.replace(/\.\w+$/g, ''));
+                        }
                     }
                 }
 
