@@ -19,11 +19,20 @@ exports.usage = '线上编译';
 exports.setOptions = (optimist) => {
     optimist.alias('m', 'min');
     optimist.describe('m', '是否压缩资源');
+    optimist.alias('r', 'registry');
+    optimist.describe('r', '指定 npm 仓库');
 };
 
 exports.npmInstall = function() {
     let currentNpm = null;
     const cwd = process.cwd();
+    let userRegistry = 'http://npmrepo.corp.qunar.com';
+
+    for(let i = 0; i < process.argv.length; i++) {
+        if(process.argv[i] === '--registry' || process.argv[i] === '-r' ) {
+            userRegistry = process.argv[i + 1];
+        }
+    }
 
     // 检测是否存在 ykit.*.js
     const configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: cwd })[0];
@@ -70,11 +79,11 @@ exports.npmInstall = function() {
     }
 
     // install
-    let installParams = '--registry https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar ';
+    let installParams = '--registry ' + userRegistry;
     if(currentNpm === 'npm_cache_share') {
-        installParams += '-d';
+        installParams += ' -d';
     } else if (currentNpm === 'yarn') {
-        installParams += '--non-interactive';
+        installParams += ' --non-interactive';
     }
     const installCmd = (
         `${currentNpm} install ${installParams}`

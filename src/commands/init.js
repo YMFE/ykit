@@ -11,9 +11,14 @@ const UtilFs = require('../utils/fs.js');
 exports.usage = '项目初始化';
 exports.abbr = 'i';
 
-exports.setOptions = () => {};
+exports.setOptions = () => {
+	optimist.alias('r', 'registry');
+    optimist.describe('r', '指定 npm 仓库');
+};
 
 exports.run = function(options) {
+	const userRegistry = options.r || options.registry;
+
 	Manager.reloadRC();
 
 	let cwd = options.cwd,
@@ -33,8 +38,8 @@ exports.run = function(options) {
 	// 如果初始化时带着初始化类型
 	if (typeof process.argv[3] === 'string') {
 		const initParam = process.argv[3];
-		const qunarRegistry = 'repo.corp.qunar.com/artifactory/api/npm/npm-qunar';
-		const taobaoRegistry = 'registry.npm.taobao.org';
+		const qunarRegistry = 'http://npmrepo.corp.qunar.com';
+		const taobaoRegistry = 'https://registry.npm.taobao.org';
 		let isInitReady = false;
 
 		spinner.start();
@@ -42,15 +47,15 @@ exports.run = function(options) {
 		async.series([
 			// qnpm 寻找是否存在 @qnpm/ykit-config-xxx 的插件
 			(callback) => {
-				checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, qunarRegistry);
+				checkConfigPkg(callback, `@qnpm/ykit-config-${initParam}`, userRegistry || qunarRegistry);
 			},
 			// qnpm 寻找是否存在 ykit-config-xxx 的插件
 			(callback) => {
-				checkConfigPkg(callback, `ykit-config-${initParam}`, qunarRegistry);
+				checkConfigPkg(callback, `ykit-config-${initParam}`, userRegistry || qunarRegistry);
 			},
 			// cnpm 寻找是否存在 ykit-config-xxx 的插件
 			(callback) => {
-				checkConfigPkg(callback, `ykit-config-${initParam}`, taobaoRegistry);
+				checkConfigPkg(callback, `ykit-config-${initParam}`, userRegistry || taobaoRegistry);
 			}
 		], () => {
 			if (isInitReady) {
@@ -64,7 +69,7 @@ exports.run = function(options) {
 		function checkConfigPkg(callback, packageName, registry) {
 			if (!isInitReady) {
 				let timeout;
-				const child = shell.exec(`npm view ${packageName} --registry https://${registry}`, {
+				const child = shell.exec(`npm view ${packageName} --registry ${registry}`, {
 					silent: true
 				}, (code, stdout, stderr) => {
 					if (stdout) {
@@ -112,7 +117,7 @@ exports.run = function(options) {
 	function installConfigPlugin(callback, configPkgName, registry) {
 		log('Install ' + configPkgName + '...');
 
-		shell.exec(`npm install ${configPkgName} --registry https://${registry} --save`, {
+		shell.exec(`npm install ${configPkgName} --registry ${registry} --save`, {
 			silent: false
 		}, (code, stdout, stderr) => {
 			callback(null); // npm install 中的警告也会当成 stderr 输出，所以不在这里做错误处理
