@@ -256,13 +256,22 @@ exports.run = (options) => {
             if(!usingHotServer) {
                 usingHotServer = projectName;
                 if(typeof wpConfig.entry === 'object') {
+                    // 入口统一改成数组类型
+                    Object.keys(wpConfig.entry).forEach((key) => {
+                        if(typeof wpConfig.entry[key] === 'string') {
+                            wpConfig.entry[key] = [wpConfig.entry[key]];
+                        }
+                    });
+
                     Object.keys(wpConfig.entry).map((key) => {
                         let entryItem = wpConfig.entry[key];
+
                         if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                             const whmPath = require.resolve('webpack-hot-middleware/client');
                             const hotPath = `http://127.0.0.1:${port}/__webpack_hmr`;
                             entryItem.unshift(whmPath + '?reload=true&path=' + hotPath + '&timeout=9999999&overlay=false');
                         }
+
                         return entryItem;
                     });
                 }
