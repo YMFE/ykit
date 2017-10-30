@@ -6,7 +6,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const normalize = require('../utils/path').normalize;
 
 class Config {
-    constructor(cwd, configFile) {
+    constructor(cwd, configFile, env) {
         const dir = normalize(cwd).split('/');
         const projectDir = dir[dir.length - 1];
 
@@ -51,7 +51,7 @@ class Config {
                     loader: require.resolve('html-loader')
                 }, {
                     test: /\.css$/,
-                    loader: ExtractTextPlugin.extract(
+                    loader: env === 'local' ? 'style!css' : ExtractTextPlugin.extract(
                         require.resolve('style-loader'),
                         require.resolve('css-loader')
                     )
