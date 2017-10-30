@@ -24,8 +24,9 @@ class Project {
     constructor(cwd) {
         this.cwd = cwd;
         this.configFile = globby.sync(['ykit.*.js', 'ykit.js'], { cwd: cwd })[0] || '';
+
         this.plugins = [];
-        this.config = new Config(cwd, this.configFile, this._getCurrentEnv());
+        this.config = new Config(cwd, this.configFile);
         this.commands = Manager.getCommands();
         this.middlewares = [];
         this.beforePackCallbacks = [];
@@ -389,7 +390,7 @@ class Project {
         const isExtractTextPluginExists = config.plugins.some((plugin) => {
             return plugin instanceof ExtractTextPlugin;
         });
-        if(!isExtractTextPluginExists && this._getCurrentEnv() !== 'local') {
+        if(!isExtractTextPluginExists) {
             config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
         }
     }
