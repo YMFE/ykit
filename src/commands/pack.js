@@ -51,7 +51,7 @@ exports.run = function (options) {
         }
 
         if(Object.keys(config.entry).length === 0) {
-            logWarn('Local config exports aseets not found.');
+            logError('No assets entry found.');
             logDoc('http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html');
             process.exit(1);
         }
