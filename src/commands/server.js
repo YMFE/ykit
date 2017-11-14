@@ -44,7 +44,7 @@ exports.run = (options) => {
         cwd = options.cwd,
         verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
-        hot = options.hot,
+        hot = options.hot === 'false' ? false : true,
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
