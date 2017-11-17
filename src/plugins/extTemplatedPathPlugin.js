@@ -17,12 +17,14 @@ module.exports = {
                 if (data.chunk && data.chunk.origins && data.chunk.origins[0]) {
                     let module = data.chunk.origins[0].module,
                         rawRequest = module.rawRequest
-                                        ? module.rawRequest
-                                        : module.dependencies[module.dependencies.length - 1].userRequest;
+                                    ? module.rawRequest
+                                    : module.dependencies[module.dependencies.length - 1].userRequest;
 
-                    extName = sysPath.extname(rawRequest);
+                    extName = sysPath.extname(rawRequest) || '.js';
 
-                    if (entryExtNames.css.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
+                    if (entryExtNames.css.indexOf(sysPath.extname(
+                            sysPath.basename(rawRequest, '.js')
+                    )) > -1) {
                         extName = '.cache';
                     }
 
@@ -33,20 +35,12 @@ module.exports = {
                         }
                     });
 
-
                     // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
-                    let firstChunk;
-                    module.forEachChunk((chunk, index) => {
-                        if(index === 0) {
-                            firstChunk = chunk;
+                    module.forEachChunk(chunk => {
+                        if(chunk.name) {
+                            assetPath = assetPath.replace(/\[name\]/g, chunk.name.replace(/\.\w+$/g, ''));
                         }
                     });
-                    if(firstChunk && firstChunk.name && typeof assetPath.replace === 'function') {
-                        // 通过 module.blocks 为空数组过滤掉异步加载的 chunk，它们的 [name] 不需要替换
-                        if(module.blocks.length === 0) {
-                            assetPath = assetPath.replace(/\[name\]/g, firstChunk.name.replace(/\.\w+$/g, ''));
-                        }
-                    }
                 }
 
                 return assetPath.replace(/\[ext\]/g, extName);
