@@ -92,7 +92,15 @@ function handleMigrationConfig(config) {
 
             // for babel-loader
             if(rule.query) {
-                rule.use.options = rule.query;
+                rule.use = rule.use.map((item, i) => {
+                    if(typeof item === 'string' && item.indexOf('babel-loader') > -1) {
+                        return {
+                            loader: item,
+                            options: rule.query
+                        };
+                    }
+                    return item;
+                });
                 delete rule.query;
             }
 
