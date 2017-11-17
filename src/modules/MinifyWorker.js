@@ -32,7 +32,7 @@ process.on('message', function(m) {
             }
 
             try {
-                minifiedCode = UglifyJS.minify(content);
+                minifiedCode = UglifyJS.minify(content).code;
             } catch(e) {
                 var type = typeof e.line;
 
