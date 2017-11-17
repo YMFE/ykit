@@ -1,8 +1,10 @@
 'use strict';
 
+const Manager = require('../modules/manager');
+
 module.exports = {
     apply: (compiler) => {
-        const entryExtNames = compiler.options.entryExtNames;
+        const entryExtNames = Manager.getYkitConf('entryExtNames');
 
         compiler.plugin('compilation', function(compilation) {
             compilation.mainTemplate.plugin('asset-path', function(assetPath, data) {
