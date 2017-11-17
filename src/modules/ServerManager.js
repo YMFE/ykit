@@ -23,18 +23,7 @@ module.exports = {
         }
     },
     setHotServer(webpackConfig, projectDir, projectName, port) {
-        // 修改 publicPath 为当前服务
-        let localPublicPath = webpackConfig.output.local.publicPath;
-        const hostReg = /(http:|https:)?(\/\/)([^/]+)/i;
-
-        if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
-            localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);
-            localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
-                httpStr = httpStr || '';
-                return httpStr + '//' + '127.0.0.1:' + port;
-            });
-            webpackConfig.output.local.publicPath = localPublicPath;
-        } else {
+        if (!webpackConfig.output.local.publicPath) {
             // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
             const relativePath = sysPath.relative(projectDir, webpackConfig.output.local.path);
             webpackConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
