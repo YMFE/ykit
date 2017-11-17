@@ -82,7 +82,11 @@ function handleMigrationConfig(config) {
             // 去掉空 loader
             if(Array.isArray(rule.use)) {
                 rule.use = rule.use.filter((useItem) => {
-                    return useItem.loader;
+                    if(typeof useItem.loader !== 'undefined' && !useItem.loader) {
+                        return false ;
+                    }
+                    
+                    return true;
                 });
             }
 
