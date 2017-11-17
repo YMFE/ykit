@@ -42,7 +42,8 @@ exports.run = (options) => {
     let app = connect(),
         cwd = options.cwd,
         verbose = options.v || options.verbose,
-        hot = options.hot,
+        proxy = options.x || options.proxy,
+        hot = options.hot === 'false' ? false : true,
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
@@ -205,7 +206,7 @@ exports.run = (options) => {
                             : sysPath.join(projectDir, outputConfigDir);
 
         // 非 output.path 下的资源不做处理
-        url = url.split(projectName).length > 1 ? url.split(projectName)[1] : url;
+        url = url.replace(projectName + '/', '/');
         if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {
             return next();
         }

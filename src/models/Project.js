@@ -373,7 +373,7 @@ class Project {
             }
         }
 
-        // 如果没有 ExtractTextPlugin 则添加进 Plugins
+        // 如果没有 ExtractTextPlugin 则为项目添加一个
         const isExtractTextPluginExists = config.plugins.some((plugin) => {
             return plugin instanceof ExtractTextPlugin;
         });

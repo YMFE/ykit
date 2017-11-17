@@ -19,13 +19,15 @@ class Config {
                 fs.mkdirSync(modulePath);
                 fs.mkdirSync(sysPath.join(cwd, YKIT_CACHE_DIR));
             }
+        } else {
+            logWarn('No ykit config file found.');
         }
 
         const extraConfig = {
             cwd: cwd,
             entryExtNames: {
                 css: ['.css', '.less', '.sass', '.scss'],
-                js: ['.js', '.jsx']
+                js: ['.js', '.jsx', '.ts', '.tsx']
             },
             requireRules: [
                 'fekit_modules|fekit.config:main|./src/index.js'
