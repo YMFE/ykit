@@ -5658,9 +5658,9 @@ webpack-sources@^1.0.1:
     source-list-map "^2.0.0"
     source-map "~0.5.3"
 
-webpack@^3.5.4:
-  version "3.5.4"
-  resolved "https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar/webpack/-/webpack-3.5.4.tgz#5583eb263ed27b78b5bd17bfdfb0eb1b1cd1bf81"
+webpack@^3.8.1:
+  version "3.8.1"
+  resolved "http://npmrepo.corp.qunar.com/webpack/-/webpack-3.8.1.tgz#b16968a81100abe61608b0153c9159ef8bb2bd83"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"
