@@ -79,6 +79,13 @@ function handleMigrationConfig(config) {
                 delete rule.loader;
             }
 
+            // 去掉空 loader
+            if(Array.isArray(rule.use)) {
+                rule.use = rule.use.filter((useItem) => {
+                    return useItem.loader;
+                });
+            }
+
             return rule;
         });
     }
