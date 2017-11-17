@@ -93,11 +93,13 @@ class Config {
                                 cacheDirectory: true,
                                 presets: [
                                     [require.resolve('babel-preset-env'), {
-                                        targets: {
-                                            browsers: 'IE 8',
-                                            uglify: true
-                                        },
-                                        useBuiltIns: true,
+                                        targets: [
+                                            '> 1%',
+                                            'last 3 versions',
+                                            'ios 8',
+                                            'android 4.2'
+                                        ],
+                                        useBuiltIns: 'usage',
                                         debug: false,
                                         modules: false
                                     }]

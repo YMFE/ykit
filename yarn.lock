@@ -2656,9 +2656,9 @@ handlebars@^4.0.2:
   optionalDependencies:
     uglify-js "^2.6"
 
-happypack@^4.0.0-beta.2:
-  version "4.0.0-beta.2"
-  resolved "https://repo.corp.qunar.com/artifactory/api/npm/npm-qunar/happypack/-/happypack-4.0.0-beta.2.tgz#552e75d17292d5142c84be32f9b255d91e40e020"
+happypack@^4.0.0:
+  version "4.0.0"
+  resolved "http://npmrepo.corp.qunar.com/happypack/-/happypack-4.0.0.tgz#de1770d472dab33e3f31782a3edb4e77cc658631"
   dependencies:
     async "1.5.0"
     json-stringify-safe "5.0.1"
