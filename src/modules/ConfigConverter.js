@@ -79,6 +79,21 @@ function handleMigrationConfig(config) {
                 delete rule.loader;
             }
 
+            // 添加 -loader 后缀
+            rule.use = rule.use.map((item) => {
+                const needAddingSuffix = function(str) {
+                    return str.indexOf(sysPath.sep) > -1 || str.indexOf('-loader') > -1;
+                };
+
+                if(typeof item === 'object' && item.loader && !needAddingSuffix(item.loader)) {
+                    item.loader = item.loader + '-loader';
+                } else if(typeof item === 'string' && !needAddingSuffix(item)) {
+                    item = item + '-loader';
+                }
+
+                return item;
+            });
+
             // 去掉空 loader
             if(Array.isArray(rule.use)) {
                 rule.use = rule.use.filter((useItem) => {
