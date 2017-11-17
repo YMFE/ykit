@@ -1,8 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const jsParser = require('uglify-js').parser;
-const jsUglify = require('uglify-js').uglify;
+const UglifyJS = require('uglify-js');
 const cssUglify = require('uglifycss');
 const extend = require('extend');
 const colors = require('colors');
@@ -33,10 +32,7 @@ process.on('message', function(m) {
             }
 
             try {
-                let ast = jsParser.parse(content);
-                ast = willMangle ? jsUglify.ast_mangle(ast, uglifyjsOpts.mangle) : ast;
-                ast = uglifyjsOpts.squeeze ? jsUglify.ast_squeeze(ast, uglifyjsOpts.squeeze) : ast;
-                minifiedCode = jsUglify.gen_code(ast, uglifyjsOpts.genCode);
+                minifiedCode = UglifyJS.minify(content);
             } catch(e) {
                 var type = typeof e.line;
 
