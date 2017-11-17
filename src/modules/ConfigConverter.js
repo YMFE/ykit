@@ -85,9 +85,15 @@ function handleMigrationConfig(config) {
                     if(typeof useItem.loader !== 'undefined' && !useItem.loader) {
                         return false ;
                     }
-                    
+
                     return true;
                 });
+            }
+
+            // for babel-loader
+            if(rule.query) {
+                rule.use.options = rule.query;
+                delete rule.query;
             }
 
             return rule;
@@ -121,7 +127,8 @@ function handleNotAllowedConfig(config) {
         'requireRules',
         'entryExtNames',
         'getVendor',
-        'middleware'
+        'middleware',
+        'postcss' // FIXME 这里要考虑兼容情况
     ];
     removeConfigNames.map((configName) => {
         delete config[configName];
