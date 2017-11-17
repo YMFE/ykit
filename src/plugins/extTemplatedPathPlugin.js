@@ -33,11 +33,18 @@ module.exports = {
                         }
                     });
 
+
                     // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
-                    if(module.chunks[0] && module.chunks[0].name && typeof assetPath.replace === 'function') {
+                    let firstChunk;
+                    module.forEachChunk((chunk, index) => {
+                        if(index === 0) {
+                            firstChunk = chunk;
+                        }
+                    });
+                    if(firstChunk && firstChunk.name && typeof assetPath.replace === 'function') {
                         // 通过 module.blocks 为空数组过滤掉异步加载的 chunk，它们的 [name] 不需要替换
                         if(module.blocks.length === 0) {
-                            assetPath = assetPath.replace(/\[name\]/g, module.chunks[0].name.replace(/\.\w+$/g, ''));
+                            assetPath = assetPath.replace(/\[name\]/g, firstChunk.name.replace(/\.\w+$/g, ''));
                         }
                     }
                 }
