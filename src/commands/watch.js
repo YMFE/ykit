@@ -6,7 +6,7 @@ const colors = require('colors');
 const webpack = require('webpack');
 const moment = require('moment');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
 

@@ -5,7 +5,7 @@ const async = require('async');
 
 const replaceStream = require('replacestream');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
 const UtilFs = require('../utils/fs.js');
 
 exports.usage = '项目初始化';

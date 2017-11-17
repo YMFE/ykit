@@ -175,7 +175,7 @@ exports.run = function (options) {
                 if (opt.min) {
                     const computecluster = require('compute-cluster');
                     const cc = new computecluster({
-                        module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
+                        module: sysPath.resolve(__dirname, '../modules/MinifyWorker.js'),
                         max_backlog: -1,
                         max_processes: processNum
                     });

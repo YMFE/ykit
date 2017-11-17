@@ -16,7 +16,7 @@ const connect = require('connect'),
     hostReplaceMiddleware = require('../modules/HostReplaceMiddleware'),
     httpProxy = require('http-proxy-middleware');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
 const ServerManager = require('../modules/ServerManager.js');
 const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 const UtilFs = require('../utils/fs.js');

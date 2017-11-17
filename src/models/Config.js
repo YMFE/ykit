@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const normalize = require('../utils/path').normalize;
-const Manager = require('../modules/manager');
+const Manager = require('../modules/GlobalManager');
 const HappyPack = require('happypack');
 
 class Config {

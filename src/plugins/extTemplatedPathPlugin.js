@@ -1,6 +1,6 @@
 'use strict';
 
-const Manager = require('../modules/manager');
+const Manager = require('../modules/GlobalManager');
 
 module.exports = {
     apply: (compiler) => {

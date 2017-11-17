@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
 const utilMw = require('../utils/middleware.js');
 const utilFs = require('../utils/fs.js');
 
