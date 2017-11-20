@@ -4,10 +4,11 @@
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
-    "ykit2": "bin/ykit"
+    "ykit2": "bin/ykit",
+    "y2": "bin/ykit"
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4.3.0 <5.0.0 || >=5.10"
   },
   "scripts": {
     "test": "mocha --recursive --timeout 0",
