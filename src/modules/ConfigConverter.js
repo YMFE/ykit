@@ -141,7 +141,7 @@ function handleMigrationConfig(config) {
 }
 
 function handleNotAllowedConfig(config) {
-    const removeConfigNames = [
+    const innerConfigNames = [
         'cwd',
         'sync',
         'projectCwd',
@@ -150,10 +150,19 @@ function handleNotAllowedConfig(config) {
         'requireRules',
         'entryExtNames',
         'getVendor',
-        'middleware',
+        'middleware'
+    ];
+
+    const warnConfigNames = [
         'postcss' // FIXME 这里要考虑兼容情况
     ];
-    removeConfigNames.map((configName) => {
+
+    innerConfigNames.map((configName) => {
+        delete config[configName];
+    });
+
+    warnConfigNames.map((configName) => {
+        logWarn(`Not supported props on the config object: ${configName}`);
         delete config[configName];
     });
 
