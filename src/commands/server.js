@@ -39,6 +39,8 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = (options) => {
+    log(`ykit@${require('../../package.json').version}`);
+
     let app = connect(),
         cwd = options.cwd,
         verbose = options.v || options.verbose,
