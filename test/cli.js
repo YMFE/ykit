@@ -86,7 +86,7 @@ describe('Start testing terminal client', () => {
         shell.cd(path.join(examplePath, 'node_modules'));
         kill();
 
-        const child = shell.exec(`${ykitBin} server -p ${port}`, {silent: true}, () => {
+        const child = shell.exec(`${ykitBin} server -p ${port}`, {silent: false}, () => {
             // do nothing & wait for curl
         });
 
@@ -98,7 +98,7 @@ describe('Start testing terminal client', () => {
             }
             hasTestCurl = true;
 
-            const output = shell.exec(`curl -I localhost:${port}/react/react.js`, {silent: true});
+            const output = shell.exec(`curl -I localhost:${port}/react/package.json`, {silent: false});
             expect(output.includes('200')).to.be.true;
 
             kill();
