@@ -320,12 +320,14 @@ class Project {
             cssExtNames = Manager.getYkitConf('entryExtNames').css,
             fps = [];
 
+
         const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.';
 
         for (let key in entries) {
             const entryItem = entries[key],
                 entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
                 extName = sysPath.extname(entry);
+
 
             // 放在cache目录下
             const cachePath = this._isCacheDirExists(this.cwd);
@@ -336,14 +338,19 @@ class Project {
                 mkdirp.sync(newCachePath);
             }
             if (cssExtNames.indexOf(extName) > -1) {
-                let requireFilePath =
-                        entries[key] =
-                        sysPath.join(contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'),
-                    cacheFilePath = sysPath.join(config.context, requireFilePath);
+                let entryStr = sysPath.join(
+                    contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'
+                );
+                if(!entryStr.startsWith('./') && !entryStr.startsWith('.')) {
+                    entryStr = './' + entryStr;
+                }
+                let requireFilePath = entries[key] = entryStr;
+
+                let cacheFilePath = sysPath.join(config.context, requireFilePath);
 
                 mkdirp.sync(sysPath.dirname(cacheFilePath));
 
-                // 将原有entry的css路径写到js中
+                // 将原有 entry 的 css 路径写到 js 中
                 if (Array.isArray(entryItem)) {
                     fs.writeFileSync(cacheFilePath, '', 'utf-8');
 
