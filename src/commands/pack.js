@@ -4,13 +4,12 @@ const webpack = require('webpack');
 const colors = require('colors');
 
 const UtilFs = require('../utils/fs.js');
+const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 
 exports.usage = '资源编译、打包';
 exports.abbr = 'p';
 
 exports.setOptions = (optimist) => {
-    optimist.alias('l', 'lint');
-    optimist.describe('l', '先进行验证');
     optimist.alias('m', 'min');
     optimist.describe('m', '压缩/混淆项目文件');
     optimist.alias('s', 'sourcemap');
@@ -24,15 +23,15 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = function (options) {
+    log(`ykit@${require('../../package.json').version}`);
+
     const min = options.m || options.min || false,
-        lint = options.l || options.lint || false,
         clean = options.c || options.clean || true,
         quiet = options.q || options.quiet || false,
         sourcemap = options.s || options.sourcemap,
         processNum = options.p|| options.process || 4,
         packStartTime = Date.now(),
         opt = {
-            lint: lint,
             min: min,
             sourcemap: sourcemap,
             clean: clean === 'false' ? false : true,
@@ -51,7 +50,7 @@ exports.run = function (options) {
         }
 
         if(Object.keys(config.entry).length === 0) {
-            logWarn('Local config exports aseets not found.');
+            logError('No assets entry found.');
             logDoc('http://ued.qunar.com/ykit/docs-%E9%85%8D%E7%BD%AE.html');
             process.exit(1);
         }
@@ -66,33 +65,8 @@ exports.run = function (options) {
         await printStats.bind(this)();
     }
 
-    function handlebeforeCompiling() {
-        return new Promise ((resolve, reject) => {
-            async.series(
-                this.hooks.beforeCompiling.map((beforeTask) => {
-                    return (callback) => {
-                        let isAsync = false;
-                        beforeTask.bind({
-                            async: () => {
-                                isAsync = true;
-                                return callback;
-                            }
-                        })(opt, config);
-
-                        if(!isAsync) {
-                            callback(null);
-                        }
-                    };
-                }),
-                (err) => {
-                    if(err) {
-                        logError(err);
-                        process.exit(1);
-                    }
-                    resolve();
-                }
-            );
-        });
+    async function handlebeforeCompiling() {
+        config = await ConfigProcessCircle.runTasksBeforeCompiling(this.hooks, config);
     }
 
     function handleBeforePack() {
@@ -130,6 +104,8 @@ exports.run = function (options) {
     }
 
     function prepareConfig() {
+        config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+
         if (opt.sourcemap) {
             config.devtool = opt.sourcemap;
         }
@@ -201,7 +177,7 @@ exports.run = function (options) {
                 if (opt.min) {
                     const computecluster = require('compute-cluster');
                     const cc = new computecluster({
-                        module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
+                        module: sysPath.resolve(__dirname, '../modules/MinifyWorker.js'),
                         max_backlog: -1,
                         max_processes: processNum
                     });

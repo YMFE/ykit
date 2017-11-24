@@ -1,41 +1,24 @@
 # Ykit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
 
-Ykit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各种 JavaScript 应用的配置，选择和安装合适的插件即可开始构建你的 App。Ykit 内置了各种优化和辅助工具，让你的应用开发更稳定、高效。
+Ykit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各种 JavaScript 应用的配置，选择和安装合适的插件即可开始构建你的应用。
 
 ## 特性
 
-1. 包含 hot reloading 本地 server，无需在项目中配置
-2. 比 Webpack 更快的编译打包速度
-3. 通过插件可快速定制开发环境
-4. 内置 eslint 和代理工具
+- 通过 init 命令快速初始化各种环境
+- 封装各类配置，减少搭建环境工作量
+- 包含 hot-reload 的本地 server
 
-## 和 Webpack 性能对比
+## 安装
 
-本地 server 访问页面资源加载和页面渲染时间：
-
-| 资源数 | Webpack 耗时 | Ykit 耗时 |
-|---------|-------|-------|
-| 3 assets | 9s | 5s |
-| 10 assets | 18s | 5s |
-| 20 assets | 33s | 5s |
-
-build（包含压缩）时间：
-
-| 资源数 | Webpack 耗时 | Ykit 耗时 |
-|---------|-------|-------|
-| 3 assets | 10s | 7s |
-| 10 assets | 20s | 16s |
-| 20 assets | 38s | 32s |
-
-测试工程：[https://github.com/roscoe054/ykit-benchmark](https://github.com/roscoe054/ykit-benchmark)
+- latest 稳定版: `[sudo] npm install ykit -g`
+- beta 基于 Webpack@3 的版本：`[sudo] npm install ykit@beta -g`
 
 ## 快速开始
 
-1. `npm install ykit -g`
-2. `mkdir ykit-app && cd ykit-app`
-3. `ykit init`
-4. `cd .. && ykit server`
-5. 用浏览器访问 `http://localhost/ykit-app/index.html`
+1. 创建目录 `mkdir ykit-app && cd ykit-app`
+2. 初始化工程 `ykit init`
+3. 启动服务 `ykit s -p 3000`
+4. 用浏览器访问 `http://127.0.0.1:3000/index.html`
 
 初始化结束后，项目中会生成一个名为 `ykit.js` 的配置文件：
 

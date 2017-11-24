@@ -101,11 +101,4 @@ describe('Start testing terminal client', () => {
         expect(shell.test('-d', path.join(examplePath, 'prd'))).to.be.true;
     })
 
-    it('runs lint command', () => {
-        shell.cd(examplePath);
-
-        const output = shell.exec(ykitPath + ' lint', {silent: false});
-        expect(output.stdout.includes('warnings')).to.be.true;
-    })
-
 })

@@ -1,9 +1,11 @@
 'use strict';
 
+const Manager = require('../modules/GlobalManager');
+
 module.exports = {
     apply: (compiler) => {
-        let cwd = compiler.options.cwd,
-            requireRules = (compiler.options.requireRules || []).map((item) => {
+        let cwd = Manager.getYkitConf('cwd'),
+            requireRules = (Manager.getYkitConf('requireRules') || []).map((item) => {
                 let options = item.split('|'),
                     moduleRoot = options[0],
                     config = options[1].split(':'),
@@ -40,10 +42,12 @@ module.exports = {
                 };
             });
 
-        compiler.resolvers.normal.plugin('module', function(request, finalCallback) {
-            if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
-                finalCallback();
-            }
-        });
+        compiler.plugin('after-resolvers', function(compiler) {
+            compiler.resolvers.normal.plugin('module', function(request, finalCallback) {
+                if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
+                    finalCallback();
+                }
+            });
+        }.bind(this));
     }
 };

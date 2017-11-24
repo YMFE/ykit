@@ -1,5 +1,4 @@
-const jsParser = require('uglify-js').parser;
-const jsUglify = require('uglify-js').uglify;
+const UglifyJS = require('uglify-js');
 
 module.exports = function (content) {
     let embedScript = '';
@@ -14,10 +13,10 @@ module.exports = function (content) {
         if(sysPath.extname(this.resourcePath) === '.js' && sysPath.extname(basename).length === 0 && isNotPkg) {
             const socketScript = fs.readFileSync(sysPath.join(__dirname, '../../static/socket/Embedment.js'), {encoding: 'utf-8'});
             let overlayScript = fs.readFileSync(sysPath.join(__dirname, '../../static/socket/Overlay.js'), {encoding: 'utf-8'});
-
-            let ast = jsParser.parse(overlayScript);
-            ast = jsUglify.ast_mangle(ast);
-            let minifiedCode = jsUglify.gen_code(ast);
+            let minifiedCode = UglifyJS.minify(overlayScript, {
+                fromString: true,
+                mangle: true
+            }).code;
 
             const cacheId = this.query.replace('?cacheId=', '');
             embedScript = socketScript

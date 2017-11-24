@@ -7,7 +7,7 @@ const rightPad = require('right-pad');
 const buildCmd = require('./commands/build');
 const UtilFs = require('./utils/fs.js');
 
-let Manager = require('./modules/manager.js');
+let Manager = require('./modules/GlobalManager.js');
 
 let helpTitle = `\n===================== YKit ${version} ====================\n`;
 

@@ -4,7 +4,6 @@ const connect = require('connect'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
-    socketIO = require('socket.io'),
     serveStatic = require('serve-static'),
     serveIndex = require('serve-index'),
     moment = require('moment'),
@@ -17,7 +16,9 @@ const connect = require('connect'),
     hostReplaceMiddleware = require('../modules/HostReplaceMiddleware'),
     httpProxy = require('http-proxy-middleware');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
+const ServerManager = require('../modules/ServerManager.js');
+const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
 
@@ -27,8 +28,6 @@ exports.abbr = 's';
 exports.setOptions = (optimist) => {
     optimist.alias('p', 'port');
     optimist.describe('p', '端口');
-    optimist.alias('x', 'proxy');
-    optimist.describe('x', '开启 proxy 代理服务');
     optimist.alias('s', 'https');
     optimist.describe('s', '开启 https 服务');
     optimist.alias('hot', 'hot');
@@ -40,11 +39,13 @@ exports.setOptions = (optimist) => {
 };
 
 exports.run = (options) => {
+    log(`ykit@${require('../../package.json').version}`);
+
     let app = connect(),
         cwd = options.cwd,
         verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
-        hot = options.hot,
+        hot = options.hot === 'false' ? false : true,
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
         port = options.p || options.port || 80;
@@ -52,16 +53,14 @@ exports.run = (options) => {
     let middlewareCache = {},
         promiseCache = {},
         allAssetsEntry = {},
-        watchCacheNames = {},
         customMiddlewareCache = {
             apps: [],
             middlewares: []
         };
 
-    let io = null,
-        assetEntrys = {};
-
+    let assetEntrys = {};
     let usingHotServer = false;
+
     const dateFormat = 'HH:mm:ss';
 
     if (middlewares) {
@@ -73,7 +72,6 @@ exports.run = (options) => {
         });
     }
 
-    // a simple middleware
     app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
 
     // 预处理
@@ -86,10 +84,20 @@ exports.run = (options) => {
     });
 
     // logger
+    const recentLogs = {};
     app.use((req, res, next) => {
-        const end = res.end;
-        req._startTime = new Date;
+        // 太近的 log 不会重复打（chrome 的 bug，总是重复请求两次）
+        const durationThreshold = 200;
+        if(recentLogs[req.url]) {
+            if((Date.now() - recentLogs[req.url]._startTime.getTime()) > durationThreshold) {
+                return next();
+            }
+        }
 
+        req._startTime = new Date;
+        recentLogs[req.url] = req;
+
+        const end = res.end;
         res.end = (chunk, encoding) => {
             res.end = end;
             res.end(chunk, encoding);
@@ -187,20 +195,17 @@ exports.run = (options) => {
     // app.use(hostReplaceMiddleware);
 
     // compiler
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         let url = req.url,
             compiler = null;
 
-        const projectInfo = getProjectInfo(req);
-        const projectName = projectInfo.projectName;
-        const projectDir = projectInfo.projectDir;
+        const {projectName, projectDir} = getProjectInfo(req);
         const project = Manager.getProject(projectDir, { cache: false });
-        const wpConfig = project.config._config;
+        const webpackConfig = project.config._config;
         const outputConfigDir = project.config._config.output.local.path || 'prd';
         const outputAbsDir = sysPath.isAbsolute(outputConfigDir)
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
-        const maxMiddleware = project.server && project.server.maxMiddleware;
 
         // 非 output.path 下的资源不做处理
         url = url.replace(projectName + '/', '/');
@@ -209,19 +214,11 @@ exports.run = (options) => {
         }
 
         // 清除 YKIT_CACHE_DIR 资源
-        let isFirstCompileDir = true;
-        Object.keys(middlewareCache).map((cacheName) => {
-            if(cacheName.startsWith(projectName)) {
-                isFirstCompileDir = false;
-            }
-        });
-        if(isFirstCompileDir) {
-            UtilFs.deleteFolderRecursive(sysPath.join(projectDir, YKIT_CACHE_DIR), true);
-        }
+        ServerManager.removeCacheDir(middlewareCache, projectName, projectDir);
 
         // 处理资源路径, 去掉 query & 版本号
         const rquery = /\?.+$/;
-        const rversion = /@[^\.]+(?=\.\w+)/;
+        const rversion = /@[^.]+(?=\.\w+)/;
         req.url = url = '/' + sysPath.relative(outputAbsDir, sysPath.join(projectDir, url))
                     .replace(rversion, '')
                     .replace(rquery, '');
@@ -233,273 +230,111 @@ exports.run = (options) => {
         // hot reload
         const hotEnabled = (project.server && project.server.hot) || hot;
         if(hotEnabled) {
-            // 修改 publicPath 为当前服务
-            let localPublicPath = wpConfig.output.local.publicPath;
-            if(project.config.replacingPublicPath !== false) {
-                const hostReg = /(http:|https:)?(\/\/)([^\/]+)/i;
-                if(localPublicPath && localPublicPath.match(hostReg).length === 4) {
-                    localPublicPath = '/' + UtilPath.normalize(localPublicPath, false);
-                    localPublicPath = localPublicPath.replace(hostReg, (matches, httpStr, splitStr, host) => {
-                        httpStr = httpStr || '';
-                        return httpStr + '//' + '127.0.0.1:' + port;
-                    });
-                    wpConfig.output.local.publicPath = localPublicPath;
-                } else {
-                    // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
-                    const relativePath = sysPath.relative(projectDir, wpConfig.output.local.path);
-                    wpConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
-                }
-            }
-
-            wpConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
-
-            if(!usingHotServer) {
-                usingHotServer = projectName;
-                if(typeof wpConfig.entry === 'object') {
-                    Object.keys(wpConfig.entry).map((key) => {
-                        let entryItem = wpConfig.entry[key];
-                        if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
-                            const whmPath = require.resolve('webpack-hot-middleware/client');
-                            const hotPath = `http://127.0.0.1:${port}/__webpack_hmr`;
-                            entryItem.unshift(whmPath + '?reload=true&path=' + hotPath + '&timeout=9999999&overlay=false');
-                        }
-                        return entryItem;
-                    });
-                }
-            }
+            ServerManager.setHotServer(webpackConfig, projectDir, projectName, port);
         }
 
         // 如果发现插件中有 HotModuleReplacementPlugin 则需要编译全部入口，否则无法正常运行
-        const shouldCompileAllEntries = wpConfig.plugins.some((plugin, i) => {
+        const shouldCompileAll = webpackConfig.plugins.some((plugin, i) => {
             // 这里不清楚为什么 plugin instanceof webpack.HotModuleReplacementPlugin 返回 false
             // 所以使用字符串匹配
             if(plugin && plugin.constructor) {
                 const isCCP = plugin instanceof webpack.optimize.CommonsChunkPlugin;
-                const isHMR = plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
+                const isHMR = plugin instanceof webpack.HotModuleReplacementPlugin
+                            || plugin.constructor.toString() === 'function HotModuleReplacementPlugin() {}';
                 return isCCP || isHMR;
             }
         });
 
-        if(shouldCompileAllEntries && !allAssetsEntry[projectName]) {
+        // 如果已有 middlewareCache 直接返回
+        if (middlewareCache[cacheId]) {
+            return middlewareCache[cacheId](req, res, next);
+        }
+
+        // 决定是否跳过编译，直接等待最后返回
+        if(shouldCompileAll && !allAssetsEntry[projectName]) {
             allAssetsEntry[projectName] = url;
         }
+        const skipCompile = shouldCompileAll && allAssetsEntry[projectName] !== url;
 
-        // 按照访问次数/访问间隔做权重排序，默认保留三个 middleware
-        if(maxMiddleware) {
-            const now = +new Date();
-            const middlewareList = Object.keys(middlewareCache)
-                .map(key => {
-                    const middleware = middlewareCache[key];
-                    return middleware ? {
-                        key,
-                        middleware: middleware,
-                        weight: middleware._visit / (now - middleware._timestamp) * 1000
-                    } : null;
-                })
-                .filter(v => v)
-                .sort((a, b) =>  b.weight - a.weight);
-
-            let removeLen = middlewareList.length - maxMiddleware;
-            let index = middlewareList.length - 1;
-
-            while (removeLen > 0) {
-                const key = middlewareList[index].key;
-                if (key !== cacheId) {
-                    var md = middlewareCache[key];
-                    delete middlewareCache[key];
-                    md.close();
-                }
-
-                removeLen -= 1;
-                index -= 1;
-            }
-        }
-
-        // 寻找已有的 middlewareCache
-        if (middlewareCache[cacheId]) {
-            middlewareCache[cacheId](req, res, next);
-            middlewareCache[cacheId]._visit += 1;
-            return;
-        }
-
-        let nextConfig;
-        if(!shouldCompileAllEntries || allAssetsEntry[projectName] === url) {
-            compiler = project.getServerCompiler(function (config) {
-
-                config.plugins.push(require('../plugins/progressBarPlugin.js'));
-                config.plugins.push(require('../plugins/compileInfoPlugin.js'));
-
-                nextConfig = extend({}, config);
-
-                // 注入 sockitIO
-                if(project.server && project.server.overlay) {
-                    nextConfig.module.postLoaders.push({
-                        test: /\.(js)$/,
-                        loader: sysPath.join(__dirname, '../modules/SocketClientLoader.js?cacheId=' + cacheId)
-                    });
-                }
-
-                if(shouldCompileAllEntries) {
-                    return nextConfig;
-                } else {
-                    // entry 应该是个空对象, 这样如果没有找到请求对应的 entry, 就不会编译全部入口
-                    nextConfig.entry = {};
-
-                    // 将 webpack entry 设置为当前请求的资源
-                    Object.keys(config.entry).map((entryKey) => {
-                        const entryItem = config.entry[entryKey];
-
-                        let isRequestingEntry = false,
-                            entryPath = '';
-
-                        if (Array.isArray(entryItem)) {
-                            entryPath = entryItem[entryItem.length - 1];
-                        } else {
-                            entryPath = entryItem;
-                        }
-
-                        // 应用后缀转换规则
-                        const entryExtNames = config.entryExtNames;
-                        Object.keys(entryExtNames).map((targetExtName) => {
-                            let exts = entryExtNames[targetExtName];
-
-                            // 如果是 css 要考虑 css.js 的情况
-                            if(targetExtName === 'css') {
-                                exts = exts.concat(
-                                    entryExtNames[targetExtName].map((name) => {
-                                        return name + '.js';
-                                    })
-                                );
-                            }
-
-                            // 创建正则匹配
-                            exts = exts.map((name) => {
-                                return name + '$';
-                            });
-                            const replaceReg = new RegExp('\\' + exts.join('|\\'));
-
-                            entryPath = UtilPath.normalize(entryPath.replace(replaceReg, '.' + targetExtName));
-                        });
-
-                        // 如果是 ykit 处理过的样式文件，将其变为正常的请求路径(../.ykit_cache/main/index.css => main/index.css)
-                        if (entryPath.indexOf('.css.js') && entryPath.indexOf('.ykit_cache/') > 1) {
-                            entryPath = entryPath.split('.ykit_cache/')[1];
-                        }
-
-                        // 判断所请求的资源是否在入口配置中
-                        const matchingPath = sysPath.normalize(entryPath) === sysPath.normalize(url);
-                        const matchingKey = sysPath.normalize(url) === entryKey + sysPath.extname(url);
-
-                        if (matchingPath || matchingKey) {
-                            isRequestingEntry = true;
-                        }
-
-                        if (isRequestingEntry) {
-                            nextConfig.entry = {
-                                [entryKey]: entryItem
-                            };
-                        }
-                    });
-
-                    return nextConfig;
-                }
-            });
-        }
-
-        // 如果没找到该资源，在整个编译过程结束后再返回
-        if (!nextConfig || Object.keys(nextConfig.entry).length === 0) {
-            setTimeout(() => {
-                if (promiseCache[projectName]) {
-                    Promise.all(promiseCache[projectName]).then(function () {
-                        const assetKey = sysPath.join(projectName, url);
-                        if(middlewareCache[assetKey]) {
-                            middlewareCache[assetKey](req, res, next);
-                        } else {
-                            next();
-                        }
-                    });
-                } else {
-                    res.statusCode = 404;
-                    res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
-                }
-            }, 100);
-        } else {
-            // 生成该请求的 promiseCache
-            let resolve = null,
-                reject = null;
-
-            const requestPromise = new Promise((res, rej) => {
-                resolve = res;
-                reject = rej;
-            });
-
-            if (!promiseCache[projectName]) {
-                promiseCache[projectName] = [requestPromise];
-            } else {
-                promiseCache[projectName].push(requestPromise);
-            }
-
-            const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
-                compiler,
-                {
-                    quiet: !verbose, reporter: ({state, stats}) => {
-                        if(!stats) {
-                            return resolve();
-                        }
-
-                        // 打印编译完成时间（小于 100ms 不展示）
-                        if(!stats.hasErrors() && !stats.hasWarnings()) {
-                            const minDuration = 100;
-                            if(stats.endTime - stats.startTime > minDuration) {
-                                const dateLog = '[' + moment().format(dateFormat) + ']';
-                                const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
-                                spinner.text = dateLog.grey + successText.green;
-                                spinner.succeed();
-                            }
-                        }
-                        spinner.stop();
-                        spinner.text = '';
-
-                        // emit compile info by socket
-                        const statsInfo = stats.toJson({errorDetails: false});
-                        const assetName = cacheId;
-                        assetEntrys[assetName] = {
-                            compilationId: statsInfo.hash,
-                            errors: statsInfo.errors
-                        };
-                        io.emit('testAppID', assetEntrys);
-
-                        Object.keys(stats.compilation.assets).map((key) => {
-                            const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
-                            middlewareCache[keyCacheId] = middleware;
-
-                            if(verbose) {
-                                log('emitted asset:', stats.compilation.assets[key].existsAt);
+        ServerManager.getCompiler.bind(project)(shouldCompileAll, url, skipCompile, (compiler) => {
+            // 如果没找到该资源，在整个编译过程结束后再返回
+            if (!compiler) {
+                setTimeout(() => {
+                    if (promiseCache[projectName]) {
+                        Promise.all(promiseCache[projectName]).then(function () {
+                            const assetKey = sysPath.join(projectName, url);
+                            if(middlewareCache[assetKey]) {
+                                middlewareCache[assetKey](req, res, next);
+                            } else {
+                                next();
                             }
                         });
-
-                        resolve();
+                    } else {
+                        res.statusCode = 404;
+                        res.end('[ykit] - js入口未找到，请检查项目' + projectName + '的 ykit 配置文件.');
                     }
+                }, 100);
+            } else {
+                // 生成该请求的 promiseCache
+                let resolve = null,
+                    reject = null;
+
+                const requestPromise = new Promise((res, rej) => {
+                    resolve = res;
+                    reject = rej;
+                });
+
+                if (!promiseCache[projectName]) {
+                    promiseCache[projectName] = [requestPromise];
+                } else {
+                    promiseCache[projectName].push(requestPromise);
                 }
-            );
 
-            middleware._timestamp = +new Date();
-            middleware._visit = 1;
+                const middleware = middlewareCache[cacheId] = webpackDevMiddleware(
+                    compiler,
+                    {
+                        quiet: !verbose, reporter: ({state, stats}) => {
+                            if(!stats) {
+                                return resolve();
+                            }
 
-            if(hotEnabled) {
-                app.use(require('webpack-hot-middleware')(compiler, {
-                    log: false,
-                    path: '/__webpack_hmr'
-                }));
+                            // 打印编译完成时间（小于 100ms 不展示）
+                            if(!stats.hasErrors() && !stats.hasWarnings()) {
+                                const minDuration = 100;
+                                if(stats.endTime - stats.startTime > minDuration) {
+                                    const dateLog = '[' + moment().format(dateFormat) + ']';
+                                    const successText =  ' Compiled successfully in ' + (stats.endTime - stats.startTime) + 'ms.';
+                                    spinner.text = dateLog.grey + successText.green;
+                                    spinner.succeed();
+                                }
+                            }
+                            spinner.stop();
+                            spinner.text = '';
 
-                logInfo('Start hot reloader server.');
+                            Object.keys(stats.compilation.assets).map((key) => {
+                                const keyCacheId = sysPath.join(projectName, key).replace('.map', '');
+                                middlewareCache[keyCacheId] = middleware;
+
+                                if(verbose) {
+                                    log('emitted asset:', stats.compilation.assets[key].existsAt);
+                                }
+                            });
+
+                            resolve();
+                        }
+                    }
+                );
+
+                if(hotEnabled) {
+                    app.use(require('webpack-hot-middleware')(compiler, {
+                        log: false,
+                        path: '/__webpack_hmr'
+                    }));
+                }
+
+                middleware(req, res, next);
             }
-
-            middleware(req, res, next);
-        }
-
-        // 检测config文件变化
-        watchConfig(project, cacheId);
+        });
     });
 
     app.use(serveStatic(cwd, {
@@ -526,7 +361,7 @@ exports.run = (options) => {
                 key: fs.readFileSync(defaultHttpsConfigPath + 'server.key'),
                 cert: fs.readFileSync(defaultHttpsConfigPath + 'server.crt')
             };
-        }else if(!UtilFs.fileExists(globalConfig['https-key']) || !UtilFs.fileExists(globalConfig['https-crt'])){
+        } else if(!UtilFs.fileExists(globalConfig['https-key']) || !UtilFs.fileExists(globalConfig['https-crt'])) {
             logWarn('https 证书/秘钥配置文件有误，将使用默认，或执行以下命令重新设置:');
             !globalConfig['https-key'] && logWarn('ykit config set https-key <path-to-your-key>');
             !globalConfig['https-crt'] && logWarn('ykit config set https-crt <path-to-your-crt>');
@@ -534,7 +369,7 @@ exports.run = (options) => {
                 key: fs.readFileSync(defaultHttpsConfigPath + 'server.key'),
                 cert: fs.readFileSync(defaultHttpsConfigPath + 'server.crt')
             };
-        }else{
+        } else {
             httpsOpts = {
                 key: fs.readFileSync(globalConfig['https-key']),
                 cert: fs.readFileSync(globalConfig['https-crt'])
@@ -562,23 +397,8 @@ exports.run = (options) => {
 
             !server._isHttps && log('Starting up server, serving at: ' + options.cwd);
             logInfo('Available on: ' + serverUrl.underline);
-
-            // socket
-            if(!server._isHttps) {
-                io = socketIO(server);
-                io.on('connection', function(socket) {
-                    io.emit('testAppID', assetEntrys);
-                });
-            }
         });
     });
-
-    // proxy
-    var proxyProcess;
-    if (proxy) {
-        const proxyPath = sysPath.join(requireg.resolve('jerryproxy-ykit'), '../bin/jerry.js');
-        proxyProcess = child_process.fork(proxyPath);
-    }
 
     // 权限降级
     if (process.env['SUDO_UID']) {
@@ -589,35 +409,6 @@ exports.run = (options) => {
         logError(err.stack);
         process.exit(1);
     });
-
-    // exitHandler && catches ctrl+c event
-    process.on('exit', exitHandler.bind(null));
-    process.on('SIGINT', exitHandler.bind(null));
-    function exitHandler() {
-        // cleanup
-        proxyProcess && proxyProcess.kill('SIGINT');
-        process.exit(0);
-    }
-
-    // 监测配置文件变化
-    function watchConfig(project, cacheName) {
-        const cwdConfigPath = sysPath.resolve(project.config._config.cwd, project.configFile);
-
-        if (watchCacheNames[cwdConfigPath]) {
-            if (watchCacheNames[cwdConfigPath].indexOf(cacheName) === -1) {
-                watchCacheNames[cwdConfigPath].push(cacheName);
-            }
-        } else {
-            watchCacheNames[cwdConfigPath] = [cacheName];
-
-            fs.watchFile(cwdConfigPath, { interval: 2000 }, () => {
-                watchCacheNames[cwdConfigPath].map((cacheName) => {
-                    middlewareCache[cacheName] = null;
-                });
-                UtilFs.deleteFolderRecursive(project.cachePath, true);
-            });
-        }
-    }
 
     function getProjectInfo(req) {
         const dirSections = req.url.split('/');

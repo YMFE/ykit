@@ -5,7 +5,7 @@ const async = require('async');
 
 const replaceStream = require('replacestream');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
 const UtilFs = require('../utils/fs.js');
 
 exports.usage = '项目初始化';
@@ -143,7 +143,7 @@ exports.run = function(options) {
 	}
 
 	function createConfigFile(callback, configPkgName) {
-        const pluginName = configPkgName ? configPkgName.match(/ykit-config-([^\-]+)/)[1] : '';
+        const pluginName = configPkgName ? configPkgName.match(/ykit-config-([^-]+)/)[1] : '';
 		const configFileName = 'ykit.js';
 
 		if (!UtilFs.fileExists('./' + configFileName)) {

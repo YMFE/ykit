@@ -1,9 +1,11 @@
 'use strict';
 const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-
 const normalize = require('../utils/path').normalize;
+const Manager = require('../modules/GlobalManager');
+const HappyPack = require('happypack');
 
 class Config {
     constructor(cwd, configFile) {
@@ -17,10 +19,23 @@ class Config {
                 fs.mkdirSync(modulePath);
                 fs.mkdirSync(sysPath.join(cwd, YKIT_CACHE_DIR));
             }
+        } else {
+            logWarn('No ykit config file found.');
         }
 
-        this._config = {
+        const extraConfig = {
             cwd: cwd,
+            entryExtNames: {
+                css: ['.css', '.less', '.sass', '.scss'],
+                js: ['.js', '.jsx', '.ts', '.tsx']
+            },
+            requireRules: [
+                'fekit_modules|fekit.config:main|./src/index.js'
+            ],
+            middleware: []
+        };
+
+        this._config = extend({
             context: sysPath.join(cwd, 'src'),
             entry: {},
             output: {
@@ -43,6 +58,11 @@ class Config {
             module: {
                 preLoaders: [],
                 loaders: [{
+                    // 这里添加 __ykit__ 标识是为了当有其它 js loader 时候去掉此项默认配置
+                    test: /\.(js|jsx|__ykit__)$/,
+                    exclude: /node_modules/,
+                    loader: require.resolve('happypack/loader')
+                }, {
                     test: /\.json$/,
                     exclude: /node_modules/,
                     loader: require.resolve('json-loader')
@@ -52,32 +72,57 @@ class Config {
                 }, {
                     test: /\.css$/,
                     loader: ExtractTextPlugin.extract(
-                        require.resolve('style-loader'),
                         require.resolve('css-loader')
                     )
                 }],
-                postLoaders: []
+                postLoaders: [],
+                rules: []
             },
             plugins: [
-                // local plugin
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
-                new CaseSensitivePathsPlugin()
+                new CaseSensitivePathsPlugin(),
+                new webpack.HashedModuleIdsPlugin(),
+                new extend(HappyPack({
+                    loaders: [
+                        {
+                            loader: require.resolve('babel-loader'),
+                            test: /\.(js|jsx)$/,
+                            exclude: /node_modules/,
+                            query: {
+                                cacheDirectory: true,
+                                presets: [
+                                    [require.resolve('babel-preset-env'), {
+                                        targets: [
+                                            '> 1%',
+                                            'last 3 versions',
+                                            'ios 8',
+                                            'android 4.2'
+                                        ],
+                                        useBuiltIns: 'usage',
+                                        debug: false,
+                                        modules: false
+                                    }]
+                                ],
+                                plugins: []
+                            }
+                        }
+                    ],
+                    threads: 4,
+                    verbose: false
+                }), {__ykit__: true})
             ],
             resolve: {
                 root: [],
-                extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
+                modules: ['node_modules'],
+                extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
-            entryExtNames: {
-                css: ['.css', 'sass', 'scss', 'less'],
-                js: ['.js', '.jsx', '.ts', '.tsx']
-            },
-            requireRules: [],
-            devtool: 'cheap-source-map',
-            middleware: []
-        };
+            devtool: 'source-map'
+        }, extraConfig);
+
+        Manager.mixYkitConf(extraConfig);
     }
 
     setExports(entries) {
@@ -140,12 +185,12 @@ class Config {
             if (nextConfig.context && !sysPath.isAbsolute(nextConfig.context)) {
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context);
             }
-
             // 处理 loaders => loader
             if (nextConfig.module && nextConfig.module.loaders) {
                 nextConfig.module.loaders.map((loader) => {
                     if (loader.loaders && !loader.loader) {
                         loader.loader = loader.loaders.join('!');
+                        delete loader.loaders;
                     }
                     return loader;
                 });
@@ -184,12 +229,14 @@ class Config {
             if(options.global) {
                 mw.global = true;
             }
-            this._config.middleware.push(mw);
+            Manager.mixYkitConf({
+                middleware: Manager.getYkitConf('middleware').concat(mw)
+            });
         }
     }
 
     getMiddlewares() {
-        return this._config.middleware;
+        return Manager.getYkitConf('middleware');
     }
 
 }
