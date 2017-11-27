@@ -17,6 +17,6 @@ exports.run = function(options) {
 
 	packCMD.run.bind(this)({
 		quiet: true,
-		sourcemap: false
+		sourcemap: 'none'
 	});
 };
