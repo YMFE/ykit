@@ -32,7 +32,6 @@
     "fs-extra": "^1.0.0",
     "globby": "^5.0.0",
     "happypack": "^4.0.0",
-    "http-proxy-middleware": "^0.17.4",
     "json-loader": "^0.5.4",
     "json5": "^0.5.0",
     "left-pad": "^1.1.3",
