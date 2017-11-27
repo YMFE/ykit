@@ -7,6 +7,8 @@ const normalize = require('../utils/path').normalize;
 const Manager = require('../modules/GlobalManager');
 const HappyPack = require('happypack');
 
+const envNames = ['local', 'dev', 'prd'];
+
 class Config {
     constructor(cwd, configFile) {
         const dir = normalize(cwd).split('/');
@@ -170,7 +172,7 @@ class Config {
         }
     }
 
-    setCompiler(compileConfig, userConfig) {
+    setCompiler(compileConfig, userConfig, env) {
         if (compileConfig) {
             let nextConfig = {};
 
@@ -211,6 +213,11 @@ class Config {
                 });
                 extend(true, this._config.resolve.alias, alias);
             }
+
+            // 处理 output
+            const userOutputObj = extend({}, nextConfig.output);
+            envNames.forEach(name => delete userOutputObj[name]);
+            nextConfig.output[env] = extend({}, nextConfig.output[env], userOutputObj);
 
             extend(true, this._config, nextConfig);
         }

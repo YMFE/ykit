@@ -158,12 +158,16 @@ function handleNotAllowedConfig(config) {
     ];
 
     innerConfigNames.map((configName) => {
-        delete config[configName];
+        if(config.hasOwnProperty(configName)) {
+            delete config[configName];
+        }
     });
 
     warnConfigNames.map((configName) => {
-        logWarn(`Not supported props on the config object: ${configName}`);
-        delete config[configName];
+        if(config.hasOwnProperty(configName)) {
+            logWarn(`Not supported props on the config object: ${configName}`);
+            delete config[configName];
+        }
     });
 
     return config;
