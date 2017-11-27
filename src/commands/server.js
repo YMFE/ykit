@@ -13,8 +13,7 @@ const connect = require('connect'),
     logSymbols = require('log-symbols'),
     favicon = require('serve-favicon'),
     webpackDevMiddleware = require('webpack-dev-middleware'),
-    hostReplaceMiddleware = require('../modules/HostReplaceMiddleware'),
-    httpProxy = require('http-proxy-middleware');
+    hostReplaceMiddleware = require('../modules/HostReplaceMiddleware');
 
 const Manager = require('../modules/GlobalManager.js');
 const ServerManager = require('../modules/ServerManager.js');

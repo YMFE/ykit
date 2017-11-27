@@ -5,7 +5,6 @@ const UglifyJS = require('uglify-js');
 const cssUglify = require('uglifycss');
 const extend = require('extend');
 const colors = require('colors');
-const beautify = require('js-beautify').js_beautify;
 
 const HASH_PLACEHOLDER = '[hashPlaceholder]';
 
@@ -45,7 +44,6 @@ process.on('message', function(m) {
                         });
                     }
 
-                    errorSource = beautify(errorSource, {indent_size: 4});
                     errorSource = errorSource.split('\n').map((codeLine, index) => {
                         return codeLine = `line: ${e.line + index}    `.grey + codeLine.red + '\n';
                     }).join('');

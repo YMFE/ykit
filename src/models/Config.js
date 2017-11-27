@@ -65,9 +65,6 @@ class Config {
                     exclude: /node_modules/,
                     loader: require.resolve('json-loader')
                 }, {
-                    test: /\.(html|string|tpl)$/,
-                    loader: require.resolve('html-loader')
-                }, {
                     test: /\.css$/,
                     loader: ExtractTextPlugin.extract(
                         require.resolve('css-loader')
