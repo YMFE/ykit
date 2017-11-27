@@ -395,8 +395,8 @@ exports.run = (options) => {
                 + '://127.0.0.1:'
                 + server._port;
 
-            !server._isHttps && log('Serving at: ' + options.cwd);
-            logInfo('Available on: ' + serverUrl.underline + '\n');
+            !server._isHttps && log('Serving at: ' + options.cwd.green.bold);
+            logInfo('Ready on: ' + serverUrl.blue.bold.underline + '\n');
         });
     });
 
