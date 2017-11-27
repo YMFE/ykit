@@ -11,7 +11,7 @@ YKit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各
 ## 安装
 
 - latest 稳定版: `[sudo] npm install ykit -g`
-- beta 基于 Webpack@3 的版本：`[sudo] npm install ykit@beta -g`
+- 基于 Webpack@3.8.1 的最新版本：`[sudo] npm install ykit@next -g`
 
 ## 快速开始
 
