@@ -1,6 +1,6 @@
-# Ykit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
+# YKit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
 
-Ykit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各种 JavaScript 应用的配置，选择和安装合适的插件即可开始构建你的应用。
+YKit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各种 JavaScript 应用的配置，选择和安装合适的插件即可开始构建你的应用。
 
 ## 特性
 
@@ -56,7 +56,7 @@ module.exports = {
 
 ## 文档
 
-访问 [ykit.ymfe.org][1] 来获取更多 ykit 的文档。
+访问 [ykit.ymfe.org][1] 来获取更多 YKit 的文档。
 
 [1]: https://ykit.ymfe.org/
 [2]: https://github.com/roscoe054/ykit-starter-yo
