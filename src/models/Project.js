@@ -289,7 +289,6 @@ class Project {
         }
 
         // 处理 exports.config 中 export 和旧接口
-
         function handleExportsConfig(exportsConfig, options) {
             if (typeof exportsConfig === 'function') {
                 options = options ? options : {};
@@ -309,7 +308,11 @@ class Project {
                 this.config.setExports(exports);
             }
 
-            this.config.setCompiler(exportsConfig.modifyWebpackConfig, localConfig);
+            this.config.setCompiler(
+                exportsConfig.modifyWebpackConfig,
+                localConfig,
+                this._getCurrentEnv()
+            );
             this.config.setSync(exportsConfig.sync);
         }
     }
