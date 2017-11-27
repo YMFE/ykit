@@ -5,6 +5,7 @@ const packCMD = require('./pack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 exports.usage = '打包结果分析';
+exports.abbr = 'st';
 
 exports.setOptions = () => {
 
