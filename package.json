@@ -1,6 +1,6 @@
 {
   "name": "ykit",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "description": "现代 JavaScript 应用构建工具",
   "main": "src/ykit.js",
   "bin": {
