@@ -9,8 +9,8 @@
     "node": ">=4.3.0 <5.0.0 || >=5.10"
   },
   "scripts": {
-    "pre-commit": "eslint src",
-    "commit-msg": "node static/tasks/validate-commit-msg.js",
+    "lint": "eslint src",
+    "commitmsg": "node static/tasks/validate-commit-msg.js",
     "test": "mocha --recursive --timeout 0",
     "testlocal": "env ENV=local mocha --recursive --timeout 0",
     "start": "cd .. && sudo node ykit/bin/ykit server",
@@ -78,9 +78,13 @@
     "gulp-watch": "^4.3.8",
     "husky": "^0.14.3",
     "mocha": "^3.1.2",
+    "pre-commit": "^1.2.2",
     "ps-tree": "^1.1.0",
     "semver-regex": "^1.0.0"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "config": {
     "validate-commit-msg": {
       "types": [
