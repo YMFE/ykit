@@ -105,7 +105,8 @@ exports.run = function(options) {
     // display version info
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
     process.stdout && process.stdout.write('npm version: ') && execute('npm -v');
-    execute('ykit -v');
+
+    log('ykit version:', ykitVer);
 
     // build
     log('Start building.');
