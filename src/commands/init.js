@@ -19,8 +19,6 @@ exports.setOptions = () => {
 exports.run = function(options) {
 	const userRegistry = options.r || options.registry;
 
-	Manager.reloadRC();
-
 	let cwd = options.cwd,
 		defaultName = '',
 		packageJsonPath = sysPath.join(cwd, './package.json');
