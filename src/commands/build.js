@@ -88,7 +88,7 @@ exports.npmInstall = function() {
     // install
     let installParams = `--registry ${userRegistry} ${isProduction ? '--production' : ''}`;
     if(currentNpm === 'npm_cache_share') {
-        installParams += ' -d';
+        installParams += ' -d -f';
     } else if (currentNpm === 'yarn') {
         installParams += ' --non-interactive';
     }
