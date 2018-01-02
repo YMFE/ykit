@@ -37,7 +37,7 @@ module.exports = {
 
                     // 替换[name]为文件名，如index.js：[name][ext] => index[ext]
                     module.forEachChunk(chunk => {
-                        if(chunk.name) {
+                        if (chunk.name && module.blocks.length === 0) {
                             assetPath = assetPath.replace(/\[name\]/g, chunk.name.replace(/\.\w+$/g, ''));
                         }
                     });
