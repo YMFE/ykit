@@ -1,6 +1,6 @@
 {
   "name": "ykit",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "高可用高扩展前端开发工具",
   "main": "src/ykit.js",
   "bin": {
