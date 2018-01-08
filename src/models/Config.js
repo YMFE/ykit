@@ -71,7 +71,7 @@ class Config {
                 alias: {}
             },
             entryExtNames: {
-                css: ['.css', 'sass', 'scss', 'less'],
+                css: ['.css', '.sass', '.scss', '.less'],
                 js: ['.js', '.jsx', '.ts', '.tsx']
             },
             requireRules: [],

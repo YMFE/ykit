@@ -338,6 +338,7 @@ class Project {
         const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.';
 
         for (let key in entries) {
+
             const entryItem = entries[key],
                 entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
                 extName = sysPath.extname(entry);

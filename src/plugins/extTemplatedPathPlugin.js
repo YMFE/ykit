@@ -20,7 +20,8 @@ module.exports = {
 
                     extName = sysPath.extname(rawRequest);
 
-                    if (entryExtNames.css.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
+                    const basename = sysPath.basename(rawRequest, '.js');
+                    if (entryExtNames.css.indexOf(sysPath.extname(basename)) > -1) {
                         extName = '.cache';
                     }
 
