@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const colors = require('colors');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const UtilFs = require('../utils/fs.js');
 const ConfigProcessCircle = require('../modules/ConfigProcessCircle.js');
@@ -106,18 +107,23 @@ exports.run = function (options) {
     function prepareConfig() {
         config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
 
-        if (opt.sourcemap) {
-            config.devtool = opt.sourcemap;
-        }
-
         if (!opt.quiet) {
             config.plugins.push(require('../plugins/progressBarPlugin.js'));
         }
 
         if (opt.min) {
             config.output = config.output.prd;
-            config.devtool = '';
+            config.plugins.push(
+                new UglifyJsPlugin({
+                    sourceMap: config.devtool ? true : false,
+                    parallel: true,
+                    uglifyOptions: {
+                        ie8: true
+                    }
+                })
+            );
         } else {
+            config.devtool = 'source-map';
             config.output = config.output.dev;
         }
 
@@ -174,74 +180,7 @@ exports.run = function (options) {
                     process.exit(1);
                 }
 
-                if (opt.min) {
-                    const computecluster = require('compute-cluster');
-                    const cc = new computecluster({
-                        module: sysPath.resolve(__dirname, '../modules/MinifyWorker.js'),
-                        max_backlog: -1,
-                        max_processes: processNum
-                    });
-
-                    spinner.start();
-
-                    const assetsInfo = stats.toJson({
-                        errorDetails: false
-                    }).assets;
-                    let processToRun = assetsInfo.length;
-
-                    const originAssets = stats.compilation.assets;
-                    const nextAssets = {};
-
-                    assetsInfo.forEach(asset => {
-                        cc.enqueue(
-                            {
-                                opt: opt,
-                                cwd: dist,
-                                buildOpts: this.build || this.config.build || {},
-                                assetName: asset.name
-                            },
-                            (err, response) => {
-                                if (response.error) {
-                                    // err log
-                                    const resErr = response.error;
-                                    spinner.text = '';
-                                    spinner.stop();
-                                    logError(`Error occured while minifying ${resErr.assetName}\n${resErr.errorSource}`);
-
-                                    process.exit(1);
-                                }
-
-                                // 将替换版本号的资源名取代原有名字
-                                const replacedAssets = response.replacedAssets;
-                                if (replacedAssets && replacedAssets.length > 0) {
-                                    const originAssetName = replacedAssets[0];
-                                    const nextAssetName = replacedAssets[1];
-                                    if (originAssets[originAssetName]) {
-                                        nextAssets[nextAssetName] = originAssets[originAssetName];
-                                    }
-                                }
-
-                                processToRun -= 1;
-                                spinner.text = `[Minify] ${assetsInfo.length -
-                                    processToRun}/${assetsInfo.length} assets`;
-
-                                if(processToRun === 0) {
-                                    cc.exit();
-                                    spinner.stop();
-
-                                    // 更新 stats
-                                    stats.compilation.assets = Object.keys(nextAssets).length > 0
-                                        ? nextAssets
-                                        : originAssets;
-                                    compilerStats = stats;
-                                    resolve();
-                                }
-                            }
-                        );
-                    });
-                } else {
-                    resolve();
-                }
+                resolve();
             });
         });
     }

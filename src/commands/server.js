@@ -207,6 +207,11 @@ exports.run = (options) => {
                             ? outputConfigDir
                             : sysPath.join(projectDir, outputConfigDir);
 
+        // 添加 source-map
+        if(!webpackConfig.devtool) {
+            webpackConfig.devtool = 'source-map';
+        }
+
         // 非 output.path 下的资源不做处理
         url = url.replace(projectName + '/', '/');
         if(!projectName || sysPath.join(projectDir, url).indexOf(outputAbsDir) === -1) {

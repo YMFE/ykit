@@ -114,7 +114,7 @@ class Config {
                 extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                 alias: {}
             },
-            devtool: 'source-map'
+            devtool: ''
         }, extraConfig);
 
         Manager.mixYkitConf(extraConfig);

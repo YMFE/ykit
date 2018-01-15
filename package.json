@@ -53,6 +53,7 @@
     "style-loader": "^0.13.1",
     "uglify-js": "^3.1.9",
     "uglifycss": "0.0.25",
+    "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.8.1",
     "webpack-bundle-analyzer": "^2.9.1",
     "webpack-dev-middleware": "^1.12.0",
