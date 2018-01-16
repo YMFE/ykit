@@ -110,7 +110,7 @@ exports.run = function(options) {
 
     // build
     log('Start building.');
-    execute(`ykit pack -q ${min ? '-m' : ''}`);
+    execute(`ykit2 pack -q ${min ? '-m' : ''}`);
     clearGitHooks();
     clearNodeModules();
     log('Finish building.\n');
