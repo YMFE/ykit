@@ -115,7 +115,7 @@ exports.run = function (options) {
             config.output = config.output.prd;
             config.plugins.push(
                 new UglifyJsPlugin({
-                    sourceMap: config.devtool ? true : false,
+                    sourceMap: false,
                     parallel: true,
                     uglifyOptions: {
                         ie8: true
