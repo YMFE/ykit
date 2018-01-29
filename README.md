@@ -1,5 +1,7 @@
 # YKit [![CircleCI](https://circleci.com/gh/YMFE/ykit.svg?style=shield)](https://circleci.com/gh/YMFE/ykit)
 
+[ENGLISH](./README-en.md)
+
 YKit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各种 JavaScript 应用的配置，选择和安装合适的插件即可开始构建你的应用。
 
 ## 特性
@@ -11,9 +13,10 @@ YKit 是一个基于 Webpack 的打包工具，它利用插件机制封装了各
 ## 安装
 
 - latest 稳定版: `[sudo] npm install ykit -g`
-- 基于 Webpack@3.8.1 的最新版本：`[sudo] npm install ykit@next -g`
+- 或者选择基于 Webpack@3.8.1 的最新版本：`[sudo] npm install ykit@next -g`
 
 ## 快速开始
+
 
 1. 创建目录 `mkdir ykit-app && cd ykit-app`
 2. 初始化工程 `ykit init`
@@ -27,7 +30,7 @@ module.exports = {
     plugins: [],
     config: {
         export: ['./scripts/index.js', './styles/index.css'],
-        modifyWebpackConfig: function modifyWebpackConfig(baseConfig) {
+        modifyWebpackConfig: function (baseConfig) {
             // 更改 Webpack 配置
             return baseConfig;
         }
