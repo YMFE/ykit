@@ -284,8 +284,11 @@ exports.run = function(options) {
         );
 
         const outputPath = config.output.path;
-        fs.ensureDirSync(sourceMapPath);
-        UtilFs.deleteFolderRecursive(sourceMapPath);
+        if (fs.existsSync(sourceMapPath)) {
+            UtilFs.deleteFolderRecursive(sourceMapPath, true);
+        } else {
+            fs.ensureDirSync(sourceMapPath);
+        }
         recursiveMove(outputPath, sourceMapPath);
 
         function recursiveMove(assetPath, distPath) {
