@@ -119,7 +119,6 @@ class Config {
                     )
                 ],
                 resolve: {
-                    root: [],
                     modules: ['node_modules'],
                     extensions: ['.js', '.css', '.json', '.string', '.tpl'],
                     alias: {}
