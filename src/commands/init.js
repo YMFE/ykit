@@ -178,6 +178,14 @@ exports.run = function(options) {
 	function createTmpl(callback) {
 		fs.copySync(sysPath.resolve(initTmplPath, './index.html'), sysPath.resolve(cwd, './index.html'));
 		fs.copySync(sysPath.resolve(initTmplPath, './src'), sysPath.resolve(cwd, './src'));
+
+		// 创建 ykit 缓存目录
+		const modulePath = sysPath.join(cwd, 'node_modules');
+		if (!fs.existsSync(modulePath)) {
+			fs.mkdirSync(modulePath);
+			fs.mkdirSync(sysPath.join(cwd, YKIT_CACHE_DIR));
+		}
+
 		callback(null);
 	}
 };
