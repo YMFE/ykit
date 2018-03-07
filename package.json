@@ -1,6 +1,6 @@
 {
   "name": "ykit",
-  "version": "2.3.3-rc",
+  "version": "2.3.3-rc.0",
   "description": "现代 JavaScript 应用构建工具",
   "bin": {
     "ykit": "bin/ykit"
