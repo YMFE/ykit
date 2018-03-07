@@ -47,6 +47,7 @@ exports.run = (options) => {
         hot = options.hot === 'false' ? false : true,
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
+        mapping = options.mapping || '',
         port = options.p || options.port || 80;
 
     let middlewareCache = {},
@@ -80,6 +81,23 @@ exports.run = (options) => {
         extName === '.css' && res.setHeader('Content-Type', 'text/css; charset=UTF-8');
         extName === '.string' && res.setHeader('Content-Type', 'text/html; charset=UTF-8');
         res.setHeader('Access-Control-Allow-Origin', '*');
+        next();
+    });
+
+    
+    // 处理目录映射，比如: R_node_tt:test-egg
+    // /R_node_tt/prd/index@dev.css -> /test-egg/prd/index@dev.css
+    app.use((req, res, next) => {
+
+        // 修改请求路径
+        if (mapping){
+            const keys = mapping.split(':');
+            let originUrl = req.url;
+            if (keys.length === 2) {
+                req.url = originUrl.replace(keys[0], keys[1]);
+                req.mappingUrl = req.url;
+            }
+        }
         next();
     });
 
@@ -133,6 +151,10 @@ exports.run = (options) => {
             /* eslint-enable */
 
             let contentLength = res._contentLength || '';
+            let url = req.originalUrl;
+            if (req.mappingUrl) {
+                url += ' --> ' + req.mappingUrl;
+            }
             if (contentLength) {
                 contentLength = contentLength > 1024
                     ? (contentLength / 1024).toFixed(2) + 'KB'
@@ -142,7 +164,7 @@ exports.run = (options) => {
 
             format = format.replace(/%date/g, `[${moment().format(dateFormat)}]`.grey);
             format = format.replace(/%method/g, `${req.method.toUpperCase().magenta}${req.mock ? '(mock)'.cyan : ''}`);
-            format = format.replace(/%url/g, decodeURI(req.originalUrl));
+            format = format.replace(/%url/g, decodeURI(url));
             format = format.replace(/%status/g, String(res.statusCode)[statusColor]);
             format = format.replace(/%contentLength/g, contentLength.grey);
 
@@ -160,6 +182,7 @@ exports.run = (options) => {
         try {
             const projectInfo = getProjectInfo(req);
             const project = Manager.getProject(projectInfo.projectDir, { cache: false });
+
 
             // 当前配置中的 middleware
             const customMiddlewares = project.config.getMiddlewares() || [];
@@ -434,7 +457,7 @@ exports.run = (options) => {
                 }
             }
         }
-
+        
         return {
             projectName: projectName,
             projectDir: projectDir
