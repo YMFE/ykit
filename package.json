@@ -1,6 +1,6 @@
 {
   "name": "ykit",
-  "version": "2.2.1",
+  "version": "2.3.2",
   "description": "现代 JavaScript 应用构建工具",
   "bin": {
     "ykit": "bin/ykit"
@@ -41,6 +41,7 @@
     "log-symbols": "^2.0.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.14.1",
+    "node-fs-extra": "^0.8.2",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",
     "requireg": "^0.1.5",
