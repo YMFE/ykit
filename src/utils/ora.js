@@ -1,5 +1,4 @@
 'use strict';
-const chalk = require('chalk');
 const extend = require('extend');
 const cliCursor = require('cli-cursor');
 const cliSpinners = require('cli-spinners');
@@ -43,7 +42,7 @@ class Ora {
         let frame = frames[this.frameIndex];
 
         if (this.color) {
-            frame = chalk[this.color](frame);
+            frame = frame[this.color];
         }
 
         this.frameIndex = ++this.frameIndex % frames.length;

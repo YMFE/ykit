@@ -8,12 +8,6 @@ const requireg = require('requireg');
 
 const UtilFs = require('../utils/fs.js');
 
-// 已指定 node 版本则不再强制使用 node 6
-let switchNodeCmd = 'echo ""';
-if(!process.env.NODE_VER) {
-    switchNodeCmd = 'export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH';
-}
-
 exports.usage = '线上编译';
 
 exports.setOptions = (optimist) => {
@@ -88,7 +82,7 @@ exports.npmInstall = function() {
     // install
     let installParams = `--registry ${userRegistry} ${isProduction ? '--production' : ''}`;
     if(currentNpm === 'npm_cache_share') {
-        installParams += ' -d';
+        installParams += ' -d -f';
     } else if (currentNpm === 'yarn') {
         installParams += ' --non-interactive';
     }
@@ -105,11 +99,12 @@ exports.run = function(options) {
     // display version info
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
     process.stdout && process.stdout.write('npm version: ') && execute('npm -v');
-    execute('ykit -v');
+
+    log('ykit version:', ykitVer);
 
     // build
     log('Start building.');
-    execute(`ykit pack -q ${min ? '-m' : ''}`);
+    execute(`ykit2 pack -q ${min ? '-m' : ''}`);
     clearGitHooks();
     clearNodeModules();
     log('Finish building.\n');
@@ -118,10 +113,6 @@ exports.run = function(options) {
 function execute(cmd) {
     if (!cmd) {
         return;
-    }
-
-    if(switchNodeCmd) {
-        cmd = switchNodeCmd + ' && ' + cmd;
     }
 
     const child = shell.exec(cmd, {

@@ -2,14 +2,23 @@
 
 const path = require('path');
 const shell = require('shelljs');
+const child_process = require('child_process');
 const expect = require('chai').expect;
 
-const ykitPath = path.join(__dirname, '../bin/ykit');
-const kill = require('../src/utils/psKill');
-
+const ykitBin = path.join(__dirname, '../bin/ykit');
 const cwd = process.cwd();
 const exampleName = 'ykit-starter-react';
 const examplePath = path.join(cwd, 'cli-test', exampleName);
+
+const port = 3306;
+const kill = function() {
+    // 防止端口已被用
+    try {
+        shell.exec(`kill $(lsof -t -i:${port})`, {silent: true});
+    } catch (e) {
+        // do nothing
+    }
+}
 
 describe('Start testing terminal client', () => {
     const env = process.env.ENV;
@@ -43,69 +52,64 @@ describe('Start testing terminal client', () => {
         }
 
         if (output.code !== 0) {
+            console.log('err', output);
             process.exit(1);
         }
         expect(shell.test('-d', 'node_modules')).to.be.true;
     })
 
     it('runs server command', (done) => {
-        const child = shell.exec(ykitPath + ' server -p 3000', {silent: true}, () => {
+        shell.cd(examplePath);
+        kill();
+
+        const child = shell.exec(`${ykitBin} server -p ${port}`, {silent: true}, () => {
             // do nothing & wait for curl
         });
 
-        let serverStarted = false
+        shell.exec('sleep 2');
+        let hasTestCurl = false;
         child.stdout.on('data', (data) => {
-            if (data.includes('Starting up server')) {
-                serverStarted = true
-                shell.exec('sleep 3');
-
-                const output = shell.exec('curl -I localhost:3000', {silent: true});
-                expect(output.includes('200')).to.be.true;
-
-                kill(child.pid);
-                done(0);
-            } else if(!serverStarted){
-                done('Server fails to start');
+            if(hasTestCurl) {
+                return;
             }
+            hasTestCurl = true;
+
+            const output = shell.exec(`curl -I localhost:${port}`, {silent: true});
+            expect(output.includes('200')).to.be.true;
+
+            kill();
+            done(0);
         });
     })
 
     it('runs server command without config file', (done) => {
         shell.cd(path.join(examplePath, 'node_modules'));
+        kill();
 
-        const child = shell.exec(ykitPath + ' server -p 3000', {silent: true}, () => {
+        const child = shell.exec(`${ykitBin} server -p ${port + 1}`, {silent: false}, () => {
             // do nothing & wait for curl
         });
 
-        let serverStarted = false
+        shell.exec('sleep 2');
+        let hasTestCurl = false;
         child.stdout.on('data', (data) => {
-            if (data.includes('Starting up server')) {
-                serverStarted = true
-                shell.exec('sleep 3');
-
-                const output = shell.exec('curl -I localhost:3000/react/react.js', {silent: true});
-                expect(output.includes('200')).to.be.true;
-
-                kill(child.pid);
-                done(0);
-            } else if(!serverStarted) {
-                done('Server fails to start');
+            if(hasTestCurl) {
+                return;
             }
+            hasTestCurl = true;
+
+            const output = shell.exec(`curl -I localhost:${port + 1}/react/package.json`, {silent: false});
+            expect(output.includes('200')).to.be.true;
+
+            kill();
+            done(0);
         });
     })
 
     it('runs pack command', () => {
         shell.cd(examplePath);
 
-        shell.exec(ykitPath + ' pack -m', {silent: false});
+        shell.exec(ykitBin + ' pack -m', {silent: true});
         expect(shell.test('-d', path.join(examplePath, 'prd'))).to.be.true;
     })
-
-    it('runs lint command', () => {
-        shell.cd(examplePath);
-
-        const output = shell.exec(ykitPath + ' lint', {silent: false});
-        expect(output.stdout.includes('warnings')).to.be.true;
-    })
-
 })

@@ -2,20 +2,10 @@
 
 let fs = require('fs');
 let path = require('path');
-let yaml = require('js-yaml');
 
 exports.readJSON = function(loc){
     try {
         return JSON.parse(fs.readFileSync(loc, 'utf8'));
-    } catch (err) {
-        err.message = `${loc}: ${err.message}`;
-        throw err;
-    }
-};
-
-exports.readYAML = function(loc) {
-    try {
-        return yaml.safeLoad(fs.readFileSync(loc, 'utf-8')) || {};
     } catch (err) {
         err.message = `${loc}: ${err.message}`;
         throw err;
@@ -63,10 +53,6 @@ exports.readFile = function(loc){
         break;
     case '.json':
         content = exports.readJSON(loc);
-        break;
-    case '.yml':
-    case '.yaml':
-        content = exports.readYAML(loc);
         break;
     default:
         break;

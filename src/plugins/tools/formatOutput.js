@@ -16,7 +16,7 @@ function formatMessage(message) {
       /Module not found: Error: Cannot resolve 'file' or 'directory'/,
       'Module not found:'
     )
-    .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, '')
+    .replace(/^\s*at\s.*:\d+:\d+[\s)]*\n/gm, '')
     .replace('./~/css-loader!./~/postcss-loader!', '');
 }
 

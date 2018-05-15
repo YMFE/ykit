@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const Manager = require('../modules/manager.js');
+const Manager = require('../modules/GlobalManager.js');
 const utilMw = require('../utils/middleware.js');
 const utilFs = require('../utils/fs.js');
 
@@ -43,7 +43,7 @@ module.exports = function(req, res, next) {
         const staticHost = project.server && project.server.staticHost;
         if(staticHost) {
             Object.keys(staticHost).map((hostName) => {
-                const hostReg = new RegExp(`(src|href)=("|')\/\/(${hostName})`, 'g');
+                const hostReg = new RegExp(`(src|href)=("|')//(${hostName})`, 'g');
 
                 let matches;
                 while((matches = hostReg.exec(htmlContent)) !== null) {
