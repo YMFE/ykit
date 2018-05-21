@@ -46,8 +46,16 @@ exports.run = function (options) {
     start.bind(this.project)().catch(console.log.bind(console));
 
     async function start() {
+        // http://man7.org/linux/man-pages/man2/setuid.2.html
+        // 以sudo身份执行的时候，会自动设置此环境变量
         if (process.env['SUDO_UID']) {
-            process.setuid(parseInt(process.env['SUDO_UID']));
+            try {
+                process.setuid(parseInt(process.env['SUDO_UID']));
+            } catch(e) {
+                // 这里catch error,处理系统不支持意外，以后权限的问题
+                logWarn(`设置uid为${process.env['SUDO_UID']}发生了问题。如果不影响最终的pack结果，请忽略。`);
+                logWarn(e);
+            }
         }
 
         if(Object.keys(config.entry).length === 0) {
