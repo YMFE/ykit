@@ -692,16 +692,25 @@ exports.run = (options) => {
     function _getProjectAlias(projectBase) {
         if (_isProject(projectBase)) {
             var jsonstring = fs.readFileSync(sysPath.join(projectBase, 'package.json')).toString('utf8');
-            var packageConfig = JSON.parse(jsonstring);
+            try {
+                var packageConfig = JSON.parse(jsonstring);
 
-            var alias = [];
-            packageConfig.alias && (alias.push(packageConfig.alias));
-            packageConfig.hybridId && (alias.push(packageConfig.hybridId));
+                var alias = [];
+                packageConfig.alias && (alias.push(packageConfig.alias));
+                packageConfig.hybridId && (alias.push(packageConfig.hybridId));
 
-            return {
-                baseName: sysPath.basename(projectBase),
-                alias
-            };
+                return {
+                    baseName: sysPath.basename(projectBase),
+                    alias
+                };
+            } catch(e) {
+                logWarn(`project :${projectBase} package.json parse error, please check it!`);
+                
+                return {
+                    baseName: sysPath.basename(projectBase),
+                    alias: []
+                };
+            }
         }
     }
 
