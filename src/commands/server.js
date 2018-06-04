@@ -152,7 +152,7 @@ exports.run = (options) => {
     app.use((req, res, next) => {
         let url = req.url;
         var st = Date.now();
-        var projectList = getCurrentProjects();
+        var projectList = getCurrentProjects(cwd);
         // 不论项目，发现别名直接替换为对应的baseName
         if(projectList && projectList.length) {
             projectList.forEach(project => {
@@ -671,9 +671,9 @@ exports.run = (options) => {
     }
 
     // 父目录启动的话，可能存在多个项目，是一个项目列表，获取每一个项目列表的信息
-    function getCurrentProjects() {
+    function getCurrentProjects(cwd) {
         // 观察当前目录是否有ykit.js
-        var cwd = process.cwd();
+        // var cwd = process.cwd();
         
         if(_isProject(cwd)) {// 项目根目录访问
             return [_getProjectAlias(cwd)];
@@ -715,6 +715,21 @@ exports.run = (options) => {
     }
 
     function _isProject(projectPath) {
+        return _isYkitProject(projectPath) && _isNpmProject(projectPath);
+    }
+    function _isNpmProject(projectPath) {
+        if (globby.sync(['package.json'], { cwd: projectPath }).length) {
+            try {
+                UtilFs.readJSON(sysPath.join(projectPath, 'package.json'));
+                return true;
+            } catch (e) {
+                //
+            }
+        }
+
+        return false;
+    }
+    function _isYkitProject(projectPath) {
         return !!globby.sync(['ykit.*.js', 'ykit.js'], { cwd: projectPath }).length;
     }
 };

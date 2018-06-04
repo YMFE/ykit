@@ -18,7 +18,7 @@ class Config {
                 fs.mkdirSync(sysPath.join(cwd, YKIT_CACHE_DIR));
             }
         } else {
-            logWarn('No ykit config file found.');
+            // logWarn('No ykit config file found.', cwd);
         }
 
         this._config = {
