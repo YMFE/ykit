@@ -1,6 +1,7 @@
 'use strict';
 
 const connect = require('connect'),
+    compression = require('compression'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
@@ -37,6 +38,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('v', '显示详细编译信息');
     optimist.alias('m', 'middlewares');
     optimist.describe('m', '加载项目中间件');
+    optimist.alias('c', 'compress');
+    optimist.describe('c', '启用响应压缩');
 };
 
 exports.run = (options) => {
@@ -47,7 +50,8 @@ exports.run = (options) => {
         hot = options.hot === 'false' ? false : true,
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
-        port = options.p || options.port || 80;
+        port = options.p || options.port || 80,
+        useCompress = options.c || options.compress;
 
     let middlewareCache = {},
         promiseCache = {},
@@ -64,40 +68,21 @@ exports.run = (options) => {
     let usingHotServer = false;
     const dateFormat = 'HH:mm:ss';
 
-    if (middlewares) {
-        middlewares.split('|').forEach((proName) => {
-            let pro = Manager.getProject(sysPath.join(cwd, proName));
-            if (pro.check() && Array.isArray(pro.middlewares)) {
-                pro.middlewares.forEach((mw) => app.use(mw));
-            }
-        });
-    }
-
-    // a simple middleware
-    app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
-
-    // 预处理
-    app.use((req, res, next) => {
-        const extName = sysPath.extname(req.url);
-        extName === '.js' && res.setHeader('Content-Type', 'text/javascript; charset=UTF-8');
-        extName === '.css' && res.setHeader('Content-Type', 'text/css; charset=UTF-8');
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        next();
-    });
-
     // logger
     app.use((req, res, next) => {
         const end = res.end;
         req._startTime = new Date;
 
         res.end = (chunk, encoding) => {
-            res.end = end;
-            res.end(chunk, encoding);
+            // res.end = end;
+            end.call(res, chunk, encoding, function() {
+                log(`${req.url} cost ${Date.now() - req._startTime}`);
+            });
 
             const isNotMap = sysPath.extname(req.url) !== '.map';
             const isNotHotUpdate = req.url.indexOf('hot-update') === -1;
             if(isNotMap && isNotHotUpdate) {
-                let format = '%date %status %method %url %contentLength';
+                let format = '%date %status %method %url %contentLength %cost';
 
                 const parseResult = parse(req, res, format);
                 return process.nextTick(() => {
@@ -137,6 +122,7 @@ exports.run = (options) => {
             format = format.replace(/%url/g, decodeURI(req.originalUrl));
             format = format.replace(/%status/g, String(res.statusCode)[statusColor]);
             format = format.replace(/%contentLength/g, contentLength.grey);
+            format = format.replace(/%cost/g, Date.now() - req._startTime);
 
             return {
                 message: format,
@@ -145,6 +131,32 @@ exports.run = (options) => {
         }
 
         return next();
+    });
+
+    // use compression
+    if(useCompress) {
+        app.use(compression());
+    }
+
+    if (middlewares) {
+        middlewares.split('|').forEach((proName) => {
+            let pro = Manager.getProject(sysPath.join(cwd, proName));
+            if (pro.check() && Array.isArray(pro.middlewares)) {
+                pro.middlewares.forEach((mw) => app.use(mw));
+            }
+        });
+    }
+
+    // a simple middleware
+    app.use(favicon(sysPath.join(__dirname, '../../static/imgs/favicon.ico')));
+
+    // 预处理
+    app.use((req, res, next) => {
+        const extName = sysPath.extname(req.url);
+        extName === '.js' && res.setHeader('Content-Type', 'text/javascript; charset=UTF-8');
+        extName === '.css' && res.setHeader('Content-Type', 'text/css; charset=UTF-8');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        next();
     });
 
     // 在package.json中配置别名
