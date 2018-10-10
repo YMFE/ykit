@@ -138,9 +138,9 @@ exports.run = function (options) {
     }
 
     function prepareConfig() {
-        if (opt.sourcemap) {
-            config.devtool = opt.sourcemap;
-        }
+        // if (opt.sourcemap) {
+        //     config.devtool = opt.sourcemap;
+        // }
 
         if (!opt.quiet) {
             config.plugins.push(require('../plugins/progressBarPlugin.js'));
@@ -150,11 +150,10 @@ exports.run = function (options) {
             config.output = config.output.prd;
             // fix min source-map config
             if(opt.sourcemap) {
-                config.devtool = config.devtool || 'source-map';
-            } else {
-                config.devtool = '';
+                config.devtool = 'source-map';
             }
         } else {
+            config.devtool = 'source-map';
             config.output = config.output.dev;
         }
 
