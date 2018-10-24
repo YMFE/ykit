@@ -6,7 +6,7 @@ const colors = require('colors');
 
 const path = require('path');
 const fs = require('fs');
-
+const fse = require('fs-extra');
 const Config = require('./Config.js');
 const Manager = require('../modules/manager.js');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -393,6 +393,57 @@ class Project {
         if(!isExtractTextPluginExists) {
             config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
         }
+    }
+    // pack 生成 sourcemap 以后，从中提取 sourcemap 到新的目录中
+    moveSourcemap() {
+        
+        this.packCallbacks.push(function(opt, stats) {
+            var next = this.async();
+
+            if(opt.min) {
+                logInfo('发现目前处理 min 模式，开始处理 map 文件到独立的目录');
+                var outputConfig = stats.compilation.compiler.options.output;
+                var outputPath = outputConfig.path;
+                logInfo('prd 全路径:', outputPath);
+                // clear
+                var sourcemapPath = path.join(outputPath, '../prd_sourcemap');
+                logInfo('sourcemap 路径', sourcemapPath);
+                
+                fse.ensureDirSync(sourcemapPath);
+                fse.emptyDirSync(sourcemapPath);
+                
+                var mapPattern = path.join(outputPath, '**/*.map');
+                logInfo('start globby map file pattern', mapPattern);
+                globby(mapPattern, { expandDirectories: true })
+                    .then(function(files) {
+                        logInfo('扫描发现 map 文件有', files);
+
+                        Promise.all(files.map(function(filePath) {
+                            return new Promise(function(resolve, reject) {
+                                var targetPath = path.join(sourcemapPath, path.relative(outputPath, filePath));
+                                logInfo('开始挪移文件', filePath, '==>', targetPath);
+                                fse.move(filePath, targetPath, function(error) {
+                                    if( error ) {
+                                        logInfo('失败挪移文件', filePath, '==>', targetPath, error);
+                                        reject(error);
+                                    } else {
+                                        logInfo('成功挪移文件', filePath, '==>', targetPath);
+                                        resolve();
+                                    }
+                                });
+                            });
+                        })).then(function() {
+                            logInfo('sourcemap 文件移动完成。 继续执行其他后续操作。');
+                            next();    
+                        }).catch(function(error) {
+                            logError('sourcemap 文件移动失败', error);
+                            throw error;
+                        });
+                    });
+            } else {
+                next();
+            }
+        });
     }
 
     lint(dir, callback) {

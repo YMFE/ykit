@@ -150,10 +150,11 @@ exports.run = function (options) {
             config.output = config.output.prd;
             // fix min source-map config
             if(opt.sourcemap) {
+                // min 模式下指定 sourcemap 的生成方式为完整的 sourcemap
                 config.devtool = 'source-map';
             }
         } else {
-            config.devtool = 'source-map';
+            config.devtool = config.devtool || 'source-map';
             config.output = config.output.dev;
         }
 
@@ -166,6 +167,8 @@ exports.run = function (options) {
         }
 
         this.fixCss();
+
+        this.moveSourcemap();
 
         return config;
     }
