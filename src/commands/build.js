@@ -53,7 +53,7 @@ exports.npmInstall = function() {
     if(isNodeModulesExists) {
         logError('Find node_modules in the current directory which can cause compilation failure.');
         logError('Please remove it from your registry.');
-        logInfo('Visit ' + 'http://ued.qunar.com/ykit/docs-%E5%8F%91%E5%B8%83.html'.underline + ' for doc.');
+        logInfo('Visit ' + 'https://ykit.ymfe.org/guide/build-prd.html'.underline + ' for doc.');
         process.exit(1);
     }
 
@@ -82,7 +82,7 @@ exports.npmInstall = function() {
         currentNpm = 'npm';
         log('Installing npm modules with npm.');
         logWarn('Please use yarn or shrinkwrap to lock down the versions of packages.');
-        logDoc('http://ued.qunar.com/ykit/docs-npm%20shrinkwrap.html');
+        logDoc('https://ykit.ymfe.org/guide/shrinkwrap.html');
     }
 
     // install

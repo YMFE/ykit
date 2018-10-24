@@ -165,7 +165,7 @@ class Project {
                 }
             } else {
                 logError(pluginItem.name || 'Unknown' + ' plugin config error，please check local ykit.js.');
-                logDoc('http://ued.qunar.com/ykit/plugins.html');
+                logDoc('https://ykit.ymfe.org/plugin/plugin.html');
             }
 
             if(pluginName.indexOf(ykitConfigStartWith) === -1) {
@@ -206,7 +206,7 @@ class Project {
                 const errorInfo = `Local ${pluginName} plugin not found，you may need to install it first.`;
                 if(!(process.ykitError && process.ykitError[this.cwd + errorInfo])) {
                     logError(errorInfo);
-                    logDoc('http://ued.qunar.com/ykit/plugins.html');
+                    logDoc('https://ykit.ymfe.org/plugin/plugin.html');
                 }
                 process.ykitError = Object.assign(process.ykitError || {}, {[this.cwd + errorInfo]: true});
             }
@@ -231,7 +231,7 @@ class Project {
             this.setBuild(ykitConfigFile.build);
         } else {
             logError('Local ' + this.configFile + ' config not found.');
-            logDoc('http://ued.qunar.com/ykit/docs-配置.html');
+            logDoc('https://ykit.ymfe.org/guide/basic-config.html');
         }
 
         // 处理 eslint
