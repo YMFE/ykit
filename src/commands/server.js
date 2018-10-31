@@ -71,18 +71,15 @@ exports.run = (options) => {
     // logger
     app.use((req, res, next) => {
         const end = res.end;
-        req._startTime = new Date;
 
         res.end = (chunk, encoding) => {
             // res.end = end;
-            end.call(res, chunk, encoding, function() {
-                log(`${req.url} cost ${Date.now() - req._startTime}`);
-            });
+            end.call(res, chunk, encoding);
 
             const isNotMap = sysPath.extname(req.url) !== '.map';
             const isNotHotUpdate = req.url.indexOf('hot-update') === -1;
             if(isNotMap && isNotHotUpdate) {
-                let format = '%date %status %method %url %contentLength %cost';
+                let format = '%date %status %method %url %contentLength';
 
                 const parseResult = parse(req, res, format);
                 return process.nextTick(() => {
@@ -122,7 +119,6 @@ exports.run = (options) => {
             format = format.replace(/%url/g, decodeURI(req.originalUrl));
             format = format.replace(/%status/g, String(res.statusCode)[statusColor]);
             format = format.replace(/%contentLength/g, contentLength.grey);
-            format = format.replace(/%cost/g, Date.now() - req._startTime);
 
             return {
                 message: format,
