@@ -30,6 +30,7 @@ exports.run = function (options) {
         lint = options.l || options.lint || false,
         clean = options.c || options.clean || true,
         quiet = options.q || options.quiet || false,
+        cusMin = options.x || options['custom-webpack-plugin'] || false,
         sourcemap = options.s || options.sourcemap,
         processNum = options.p|| options.process || 4,
         packStartTime = Date.now(),
@@ -215,7 +216,7 @@ exports.run = function (options) {
                     process.exit(1);
                 }
 
-                if (opt.min && !opt.x) {
+                if (opt.min && !cusMin) {
                     const computecluster = require('compute-cluster');
                     const cc = new computecluster({
                         module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
