@@ -21,6 +21,8 @@ exports.setOptions = (optimist) => {
     optimist.describe('q', '静默模式');
     optimist.alias('p', 'process');
     optimist.describe('p', '进程池大小');
+    optimist.alias('x', 'custom-webpack-plugin');
+    optimist.describe('x', '取消默认的压缩, 使用自定义webpack-plugin代替');
 };
 
 exports.run = function (options) {
@@ -213,7 +215,7 @@ exports.run = function (options) {
                     process.exit(1);
                 }
 
-                if (opt.min) {
+                if (opt.min && !opt.x) {
                     const computecluster = require('compute-cluster');
                     const cc = new computecluster({
                         module: sysPath.resolve(__dirname, '../modules/minWorker.js'),
