@@ -1,3 +1,14 @@
+<a name="0.8.5"></a>
+## [0.8.5](https://github.com/YMFE/ykit/compare/v0.8.5-beta.4...v0.8.5) (2018-11-13)
+
+
+### Features
+
+* modify changelog ([e79c7e3](https://github.com/YMFE/ykit/commit/e79c7e3))
+* 增加注释 ([b86d7b3](https://github.com/YMFE/ykit/commit/b86d7b3))
+
+
+
 <a name="0.8.5-beta.4"></a>
 ## [0.8.5-beta.4](https://github.com/YMFE/ykit/compare/v0.8.5-beta.3...v0.8.5-beta.4) (2018-11-12)
 
