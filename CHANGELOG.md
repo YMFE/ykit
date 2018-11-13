@@ -1,3 +1,40 @@
+<a name="0.8.5-beta.4"></a>
+## [0.8.5-beta.4](https://github.com/YMFE/ykit/compare/v0.8.5-beta.3...v0.8.5-beta.4) (2018-11-12)
+
+
+
+<a name="0.8.5-beta.3"></a>
+## [0.8.5-beta.3](https://github.com/YMFE/ykit/compare/v0.8.5-beta.2...v0.8.5-beta.3) (2018-11-12)
+
+
+
+<a name="0.8.5-beta.2"></a>
+## [0.8.5-beta.2](https://github.com/YMFE/ykit/compare/v0.8.5-beta.1...v0.8.5-beta.2) (2018-11-12)
+
+
+
+<a name="0.8.5-beta.1"></a>
+## [0.8.5-beta.1](https://github.com/YMFE/ykit/compare/v0.8.5-beta.0...v0.8.5-beta.1) (2018-10-31)
+
+
+### Features
+
+* remove time cost comment ([b8cd946](https://github.com/YMFE/ykit/commit/b8cd946))
+
+
+
+<a name="0.8.5-beta.0"></a>
+## [0.8.5-beta.0](https://github.com/YMFE/ykit/compare/v0.8.4...v0.8.5-beta.0) (2018-10-25)
+
+
+### Features
+
+* 关闭自动 hot 功能；会影响部分项目的 resolve 路径；目前原因不明，待后续查找，暂时关闭此功能； ([480481e](https://github.com/YMFE/ykit/commit/480481e))
+* 增加 pack min 后的 sourcemap 处理 ([455c291](https://github.com/YMFE/ykit/commit/455c291))
+* 更新 docs 地址 ([0720d93](https://github.com/YMFE/ykit/commit/0720d93))
+
+
+
 <a name="0.8.4"></a>
 ## [0.8.4](https://github.com/YMFE/ykit/compare/v0.8.3...v0.8.4) (2018-10-10)
 
