@@ -8,12 +8,6 @@ const requireg = require('requireg');
 
 const UtilFs = require('../utils/fs.js');
 
-// 已指定 node 版本则不再强制使用 node 6
-let switchNodeCmd = 'echo ""';
-if(!process.env.NODE_VER) {
-    switchNodeCmd = 'export PATH=/usr/local/n/versions/node/6.2.1/bin:$PATH';
-}
-
 exports.usage = '线上编译';
 
 exports.setOptions = (optimist) => {
@@ -118,10 +112,6 @@ exports.run = function(options) {
 function execute(cmd) {
     if (!cmd) {
         return;
-    }
-
-    if(switchNodeCmd) {
-        cmd = switchNodeCmd + ' && ' + cmd;
     }
 
     const child = shell.exec(cmd, {
