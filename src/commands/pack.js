@@ -157,11 +157,8 @@ exports.run = function (options) {
 
         if (opt.min) {
             config.output = config.output.prd;
-            // fix min source-map config
-            if(opt.sourcemap) {
-                // min 模式下指定 sourcemap 的生成方式为完整的 sourcemap
-                config.devtool = 'source-map';
-            }
+            // fix min source-map config, 线上模式的sourcemap指定为 'source-map', 用户设置的不会生效
+            config.devtool = 'source-map';
         } else {
             config.devtool = config.devtool || 'source-map';
             config.output = config.output.dev;
