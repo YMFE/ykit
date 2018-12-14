@@ -95,6 +95,7 @@ exports.npmInstall = function() {
 
 exports.run = function(options) {
     const min = !(options.m === 'false' || options.min === 'false');
+    const x = options.x || options['custom-webpack-plugin'] || false;
 
     // display version info
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
@@ -102,8 +103,9 @@ exports.run = function(options) {
     execute('ykit -v');
 
     // build
-    log('Start building.');
-    execute(`ykit pack -q ${min ? '-m' : ''}`);
+    const cmd = `ykit pack -q ${min ? '-m' : ''} ${x ? '-x' : ''}`;
+    log('Start building. [Pack cammand] ', cmd);
+    execute(cmd);
     clearGitHooks();
     clearNodeModules();
     log('Finish building.\n');
