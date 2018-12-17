@@ -94,14 +94,17 @@ exports.npmInstall = function() {
 };
 
 exports.run = function(options) {
+    const min = !(options.m === 'false' || options.min === 'false');
+    const x = options.x || options['custom-webpack-plugin'] || false;
+
     // display version info
     process.stdout && process.stdout.write('node version: ') && execute('node -v');
     process.stdout && process.stdout.write('npm version: ') && execute('npm -v');
     execute('ykit -v');
 
     // build
-    const cmd = `ykit pack -q ${process.argv.slice(3).join(' ')}`;
-    log(`Start building.\n[pack command] : ${cmd}`);
+    const cmd = `ykit pack -q ${min ? '-m' : ''} ${x ? '-x' : ''}`;
+    log('Start building. [Pack cammand] ', cmd);
     execute(cmd);
     clearGitHooks();
     clearNodeModules();
