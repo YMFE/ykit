@@ -22,11 +22,11 @@ module.exports = {
             UtilFs.deleteFolderRecursive(sysPath.join(projectDir, YKIT_CACHE_DIR), true);
         }
     },
-    setHotServer(webpackConfig, projectDir, projectName, port) {
+    setHotServer(webpackConfig, projectDir, projectName, devHost, port) {
         if (!webpackConfig.output.local.publicPath) {
             // hot 且 未指定 publicPath 需要手动设置方式 hot.json 404
             const relativePath = sysPath.relative(projectDir, webpackConfig.output.local.path);
-            webpackConfig.output.local.publicPath = `http://127.0.0.1:${port}/${projectName}/${relativePath}/`;
+            webpackConfig.output.local.publicPath = `http://${devHost}:${port}/${projectName}/${relativePath}/`;
         }
 
         webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -38,7 +38,7 @@ module.exports = {
                     let entryItem = webpackConfig.entry[key];
                     if(sysPath.extname(entryItem[entryItem.length - 1]) === '.js') {
                         const whmPath = require.resolve('webpack-hot-middleware/client');
-                        const hotPath = `http://127.0.0.1:${port}/__webpack_hmr`;
+                        const hotPath = `http://${devHost}:${port}/__webpack_hmr`;
                         entryItem.unshift(whmPath + '?reload=true&path=' + hotPath + '&timeout=9999999&overlay=false');
                     }
                     return entryItem;

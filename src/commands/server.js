@@ -45,6 +45,7 @@ exports.run = (options) => {
         verbose = options.v || options.verbose,
         proxy = options.x || options.proxy,
         hot = options.hot === 'false' ? false : true,
+        devHost = '127.0.0.1',
         middlewares = options.mw || options.middlewares,
         isHttps = options.s || options.https,
         mapping = options.mapping || '',
@@ -280,8 +281,9 @@ exports.run = (options) => {
 
         // hot reload
         const hotEnabled = (project.server && project.server.hot) || hot;
+        const devHost =  (project.server && project.server.devHost) || devHost;
         if(hotEnabled) {
-            ServerManager.setHotServer(webpackConfig, projectDir, projectName, port);
+            ServerManager.setHotServer(webpackConfig, projectDir, projectName, devHost, port);
         }
 
         // 如果发现插件中有 HotModuleReplacementPlugin 则需要编译全部入口，否则无法正常运行
