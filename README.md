@@ -58,11 +58,7 @@ module.exports = {
 - [ykit-starter-antd][5]
 
 ## 文档
-
-访问 [ykit.ymfe.org][1] 来获取更多 YKit 的文档。
-
-[1]: https://ykit.ymfe.org/
-[2]: https://github.com/roscoe054/ykit-starter-yo
-[3]: https://github.com/roscoe054/ykit-starter-react
-[4]: https://github.com/roscoe054/ykit-starter-vue
-[5]: https://github.com/roscoe054/ykit-starter-antd
+[1]: https://github.com/roscoe054/ykit-starter-yo
+[2]: https://github.com/roscoe054/ykit-starter-react
+[3]: https://github.com/roscoe054/ykit-starter-vue
+[4]: https://github.com/roscoe054/ykit-starter-antd
