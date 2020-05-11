@@ -13,7 +13,7 @@ let helpTitle = `\n===================== YKit ${version} ====================\n`
 
 let initOptions = (cmd) => {
     if (cmd.setOptions) {
-        cmd.setOptions(optimist);
+      //  cmd.setOptions(optimist);
     } else if (cmd.set_options) {
         cmd.set_options(optimist);
     }
@@ -65,6 +65,8 @@ let cli = module.exports = {
             return;
         }
         let module = command.module;
+        console.log('module----',  module)
+
         let options = initOptions(module);
         if (options.h || options.help) {
             info(helpTitle);
