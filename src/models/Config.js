@@ -22,7 +22,7 @@ class Config {
         }
 
         this._config = {
-            cwd: cwd,
+          //  cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
             output: {
@@ -42,23 +42,36 @@ class Config {
                     chunkFilename: '[id].chunk.min.js'
                 }
             },
+            mode:'none',
             module: {
-                preLoaders: [],
-                loaders: [{
+              //  preLoaders: [],
+                rules: [{
                     test: /\.json$/,
                     exclude: /node_modules/,
-                    loader: require.resolve('json-loader')
+                    use: [
+                      {
+                        loader:require.resolve('json-loader')
+                      }
+                    ]
                 }, {
                     test: /\.(html|string|tpl)$/,
-                    loader: require.resolve('html-loader')
+                    use: [
+                      {
+                        loader:require.resolve('html-loader')
+                      }
+                    ]
                 }, {
                     test: /\.css$/,
-                    loader: ExtractTextPlugin.extract(
-                        require.resolve('style-loader'),
-                        require.resolve('css-loader')
-                    )
+                    use: [
+                      {
+                        loader:ExtractTextPlugin.extract(
+                            require.resolve('style-loader'),
+                            require.resolve('css-loader')
+                        )
+                      }
+                    ]
                 }],
-                postLoaders: []
+              //  postLoaders: []
             },
             plugins: [
                 // local plugin
@@ -68,21 +81,19 @@ class Config {
                 new CaseSensitivePathsPlugin()
             ],
             resolve: {
-                root: [],
-                extensions: ['', '.js', '.css', '.json', '.string', '.tpl'],
+                extensions: [ '.js', '.jsx', '.ts', '.tsx', '.vue', '.scss', '.css', '.less', '.json', '.string', '.tpl'],
                 alias: {}
             },
-            entryExtNames: {
-                css: ['.css', 'sass', 'scss', 'less'],
-                js: ['.js', '.jsx', '.ts', '.tsx']
-            },
-            requireRules: [],
-            devtool: 'cheap-source-map',
-            middleware: []
+            // entryExtNames: {
+            //     css: ['.css', 'sass', 'scss', 'less'],
+            //     js: ['.js', '.jsx', '.ts', '.tsx']
+            // },
+            devtool: 'cheap-source-map'
         };
     }
 
     setExports(entries) {
+      console.log('entries----',entries)
         if (entries && Array.isArray(entries)) {
             [].concat(entries).forEach((entry) => {
                 if (typeof entry === 'string' || Array.isArray(entry)) {

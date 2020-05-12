@@ -50,7 +50,6 @@ exports.run = function (options) {
 
     let compilerStats, dist;
     let config = this.project.config.getConfig();
-
     // eslint-disable-next-line
     start.bind(this.project)().catch(console.log.bind(console));
 
@@ -67,11 +66,11 @@ exports.run = function (options) {
             }
         }
 
-        if(Object.keys(config.entry).length === 0) {
-            logError('No assets entry found.');
-            logDoc('https://ykit.ymfe.org/guide/basic-config.html');
-            process.exit(1);
-        }
+        // if(Object.keys(config.entry).length === 0) {
+        //     logError('No assets entry found.');
+        //     logDoc('https://ykit.ymfe.org/guide/basic-config.html');
+        //     process.exit(1);
+        // }
 
         UtilFs.deleteFolderRecursive(this.cachePath);
 
@@ -175,7 +174,7 @@ exports.run = function (options) {
         this.fixCss();
 
         this.moveSourcemap();
-
+      console.log('config---->', config)
         return config;
     }
 
