@@ -25,7 +25,7 @@ class Project {
         this.cwd = cwd;
         this.configFile =
             globby.sync(['ykit.*.js', 'ykit.js'], { cwd: cwd })[0] || '';
-console.log('ABC')
+
         this.plugins = [];
         this.config = new Config(cwd);
         this.commands = Manager.getCommands();

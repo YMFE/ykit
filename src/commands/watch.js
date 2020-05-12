@@ -7,6 +7,7 @@ const webpack = require('webpack');
 const moment = require('moment');
 
 const Manager = require('../modules/GlobalManager.js');
+const ConfigConverter = require('../modules/ConfigConverter.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
 
@@ -23,10 +24,12 @@ exports.run = function (options) {
 
     const cwd = process.cwd();
     const project = Manager.getProject(cwd, { cache: false });
+
     const compiler = project.getServerCompiler(function (config) {
-        config.plugins.push(require('../plugins/progressBarPlugin.js'));
-        config.plugins.push(require('../plugins/compileInfoPlugin.js'));
-        return config;
+        let __config = ConfigConverter(config);
+        __config.plugins.push(require('../plugins/progressBarPlugin.js'));
+        __config.plugins.push(require('../plugins/compileInfoPlugin.js'));
+        return __config;
     });
 
     compiler.watch({

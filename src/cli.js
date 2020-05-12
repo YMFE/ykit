@@ -65,7 +65,6 @@ let cli = module.exports = {
             return;
         }
         let module = command.module;
-        console.log('module----',  module)
 
         let options = initOptions(module);
         if (options.h || options.help) {

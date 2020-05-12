@@ -18,7 +18,6 @@ exports.getCommands = () => {
     return globby.sync(['*.js'], {
         cwd: YKIT_COMMANDS_PATH
     }).map((name) => {
-      console.log('name-----', YKIT_COMMANDS_PATH)
         return {
             name: sysPath.basename(name, '.js'),
             abbr: require(sysPath.join(YKIT_COMMANDS_PATH, name)).abbr,

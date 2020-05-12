@@ -84,7 +84,7 @@ exports.run = (options) => {
         next();
     });
 
-    
+
     // 处理目录映射，比如: R_node_tt:test-egg
     // /R_node_tt/prd/index@dev.css -> /test-egg/prd/index@dev.css
     app.use((req, res, next) => {
@@ -480,7 +480,7 @@ exports.run = (options) => {
                 }
             }
         }
-        
+
         return {
             projectName: projectName,
             projectDir: projectDir
@@ -491,7 +491,7 @@ exports.run = (options) => {
     function getCurrentProjects() {
         // 观察当前目录是否有ykit.js
         var cwd = process.cwd();
-        
+
         if(_isProject(cwd)) {// 项目根目录访问
             return [_getProjectAlias(cwd)];
         } else {// 父目录访问
