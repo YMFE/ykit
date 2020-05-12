@@ -1,6 +1,8 @@
 'use strict';
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin") ;
+
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const normalize = require('../utils/path').normalize;
@@ -62,14 +64,12 @@ class Config {
                     ]
                 }, {
                     test: /\.css$/,
-                    use: [
-                      {
-                        loader:ExtractTextPlugin.extract(
-                            require.resolve('style-loader'),
-                            require.resolve('css-loader')
-                        )
-                      }
-                    ]
+                    use:  ExtractTextPlugin.extract({
+                      fallback: require.resolve('style-loader'),
+                      use: [
+                        require.resolve('css-loader')
+                      ]
+                    })
                 }],
               //  postLoaders: []
             },
@@ -78,7 +78,8 @@ class Config {
                 require('../plugins/extTemplatedPathPlugin.js'),
                 require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
-                new CaseSensitivePathsPlugin()
+                new CaseSensitivePathsPlugin(),
+                new ExtractTextPlugin({filename : 'css/[name].min.css', allChunks:true})
             ],
             resolve: {
                 extensions: [ '.js', '.jsx', '.ts', '.tsx', '.vue', '.scss', '.css', '.less', '.json', '.string', '.tpl'],

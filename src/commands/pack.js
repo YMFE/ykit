@@ -174,7 +174,6 @@ exports.run = function (options) {
         this.fixCss();
 
         this.moveSourcemap();
-      console.log('config---->', config)
         return config;
     }
 

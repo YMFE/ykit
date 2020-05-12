@@ -40,10 +40,10 @@ module.exports = {
                 };
             });
 
-        compiler.resolvers.normal.plugins('module', function(request, finalCallback) {
-            if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
-                finalCallback();
-            }
-        });
+        // compiler.resolvers.normal.plugins('module', function(request, finalCallback) {
+        //     if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
+        //         finalCallback();
+        //     }
+        // });
     }
 };
