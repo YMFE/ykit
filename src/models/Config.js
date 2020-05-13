@@ -1,8 +1,6 @@
 'use strict';
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin") ;
-
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const normalize = require('../utils/path').normalize;
