@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const colors = require('colors');
 
 const UtilFs = require('../utils/fs.js');
-
 exports.usage = '资源编译、打包';
 exports.abbr = 'p';
 
@@ -50,6 +49,7 @@ exports.run = function (options) {
 
     let compilerStats, dist;
     let config = this.project.config.getConfig();
+
     // eslint-disable-next-line
     start.bind(this.project)().catch(console.log.bind(console));
 
@@ -172,8 +172,9 @@ exports.run = function (options) {
         }
 
         this.fixCss();
-
         this.moveSourcemap();
+        console.log('config---:', config)
+        //config = this.config.removeCustonConfig(config); //删除自定义config配置，webpack4以上不支持
         return config;
     }
 

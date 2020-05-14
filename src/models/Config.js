@@ -3,10 +3,12 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
+const { extraConfig } = require('./constans');
 const normalize = require('../utils/path').normalize;
 
 class Config {
     constructor(cwd, configFile) {
+
         const dir = normalize(cwd).split('/');
         const projectDir = dir[dir.length - 1];
 
@@ -21,8 +23,9 @@ class Config {
             // logWarn('No ykit config file found.', cwd);
         }
 
+
+        this.cwd = cwd;
         this._config = {
-          //  cwd: cwd,
             context: sysPath.join(cwd, 'src'),
             entry: {},
             output: {
@@ -34,7 +37,7 @@ class Config {
                 dev: {
                     path: './dev/',
                     filename: '[name][ext]',
-                    chunkFilename: '[id].chunk.js'
+                    chunkFilename: '[id].chunk'
                 },
                 prd: {
                     path: './prd/',
@@ -73,26 +76,34 @@ class Config {
             },
             plugins: [
                 // local plugin
-                require('../plugins/extTemplatedPathPlugin.js'),
-                require('../plugins/requireModulePlugin.js'),
+                //filename : '[name]@[chunkhash][ext]',
+                  // new ExtractTextPlugin({
+                  //   filename:  (getPath) => {
+                  //     console.log('getPath----',getPath('[name]-[chunkhash].css'))
+                  //     return getPath('[name]-[chunkhash].css')
+                  //   //  return getPath('css/[name].css').replace('css/js', 'css');
+                  //   },
+                  // //  chunkFilename: '[id].chunk@[chunkhash].css',
+                  //   allChunks:true
+                  // }),
+                 require('../plugins/extTemplatedPathPlugin.js'),
+                //  require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
-                new CaseSensitivePathsPlugin(),
-                new ExtractTextPlugin({filename : 'css/[name].min.css', allChunks:true})
+                new CaseSensitivePathsPlugin()
+
             ],
             resolve: {
                 extensions: [ '.js', '.jsx', '.ts', '.tsx', '.vue', '.scss', '.css', '.less', '.json', '.string', '.tpl'],
                 alias: {}
             },
-            // entryExtNames: {
-            //     css: ['.css', 'sass', 'scss', 'less'],
-            //     js: ['.js', '.jsx', '.ts', '.tsx']
-            // },
+            resolveLoader: {
+              moduleExtensions: ['-loader']
+            },
             devtool: 'cheap-source-map'
         };
     }
 
     setExports(entries) {
-      console.log('entries----',entries)
         if (entries && Array.isArray(entries)) {
             [].concat(entries).forEach((entry) => {
                 if (typeof entry === 'string' || Array.isArray(entry)) {
@@ -100,12 +111,12 @@ class Config {
 
                     // 抽取 entry 名字
                     var name = entryFile;
+
                     if (name.indexOf('./') == 0) {
                         name = name.substring(2);
                     } else if (name[0] == '/') {
                         name = name.substring(1);
                     }
-
                     // 兼容 entry "/scripts/xxx" 和 "scripts/xxx" 的形式
                     if(typeof entry === 'string') {
                         if (entry[0] == '/') {
@@ -152,7 +163,7 @@ class Config {
             if (nextConfig.context && !sysPath.isAbsolute(nextConfig.context)) {
                 nextConfig.context = sysPath.resolve(this._config.cwd, nextConfig.context);
             }
-
+        //  console.log('nextConfig-----',nextConfig.module)
             // 处理 loaders => loader
             if (nextConfig.module && nextConfig.module.loaders) {
                 nextConfig.module.loaders.map((loader) => {
@@ -184,7 +195,22 @@ class Config {
     }
 
     getConfig() {
-        return this._config;
+        // const __extraConfig = extraConfig(this.cwd)
+        // return extend(true, this._config, __extraConfig);
+        return this._config
+    }
+
+    removeCustonConfig(config) {
+        const __extraConfig = extraConfig(this.cwd)
+        const __extraKey = Object.keys(__extraConfig)
+        let __config = extend({}, config)
+        for(let key in __config) {
+          if(__extraKey.indexOf(key) > -1) {
+            delete __config[key]
+          }
+
+        }
+        return __config
     }
 
     getWebpackConfig() {

@@ -1,12 +1,14 @@
 'use strict';
+const { ENTRY_EXTNAMES } = require('../models/constans');
 
 module.exports = {
     apply: (compiler) => {
-        const entryExtNames = compiler.options.entryExtNames;
+        //const ENTRY_EXTNAMES = compiler.options.ENTRY_EXTNAMES;
 
         compiler.plugin('compilation', function(compilation) {
             compilation.mainTemplate.plugin('asset-path', function(assetPath, data) {
                 // handle ExtractTextPlugin options
+
                 if(typeof assetPath === 'object' && assetPath.filename) {
                     assetPath = assetPath.filename;
                 }
@@ -19,14 +21,13 @@ module.exports = {
                                         : module.dependencies[module.dependencies.length - 1].userRequest;
 
                     extName = sysPath.extname(rawRequest);
-
-                    if (entryExtNames.css.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
+                    if (ENTRY_EXTNAMES.css.indexOf(sysPath.extname(sysPath.basename(rawRequest, '.js'))) > -1) {
                         extName = '.cache';
                     }
 
                     // 应用后缀转换规则
-                    Object.keys(entryExtNames).map((targetExtName) => {
-                        if(entryExtNames[targetExtName].indexOf(extName) > -1){
+                    Object.keys(ENTRY_EXTNAMES).map((targetExtName) => {
+                        if(ENTRY_EXTNAMES[targetExtName].indexOf(extName) > -1){
                             extName = '.' + targetExtName;
                         }
                     });
@@ -39,6 +40,8 @@ module.exports = {
                         }
                     }
                 }
+
+
 
                 return assetPath.replace(/\[ext\]/g, extName);
             });

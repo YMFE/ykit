@@ -13,7 +13,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
-
+const { ENTRY_EXTNAMES } = require('./constans');
 const ENVS = {
     LOCAL: 'local',
     DEV: 'dev',
@@ -330,69 +330,69 @@ class Project {
     }
 
     fixCss() {
-        // let config = this.config.getConfig(),
-        //     entries = config.entry,
-        //     cssExtNames = config.entryExtNames.css,
-        //     fps = [];
-        //
-        // const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.';
-        //
-        // for (let key in entries) {
-        //     const entryItem = entries[key],
-        //         entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
-        //         extName = sysPath.extname(entry);
-        //
-        //     // 放在cache目录下
-        //     const cachePath = this._isCacheDirExists(this.cwd);
-        //     if (!cachePath) {
-        //         const newCachePath = sysPath.join(this.cwd, YKIT_CACHE_DIR);
-        //
-        //         this.cachePath = newCachePath;
-        //         mkdirp.sync(newCachePath);
-        //     }
-        //
-        //     if (cssExtNames.indexOf(extName) > -1) {
-        //         let requireFilePath = entries[key] = './' +
-        //             sysPath.join(contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'),
-        //             cacheFilePath = sysPath.join(config.context, requireFilePath);
-        //
-        //         mkdirp.sync(sysPath.dirname(cacheFilePath));
-        //
-        //         // 将原有entry的css路径写到js中
-        //         if (Array.isArray(entryItem)) {
-        //             // clear
-        //             fs.writeFileSync(cacheFilePath, '', 'utf-8');
-        //
-        //             entryItem.forEach(cssPath => {
-        //                 const originCssPath = sysPath.join(config.context, cssPath);
-        //                 const requiredPath = UtilPath.normalize(
-        //                     sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath)
-        //                 );
-        //                 fs.appendFileSync(
-        //                     cacheFilePath,
-        //                     'require("' + requiredPath + '");',
-        //                     'utf-8'
-        //                 );
-        //             });
-        //         } else {
-        //             const originCssPath = sysPath.join(config.context, entry);
-        //             const requiredPath = UtilPath.normalize(
-        //                 sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath)
-        //             );
-        //             fs.writeFileSync(cacheFilePath, 'require("' + requiredPath + '");', 'utf-8');
-        //         }
-        //
-        //         fps.push(cacheFilePath);
-        //     }
-        // }
-        //
-        // // 如果没有 ExtractTextPlugin 则为项目添加一个
-        // const isExtractTextPluginExists = config.plugins.some((plugin) => {
-        //     return plugin instanceof ExtractTextPlugin;
-        // });
-        // if(!isExtractTextPluginExists) {
-        //     config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
-        // }
+        let config = this.config.getConfig(),
+            entries = config.entry,
+            cssExtNames = ENTRY_EXTNAMES.css,
+            fps = [];
+
+        const contextPathRelativeToCwd = sysPath.relative(config.context, this.cwd) || '.';
+
+        for (let key in entries) {
+            const entryItem = entries[key],
+                entry = Array.isArray(entryItem) ? entryItem[entryItem.length - 1] : entryItem,
+                extName = sysPath.extname(entry);
+
+            // 放在cache目录下
+            const cachePath = this._isCacheDirExists(this.cwd);
+            if (!cachePath) {
+                const newCachePath = sysPath.join(this.cwd, YKIT_CACHE_DIR);
+
+                this.cachePath = newCachePath;
+                mkdirp.sync(newCachePath);
+            }
+
+            if (cssExtNames.indexOf(extName) > -1) {
+                let requireFilePath = entries[key] = './' +
+                    sysPath.join(contextPathRelativeToCwd, YKIT_CACHE_DIR, entry + '.js'),
+                    cacheFilePath = sysPath.join(config.context, requireFilePath);
+
+                mkdirp.sync(sysPath.dirname(cacheFilePath));
+
+                // 将原有entry的css路径写到js中
+                if (Array.isArray(entryItem)) {
+                    // clear
+                    fs.writeFileSync(cacheFilePath, '', 'utf-8');
+
+                    entryItem.forEach(cssPath => {
+                        const originCssPath = sysPath.join(config.context, cssPath);
+                        const requiredPath = UtilPath.normalize(
+                            sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath)
+                        );
+                        fs.appendFileSync(
+                            cacheFilePath,
+                            'require("' + requiredPath + '");',
+                            'utf-8'
+                        );
+                    });
+                } else {
+                    const originCssPath = sysPath.join(config.context, entry);
+                    const requiredPath = UtilPath.normalize(
+                        sysPath.relative(sysPath.dirname(cacheFilePath), originCssPath)
+                    );
+                    fs.writeFileSync(cacheFilePath, 'require("' + requiredPath + '");', 'utf-8');
+                }
+
+                fps.push(cacheFilePath);
+            }
+        }
+
+        // 如果没有 ExtractTextPlugin 则为项目添加一个
+        const isExtractTextPluginExists = config.plugins.some((plugin) => {
+            return plugin instanceof ExtractTextPlugin;
+        });
+        if(!isExtractTextPluginExists) {
+            config.plugins.push(new ExtractTextPlugin(config.output.filename.replace('[ext]', '.css')));
+        }
     }
     // pack 生成 sourcemap 以后，从中提取 sourcemap 到新的目录中
     moveSourcemap() {
@@ -448,36 +448,36 @@ class Project {
 
     lint(dir, callback) {
         warn('Linting JS Files ...');
-        //
-        // let CLIEngine = require('eslint').CLIEngine;
-        //
-        // // 如果有本地eslint优先使用本地eslint
-        // if (requireg.resolve(sysPath.join(this.cwd, 'node_modules/', 'eslint'))) {
-        //     CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine;
-        // }
-        //
-        // let files = ['.js', '.yaml', '.yml', '.json', ''].map(ext => {
-        //     return path.join(this.cwd, '.eslintrc' + ext);
-        // });
-        // let config = UtilFs.readFileAny(files);
-        //
-        // // 本地无 lint 配置，创建 .eslintrc.json
-        // if (!config) {
-        //     let configPath = path.join(this.cwd, '.eslintrc.json');
-        //     fs.writeFileSync(configPath, JSON.stringify(this.eslintConfig, null, 4));
-        // } else {
-        //     this.eslintConfig = config;
-        // }
-        //
-        // const cli = new CLIEngine(this.eslintConfig),
-        //     report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
-        //     formatter = cli.getFormatter();
-        //
-        // if (report.errorCount > 0) {
-        //     info(formatter(report.results));
-        // }
-        //
-        // callback(null, !report.errorCount);
+
+        let CLIEngine = require('eslint').CLIEngine;
+
+        // 如果有本地eslint优先使用本地eslint
+        if (requireg.resolve(sysPath.join(this.cwd, 'node_modules/', 'eslint'))) {
+            CLIEngine = requireg(sysPath.join(this.cwd, 'node_modules/', 'eslint')).CLIEngine;
+        }
+
+        let files = ['.js', '.yaml', '.yml', '.json', ''].map(ext => {
+            return path.join(this.cwd, '.eslintrc' + ext);
+        });
+        let config = UtilFs.readFileAny(files);
+
+        // 本地无 lint 配置，创建 .eslintrc.json
+        if (!config) {
+            let configPath = path.join(this.cwd, '.eslintrc.json');
+            fs.writeFileSync(configPath, JSON.stringify(this.eslintConfig, null, 4));
+        } else {
+            this.eslintConfig = config;
+        }
+
+        const cli = new CLIEngine(this.eslintConfig),
+            report = cli.executeOnFiles(this._getLintFiles(dir, 'js')),
+            formatter = cli.getFormatter();
+
+        if (report.errorCount > 0) {
+            info(formatter(report.results));
+        }
+
+        callback(null, !report.errorCount);
     }
 
     applyBeforePack(nextBeforePackCB) {
@@ -499,7 +499,7 @@ class Project {
             config.output.local || {}
         );
 
-      //  this.fixCss();
+        this.fixCss();
 
         if (handler && typeof handler === 'function') {
             config = handler(config);
@@ -509,33 +509,33 @@ class Project {
     }
 
     _getLintFiles(dir, fileType) {
-        // let context = this.config._config.context,
-        //     extNames = this.config._config.entryExtNames[fileType],
-        //     lintPath = extNames.map(ext => {
-        //         return sysPath.join('./**/*' + ext);
-        //     });
-        //
-        // if (dir) {
-        //     dir = sysPath.resolve(this.cwd, dir);
-        //     try {
-        //         fs.statSync(dir).isDirectory()
-        //             ? context = dir
-        //             : lintPath = sysPath.relative(context, dir);
-        //     } catch (e) {
-        //         error(e);
-        //     }
-        // }
-        //
-        // return globby
-        //     .sync(lintPath, {
-        //         cwd: context,
-        //         root: context,
-        //         ignore: this.ignores
-        //     })
-        //     .map(lintPathItem => {
-        //       console.log('line-----',sysPath.resolve(context, lintPathItem))
-        //         return sysPath.resolve(context, lintPathItem);
-        //     });
+        let context = this.config._config.context,
+            extNames = ENTRY_EXTNAMES[fileType],
+            lintPath = extNames.map(ext => {
+                return sysPath.join('./**/*' + ext);
+            });
+
+        if (dir) {
+            dir = sysPath.resolve(this.cwd, dir);
+            try {
+                fs.statSync(dir).isDirectory()
+                    ? context = dir
+                    : lintPath = sysPath.relative(context, dir);
+            } catch (e) {
+                error(e);
+            }
+        }
+
+        return globby
+            .sync(lintPath, {
+                cwd: context,
+                root: context,
+                ignore: this.ignores
+            })
+            .map(lintPathItem => {
+              console.log('line-----',sysPath.resolve(context, lintPathItem))
+                return sysPath.resolve(context, lintPathItem);
+            });
     }
 
     _requireUncached(module) {

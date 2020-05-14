@@ -19,6 +19,8 @@ const connect = require('connect'),
     httpProxy = require('http-proxy-middleware');
 
 const Manager = require('../modules/manager.js');
+
+const { ENTRY_EXTNAMES } = require('../models/constans.js');
 const UtilFs = require('../utils/fs.js');
 const UtilPath = require('../utils/path.js');
 
@@ -392,14 +394,13 @@ exports.run = (options) => {
                         }
 
                         // 应用后缀转换规则
-                        const entryExtNames = config.entryExtNames;
-                        Object.keys(entryExtNames).map((targetExtName) => {
-                            let exts = entryExtNames[targetExtName];
+                        Object.keys(ENTRY_EXTNAMES).map((targetExtName) => {
+                            let exts = ENTRY_EXTNAMES[targetExtName];
 
                             // 如果是 css 要考虑 css.js 的情况
                             if(targetExtName === 'css') {
                                 exts = exts.concat(
-                                    entryExtNames[targetExtName].map((name) => {
+                                    ENTRY_EXTNAMES[targetExtName].map((name) => {
                                         return name + '.js';
                                     })
                                 );
@@ -682,7 +683,7 @@ exports.run = (options) => {
     function getCurrentProjects(cwd) {
         // 观察当前目录是否有ykit.js
         // var cwd = process.cwd();
-        
+
         if(_isProject(cwd)) {// 项目根目录访问
             return [_getProjectAlias(cwd)];
         } else {// 父目录访问
@@ -713,7 +714,7 @@ exports.run = (options) => {
                 };
             } catch(e) {
                 logWarn(`project :${projectBase} package.json parse error, please check it!`);
-                
+
                 return {
                     baseName: sysPath.basename(projectBase),
                     alias: []

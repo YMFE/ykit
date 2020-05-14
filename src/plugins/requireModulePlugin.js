@@ -1,9 +1,10 @@
 'use strict';
+const REQUIRE_RULES = ['fekit_modules|fekit.config:main|./src/index.js'];
 
 module.exports = {
     apply: (compiler) => {
         let cwd = compiler.options.cwd,
-            requireRules = (compiler.options.requireRules || []).map((item) => {
+            requireRules = (REQUIRE_RULES).map((item) => {
                 let options = item.split('|'),
                     moduleRoot = options[0],
                     config = options[1].split(':'),
@@ -39,11 +40,11 @@ module.exports = {
                     return false;
                 };
             });
-
-        // compiler.resolvers.normal.plugins('module', function(request, finalCallback) {
-        //     if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
-        //         finalCallback();
-        //     }
-        // });
+    console.log('normal------',  compiler.resolvers)
+        compiler.resolvers.normal.plugins('module', function(request, finalCallback) {
+            if (!requireRules.some((fn) => fn(request.path, request.request, request.query, finalCallback))) {
+                finalCallback();
+            }
+        });
     }
 };
