@@ -41,8 +41,8 @@ class Config {
                 },
                 prd: {
                     path: './prd/',
-                    filename: '[name].min[ext]',
-                    chunkFilename: '[id].chunk.min.js'
+                    filename: '[name]@[chunkhash][ext]',
+                chunkFilename: '[id].chunk@[chunkhash].js'
                 }
             },
             mode:'none',
@@ -87,7 +87,7 @@ class Config {
                   //   allChunks:true
                   // }),
                  require('../plugins/extTemplatedPathPlugin.js'),
-                //  require('../plugins/requireModulePlugin.js'),
+                 // require('../plugins/requireModulePlugin.js'),
                 require('../plugins/hashPlaceholderPlugin.js'),
                 new CaseSensitivePathsPlugin()
 
