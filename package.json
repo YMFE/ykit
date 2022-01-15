@@ -50,7 +50,7 @@
     "serve-favicon": "^2.4.2",
     "serve-index": "^1.8.0",
     "serve-static": "^1.12.4",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.5",
     "style-loader": "^0.13.1",
     "uglify-js": "^3.1.9",
     "uglifycss": "0.0.25",
